@@ -1,7 +1,7 @@
 # yii console commands
 /yii
 /yii_test
-/yii_test.# zend studio for eclipse project files
+/yii_test.bat
 .buildpath
 .project
 .settings
