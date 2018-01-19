@@ -6,7 +6,7 @@ use common\models\bid\BidEntity;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\bid\controllers\actions\{
-    ListAction, CreateAction, DeleteAction, UpdateAction
+    ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
 
 /**
@@ -36,6 +36,7 @@ class BidController extends \yii\rest\Controller
                 'update' => ['put'],
                 'delete' => ['delete'],
                 'list' => ['get'],
+                'detail' => ['get'],
             ]
         ];
 
@@ -66,6 +67,11 @@ class BidController extends \yii\rest\Controller
 
         $actions['list'] = [
             'class' => ListAction::class,
+            'modelClass' => $this->modelClass
+        ];
+
+        $actions['detail'] = [
+            'class' => DetailAction::class,
             'modelClass' => $this->modelClass
         ];
 
