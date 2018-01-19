@@ -2,7 +2,7 @@
 
 namespace rest\behaviors;
 
-use yii\db\Exception;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class ValidationExceptionFirstMessage
@@ -14,7 +14,7 @@ class ValidationExceptionFirstMessage extends \yii\base\Behavior
      * Method of validation post data
      * @param $modelErrors
      * @return bool
-     * @throws Exception
+     * @throws UnprocessableEntityHttpException
      */
     public function throwModelException($modelErrors)
     {
@@ -22,7 +22,7 @@ class ValidationExceptionFirstMessage extends \yii\base\Behavior
             $fields = array_keys($modelErrors);
             $firstMessage = current($modelErrors[$fields[0]]);
 
-            throw new Exception($firstMessage);
+            throw new UnprocessableEntityHttpException($firstMessage);
         }
 
         return false;
