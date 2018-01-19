@@ -2,6 +2,7 @@
 
 namespace common\models\bid;
 
+use common\models\bid\repositories\RestBidRepository;
 use common\models\User;
 use yii\behaviors\TimestampBehavior;
 
@@ -26,6 +27,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class BidEntity extends \yii\db\ActiveRecord
 {
+    use RestBidRepository;
+
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 
