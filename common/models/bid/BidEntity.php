@@ -103,7 +103,7 @@ class BidEntity extends \yii\db\ActiveRecord
         return [
             [['id', 'created_by'], 'integer'],
             [
-                'created_by', 'default', 'value' => 1 //\Yii::$app->user->id
+                'created_by', 'default', 'value' => \Yii::$app->user->id
             ],
             [
                 ['created_by'], 'exist',
