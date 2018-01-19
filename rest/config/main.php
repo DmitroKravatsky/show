@@ -13,6 +13,21 @@ return [
     'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'modules' => [
+        'api' => [
+            'class' => 'rest\modules\api\Module',
+            'modules' => [
+                'v1' => [
+                    'class'   => 'rest\modules\api\v1\Module',
+                    'modules' => [
+                        'bid' => [
+                            'class' => 'rest\modules\api\v1\bid\Module'
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     'components' => [
         'response' => [
             'format' => yii\web\Response::FORMAT_JSON,
@@ -40,7 +55,10 @@ return [
             'showScriptName' => false,
             'baseUrl' => '/',
             'rules' => $routeRules
-        ]
+        ],
+        'user' => [
+            'identityClass' => 'common\models\user'
+        ],
     ],
     'params' => $params,
 ];
