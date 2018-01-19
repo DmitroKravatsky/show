@@ -61,16 +61,39 @@ class BidEntity extends \yii\db\ActiveRecord
             'created_by' => 'Автор',
             'from_sum' => 'Сумма',
             'to_sum' => 'Сумма',
-            'from_wallet' => 'Номер кошелька',
+            'from_wallet' => 'Со счета',
+            'to_wallet' => 'На счет',
+            'from_currency' => 'Валюта',
+            'to_currency' => 'Валюта',
             'name' => 'Имя',
             'last_name' => 'Фамилия',
             'email' => 'Email',
             'phone_number' => 'Номер телефона',
+            'status' => 'Статус',
             'created_at' => 'Дата создания',
             'updated_at' => 'Дата изменения'
         ];
     }
 
+    /**
+     * @return array
+     */
+    public function scenarios(): array
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_CREATE] = [
+            'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
+            'email', 'phone_number', 'from_sum', 'to_sum'
+        ];
+
+        $scenarios[self::SCENARIO_UPDATE] = [
+            'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
+            'email', 'phone_number', 'from_sum', 'to_sum'
+        ];
+
+        return $scenarios;
+    }
 
     /**
      * @return array
@@ -80,7 +103,7 @@ class BidEntity extends \yii\db\ActiveRecord
         return [
             [['id', 'created_by'], 'integer'],
             [
-                'created_by', 'default', 'value' => \Yii::$app->user->id
+                'created_by', 'default', 'value' => 1 //\Yii::$app->user->id
             ],
             [
                 ['created_by'], 'exist',
@@ -95,7 +118,10 @@ class BidEntity extends \yii\db\ActiveRecord
                 'string'
             ],
             [
-                ['from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email', 'phone_number'],
+                [
+                    'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
+                    'phone_number', 'from_sum', 'to_sum'
+                ],
                 'required'
             ],
             [
@@ -104,10 +130,11 @@ class BidEntity extends \yii\db\ActiveRecord
                 'range' => [self::PRIVAT24, self::SBERBANK, self::TINCOFF, self::WEB_MONEY, self::YANDEX_MONEY]
             ],
             [
-                ['from_currency', 'to_currency', 'in', 'range' => [self::RUB, self::UAH, self::USD]]
+                ['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD]
             ],
             ['email', 'email'],
-            [['from_to', 'to_sum'], 'double'],
+            ['email', 'unique'],
+            [['from_sum', 'to_sum'], 'double'],
             [['created_at', 'updated_at'], 'safe']
         ];
     }
