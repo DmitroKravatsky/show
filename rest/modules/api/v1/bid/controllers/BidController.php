@@ -3,14 +3,15 @@
 namespace rest\modules\api\v1\bid\controllers;
 
 use common\models\bid\BidEntity;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
 
 /**
  * Class BidController
+ * @mixin ResponseBehavior
+ * @mixin ValidationExceptionFirstMessage
  * @package rest\modules\api\v1\bid\controllers
  */
 class BidController extends \yii\rest\Controller

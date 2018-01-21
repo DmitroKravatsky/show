@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\models\bid\BidEntity;
+use rest\modules\api\v1\bid\controllers\BidController;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
@@ -13,6 +14,9 @@ use Yii;
  */
 class DeleteAction extends \yii\rest\Action
 {
+    /** @var  BidController */
+    public $controller;
+
     /**
      * @param $id
      * @return array

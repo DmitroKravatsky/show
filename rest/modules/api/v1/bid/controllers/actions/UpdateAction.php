@@ -5,6 +5,7 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 use common\behaviors\ValidatePostParameters;
 use common\models\bid\BidEntity;
 use rest\behaviors\ResponseBehavior;
+use rest\modules\api\v1\bid\controllers\BidController;
 use Yii;
 use yii\web\ServerErrorHttpException;
 
@@ -16,6 +17,9 @@ use yii\web\ServerErrorHttpException;
  */
 class UpdateAction extends \yii\rest\Action
 {
+    /** @var BidController */
+    public $controller;
+
     /**
      * @var array
      */
@@ -49,9 +53,10 @@ class UpdateAction extends \yii\rest\Action
 
     /**
      * @param $id
+     * @return array
      * @throws ServerErrorHttpException
-     * @throws \yii\db\Exception
      * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\web\UnprocessableEntityHttpException
      */
     public function run($id)
     {

@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\behaviors\ValidatePostParameters;
 use common\models\bid\BidEntity;
+use rest\modules\api\v1\bid\controllers\BidController;
 use yii\web\ServerErrorHttpException;
 use Yii;
 
@@ -14,6 +15,9 @@ use Yii;
  */
 class CreateAction extends \yii\rest\Action
 {
+    /** @var  BidController */
+    public $controller;
+
     /**
      * @var array
      */
@@ -55,7 +59,7 @@ class CreateAction extends \yii\rest\Action
         $bid = new $this->modelClass;
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
         $bid->setAttributes(Yii::$app->request->bodyParams);
-        if ($bid->save()) { ;
+        if ($bid->save()) {
             return $this->controller->setResponse(201, Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
         } elseif ($bid->hasErrors()) {
             $this->controller->throwModelException($bid->errors);
