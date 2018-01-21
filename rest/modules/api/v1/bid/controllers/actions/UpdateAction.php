@@ -4,7 +4,6 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\behaviors\ValidatePostParameters;
 use common\models\bid\BidEntity;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\bid\controllers\BidController;
 use Yii;
 use yii\web\ServerErrorHttpException;
@@ -12,7 +11,6 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class UpdateAction
  * @mixin ValidatePostParameters
- * @mixin ResponseBehavior
  * @package rest\modules\api\v1\bid\controllers\actions
  */
 class UpdateAction extends \yii\rest\Action
