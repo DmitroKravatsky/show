@@ -33,7 +33,7 @@ class UpdateAction extends \yii\rest\Action
                 'class' => ValidatePostParameters::className(),
                 'inputParams' => [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number'
+                    'phone_number', 'from_sum'
                 ],
             ],
         ];

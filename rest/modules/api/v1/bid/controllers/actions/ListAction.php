@@ -15,6 +15,9 @@ class ListAction extends \yii\rest\Action
      */
     public function run()
     {
-        return BidEntity::getBids(\Yii::$app->request->queryParams);
+        /** @var BidEntity $bid */
+        $bid = new $this->modelClass;
+
+        return $bid->getBids(\Yii::$app->request->queryParams);
     }
 }

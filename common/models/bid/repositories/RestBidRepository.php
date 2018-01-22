@@ -18,7 +18,7 @@ trait RestBidRepository
      * @param $params
      * @return ArrayDataProvider
      */
-    public static function getBids($params): ArrayDataProvider
+    public function getBids($params): ArrayDataProvider
     {
         /** @var ActiveQuery $query */
         $query = self::find()->where(['created_by' => Yii::$app->user->id]);
