@@ -5,6 +5,7 @@ namespace common\models\bid;
 use common\models\bid\repositories\RestBidRepository;
 use common\models\User;
 use yii\behaviors\TimestampBehavior;
+use Yii;
 
 /**
  * Class BidEntity
@@ -12,6 +13,10 @@ use yii\behaviors\TimestampBehavior;
  *
  * @property integer $id
  * @property integer $created_by
+ * @property integer $from_wallet_number
+ * @property integer $to_wallet_number
+ * @property integer $from_card_number
+ * @property integer $to_card_number
  * @property double $from_sum
  * @property double $to_sum
  * @property string $from_wallet
@@ -37,14 +42,22 @@ class BidEntity extends \yii\db\ActiveRecord
     const TINCOFF = 'tincoff';
     const PRIVAT24 = 'privat24';
     const SBERBANK = 'sberbank';
+    const QIWI = 'qiwi';
 
     const USD = 'usd';
     const UAH = 'uah';
     const RUB = 'rub';
+    const EUR = 'eur';
 
-    const STATUS_VERIFIED = 'verified';
     const STATUS_ACCEPTED = 'accepted';
+    const STATUS_PAID = 'paid';
+    const STATUS_DONE = 'done';
     const STATUS_REJECTED = 'rejected';
+
+    /**
+     * @var bool
+     */
+    public $terms_confirm = false;
 
     /**
      * @return string
@@ -64,8 +77,8 @@ class BidEntity extends \yii\db\ActiveRecord
             'created_by' => 'Автор',
             'from_sum' => 'Сумма',
             'to_sum' => 'Сумма',
-            'from_wallet' => 'Со счета',
-            'to_wallet' => 'На счет',
+            'from_wallet' => 'Вы отдаёте',
+            'to_wallet' => 'Вы получаете',
             'from_currency' => 'Валюта',
             'to_currency' => 'Валюта',
             'name' => 'Имя',
@@ -73,8 +86,13 @@ class BidEntity extends \yii\db\ActiveRecord
             'email' => 'Email',
             'phone_number' => 'Номер телефона',
             'status' => 'Статус',
+            'from_wallet_number' => 'Номер кошелька отправки',
+            'to_wallet_number' => 'Номер кошелька получения',
+            'from_card_number' => 'Номер карты отправки',
+            'to_card_number' => 'Номер карты получения',
+            'terms_confirm' => 'Пользовательское соглашение',
             'created_at' => 'Дата создания',
-            'updated_at' => 'Дата изменения'
+            'updated_at' => 'Дата изменения',
         ];
     }
 
@@ -87,12 +105,14 @@ class BidEntity extends \yii\db\ActiveRecord
 
         $scenarios[self::SCENARIO_CREATE] = [
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
-            'email', 'phone_number', 'from_sum', 'to_sum'
+            'email', 'phone_number', 'from_sum', 'to_sum', 'from_wallet_number', 'to_wallet_number', 'from_card_number',
+            'to_card_number', 'terms_confirm'
         ];
 
         $scenarios[self::SCENARIO_UPDATE] = [
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
-            'email', 'phone_number', 'from_sum', 'to_sum'
+            'email', 'phone_number', 'from_sum', 'to_sum', 'from_wallet_number', 'to_wallet_number', 'from_card_number',
+            'to_card_number',
         ];
 
         return $scenarios;
@@ -114,8 +134,7 @@ class BidEntity extends \yii\db\ActiveRecord
                 'targetClass'     => User::className(),
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_VERIFIED]],
-
+            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_PAID, self::STATUS_DONE]],
             [
                 ['from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email', 'phone_number'],
                 'string'
@@ -123,22 +142,62 @@ class BidEntity extends \yii\db\ActiveRecord
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number', 'from_sum', 'to_sum'
+                    'phone_number', 'from_sum'
                 ],
                 'required'
             ],
             [
-                ['from_wallet', 'to_wallet'],
-                'in',
-                'range' => [self::PRIVAT24, self::SBERBANK, self::TINCOFF, self::WEB_MONEY, self::YANDEX_MONEY]
+                [
+                    'name', 'last_name', 'phone_number', 'from_wallet_number', 'to_wallet_number', 'from_card_number',
+                    'to_card_number'
+                ],
+                'string',
+                'max' => 20
             ],
             [
-                ['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD]
+                ['from_wallet', 'to_wallet'],
+                'in',
+                'range' => [self::PRIVAT24, self::SBERBANK, self::TINCOFF, self::WEB_MONEY, self::YANDEX_MONEY, self::QIWI]
+            ],
+            [
+                ['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]
             ],
             ['email', 'email'],
-            ['email', 'unique'],
-            [['from_sum', 'to_sum'], 'double'],
-            [['created_at', 'updated_at'], 'safe']
+            [['from_sum'], 'double'],
+            [['created_at', 'updated_at', 'to_sum'], 'safe'],
+            [
+                'from_wallet_number',
+                'required',
+                'when' => function ($model) { return empty($model->from_card_number); },
+                'message' => 'Необходимо заполнить одно из полей "Номер кошелька отправки" или "Номер карты отправки"'
+            ],
+            [
+                'from_card_number',
+                'required',
+                'when' => function ($model) { return empty($model->from_wallet_number); },
+                'message' => 'Необходимо заполнить одно из полей "Номер кошелька отправки" или "Номер карты отправки"'
+            ],
+            [
+                'to_wallet_number',
+                'required',
+                'when' => function ($model) { return empty($model->to_card_number); },
+                'message' => 'Необходимо заполнить одно из полей "Номер кошелька получения" или "Номер карты получения"'
+            ],
+            [
+                'to_card_number',
+                'required',
+                'when' => function ($model) { return empty($model->to_wallet_number); },
+                'message' => 'Необходимо заполнить одно из полей "Номер кошелька получения" или "Номер карты получения"'
+            ],
+            ['terms_confirm', 'boolean', 'on' => self::SCENARIO_CREATE],
+            [
+                'terms_confirm',
+                'required',
+                'on'            => self::SCENARIO_CREATE,
+                'requiredValue' => 1,
+                'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
+            ],
+
         ];
     }
 
