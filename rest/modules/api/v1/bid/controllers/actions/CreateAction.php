@@ -55,10 +55,13 @@ class CreateAction extends \yii\rest\Action
      */
     public function run()
     {
+        $bodyParams = Yii::$app->request->bodyParams;
+        $bodyParams['to_sum'] = $bodyParams['from_sum'];
+
         /** @var BidEntity $bid */
         $bid = new $this->modelClass;
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
-        $bid->setAttributes(Yii::$app->request->bodyParams);
+        $bid->setAttributes($bodyParams);
         if ($bid->save()) {
             return $this->controller->setResponse(201, Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
         } elseif ($bid->hasErrors()) {

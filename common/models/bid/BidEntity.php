@@ -142,7 +142,7 @@ class BidEntity extends \yii\db\ActiveRecord
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number', 'from_sum'
+                    'phone_number', 'from_sum', 'to_sum'
                 ],
                 'required'
             ],
