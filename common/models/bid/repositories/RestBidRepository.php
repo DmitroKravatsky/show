@@ -52,7 +52,8 @@ trait RestBidRepository
         }
 
         return $bid->getAttributes([
-            'status', 'from_wallet', 'to_wallet', 'from_sum', 'to_sum', 'from_currency', 'to_currency'
+            'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
+            'to_currency', 'from_sum', 'to_sum'
         ]);
     }
 }

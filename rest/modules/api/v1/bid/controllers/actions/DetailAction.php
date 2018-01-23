@@ -17,9 +17,9 @@ class DetailAction extends \yii\rest\Action
     public $params = [];
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'reportParams' => [
@@ -31,8 +31,9 @@ class DetailAction extends \yii\rest\Action
 
     /**
      * @return bool
+     * @throws \yii\web\BadRequestHttpException
      */
-    public function beforeRun(): bool
+    protected function beforeRun(): bool
     {
         $this->validationParams();
         return parent::beforeRun();

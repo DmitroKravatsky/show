@@ -31,12 +31,12 @@ class BidController extends \yii\rest\Controller
         $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         $behaviors['verbs'] = [
-            'class' => \yii\filters\VerbFilter::className(),
+            'class'   => \yii\filters\VerbFilter::className(),
             'actions' => [
                 'create' => ['post'],
                 'update' => ['put'],
                 'delete' => ['delete'],
-                'list' => ['get'],
+                'list'   => ['get'],
                 'detail' => ['get'],
             ]
         ];
@@ -52,27 +52,27 @@ class BidController extends \yii\rest\Controller
         $actions = parent::actions();
 
         $actions['create'] = [
-            'class' => CreateAction::class,
+            'class'      => CreateAction::class,
             'modelClass' => $this->modelClass
         ];
 
         $actions['update'] = [
-            'class' => UpdateAction::class,
+            'class'      => UpdateAction::class,
             'modelClass' => $this->modelClass
         ];
 
         $actions['delete'] = [
-            'class' => DeleteAction::class,
+            'class'      => DeleteAction::class,
             'modelClass' => $this->modelClass
         ];
 
         $actions['list'] = [
-            'class' => ListAction::class,
+            'class'      => ListAction::class,
             'modelClass' => $this->modelClass
         ];
 
         $actions['detail'] = [
-            'class' => DetailAction::class,
+            'class'      => DetailAction::class,
             'modelClass' => $this->modelClass
         ];
 

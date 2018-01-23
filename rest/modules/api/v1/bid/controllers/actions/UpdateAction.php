@@ -24,16 +24,16 @@ class UpdateAction extends \yii\rest\Action
     public $params = [];
 
     /**
-     * @inheritdoc
+     * @return array
      */
-    public function behaviors()
+    public function behaviors(): array
     {
         return [
             'reportParams' => [
-                'class' => ValidatePostParameters::className(),
+                'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number', 'from_sum'
+                    'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
                 ],
             ],
         ];
@@ -62,6 +62,7 @@ class UpdateAction extends \yii\rest\Action
         $bid = $this->findModel($id);
         $bid->setScenario(BidEntity::SCENARIO_UPDATE);
         $bid->setAttributes(Yii::$app->request->bodyParams);
+
         if ($bid->save()) {
             return $this->controller->setResponse(200, Yii::t('app', 'Заявка успешно изменена.'), $bid->getAttributes());
         } elseif ($bid->hasErrors()) {

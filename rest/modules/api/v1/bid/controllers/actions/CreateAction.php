@@ -24,16 +24,16 @@ class CreateAction extends \yii\rest\Action
     public $params = [];
 
     /**
-     * @inheritdoc
+     * @return array
      */
     public function behaviors(): array
     {
         return [
             'reportParams' => [
-                'class' => ValidatePostParameters::className(),
+                'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number', 'from_sum',
+                    'phone_number', 'from_sum', 'to_sum','from_payment_system', 'to_payment_system'
                 ]
             ],
         ];
@@ -55,13 +55,11 @@ class CreateAction extends \yii\rest\Action
      */
     public function run()
     {
-        $bodyParams = Yii::$app->request->bodyParams;
-        $bodyParams['to_sum'] = $bodyParams['from_sum'];
-
         /** @var BidEntity $bid */
         $bid = new $this->modelClass;
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
-        $bid->setAttributes($bodyParams);
+        $bid->setAttributes(Yii::$app->request->bodyParams);
+
         if ($bid->save()) {
             return $this->controller->setResponse(201, Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
         } elseif ($bid->hasErrors()) {
