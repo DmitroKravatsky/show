@@ -2,6 +2,7 @@
 
 namespace common\models\userProfile;
 
+use common\models\userProfile\repositories\RestUserProfileRepository;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
@@ -21,6 +22,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class UserProfileEntity extends ActiveRecord
 {
+    use RestUserProfileRepository;
+    
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
 

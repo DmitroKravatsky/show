@@ -25,6 +25,7 @@ return [
         ],
         'patterns'   => [
             'PUT {id}' => 'update',
+            'GET {id}' => 'get-profile'
         ],
     ],
 ];

@@ -3,10 +3,9 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
+use rest\modules\api\v1\user\actions\profile\{ GetProfileAction, UpdateAction };
 use yii\rest\Controller;
-use rest\modules\api\v1\user\actions\profile\UpdateAction;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use yii\filters\VerbFilter;
 
 /**
@@ -33,7 +32,8 @@ class UserProfileController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
             'actions' => [
-                'update' => ['put'],
+                'update'      => ['put'],
+                'get-profile' => ['get'],
             ]
         ];
         
@@ -49,6 +49,11 @@ class UserProfileController extends Controller
 
         $actions['update'] = [
             'class'      => UpdateAction::class,
+            'modelClass' => $this->modelClass
+        ];
+
+        $actions['get-profile'] = [
+            'class'      => GetProfileAction::class,
             'modelClass' => $this->modelClass
         ];
         
