@@ -9,38 +9,56 @@ $params = array_merge(
 $routeRules = require(__DIR__ . '/routes.php');
 
 return [
-    'id' => 'app-rest',
-    'language' => 'ru',
-    'basePath' => dirname(__DIR__),
+    'id'        => 'app-rest',
+    'language'  => 'ru',
+    'basePath'  => dirname(__DIR__),
     'bootstrap' => ['log'],
+    'modules'   => [
+        'api'   => [
+            'class'   => 'rest\modules\api\Module',
+            'modules' => [
+                'v1'  => [
+                    'class'   => 'rest\modules\api\v1\Module',
+                    'modules' => [
+                        'bid' => [
+                            'class' => 'rest\modules\api\v1\bid\Module'
+                        ],
+                    ],
+                ],
+            ],
+        ],
+    ],
     'components' => [
-        'response' => [
-            'format' => yii\web\Response::FORMAT_JSON,
+        'response'   => [
+            'format'  => yii\web\Response::FORMAT_JSON,
             'charset' => 'UTF-8'
         ],
-        'request' => [
-            'baseUrl' => '/',
-            'class' => '\yii\web\Request',
-            'enableCookieValidation' => false,
+        'request'    => [
+            'baseUrl'                        => '/',
+            'class'                          => '\yii\web\Request',
+            'enableCookieValidation'         => false,
             'parsers' => ['application/json' => 'yii\web\JsonParser'],
         ],
-        'log'        => [
+        'log' => [
             'flushInterval' => 1,
-            'traceLevel' => YII_DEBUG ? 3 : 0,
-            'targets' => [
+            'traceLevel'    => YII_DEBUG ? 3 : 0,
+            'targets'       => [
                 [
-                    'class' => 'yii\log\FileTarget',
+                    'class'  => 'yii\log\FileTarget',
                     'levels' => ['info', 'error', 'warning', 'trace'],
                 ]
             ]
         ],
         'urlManager' => [
-            'enablePrettyUrl' => true,
+            'enablePrettyUrl'     => true,
             'enableStrictParsing' => false,
-            'showScriptName' => false,
-            'baseUrl' => '/',
-            'rules' => $routeRules
-        ]
+            'showScriptName'      => false,
+            'baseUrl'             => '/',
+            'rules'               => $routeRules
+        ],
+        'user' => [
+            'identityClass' => 'common\models\user'
+        ],
     ],
     'params' => $params,
 ];
