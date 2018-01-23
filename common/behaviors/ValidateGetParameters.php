@@ -19,7 +19,7 @@ class ValidateGetParameters extends AttributeBehavior
     public $inputParams = [];
 
     /**
-     * @inheritdoc array
+     * @throws BadRequestHttpException
      */
     public function validationParams()
     {

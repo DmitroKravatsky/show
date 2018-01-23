@@ -19,7 +19,8 @@ class ValidatePostParameters extends AttributeBehavior
     public $inputParams = [];
 
     /**
-     * @inheritdoc array
+     * @throws BadRequestHttpException
+     * @throws \yii\base\InvalidConfigException
      */
     public function validationParams()
     {
