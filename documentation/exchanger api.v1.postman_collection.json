@@ -2,15 +2,28 @@
 	"id": "9c031674-346c-48e1-a528-4a60d937fc1a",
 	"name": "exchanger api.v1",
 	"description": "",
-	"order": [
-		"4480b75d-eb38-e466-406a-08735f40fd9c",
-		"c0361590-6410-ebfe-7ac0-863201684112",
-		"70d449bd-1f07-b130-66ba-67b692b0473d",
-		"78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
-		"9ed3b49b-e76b-7722-f194-710548e869c4"
+	"order": [],
+	"folders": [
+		{
+			"name": "bid",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"4480b75d-eb38-e466-406a-08735f40fd9c",
+				"c0361590-6410-ebfe-7ac0-863201684112",
+				"70d449bd-1f07-b130-66ba-67b692b0473d",
+				"78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
+				"9ed3b49b-e76b-7722-f194-710548e869c4"
+			],
+			"owner": "2101684",
+			"folders_order": [],
+			"auth": null,
+			"id": "4fada8ef-683a-83b6-efb6-a680971fad6d"
+		}
 	],
-	"folders": [],
-	"folders_order": [],
+	"folders_order": [
+		"4fada8ef-683a-83b6-efb6-a680971fad6d"
+	],
 	"timestamp": 1516630267051,
 	"owner": "2101684",
 	"public": false,
@@ -50,8 +63,17 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/bid/detail",
-			"queryParams": [],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/bid/detail?id={{id}}",
+			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
+			"queryParams": [
+				{
+					"key": "id",
+					"value": "{{id}}",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
 			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
@@ -60,11 +82,13 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516654583751,
-			"name": "/api/v1/bid/detail?id={{id}}",
+			"time": 1516702183398,
+			"name": "/api/v1/bid/detail",
 			"description": "Метод подробоной информации о заявке",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "4480b75d-eb38-e466-406a-08735f40fd9c",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smdith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"emdsilf@gqwfsmsdasl.coqm\",\n\t\"from_wallet_number\": \"123123\",\n\t\"to_card_number\": \"123212342342342\",\n\t\"from_sum\": 1,\n\t\"to_sum\": 1,\n\t\"terms_confirm\": \"1\"\n}"
@@ -81,6 +105,7 @@
 				}
 			],
 			"url": "http://{{server}}:{{port}}/{{prefix}}/bid/list",
+			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -95,6 +120,8 @@
 			"description": "Список заявок с фильтрацией по времени\n",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "70d449bd-1f07-b130-66ba-67b692b0473d",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smdith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"emdsilf@gqwfsmsdasl.coqm\",\n\t\"from_wallet_number\": \"123123\",\n\t\"to_card_number\": \"123212342342342\",\n\t\"from_sum\": 1,\n\t\"to_sum\": 1,\n\t\"terms_confirm\": \"1\"\n}"
@@ -111,6 +138,7 @@
 				}
 			],
 			"url": "http://{{server}}:{{port}}/{{prefix}}/bid",
+			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -120,14 +148,16 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516654591717,
+			"time": 1516701683597,
 			"name": "/api/v1/bid",
 			"description": "Метод создания заявки пользователем",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"+797878695978\",\n\t\"email\": \"john@gmail.com\",\n\t\"from_wallet_number\": \"1234 1234 1234 1234\",\n\t\"to_card_number\": \"1234 1234 1234 1234\",\n\t\"from_sum\": 100,\n\t\"terms_confirm\": \"1\"\n}"
+			"rawModeData": "{\n\t\"from_payment_system\": \"privat24\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_wallet\": \"1234123412341234\",\n\t\"to_wallet\": \"123456781234\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"+797878695978\",\n\t\"email\": \"john@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 100.5,\n\t\"terms_confirm\": \"1\"\n}"
 		},
 		{
 			"id": "9ed3b49b-e76b-7722-f194-710548e869c4",
@@ -141,6 +171,7 @@
 				}
 			],
 			"url": "http://{{server}}:{{port}}/{{prefix}}/bid/{{id}}",
+			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -150,14 +181,16 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516654593968,
-			"name": "/api/v1/bid/{{id}}",
+			"time": 1516701764444,
+			"name": "/api/v1/bid",
 			"description": "метод редактирования заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "9ed3b49b-e76b-7722-f194-710548e869c4",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"df@df.d\",\n\t\"from_sum\": 1000,\n\t\"from_card_number\": \"123412341234\"\n}"
+			"rawModeData": "{\n\t\"from_payment_system\": \"qiwi\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_wallet\": \"1234123412341234\",\n\t\"to_wallet\": \"123456781234\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"+797878695978\",\n\t\"email\": \"john@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 100.5\n}"
 		},
 		{
 			"id": "c0361590-6410-ebfe-7ac0-863201684112",
@@ -171,6 +204,7 @@
 				}
 			],
 			"url": "http://{{server}}:{{port}}/{{prefix}}/bid/{{id}}",
+			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -180,14 +214,16 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516654586440,
-			"name": "/api/v1/bid/{{id}}",
+			"time": 1516702304157,
+			"name": "/api/v1/bid",
 			"description": "Удаление заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"isFromCollection": true,
+			"collectionRequestId": "c0361590-6410-ebfe-7ac0-863201684112",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"df@df.d\",\n\t\"from_sum\": 1,\n\t\"to_sum\": 1\n}"
+			"rawModeData": ""
 		}
 	]
 }
