@@ -26,6 +26,9 @@ return [
                         'user' => [
                             'class' => 'rest\modules\api\v1\user\Module'
                         ],
+                        'reserve' => [
+                            'class' => 'rest\modules\api\v1\reserve\Module'
+                        ],
                     ],
                 ],
             ],

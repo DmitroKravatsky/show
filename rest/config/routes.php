@@ -28,4 +28,16 @@ return [
             'GET {id}' => 'get-profile'
         ],
     ],
+    /** Reserve Module */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'reserve' => 'api/v1/reserve/reserve',
+        ],
+        'patterns'   => [
+            'GET'      => 'list',
+            'PUT {id}' => 'update',
+        ],
+    ],
 ];
