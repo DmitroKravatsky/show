@@ -1,6 +1,6 @@
 <?php
 
-namespace rest\modules\api\v1\user\actions\profile;
+namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
@@ -12,7 +12,7 @@ use yii\web\ServerErrorHttpException;
 
 /**
  * Class UpdateAction
- * @package rest\modules\api\v1\user\actions\profile
+ * @package rest\modules\api\v1\user\controllers\actions\profile
  * @mixin ValidatePostParameters
  */
 class UpdateAction extends Action

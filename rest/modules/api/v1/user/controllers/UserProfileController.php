@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
-use rest\modules\api\v1\user\actions\profile\{ GetProfileAction, UpdateAction };
+use rest\modules\api\v1\user\controllers\actions\profile\{ GetProfileAction, UpdateAction };
 use yii\rest\Controller;
 use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use yii\filters\VerbFilter;

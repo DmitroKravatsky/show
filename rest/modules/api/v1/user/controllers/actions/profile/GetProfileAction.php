@@ -1,13 +1,13 @@
 <?php
 
-namespace rest\modules\api\v1\user\actions\profile;
+namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\models\userProfile\UserProfileEntity;
 use yii\rest\Action;
 
 /**
  * Class GetProfileAction
- * @package rest\modules\api\v1\user\actions\profile
+ * @package rest\modules\api\v1\user\controllers\actions\profile
  */
 class GetProfileAction extends Action
 {
