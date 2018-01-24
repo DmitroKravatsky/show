@@ -23,6 +23,9 @@ return [
                         'bid' => [
                             'class' => 'rest\modules\api\v1\bid\Module'
                         ],
+                        'user' => [
+                            'class' => 'rest\modules\api\v1\user\Module'
+                        ],
                     ],
                 ],
             ],

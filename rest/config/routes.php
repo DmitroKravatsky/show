@@ -16,4 +16,16 @@ return [
             'GET detail'  => 'detail',
         ],
     ],
+    /** User Module */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'user/user-profile' => 'api/v1/user/user-profile',
+        ],
+        'patterns'   => [
+            'PUT {id}' => 'update',
+            'GET {id}' => 'get-profile'
+        ],
+    ],
 ];
