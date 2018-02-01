@@ -29,6 +29,9 @@ return [
                         'reserve' => [
                             'class' => 'rest\modules\api\v1\reserve\Module'
                         ],
+                        'authorization' => [
+                            'class' => 'rest\modules\api\v1\authorization\Module'
+                        ],
                     ],
                 ],
             ],
