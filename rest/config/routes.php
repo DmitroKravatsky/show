@@ -40,4 +40,15 @@ return [
             'PUT {id}' => 'update',
         ],
     ],
+    /** Authorization Module */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'social' => 'api/v1/authorization/social',
+        ],
+        'patterns'   => [
+            'POST vk-register' => 'vk-register',
+        ],
+    ],
 ];
