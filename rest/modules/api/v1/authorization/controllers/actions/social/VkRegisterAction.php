@@ -44,11 +44,11 @@ class VkRegisterAction extends Action
     }
 
     /**
-     * @return array|bool
+     * @return array
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run()
+    public function run(): array 
     {
         /** @var OauthEntity $oath */
         $oath = new $this->modelClass;

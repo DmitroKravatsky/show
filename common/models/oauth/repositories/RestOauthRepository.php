@@ -20,9 +20,10 @@ trait RestOauthRepository
 {
     /**
      * @param $params
-     * @return array|bool
+     * @return array
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
      */
     public function vkRegister($params)
     {
@@ -42,40 +43,44 @@ trait RestOauthRepository
 
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
+                if (isset($userData->error)) {
+                    throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+                }
+
                 $userData = array_shift($userData->response);
 
                 $user = new User([
-                    'auth_key' => Yii::$app->getSecurity()->generateRandomString(32),
-                    'email' => $params['email'],
+                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
+                    'email'         => $params['email'],
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
                 ]);
 
-                if (!$user->validate()) {
+                if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }
 
-                $user->save(false);
-
                 $userProfile = new UserProfileEntity([
-                    'name' => $userData->first_name,
+                    'name'      => $userData->first_name,
                     'last_name' => $userData->last_name,
-                    'user_id' => $user->id,
-                    'avatar' => $userData->photo_50
+                    'user_id'   => $user->id,
+                    'avatar'    => $userData->photo_50
                 ]);
 
-                $userProfile->save(false);
-
                 $oath = new OauthEntity([
-                    'user_id' => $user->id,
-                    'source' => OauthEntity::VK,
+                    'user_id'   => $user->id,
+                    'source'    => OauthEntity::VK,
                     'source_id' => (string)$userData->uid
                 ]);
 
-                if ($oath->save(false)) {
+                if ($oath->save(false) && $userProfile->save(false)) {
                     $transaction->commit();
                     return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
                 }
+
+                throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
             }
+
+            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
