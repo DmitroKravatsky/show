@@ -14,8 +14,6 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $user_id
  * @property string $name
  * @property string $last_name
- * @property string $phone_number
- * @property string $email
  * @property string $avatar
  * @property integer $created_at
  * @property integer $updated_at
@@ -45,8 +43,6 @@ class UserProfileEntity extends ActiveRecord
             'user_id'      => 'Пользователь',
             'name'         => 'Имя',
             'last_name'    => 'Фамилия',
-            'phone_number' => 'Номер телефона',
-            'email'        => 'Email',
             'avatar'       => 'Аватар',
             'created_at'   => 'Дата создания',
             'updated_at'   => 'Дата обновления',
@@ -61,9 +57,8 @@ class UserProfileEntity extends ActiveRecord
         return [
             [['id', 'user_id'], 'integer'],
             ['user_id', 'default', 'value' => \Yii::$app->user->id],
-            [['name', 'last_name', 'phone_number', 'email'], 'string', 'max' => 20],
-            [['name', 'last_name', 'phone_number', 'email'], 'required'],
-            ['email', 'email'],
+            [['name', 'last_name',], 'string', 'max' => 20],
+            [['name', 'last_name',], 'required'],
             ['avatar', 'string'],
             [['created_at', 'updated_at'], 'safe'],
         ];
@@ -86,8 +81,8 @@ class UserProfileEntity extends ActiveRecord
     {
         $scenarios = parent::scenarios();
 
-        $scenarios[self::SCENARIO_CREATE] = ['id', 'user_id', 'name', 'last_name', 'phone_number', 'email', 'avatar',];
-        $scenarios[self::SCENARIO_UPDATE] = ['id', 'user_id', 'name', 'last_name', 'phone_number', 'email', 'avatar',];
+        $scenarios[self::SCENARIO_CREATE] = ['id', 'user_id', 'name', 'last_name', 'avatar',];
+        $scenarios[self::SCENARIO_UPDATE] = ['id', 'user_id', 'name', 'last_name', 'avatar',];
 
         return $scenarios;
     }
