@@ -66,7 +66,7 @@ return [
             'rules'               => $routeRules
         ],
         'user' => [
-            'identityClass' => 'common\models\user'
+            'identityClass' => 'common\models\user\User'
         ],
     ],
     'params' => $params,

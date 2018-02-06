@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
-use common\models\oauth\OauthEntity;
+use common\models\user\User;
 use yii\rest\Action;
 
 /**
@@ -48,11 +48,11 @@ class VkRegisterAction extends Action
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run(): array 
+    public function run(): array
     {
-        /** @var OauthEntity $oath */
-        $oath = new $this->modelClass;
+        /** @var User $userModel */
+        $userModel = new $this->modelClass;
 
-        return $oath->vkRegister(\Yii::$app->request->bodyParams);
+        return $userModel->vkRegister(\Yii::$app->request->bodyParams);
     }
 }

@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
-use common\models\oauth\OauthEntity;
+use common\models\user\User;
 use rest\modules\api\v1\authorization\controllers\actions\social\VkRegisterAction;
 use yii\filters\VerbFilter;
 use rest\behaviors\ResponseBehavior;
@@ -14,8 +14,8 @@ use rest\behaviors\ValidationExceptionFirstMessage;
  */
 class SocialController extends \yii\rest\Controller
 {
-    /** @var OauthEntity */
-    public $modelClass = OauthEntity::class;
+    /** @var User */
+    public $modelClass = User::class;
 
     /**
      * @return array

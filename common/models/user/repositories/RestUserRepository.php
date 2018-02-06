@@ -1,9 +1,8 @@
 <?php
 
-namespace common\models\oauth\repositories;
+namespace common\models\user\repositories;
 
-use common\models\oauth\OauthEntity;
-use common\models\User;
+use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
 use rest\behaviors\ResponseBehavior;
@@ -13,10 +12,10 @@ use Yii;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
- * Class RestOauthRepository
- * @package common\models\oauth\repositories
+ * Class RestUserRepository
+ * @package common\models\user\repositories
  */
-trait RestOauthRepository
+trait RestUserRepository
 {
     /**
      * @param $params
@@ -50,6 +49,8 @@ trait RestOauthRepository
                 $userData = array_shift($userData->response);
 
                 $user = new User([
+                    'source'        => self::VK,
+                    'source_id'     => (string) $userData->uid,
                     'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
                     'email'         => $params['email'],
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
@@ -60,23 +61,19 @@ trait RestOauthRepository
                 }
 
                 $userProfile = new UserProfileEntity([
+                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
                     'name'      => $userData->first_name,
                     'last_name' => $userData->last_name,
                     'user_id'   => $user->id,
                     'avatar'    => $userData->photo_50
                 ]);
 
-                $oath = new OauthEntity([
-                    'user_id'   => $user->id,
-                    'source'    => OauthEntity::VK,
-                    'source_id' => (string)$userData->uid
-                ]);
-
-                if ($oath->save(false) && $userProfile->save(false)) {
+                if ($userProfile->save(false)) {
                     $transaction->commit();
                     return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
                 }
 
+                $transaction->rollBack();
                 throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
             }
 
