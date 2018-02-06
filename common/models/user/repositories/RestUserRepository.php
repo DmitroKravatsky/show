@@ -116,7 +116,7 @@ trait RestUserRepository
 
                 $uid = array_shift($userData->response)->id;
 
-                if (empty($user = User::findOne(['source_id' => $uid]))) {
+                if (empty($user = User::findOne(['source' => User::VK, 'source_id' => $uid]))) {
                     throw new NotFoundHttpException;
                 }
 
