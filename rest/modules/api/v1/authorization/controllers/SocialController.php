@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use common\models\user\User;
+use rest\modules\api\v1\authorization\controllers\actions\social\VkLoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\social\VkRegisterAction;
 use yii\filters\VerbFilter;
 use rest\behaviors\ResponseBehavior;
@@ -30,7 +31,8 @@ class SocialController extends \yii\rest\Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
             'actions' => [
-                'vk-register' => ['post']
+                'vk-register' => ['post'],
+                'vk-login'    => ['post'],
             ]
         ];
 
@@ -46,6 +48,11 @@ class SocialController extends \yii\rest\Controller
 
         $actions['vk-register'] = [
             'class'      => VkRegisterAction::class,
+            'modelClass' => $this->modelClass
+        ];
+
+        $actions['vk-login'] = [
+            'class'      => VkLoginAction::class,
             'modelClass' => $this->modelClass
         ];
 

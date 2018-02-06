@@ -7,6 +7,7 @@ use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
+use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
@@ -43,7 +44,7 @@ trait RestUserRepository
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 if (isset($userData->error)) {
-                    throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+                    throw new ServerErrorHttpException;
                 }
 
                 $userData = array_shift($userData->response);
@@ -74,15 +75,58 @@ trait RestUserRepository
                 }
 
                 $transaction->rollBack();
-                throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+                throw new ServerErrorHttpException;
             }
 
-            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+            throw new ServerErrorHttpException;
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+        }
+    }
+
+    /**
+     * @param $token
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function vkLogin($token)
+    {
+        try {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $result = $client->request(
+                'GET',
+                'https://api.vk.com/method/users.get',
+                [
+                    'query' => [
+                        'access_token' => $token,
+                        'v'            => 5.71
+                    ]
+                ]
+            );
+
+            if ($result->getStatusCode() == 200) {
+                $userData = json_decode($result->getBody()->getContents());
+                if (isset($userData->error)) {
+                    throw new ServerErrorHttpException;
+                }
+
+                $uid = array_shift($userData->response)->id;
+
+                if (empty($user = User::findOne(['source_id' => $uid]))) {
+                    throw new NotFoundHttpException;
+                }
+
+                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+            }
+            throw new ServerErrorHttpException;
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
     }
 }

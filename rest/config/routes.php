@@ -49,6 +49,7 @@ return [
         ],
         'patterns'   => [
             'POST vk-register' => 'vk-register',
+            'POST vk-login'    => 'vk-login',
         ],
     ],
 ];
