@@ -51,6 +51,7 @@ return [
             'POST vk-register'    => 'vk-register',
             'POST vk-login'       => 'vk-login',
             'POST gmail-register' => 'gmail-register',
+            'POST gmail-login'    => 'gmail-login',
         ],
     ],
 ];

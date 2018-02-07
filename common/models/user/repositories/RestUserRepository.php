@@ -19,6 +19,7 @@ use yii\web\UnprocessableEntityHttpException;
 trait RestUserRepository
 {
     /**
+     * Vk register
      * @param $params
      * @return array
      * @throws ServerErrorHttpException
@@ -88,6 +89,7 @@ trait RestUserRepository
     }
 
     /**
+     * Vk authorization
      * @param $token
      * @return array
      * @throws NotFoundHttpException
@@ -131,6 +133,7 @@ trait RestUserRepository
     }
 
     /**
+     * Gmail register
      * @param $token
      * @return array|bool
      * @throws ServerErrorHttpException
@@ -188,6 +191,45 @@ trait RestUserRepository
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+        }
+    }
+
+    /**
+     * Gmail authorization
+     * @param $token
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function gmailLogin($token): array
+    {
+        try {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $result = $client->request(
+                'GET',
+                'https://www.googleapis.com/oauth2/v1/userinfo',
+                [
+                    'query' => [
+                        'access_token' => $token,
+                    ]
+                ]
+            );
+
+            if ($result->getStatusCode() == 200) {
+                $userData = json_decode($result->getBody()->getContents());
+
+                if (empty(User::findOne(['source' => User::GMAIL, 'source_id' => (string) $userData->id]))) {
+                    throw new NotFoundHttpException;
+                }
+
+                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+            }
+
+            throw new ServerErrorHttpException;
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
     }
 }

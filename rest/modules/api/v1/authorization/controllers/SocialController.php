@@ -3,9 +3,9 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use common\models\user\User;
-use rest\modules\api\v1\authorization\controllers\actions\social\GmailRegisterAction;
-use rest\modules\api\v1\authorization\controllers\actions\social\VkLoginAction;
-use rest\modules\api\v1\authorization\controllers\actions\social\VkRegisterAction;
+use rest\modules\api\v1\authorization\controllers\actions\social\{
+    GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
+};
 use yii\filters\VerbFilter;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
@@ -35,6 +35,7 @@ class SocialController extends \yii\rest\Controller
                 'vk-register'    => ['post'],
                 'vk-login'       => ['post'],
                 'gmail-register' => ['post'],
+                'gmail-login'    => ['post'],
             ]
         ];
 
@@ -60,6 +61,11 @@ class SocialController extends \yii\rest\Controller
 
         $actions['gmail-register'] = [
             'class'      => GmailRegisterAction::class,
+            'modelClass' => $this->modelClass
+        ];
+
+        $actions['gmail-login'] = [
+            'class'      => GmailLoginAction::class,
             'modelClass' => $this->modelClass
         ];
 
