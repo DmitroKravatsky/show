@@ -129,4 +129,65 @@ trait RestUserRepository
             throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
     }
+
+    /**
+     * @param $token
+     * @return array|bool
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
+     */
+    public function gmailRegister($token)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $result = $client->request(
+                'GET',
+                'https://www.googleapis.com/oauth2/v1/userinfo',
+                [
+                    'query' => [
+                        'access_token' => $token,
+                    ]
+                ]
+            );
+
+            if ($result->getStatusCode() == 200) {
+                $userData = json_decode($result->getBody()->getContents());
+                $user = new User([
+                    'source' => self::GMAIL,
+                    'source_id' => (string)$userData->id,
+                    'auth_key' => Yii::$app->getSecurity()->generateRandomString(32),
+                    'email' => $userData->email,
+                    'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
+                ]);
+
+                if (!$user->save()) {
+                    return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                }
+
+                $userProfile = new UserProfileEntity([
+                    'scenario' => UserProfileEntity::SCENARIO_CREATE,
+                    'name' => $userData->given_name,
+                    'last_name' => $userData->family_name,
+                    'user_id' => $user->id,
+                    'avatar' => $userData->picture
+                ]);
+
+                if ($userProfile->save(false)) {
+                    $transaction->commit();
+                    return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                }
+            }
+
+            $transaction->rollBack();
+            throw new ServerErrorHttpException;
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+        }
+    }
 }
