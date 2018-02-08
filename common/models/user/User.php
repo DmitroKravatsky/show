@@ -73,7 +73,23 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return [
             ['email', 'email'],
-            ['email', 'unique'],
+            [['email', 'phone_number'], 'unique'],
+            [
+                'email',
+                'required',
+                'when' => function (User $model) {
+                    return empty($model->phone_number);
+                },
+                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
+            ],
+            [
+                'phone_number',
+                'required',
+                'when' => function (User $model) {
+                    return empty($model->email);
+                },
+                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
+            ],
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
