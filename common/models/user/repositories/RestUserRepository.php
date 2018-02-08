@@ -237,6 +237,7 @@ trait RestUserRepository
     }
 
     /**
+     * Facebook register
      * @param $token
      * @return array|bool
      * @throws ServerErrorHttpException
@@ -266,7 +267,7 @@ trait RestUserRepository
 
                 $user = new User([
                     'source'        => self::FB,
-                    'source_id'     => (string)$userData->id,
+                    'source_id'     => (string) $userData->id,
                     'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
                     'email'         => $userData->email,
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
@@ -300,6 +301,47 @@ trait RestUserRepository
         } catch (\Exception $e) {
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+        }
+    }
+
+    /**
+     * Facebook login
+     * @param $token
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function fbLogin($token): array
+    {
+        try {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $result = $client->request(
+                'GET',
+                'https://graph.facebook.com/me',
+                [
+                    'query' => [
+                        'access_token' => $token,
+                        'fields'       => 'id',
+                        'v'            => '2.12'
+                    ]
+                ]
+            );
+
+            if ($result->getStatusCode() == 200) {
+                $userData = json_decode($result->getBody()->getContents());
+
+                if (empty(User::findOne(['source' => User::FB, 'source_id' => (string) $userData->id]))) {
+                    throw new NotFoundHttpException;
+                }
+
+                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+            }
+
+            throw new ServerErrorHttpException;
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
     }
 }

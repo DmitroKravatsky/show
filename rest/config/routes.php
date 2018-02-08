@@ -53,6 +53,7 @@ return [
             'POST gmail-register' => 'gmail-register',
             'POST gmail-login'    => 'gmail-login',
             'POST fb-register'    => 'fb-register',
+            'POST fb-login'       => 'fb-login',
         ],
     ],
 ];

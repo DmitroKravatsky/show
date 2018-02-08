@@ -4,7 +4,7 @@ namespace rest\modules\api\v1\authorization\controllers;
 
 use common\models\user\User;
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-    FbRegisterAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
+    FbLoginAction, FbRegisterAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
 };
 use yii\filters\VerbFilter;
 use rest\behaviors\ResponseBehavior;
@@ -37,6 +37,7 @@ class SocialController extends \yii\rest\Controller
                 'gmail-register' => ['post'],
                 'gmail-login'    => ['post'],
                 'fb-register'    => ['post'],
+                'fb-login'       => ['post'],
             ]
         ];
 
@@ -72,6 +73,11 @@ class SocialController extends \yii\rest\Controller
 
         $actions['fb-register'] = [
             'class'      => FbRegisterAction::class,
+            'modelClass' => $this->modelClass
+        ];
+
+        $actions['fb-login'] = [
+            'class'      => FbLoginAction::class,
             'modelClass' => $this->modelClass
         ];
 
