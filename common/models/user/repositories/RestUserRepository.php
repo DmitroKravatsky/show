@@ -250,13 +250,13 @@ trait RestUserRepository
 
     /**
      * Facebook register
-     * @param $token
+     * @param $params
      * @return array|bool
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function fbRegister($token)
+    public function fbRegister($params)
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -267,7 +267,7 @@ trait RestUserRepository
                 'https://graph.facebook.com/me',
                 [
                     'query' => [
-                        'access_token' => $token,
+                        'access_token' => $params['token'],
                         'fields'       => 'id, first_name, last_name, picture.type(large), email',
                         'v'            => '2.12'
                     ]
@@ -276,15 +276,20 @@ trait RestUserRepository
 
             if ($requestResult->getStatusCode() == 200) {
                 $userData = json_decode($requestResult->getBody()->getContents());
-
-                $user = new User([
+                $data = [
                     'source'        => self::FB,
                     'source_id'     => (string) $userData->id,
                     'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
-                    'email'         => $userData->email,
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
-                ]);
+                ];
 
+                if (isset($userData->email)) {
+                    $data['email'] = $userData->email;
+                } elseif (isset($params['phone_number'])) {
+                    $data['phone_number'] = $params['phone_number'];
+                }
+
+                $user = new User($data);
                 if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }

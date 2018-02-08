@@ -53,6 +53,6 @@ class FbRegisterAction extends Action
         /** @var User $userModel */
         $userModel = new $this->modelClass;
 
-        return $userModel->fbRegister(\Yii::$app->request->post('token'));
+        return $userModel->fbRegister(\Yii::$app->request->bodyParams);
     }
 }
