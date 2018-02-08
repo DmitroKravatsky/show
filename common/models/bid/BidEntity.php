@@ -2,7 +2,7 @@
 
 namespace common\models\bid;
 
-use common\models\{ bid\repositories\RestBidRepository, User };
+use common\models\{ bid\repositories\RestBidRepository, user\User };
 use yii\behaviors\TimestampBehavior;
 use Yii;
 

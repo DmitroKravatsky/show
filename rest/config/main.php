@@ -29,6 +29,9 @@ return [
                         'reserve' => [
                             'class' => 'rest\modules\api\v1\reserve\Module'
                         ],
+                        'authorization' => [
+                            'class' => 'rest\modules\api\v1\authorization\Module'
+                        ],
                     ],
                 ],
             ],
@@ -63,7 +66,7 @@ return [
             'rules'               => $routeRules
         ],
         'user' => [
-            'identityClass' => 'common\models\user'
+            'identityClass' => 'common\models\user\User'
         ],
     ],
     'params' => $params,
