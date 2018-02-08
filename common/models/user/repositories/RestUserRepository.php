@@ -37,7 +37,7 @@ trait RestUserRepository
                 [
                     'query' => [
                         'access_token' => $params['token'],
-                        'fields' => 'photo_50',
+                        'fields' => 'photo_max',
                     ]
                 ]
             );
@@ -67,20 +67,20 @@ trait RestUserRepository
                     'name'      => $userData->first_name,
                     'last_name' => $userData->last_name,
                     'user_id'   => $user->id,
-                    'avatar'    => $userData->photo_50
+                    'avatar'    => $userData->photo_max
                 ]);
 
-                if ($userProfile->save(false)) {
-                    $transaction->commit();
-                    return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                if (!$userProfile->save()) {
+                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
                 }
 
-                $transaction->rollBack();
-                throw new ServerErrorHttpException;
+                $transaction->commit();
+                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
             }
 
             throw new ServerErrorHttpException;
         } catch (UnprocessableEntityHttpException $e) {
+            $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -159,10 +159,10 @@ trait RestUserRepository
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 $user = new User([
-                    'source' => self::GMAIL,
-                    'source_id' => (string)$userData->id,
-                    'auth_key' => Yii::$app->getSecurity()->generateRandomString(32),
-                    'email' => $userData->email,
+                    'source'        => self::GMAIL,
+                    'source_id'     => (string) $userData->id,
+                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
+                    'email'         => $userData->email,
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
                 ]);
 
@@ -171,22 +171,25 @@ trait RestUserRepository
                 }
 
                 $userProfile = new UserProfileEntity([
-                    'scenario' => UserProfileEntity::SCENARIO_CREATE,
-                    'name' => $userData->given_name,
+                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
+                    'name'      => $userData->given_name,
                     'last_name' => $userData->family_name,
-                    'user_id' => $user->id,
-                    'avatar' => $userData->picture
+                    'user_id'   => $user->id,
+                    'avatar'    => $userData->picture
                 ]);
 
-                if ($userProfile->save(false)) {
-                    $transaction->commit();
-                    return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                if (!$userProfile->save()) {
+                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
                 }
+
+                $transaction->commit();
+                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
             }
 
             $transaction->rollBack();
             throw new ServerErrorHttpException;
         } catch (UnprocessableEntityHttpException $e) {
+            $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             $transaction->rollBack();
@@ -230,6 +233,73 @@ trait RestUserRepository
             throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
         } catch (\Exception $e) {
             throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
+        }
+    }
+
+    /**
+     * @param $token
+     * @return array|bool
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
+     */
+    public function fbRegister($token)
+    {
+        $transaction = Yii::$app->db->beginTransaction();
+
+        try {
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $requestResult = $client->request(
+                'GET',
+                'https://graph.facebook.com/me',
+                [
+                    'query' => [
+                        'access_token' => $token,
+                        'fields'       => 'id, first_name, last_name, picture.type(large), email',
+                        'v'            => '2.12'
+                    ]
+                ]
+            );
+
+            if ($requestResult->getStatusCode() == 200) {
+                $userData = json_decode($requestResult->getBody()->getContents());
+
+                $user = new User([
+                    'source'        => self::FB,
+                    'source_id'     => (string)$userData->id,
+                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
+                    'email'         => $userData->email,
+                    'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
+                ]);
+
+                if (!$user->save()) {
+                    return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                }
+
+                $userProfile = new UserProfileEntity([
+                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
+                    'name'      => $userData->first_name,
+                    'last_name' => $userData->last_name,
+                    'user_id'   => $user->id,
+                    'avatar'    => $userData->picture->data->url
+                ]);
+
+                if (!$userProfile->save()) {
+                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
+                }
+
+                $transaction->commit();
+                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+            }
+
+            $transaction->rollBack();
+            throw new ServerErrorHttpException;
+        } catch (UnprocessableEntityHttpException $e) {
+            $transaction->rollBack();
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            $transaction->rollBack();
+            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
     }
 }
