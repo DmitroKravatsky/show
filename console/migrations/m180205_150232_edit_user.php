@@ -18,7 +18,7 @@ class m180205_150232_edit_user extends Migration
         $this->dropColumn($this->tableName, 'status');
         $this->dropColumn($this->tableName, 'username');
         $this->alterColumn($this->tableName, 'email', $this->string()->unique());
-        $this->addColumn($this->tableName, 'phone_number', $this->string(20));
+        $this->addColumn($this->tableName, 'phone_number', $this->string(20)->unique());
         $this->addColumn($this->tableName, 'source', "ENUM('fb', 'gmail', 'vk', 'native') DEFAULT 'native'");
         $this->addColumn($this->tableName,  'source_id', $this->string()->notNull());
     }
