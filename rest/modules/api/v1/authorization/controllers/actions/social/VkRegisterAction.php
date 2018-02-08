@@ -27,7 +27,7 @@ class VkRegisterAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
-                    'token', 'email',
+                    'token',
                 ]
             ],
         ];
@@ -45,6 +45,7 @@ class VkRegisterAction extends Action
 
     /**
      * @return array
+     * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */

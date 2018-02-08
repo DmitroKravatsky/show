@@ -11,6 +11,7 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
+use yii\web\BadRequestHttpException;
 
 /**
  * Class RestUserRepository
@@ -21,13 +22,18 @@ trait RestUserRepository
     /**
      * Vk register
      * @param $params
-     * @return array
+     * @return array|bool
+     * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
     public function vkRegister($params)
     {
+        if (!isset($params['email']) && !isset($params['phone_number'])) {
+            throw new BadRequestHttpException('Необходимо заполнить «Email» или «Номер телефона».');
+        }
+
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -50,14 +56,20 @@ trait RestUserRepository
 
                 $userData = array_shift($userData->response);
 
-                $user = new User([
+                $data = [
                     'source'        => self::VK,
                     'source_id'     => (string) $userData->uid,
                     'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
-                    'email'         => $params['email'],
                     'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
-                ]);
+                ];
 
+                if (isset($params['email'])) {
+                    $data['email'] = $params['email'];
+                } else {
+                    $data['phone_number'] = $params['phone_number'];
+                }
+
+                $user = new User($data);
                 if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }
