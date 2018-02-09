@@ -57,9 +57,11 @@ trait SocialRepository
                 $userData = array_shift($userData->response);
 
                 $data = [
-                    'source'          => self::VK,
-                    'source_id'       => (string) $userData->uid,
-                    'terms_condition' => $params['terms_condition']
+                    'source'           => self::VK,
+                    'source_id'        => (string) $userData->uid,
+                    'terms_condition'  => $params['terms_condition'],
+                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
                 ];
 
                 if (isset($params['email'])) {
@@ -177,10 +179,12 @@ trait SocialRepository
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 $data = [
-                    'source'          => self::GMAIL,
-                    'source_id'       => (string) $userData->id,
-                    'terms_condition' => $params['terms_condition'],
-                    'email'           => $userData->email,
+                    'source'           => self::GMAIL,
+                    'source_id'        => (string) $userData->id,
+                    'terms_condition'  => $params['terms_condition'],
+                    'email'            => $userData->email,
+                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
                 ];
 
                 $user = new RestUserEntity();
@@ -291,8 +295,11 @@ trait SocialRepository
             if ($requestResult->getStatusCode() == 200) {
                 $userData = json_decode($requestResult->getBody()->getContents());
                 $data = [
-                    'source'        => self::FB,
-                    'source_id'     => (string) $userData->id,
+                    'source'           => self::FB,
+                    'source_id'        => (string) $userData->id,
+                    'terms_condition'  => $params['terms_condition'],
+                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
                 ];
 
                 if (isset($userData->email)) {
