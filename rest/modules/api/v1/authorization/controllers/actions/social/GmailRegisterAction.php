@@ -3,8 +3,8 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use common\models\user\User;
 
 /**
  * Class GmailRegisterAction
@@ -27,7 +27,7 @@ class GmailRegisterAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
-                    'token',
+                    'token', 'terms_condition'
                 ]
             ],
         ];
@@ -50,9 +50,9 @@ class GmailRegisterAction extends Action
      */
     public function run()
     {
-        /** @var User $userModel */
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
 
-        return $userModel->gmailRegister(\Yii::$app->request->post('token'));
+        return $userModel->gmailRegister(\Yii::$app->request->bodyParams);
     }
 }

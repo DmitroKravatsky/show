@@ -3,8 +3,8 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use common\models\user\User;
 
 /**
  * Class FbLoginAction
@@ -50,7 +50,7 @@ class FbLoginAction extends Action
      */
     public function run(): array
     {
-        /** @var User $userModel */
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
 
         return $userModel->fbLogin(\Yii::$app->request->post('token'));

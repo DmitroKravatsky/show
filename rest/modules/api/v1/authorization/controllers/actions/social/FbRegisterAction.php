@@ -4,7 +4,7 @@ namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
 use yii\rest\Action;
-use common\models\user\User;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 
 /**
  * Class FbRegisterAction
@@ -27,7 +27,7 @@ class FbRegisterAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
-                    'token',
+                    'token', 'terms_condition'
                 ]
             ],
         ];
@@ -50,7 +50,7 @@ class FbRegisterAction extends Action
      */
     public function run()
     {
-        /** @var User $userModel */
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
 
         return $userModel->fbRegister(\Yii::$app->request->bodyParams);
