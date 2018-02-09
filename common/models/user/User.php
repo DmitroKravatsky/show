@@ -1,7 +1,6 @@
 <?php
 namespace common\models\user;
 
-use common\models\user\repositories\RestUserRepository;
 use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -25,35 +24,12 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
-    use RestUserRepository;
-
-    const FB     = 'fb';
-    const VK     = 'vk';
-    const GMAIL  = 'gmail';
-    const NATIVE = 'native';
-
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%user}}';
-    }
-
-    /**
-     * @return array
-     */
-    public function attributeLabels(): array
-    {
-        return [
-            'id'           => '#',
-            'email'        => 'Email',
-            'phone_number' => 'Номер телефона',
-            'source'       => 'Социальная сеть',
-            'source_id'    => 'Пользователь в социальной сети',
-            'created_at'   => 'Дата создания',
-            'updated_at'   => 'Дата изменения',
-        ];
     }
 
     /**
@@ -69,40 +45,9 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @inheritdoc
      */
-    public function rules()
-    {
-        return [
-            ['email', 'email'],
-            [['email', 'phone_number'], 'unique'],
-            [
-                'email',
-                'required',
-                'when' => function (User $model) {
-                    return empty($model->phone_number);
-                },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
-            ],
-            [
-                'phone_number',
-                'required',
-                'when' => function (User $model) {
-                    return empty($model->email);
-                },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
-            ],
-            [['source', 'source_id', 'phone_number'], 'string'],
-            ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
-            ['phone_number', 'string', 'max' => 20],
-            [['created_at', 'updated_at'], 'safe'],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
     public static function findIdentity($id)
     {
-        return static::findOne(['id' => $id, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['id' => $id]);
     }
 
     /**
@@ -121,7 +66,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function findByUsername($username)
     {
-        return static::findOne(['username' => $username, 'status' => self::STATUS_ACTIVE]);
+        return static::findOne(['username' => $username]);
     }
 
     /**
@@ -138,7 +83,6 @@ class User extends ActiveRecord implements IdentityInterface
 
         return static::findOne([
             'password_reset_token' => $token,
-            'status' => self::STATUS_ACTIVE,
         ]);
     }
 
