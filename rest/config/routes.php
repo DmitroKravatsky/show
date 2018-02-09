@@ -40,7 +40,7 @@ return [
             'PUT {id}' => 'update',
         ],
     ],
-    /** Authorization Module */
+    /** Social Authorization */
     [
         'class'      => 'yii\rest\UrlRule',
         'prefix'     => 'api/v1/',
@@ -54,6 +54,18 @@ return [
             'POST gmail-login'    => 'gmail-login',
             'POST fb-register'    => 'fb-register',
             'POST fb-login'       => 'fb-login',
+        ],
+    ],
+    /** Base Authorization */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'social' => 'api/v1/authorization/base',
+        ],
+        'patterns'   => [
+            'POST register' => 'register',
+            'POST login'    => 'login',
         ],
     ],
 ];

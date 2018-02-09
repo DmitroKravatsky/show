@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models;
 
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
+use rest\modules\api\v1\authorization\models\repositories\BaseAuthorization;
 use yii\behaviors\TimestampBehavior;
 use common\models\user\User;
 use rest\modules\api\v1\authorization\models\repositories\SocialRepository;
@@ -19,14 +20,13 @@ use Yii;
  * @property string $source
  * @property string $source_id
  * @property string $phone_number
- * @property string $confirm_password
  * @property integer $terms_condition
  * @property integer $created_at
  * @property integer $updated_at
  */
 class RestUserEntity extends User
 {
-    use SocialRepository, AuthorizationJwt;
+    use SocialRepository, AuthorizationJwt, BaseAuthorization;
 
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
@@ -36,6 +36,8 @@ class RestUserEntity extends User
     const VK     = 'vk';
     const GMAIL  = 'gmail';
     const NATIVE = 'native';
+
+    public $confirm_password;
     
     /**
      * @return string
@@ -57,6 +59,7 @@ class RestUserEntity extends User
             'source'          => 'Социальная сеть',
             'source_id'       => 'Пользователь в социальной сети',
             'terms_condition' => 'Пользовательское соглашение',
+            'password_hash'   => 'Пароль',
             'created_at'      => 'Дата создания',
             'updated_at'      => 'Дата изменения',
         ];
@@ -70,7 +73,7 @@ class RestUserEntity extends User
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_REGISTER] = [
-            'email', 'password_hash', 'phone_number', 'terms_condition', 'source', 'source_id'
+            'email', 'password_hash', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password'
         ];
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
             'email', 'password_hash', 'confirm_password', 'phone_number', 'source', 'source_id'
@@ -120,12 +123,10 @@ class RestUserEntity extends User
                 'requiredValue' => 1,
                 'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
             ],
+            ['password_hash', 'string', 'min' => 6],
+            [['password_hash', 'confirm_password'], 'required'],
             [
-                ['password_hash', 'password_confirm'],
-                'required',
-                'on' => [self::SCENARIO_RECOVERY_PWD, self::SCENARIO_UPDATE_PASSWORD]],
-            [
-                'password_confirm',
+                'confirm_password',
                 'compare',
                 'compareAttribute' => 'password_hash',
                 'on'               => [self::SCENARIO_REGISTER, self::SCENARIO_RECOVERY_PWD]
@@ -155,10 +156,6 @@ class RestUserEntity extends User
             } else {
                 $this->password_hash = Yii::$app->security->generateRandomString(32);
             }
-        }
-
-        if ($this->scenario == self::SCENARIO_UPDATE_PASSWORD) {
-            $this->password_hash = Yii::$app->security->generatePasswordHash($this->password_hash);
         }
 
         return true;
