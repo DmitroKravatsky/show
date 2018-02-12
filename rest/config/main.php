@@ -66,7 +66,7 @@ return [
             'rules'               => $routeRules
         ],
         'user' => [
-            'identityClass' => 'common\models\user\User'
+            'identityClass' => 'rest\modules\api\v1\authorization\models\RestUserEntity'
         ],
     ],
     'params' => $params,

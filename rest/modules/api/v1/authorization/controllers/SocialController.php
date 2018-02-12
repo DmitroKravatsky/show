@@ -2,13 +2,11 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
-use common\models\user\User;
 use rest\modules\api\v1\authorization\controllers\actions\social\{
     FbLoginAction, FbRegisterAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
 };
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
 
 /**
  * Class SocialController
@@ -16,8 +14,8 @@ use rest\behaviors\ValidationExceptionFirstMessage;
  */
 class SocialController extends \yii\rest\Controller
 {
-    /** @var User */
-    public $modelClass = User::class;
+    /** @var RestUserEntity */
+    public $modelClass = RestUserEntity::class;
 
     /**
      * @return array
@@ -25,9 +23,6 @@ class SocialController extends \yii\rest\Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),

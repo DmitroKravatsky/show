@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
-use common\models\user\User;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use common\behaviors\ValidatePostParameters;
 
@@ -50,7 +50,7 @@ class VkLoginAction extends Action
      */
     public function run(): array 
     {
-        /** @var User $userModel */
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
 
         return $userModel->vkLogin(\Yii::$app->request->post('token'));

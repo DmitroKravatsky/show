@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
-use common\models\user\User;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 /**
@@ -27,7 +27,7 @@ class VkRegisterAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::className(),
                 'inputParams' => [
-                    'token',
+                    'token', 'terms_condition'
                 ]
             ],
         ];
@@ -51,7 +51,7 @@ class VkRegisterAction extends Action
      */
     public function run(): array
     {
-        /** @var User $userModel */
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
 
         return $userModel->vkRegister(\Yii::$app->request->bodyParams);

@@ -1,12 +1,12 @@
 <?php
 
-namespace common\models\user\repositories;
+namespace rest\modules\api\v1\authorization\models\repositories;
 
-use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
@@ -14,10 +14,10 @@ use yii\web\UnprocessableEntityHttpException;
 use yii\web\BadRequestHttpException;
 
 /**
- * Class RestUserRepository
- * @package common\models\user\repositories
+ * Class SocialRepository
+ * @package rest\modules\api\v1\authorization\models\repositories
  */
-trait RestUserRepository
+trait SocialRepository
 {
     /**
      * Vk register
@@ -57,10 +57,11 @@ trait RestUserRepository
                 $userData = array_shift($userData->response);
 
                 $data = [
-                    'source'        => self::VK,
-                    'source_id'     => (string) $userData->uid,
-                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
-                    'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
+                    'source'           => self::VK,
+                    'source_id'        => (string) $userData->uid,
+                    'terms_condition'  => $params['terms_condition'],
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
                 ];
 
                 if (isset($params['email'])) {
@@ -69,13 +70,16 @@ trait RestUserRepository
                     $data['phone_number'] = $params['phone_number'];
                 }
 
-                $user = new User($data);
+                $user = new RestUserEntity();
+                $user->scenario = self::SCENARIO_REGISTER;
+                $user->setAttributes($data);
                 if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }
 
-                $userProfile = new UserProfileEntity([
-                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
+                $userProfile = new UserProfileEntity();
+                $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+                $userProfile->setAttributes([
                     'name'      => $userData->first_name,
                     'last_name' => $userData->last_name,
                     'user_id'   => $user->id,
@@ -87,7 +91,9 @@ trait RestUserRepository
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                );
             }
 
             throw new ServerErrorHttpException;
@@ -130,11 +136,13 @@ trait RestUserRepository
 
                 $uid = array_shift($userData->response)->id;
 
-                if (empty($user = User::findOne(['source' => User::VK, 'source_id' => $uid]))) {
+                if (empty($user = RestUserEntity::findOne(['source' => self::VK, 'source_id' => $uid]))) {
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])
+                ]);
             }
             throw new ServerErrorHttpException;
         } catch (NotFoundHttpException $e) {
@@ -146,13 +154,13 @@ trait RestUserRepository
 
     /**
      * Gmail register
-     * @param $token
+     * @param $params
      * @return array|bool
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function gmailRegister($token)
+    public function gmailRegister($params)
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -163,27 +171,33 @@ trait RestUserRepository
                 'https://www.googleapis.com/oauth2/v1/userinfo',
                 [
                     'query' => [
-                        'access_token' => $token,
+                        'access_token' => $params['access_token'],
                     ]
                 ]
             );
 
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
-                $user = new User([
-                    'source'        => self::GMAIL,
-                    'source_id'     => (string) $userData->id,
-                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
-                    'email'         => $userData->email,
-                    'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
-                ]);
+                $data = [
+                    'source'           => self::GMAIL,
+                    'source_id'        => (string) $userData->id,
+                    'terms_condition'  => $params['terms_condition'],
+                    'email'            => $userData->email,
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
+                ];
+
+                $user = new RestUserEntity();
+                $user->scenario = RestUserEntity::SCENARIO_REGISTER;
+                $user->setAttributes($data);
 
                 if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }
 
-                $userProfile = new UserProfileEntity([
-                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
+                $userProfile = new UserProfileEntity();
+                $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+                $userProfile->setAttributes([
                     'name'      => $userData->given_name,
                     'last_name' => $userData->family_name,
                     'user_id'   => $user->id,
@@ -195,7 +209,9 @@ trait RestUserRepository
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                );
             }
 
             $transaction->rollBack();
@@ -233,11 +249,13 @@ trait RestUserRepository
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
 
-                if (empty(User::findOne(['source' => User::GMAIL, 'source_id' => (string) $userData->id]))) {
+                if (empty($user = RestUserEntity::findOne(['source' => self::GMAIL, 'source_id' => (string) $userData->id]))) {
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                );
             }
 
             throw new ServerErrorHttpException;
@@ -277,10 +295,11 @@ trait RestUserRepository
             if ($requestResult->getStatusCode() == 200) {
                 $userData = json_decode($requestResult->getBody()->getContents());
                 $data = [
-                    'source'        => self::FB,
-                    'source_id'     => (string) $userData->id,
-                    'auth_key'      => Yii::$app->getSecurity()->generateRandomString(32),
-                    'password_hash' => Yii::$app->getSecurity()->generateRandomString(32)
+                    'source'           => self::FB,
+                    'source_id'        => (string) $userData->id,
+                    'terms_condition'  => $params['terms_condition'],
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'confirm_password' => $pass
                 ];
 
                 if (isset($userData->email)) {
@@ -289,13 +308,16 @@ trait RestUserRepository
                     $data['phone_number'] = $params['phone_number'];
                 }
 
-                $user = new User($data);
+                $user = new RestUserEntity();
+                $user->scenario = self::SCENARIO_REGISTER;
+                $user->setAttributes($data);
                 if (!$user->save()) {
                     return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
                 }
 
-                $userProfile = new UserProfileEntity([
-                    'scenario'  => UserProfileEntity::SCENARIO_CREATE,
+                $userProfile = new UserProfileEntity();
+                $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+                $userProfile->setAttributes([
                     'name'      => $userData->first_name,
                     'last_name' => $userData->last_name,
                     'user_id'   => $user->id,
@@ -307,7 +329,9 @@ trait RestUserRepository
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(201, 'Регистрация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                );
             }
 
             $transaction->rollBack();
@@ -347,11 +371,13 @@ trait RestUserRepository
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
 
-                if (empty(User::findOne(['source' => User::FB, 'source_id' => (string) $userData->id]))) {
+                if (empty($user = RestUserEntity::findOne(['source' => self::FB, 'source_id' => (string) $userData->id]))) {
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(200, 'Авторизация прошла успешно.');
+                return (new ResponseBehavior())->setResponse(
+                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                );
             }
 
             throw new ServerErrorHttpException;
