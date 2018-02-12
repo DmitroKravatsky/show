@@ -24,8 +24,9 @@ return [
             'user/user-profile' => 'api/v1/user/user-profile',
         ],
         'patterns'   => [
-            'PUT' => 'update',
-            'GET' => 'get-profile'
+            'PUT'                 => 'update',
+            'GET'                 => 'get-profile',
+            'PUT update-password' => 'update-password',
         ],
     ],
     /** Reserve Module */

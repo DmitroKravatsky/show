@@ -115,4 +115,28 @@ trait AuthorizationRepository
 
         return self::findOne(['phone_number' => $params['phone_number']]);
     }
+
+    /**
+     * @param $params
+     * @return mixed
+     * @throws UnprocessableEntityHttpException
+     */
+    public function updatePassword($params)
+    {
+        $userModel = RestUserEntity::findOne(Yii::$app->user->id);
+        $userModel->setScenario(RestUserEntity::SCENARIO_UPDATE_PASSWORD);
+        $userModel->setAttributes($params);
+
+        if (!$userModel->validate()) {
+            return $this->throwModelException($userModel->errors);
+        }
+
+        $userModel->password = $params['new_password'];
+
+        if ($userModel->save(false)) {
+            return $this->setResponse(200, 'Пароль успешно изменён.');
+        }
+        
+        return $this->throwModelException($userModel->errors);
+    }
 }

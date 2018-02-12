@@ -2,6 +2,8 @@
 
 namespace rest\modules\api\v1\authorization\models;
 
+use rest\behaviors\ResponseBehavior;
+use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
 use yii\behaviors\TimestampBehavior;
@@ -11,6 +13,8 @@ use Yii;
 
 /**
  * Class RestUserEntity
+ * @mixin ValidationExceptionFirstMessage
+ * @mixin ResponseBehavior
  * @package rest\modules\api\v1\authorization\models
  * @property integer $id
  * @property string $password
@@ -39,6 +43,8 @@ class RestUserEntity extends User
     const NATIVE = 'native';
 
     public $confirm_password;
+    public $current_password;
+    public $new_password;
     
     /**
      * @return string
@@ -54,15 +60,17 @@ class RestUserEntity extends User
     public function attributeLabels(): array
     {
         return [
-            'id'              => '#',
-            'email'           => 'Email',
-            'phone_number'    => 'Номер телефона',
-            'source'          => 'Социальная сеть',
-            'source_id'       => 'Пользователь в социальной сети',
-            'terms_condition' => 'Пользовательское соглашение',
-            'password'        => 'Пароль',
-            'created_at'      => 'Дата создания',
-            'updated_at'      => 'Дата изменения',
+            'id'               => '#',
+            'email'            => 'Email',
+            'phone_number'     => 'Номер телефона',
+            'source'           => 'Социальная сеть',
+            'source_id'        => 'Пользователь в социальной сети',
+            'terms_condition'  => 'Пользовательское соглашение',
+            'password'         => 'Пароль',
+            'new_password'     => 'Новый пароль',
+            'current_password' => 'Текущий пароль',
+            'created_at'       => 'Дата создания',
+            'updated_at'       => 'Дата изменения',
         ];
     }
 
@@ -81,9 +89,9 @@ class RestUserEntity extends User
             'email', 'password', 'confirm_password', 'phone_number', 'source', 'source_id'
         ];
 
-        $scenarios[self::SCENARIO_LOGIN] = [
-            'email', 'password', 'phone_number',
-        ];
+        $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number',];
+
+        $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
 
         return $scenarios;
     }
@@ -93,9 +101,13 @@ class RestUserEntity extends User
      */
     public function behaviors(): array
     {
-        return [
-            TimestampBehavior::className(),
-        ];
+        $behaviors = parent::behaviors();
+
+        $behaviors['timestampBehavior'] = TimestampBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
+
+        return $behaviors;
     }
 
     /**
@@ -129,10 +141,30 @@ class RestUserEntity extends User
                 'required',
                 'on'            => self::SCENARIO_REGISTER,
                 'requiredValue' => 1,
-                'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
+                'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
             ],
             ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER,]],
-            [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_REGISTER,]],
+            [
+                'current_password',
+                'validateCurrentPassword',
+                'on' => [self::SCENARIO_UPDATE_PASSWORD,]],
+            [
+                ['current_password', 'new_password', 'confirm_password'],
+                'required',
+                'on' => self::SCENARIO_UPDATE_PASSWORD,
+            ],
+            ['new_password', 'string', 'min' => 6, 'on' => [self::SCENARIO_UPDATE_PASSWORD,]],
+            [
+                'confirm_password',
+                'compare',
+                'compareAttribute' => 'new_password',
+                'on'               => [self::SCENARIO_UPDATE_PASSWORD]
+            ],
+            [
+                ['password', 'confirm_password'],
+                'required',
+                'on' => [self::SCENARIO_REGISTER,]
+            ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
                 'confirm_password',
@@ -156,7 +188,11 @@ class RestUserEntity extends User
     {
         parent::beforeSave($insert);
 
-        if ($this->scenario === self::SCENARIO_REGISTER || $this->scenario === self::SCENARIO_RECOVERY_PWD) {
+        if (
+            $this->scenario === self::SCENARIO_REGISTER
+            || $this->scenario === self::SCENARIO_RECOVERY_PWD
+            || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
+        ) {
             $this->auth_key = Yii::$app->security->generateRandomString();
             $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
 
@@ -165,6 +201,21 @@ class RestUserEntity extends User
             } else {
                 $this->password = Yii::$app->security->generateRandomString(32);
             }
+        }
+
+        return true;
+    }
+
+    /**
+     * Check User current password
+     * @param $attribute
+     * @return bool
+     */
+    public function validateCurrentPassword($attribute)
+    {
+        if (!Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
+            $this->addError($this->{$attribute}, Yii::t('app', 'Неверно введен старый пароль.'));
+            return false;
         }
 
         return true;

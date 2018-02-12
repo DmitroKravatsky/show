@@ -3,7 +3,10 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
-use rest\modules\api\v1\user\controllers\actions\profile\{ GetProfileAction, UpdateAction };
+use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\user\controllers\actions\profile\{
+    GetProfileAction, UpdateAction, UpdatePassword
+};
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
@@ -31,8 +34,9 @@ class UserProfileController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
             'actions' => [
-                'update'      => ['put'],
-                'get-profile' => ['get'],
+                'update'          => ['put'],
+                'get-profile'     => ['get'],
+                'update-password' => ['put'],
             ]
         ];
         
@@ -54,6 +58,11 @@ class UserProfileController extends Controller
         $actions['get-profile'] = [
             'class'      => GetProfileAction::class,
             'modelClass' => $this->modelClass
+        ];
+
+        $actions['update-password'] = [
+            'class'      => UpdatePassword::class,
+            'modelClass' => RestUserEntity::class
         ];
         
         return $actions;
