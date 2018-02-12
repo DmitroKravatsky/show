@@ -13,10 +13,10 @@ use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
 
 /**
- * Class BaseAuthorization
+ * Class AuthorizationRepository
  * @package rest\modules\api\v1\authorization\models\repositories
  */
-trait BaseAuthorization
+trait AuthorizationRepository
 {
     /**
      * @param $params
@@ -37,8 +37,8 @@ trait BaseAuthorization
                 'phone_number'     => $params['phone_number'] ?? null,
                 'email'            => $params['email'] ?? null,
                 'terms_condition'  => $params['terms_condition'] ?? 0,
-                'password_hash'    => $params['password_hash'],
-                'confirm_password' => $params['confirm_password'],
+                'password'         => $params['password'] ?? null,
+                'confirm_password' => $params['confirm_password'] ?? null,
             ]);
 
             if (!$user->validate()) {
@@ -98,7 +98,7 @@ trait BaseAuthorization
             throw new NotFoundHttpException('Пользователь не найден. Пройдите этап регистрации.');
         }
 
-        if (Yii::$app->getSecurity()->validatePassword($params['password_hash'], $user->password_hash)) {
+        if ($this->validatePassword($params['password'])) {
             return (new ResponseBehavior())->setResponse(
                 200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
             );

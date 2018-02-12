@@ -56,12 +56,12 @@ return [
             'POST fb-login'       => 'fb-login',
         ],
     ],
-    /** Base Authorization */
+    /** Authorization */
     [
         'class'      => 'yii\rest\UrlRule',
         'prefix'     => 'api/v1/',
         'controller' => [
-            'social' => 'api/v1/authorization/base',
+            'authorization' => 'api/v1/authorization/authorization',
         ],
         'patterns'   => [
             'POST register' => 'register',

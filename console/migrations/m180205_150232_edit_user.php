@@ -22,6 +22,7 @@ class m180205_150232_edit_user extends Migration
         $this->addColumn($this->tableName, 'source', "ENUM('fb', 'gmail', 'vk', 'native') DEFAULT 'native'");
         $this->addColumn($this->tableName,  'source_id', $this->string());
         $this->addColumn($this->tableName, 'terms_condition', $this->smallInteger()->defaultValue(0));
+        $this->renameColumn($this->tableName, 'password_hash', 'password');
     }
 
     /** @inheritdoc */
@@ -34,5 +35,6 @@ class m180205_150232_edit_user extends Migration
         $this->dropColumn($this->tableName, 'source');
         $this->dropColumn($this->tableName, 'source_id');
         $this->dropColumn($this->tableName, 'terms_condition');
+        $this->renameColumn($this->tableName, 'password', 'password_hash');
     }
 }

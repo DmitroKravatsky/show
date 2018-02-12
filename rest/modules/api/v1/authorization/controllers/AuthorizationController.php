@@ -10,10 +10,10 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\behaviors\ResponseBehavior;
 
 /**
- * Class BaseController
+ * Class AuthorizationController
  * @package rest\modules\api\v1\authorization\controllers
  */
-class BaseController extends Controller
+class AuthorizationController extends Controller
 {
     /** @var RestUserEntity */
     public $modelClass = RestUserEntity::class;

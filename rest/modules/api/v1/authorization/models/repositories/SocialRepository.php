@@ -60,7 +60,7 @@ trait SocialRepository
                     'source'           => self::VK,
                     'source_id'        => (string) $userData->uid,
                     'terms_condition'  => $params['terms_condition'],
-                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
@@ -183,7 +183,7 @@ trait SocialRepository
                     'source_id'        => (string) $userData->id,
                     'terms_condition'  => $params['terms_condition'],
                     'email'            => $userData->email,
-                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
@@ -298,7 +298,7 @@ trait SocialRepository
                     'source'           => self::FB,
                     'source_id'        => (string) $userData->id,
                     'terms_condition'  => $params['terms_condition'],
-                    'password_hash'    => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
