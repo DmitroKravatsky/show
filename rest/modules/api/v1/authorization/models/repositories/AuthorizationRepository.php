@@ -4,14 +4,10 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
-use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
-use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use rest\behaviors\ResponseBehavior;
-use yii\web\NotFoundHttpException;
 
 /**
  * Class AuthorizationRepository
@@ -43,11 +39,11 @@ trait AuthorizationRepository
             ]);
 
             if (!$user->validate()) {
-                return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                return $this->throwModelException($user->errors);
             }
 
             if (!$user->save()) {
-                return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                return $this->throwModelException($user->errors);
             }
 
             $userProfile = new UserProfileEntity();
@@ -60,11 +56,11 @@ trait AuthorizationRepository
             ]);
 
             if (!$userProfile->save()) {
-                return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
+                return $this->throwModelException($userProfile->errors);
             }
 
             $transaction->commit();
-            return (new ResponseBehavior())->setResponse(
+            return $this->setResponse(
                 201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
             );
         } catch (UnprocessableEntityHttpException $e) {
@@ -89,13 +85,13 @@ trait AuthorizationRepository
         $user->setAttributes($params);
 
         if (!$user->validate()) {
-            return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+            return $this->throwModelException($user->errors);
         }
 
         $user = $this->getUser($params);
 
         if (Yii::$app->getSecurity()->validatePassword($params['password'], $user->password)) {
-            return (new ResponseBehavior())->setResponse(
+            return $this->setResponse(
                 200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
             );
         }

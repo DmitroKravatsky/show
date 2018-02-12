@@ -74,7 +74,7 @@ trait SocialRepository
                 $user->scenario = self::SCENARIO_REGISTER;
                 $user->setAttributes($data);
                 if (!$user->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                    return $this->throwModelException($user->errors);
                 }
 
                 $userProfile = new UserProfileEntity();
@@ -87,11 +87,11 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
+                    return $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(
+                return $this->setResponse(
                     201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
                 );
             }
@@ -140,7 +140,7 @@ trait SocialRepository
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(
+                return $this->setResponse(
                     200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])
                 ]);
             }
@@ -192,7 +192,7 @@ trait SocialRepository
                 $user->setAttributes($data);
 
                 if (!$user->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                    return $this->throwModelException($user->errors);
                 }
 
                 $userProfile = new UserProfileEntity();
@@ -205,7 +205,7 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
+                    return $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
@@ -253,7 +253,7 @@ trait SocialRepository
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(
+                return $this->setResponse(
                     200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
                 );
             }
@@ -325,11 +325,11 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($userProfile->errors);
+                    return $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(
+                return $this->setResponse(
                     201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
                 );
             }
@@ -375,7 +375,7 @@ trait SocialRepository
                     throw new NotFoundHttpException;
                 }
 
-                return (new ResponseBehavior())->setResponse(
+                return $this->setResponse(
                     200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
                 );
             }
