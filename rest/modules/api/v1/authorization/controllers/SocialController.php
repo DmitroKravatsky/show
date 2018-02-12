@@ -7,8 +7,6 @@ use rest\modules\api\v1\authorization\controllers\actions\social\{
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
 
 /**
  * Class SocialController
@@ -25,9 +23,6 @@ class SocialController extends \yii\rest\Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
