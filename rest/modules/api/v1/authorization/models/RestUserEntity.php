@@ -31,6 +31,7 @@ class RestUserEntity extends User
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
+    const SCENARIO_LOGIN           = 'login';
 
     const FB     = 'fb';
     const VK     = 'vk';
@@ -75,8 +76,13 @@ class RestUserEntity extends User
         $scenarios[self::SCENARIO_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password'
         ];
+
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
             'email', 'password', 'confirm_password', 'phone_number', 'source', 'source_id'
+        ];
+
+        $scenarios[self::SCENARIO_LOGIN] = [
+            'email', 'password', 'phone_number',
         ];
 
         return $scenarios;
@@ -99,14 +105,15 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['email', 'phone_number'], 'unique'],
+            [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
                 'email',
                 'required',
                 'when' => function (User $model) {
                     return empty($model->phone_number);
                 },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
+                'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,]
             ],
             [
                 'phone_number',
@@ -114,7 +121,8 @@ class RestUserEntity extends User
                 'when' => function (User $model) {
                     return empty($model->email);
                 },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».'
+                'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,]
             ],
             [
                 'terms_condition',
@@ -123,8 +131,9 @@ class RestUserEntity extends User
                 'requiredValue' => 1,
                 'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
             ],
-            ['password', 'string', 'min' => 6],
-            [['password', 'confirm_password'], 'required'],
+            ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER,]],
+            [['password', 'confirm_password'], 'required', 'on' => [self::SCENARIO_REGISTER,]],
+            ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
                 'confirm_password',
                 'compare',

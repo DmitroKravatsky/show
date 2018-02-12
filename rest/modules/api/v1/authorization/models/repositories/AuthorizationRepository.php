@@ -8,6 +8,7 @@ use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use rest\behaviors\ValidationExceptionFirstMessage;
+use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
@@ -77,33 +78,41 @@ trait AuthorizationRepository
 
     /**
      * @param $params
-     * @return array
-     * @throws BadRequestHttpException
-     * @throws NotFoundHttpException
+     * @return array|bool
+     * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
      */
     public function login($params)
     {
-        if (!isset($params['email']) && !isset($params['phone_number'])) {
-            throw new BadRequestHttpException('Необходимо заполнить «Email» или «Номер телефона».');
+        $user = new self();
+        $user->setScenario(self::SCENARIO_LOGIN);
+        $user->setAttributes($params);
+
+        if (!$user->validate()) {
+            return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
         }
 
-        if (isset($params['email'])) {
-            $user = RestUserEntity::findOne(['email' => $params['email'], 'source' => self::NATIVE]);
-        } else {
-            $user = RestUserEntity::findOne(['phone_number' => $params['phone_number'], 'source' => self::NATIVE]);
-        }
+        $user = $this->getUser($params);
 
-        if (empty($user)) {
-            throw new NotFoundHttpException('Пользователь не найден. Пройдите этап регистрации.');
-        }
-
-        if ($this->validatePassword($params['password'])) {
+        if (Yii::$app->getSecurity()->validatePassword($params['password'], $user->password)) {
             return (new ResponseBehavior())->setResponse(
                 200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
             );
         }
 
-        throw new UnprocessableEntityHttpException('Неверно введёный пароль.');
+        throw new UnauthorizedHttpException('Ошибка авторизации.');
+    }
+
+    /**
+     * @param $params
+     * @return mixed
+     */
+    protected function getUser($params)
+    {
+        if (isset($params['email'])) {
+            return self::findOne(['email' => $params['email']]);
+        }
+
+        return self::findOne(['phone_number' => $params['phone_number']]);
     }
 }

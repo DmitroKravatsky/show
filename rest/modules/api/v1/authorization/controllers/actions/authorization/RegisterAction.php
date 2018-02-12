@@ -1,12 +1,12 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\base;
+namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 
 /**
  * Class RegisterAction
- * @package rest\modules\api\v1\authorization\controllers\actions\base
+ * @package rest\modules\api\v1\authorization\controllers\actions\authorization
  */
 class RegisterAction extends \yii\rest\Action
 {

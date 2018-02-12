@@ -2,12 +2,11 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
-use rest\modules\api\v1\authorization\controllers\actions\base\LoginAction;
-use rest\modules\api\v1\authorization\controllers\actions\base\RegisterAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
-use rest\behaviors\ResponseBehavior;
 
 /**
  * Class AuthorizationController
@@ -24,8 +23,6 @@ class AuthorizationController extends Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
