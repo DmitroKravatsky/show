@@ -5,14 +5,12 @@ namespace rest\modules\api\v1\user\controllers;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{ GetProfileAction, UpdateAction };
 use yii\rest\Controller;
-use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use yii\filters\VerbFilter;
+use yii\filters\auth\HttpBearerAuth;
 
 /**
  * Class UserProfileController
  * @package rest\modules\api\v1\user\controllers
- * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  */
 class UserProfileController extends Controller
 {
@@ -26,8 +24,9 @@ class UserProfileController extends Controller
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
+        $behaviors['bearerAuth'] = [
+            'class' => HttpBearerAuth::className(),
+        ];
 
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),

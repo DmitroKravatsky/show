@@ -12,15 +12,12 @@ use yii\rest\Action;
 class GetProfileAction extends Action
 {
     /**
-     * @param $id
      * @return array
-     * @throws \yii\web\NotFoundHttpException
      */
-    public function run($id)
+    public function run(): array
     {
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;
-
-        return $model->getProfile($id);
+        return $model->getProfile();
     }
 }
