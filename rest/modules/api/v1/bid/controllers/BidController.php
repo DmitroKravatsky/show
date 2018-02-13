@@ -7,6 +7,7 @@ use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
+use yii\filters\auth\HttpBearerAuth;
 
 /**
  * Class BidController
@@ -29,6 +30,10 @@ class BidController extends \yii\rest\Controller
         $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
+
+        $behaviors['bearerAuth'] = [
+            'class' => HttpBearerAuth::className(),
+        ];
 
         $behaviors['verbs'] = [
             'class'   => \yii\filters\VerbFilter::className(),
