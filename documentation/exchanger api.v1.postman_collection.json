@@ -5,6 +5,33 @@
 	"order": [],
 	"folders": [
 		{
+			"name": "auth",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"7c3cee7b-de0d-3128-45a1-03a97bf0ea1c",
+				"038bf48f-8312-cc64-747a-75551fe87b26"
+			],
+			"owner": "2101684",
+			"folder": "eb47b84b-636b-7473-8e17-9c478fc8b8df",
+			"folders_order": [],
+			"auth": null,
+			"id": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c"
+		},
+		{
+			"name": "authorization",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [],
+			"owner": "2101684",
+			"folders_order": [
+				"63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+				"6da7e4c4-7534-12a1-c119-5f4ccb2aee6c"
+			],
+			"auth": null,
+			"id": "eb47b84b-636b-7473-8e17-9c478fc8b8df"
+		},
+		{
 			"name": "bid",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -19,6 +46,24 @@
 			"folders_order": [],
 			"auth": null,
 			"id": "4fada8ef-683a-83b6-efb6-a680971fad6d"
+		},
+		{
+			"name": "social",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"bc3d05b3-aaf4-772c-ff87-4207b3f2b659",
+				"92576017-2e5e-0c9e-31c4-e421e94845e8",
+				"f7ef5585-d881-a112-44cd-3990d452ce2f",
+				"e5aa63dd-2eb1-0ca3-eef6-6f13ee400076",
+				"c93c88a0-a30a-2853-9c6a-eb4a3db873de",
+				"47f42332-ab07-8e7e-a526-4605bc1302a7"
+			],
+			"owner": "2101684",
+			"folder": "eb47b84b-636b-7473-8e17-9c478fc8b8df",
+			"folders_order": [],
+			"auth": null,
+			"id": "63e1588c-9c25-d1ad-00b9-659b43e92aaf"
 		},
 		{
 			"name": "user-profile",
@@ -37,7 +82,8 @@
 	],
 	"folders_order": [
 		"4fada8ef-683a-83b6-efb6-a680971fad6d",
-		"1baa4021-527b-58c3-085e-5544acde217a"
+		"1baa4021-527b-58c3-085e-5544acde217a",
+		"eb47b84b-636b-7473-8e17-9c478fc8b8df"
 	],
 	"timestamp": 1516630267051,
 	"owner": "2101684",
@@ -67,6 +113,38 @@
 	"variables": [],
 	"auth": null,
 	"requests": [
+		{
+			"id": "038bf48f-8312-cc64-747a-75551fe87b26",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/authorization/login",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/authorization/login",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517348055,
+			"version": 2,
+			"responses": [],
+			"folder": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
 		{
 			"id": "2912fee6-ddb1-4e7c-895c-7ab569bb8990",
 			"headers": "Content-Type: application/json\n",
@@ -167,6 +245,38 @@
 			"rawModeData": ""
 		},
 		{
+			"id": "47f42332-ab07-8e7e-a526-4605bc1302a7",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/gmail-register",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/gmail-register",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517240260,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
 			"id": "70d449bd-1f07-b130-66ba-67b692b0473d",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -259,6 +369,68 @@
 			"rawModeData": ""
 		},
 		{
+			"id": "7c3cee7b-de0d-3128-45a1-03a97bf0ea1c",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/authorization/register",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518517375871,
+			"name": "/api/v1/authorization/authorization/register",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "92576017-2e5e-0c9e-31c4-e421e94845e8",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/vk-register",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/vk-register",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517140714,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
 			"id": "9ed3b49b-e76b-7722-f194-710548e869c4",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -290,6 +462,38 @@
 			"rawModeData": ""
 		},
 		{
+			"id": "bc3d05b3-aaf4-772c-ff87-4207b3f2b659",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/vk-login",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/vk-login",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517116678,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
 			"id": "c0361590-6410-ebfe-7ac0-863201684112",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -316,6 +520,102 @@
 			"description": "Удаление заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "c93c88a0-a30a-2853-9c6a-eb4a3db873de",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/gmail-login",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/gmail-login",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517222325,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "e5aa63dd-2eb1-0ca3-eef6-6f13ee400076",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/fb-login",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/fb-login",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517203935,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "f7ef5585-d881-a112-44cd-3990d452ce2f",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/fb-register",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/authorization/social/fb-register",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518517183054,
+			"version": 2,
+			"responses": [],
+			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": ""
