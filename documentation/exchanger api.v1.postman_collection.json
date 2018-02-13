@@ -147,11 +147,17 @@
 		},
 		{
 			"id": "2912fee6-ddb1-4e7c-895c-7ab569bb8990",
-			"headers": "Content-Type: application/json\n",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer{{access_token}}\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer{{access_token}}",
 					"description": "",
 					"enabled": true
 				}
@@ -166,7 +172,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518516615591,
+			"time": 1518518713207,
 			"name": "/api/v1/user/user-profile",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -177,16 +183,22 @@
 		},
 		{
 			"id": "39a251b2-5935-5d8b-64e2-07fad5a26f89",
-			"headers": "Content-Type: application/json\n",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer{{access_token}}\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
 					"description": "",
 					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer{{access_token}}",
+					"description": "",
+					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile/update-password",
+			"url": "ex.local.com/api/v1/user/user-profile/update-password",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -196,7 +208,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518516612168,
+			"time": 1518518733136,
 			"name": "/api/v1/user/user-profile/update-password",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -309,11 +321,17 @@
 		},
 		{
 			"id": "70f426dd-9eac-8d46-a59d-3be316b320a5",
-			"headers": "Content-Type: application/json\n",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer{{access_token}}\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer{{access_token}}",
 					"description": "",
 					"enabled": true
 				}
@@ -328,7 +346,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518516620215,
+			"time": 1518518693531,
 			"name": "/api/v1/user/user-profile",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
