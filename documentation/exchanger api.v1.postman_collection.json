@@ -19,10 +19,25 @@
 			"folders_order": [],
 			"auth": null,
 			"id": "4fada8ef-683a-83b6-efb6-a680971fad6d"
+		},
+		{
+			"name": "user-profile",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"39a251b2-5935-5d8b-64e2-07fad5a26f89",
+				"2912fee6-ddb1-4e7c-895c-7ab569bb8990",
+				"70f426dd-9eac-8d46-a59d-3be316b320a5"
+			],
+			"owner": "2101684",
+			"folders_order": [],
+			"auth": null,
+			"id": "1baa4021-527b-58c3-085e-5544acde217a"
 		}
 	],
 	"folders_order": [
-		"4fada8ef-683a-83b6-efb6-a680971fad6d"
+		"4fada8ef-683a-83b6-efb6-a680971fad6d",
+		"1baa4021-527b-58c3-085e-5544acde217a"
 	],
 	"timestamp": 1516630267051,
 	"owner": "2101684",
@@ -53,6 +68,66 @@
 	"auth": null,
 	"requests": [
 		{
+			"id": "2912fee6-ddb1-4e7c-895c-7ab569bb8990",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "GET",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518516615591,
+			"name": "/api/v1/user/user-profile",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "39a251b2-5935-5d8b-64e2-07fad5a26f89",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile/update-password",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518516612168,
+			"name": "/api/v1/user/user-profile/update-password",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
 			"id": "4480b75d-eb38-e466-406a-08735f40fd9c",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -82,16 +157,14 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516702183398,
+			"time": 1518516639350,
 			"name": "/api/v1/bid/detail",
 			"description": "Метод подробоной информации о заявке",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"isFromCollection": true,
-			"collectionRequestId": "4480b75d-eb38-e466-406a-08735f40fd9c",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smdith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"emdsilf@gqwfsmsdasl.coqm\",\n\t\"from_wallet_number\": \"123123\",\n\t\"to_card_number\": \"123212342342342\",\n\t\"from_sum\": 1,\n\t\"to_sum\": 1,\n\t\"terms_confirm\": \"1\"\n}"
+			"rawModeData": ""
 		},
 		{
 			"id": "70d449bd-1f07-b130-66ba-67b692b0473d",
@@ -115,16 +188,44 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516654588577,
+			"time": 1518516634636,
 			"name": "/api/v1/bid/list",
 			"description": "Список заявок с фильтрацией по времени\n",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"isFromCollection": true,
-			"collectionRequestId": "70d449bd-1f07-b130-66ba-67b692b0473d",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_wallet\": \"privat24\",\n\t\"to_wallet\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smdith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"emdsilf@gqwfsmsdasl.coqm\",\n\t\"from_wallet_number\": \"123123\",\n\t\"to_card_number\": \"123212342342342\",\n\t\"from_sum\": 1,\n\t\"to_sum\": 1,\n\t\"terms_confirm\": \"1\"\n}"
+			"rawModeData": ""
+		},
+		{
+			"id": "70f426dd-9eac-8d46-a59d-3be316b320a5",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518516620215,
+			"name": "/api/v1/user/user-profile",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
 		},
 		{
 			"id": "78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
@@ -148,16 +249,14 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516701683597,
+			"time": 1518516632293,
 			"name": "/api/v1/bid",
 			"description": "Метод создания заявки пользователем",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"isFromCollection": true,
-			"collectionRequestId": "78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_payment_system\": \"privat24\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_wallet\": \"1234123412341234\",\n\t\"to_wallet\": \"123456781234\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"+797878695978\",\n\t\"email\": \"john@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 100.5,\n\t\"terms_confirm\": \"1\"\n}"
+			"rawModeData": ""
 		},
 		{
 			"id": "9ed3b49b-e76b-7722-f194-710548e869c4",
@@ -181,16 +280,14 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516701764444,
+			"time": 1518516629438,
 			"name": "/api/v1/bid",
 			"description": "метод редактирования заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"isFromCollection": true,
-			"collectionRequestId": "9ed3b49b-e76b-7722-f194-710548e869c4",
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"from_payment_system\": \"qiwi\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_wallet\": \"1234123412341234\",\n\t\"to_wallet\": \"123456781234\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"+797878695978\",\n\t\"email\": \"john@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 100.5\n}"
+			"rawModeData": ""
 		},
 		{
 			"id": "c0361590-6410-ebfe-7ac0-863201684112",
@@ -214,13 +311,11 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1516702304157,
+			"time": 1518516636909,
 			"name": "/api/v1/bid",
 			"description": "Удаление заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"isFromCollection": true,
-			"collectionRequestId": "c0361590-6410-ebfe-7ac0-863201684112",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": ""
