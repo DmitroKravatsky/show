@@ -61,6 +61,19 @@
 			"id": "1174a2ef-0820-6d85-3c73-8e370e454813"
 		},
 		{
+			"name": "review",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"ef07ccc9-1ba0-3502-2843-b074b6a54f8a",
+				"b9189b16-dc42-cea8-85b1-c48540c875bb"
+			],
+			"owner": "2101684",
+			"folders_order": [],
+			"auth": null,
+			"id": "427ea829-6d74-b531-1b02-e4b520dedc57"
+		},
+		{
 			"name": "social",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -97,7 +110,8 @@
 		"4fada8ef-683a-83b6-efb6-a680971fad6d",
 		"1baa4021-527b-58c3-085e-5544acde217a",
 		"eb47b84b-636b-7473-8e17-9c478fc8b8df",
-		"1174a2ef-0820-6d85-3c73-8e370e454813"
+		"1174a2ef-0820-6d85-3c73-8e370e454813",
+		"427ea829-6d74-b531-1b02-e4b520dedc57"
 	],
 	"timestamp": 1516630267051,
 	"owner": "2101684",
@@ -577,6 +591,42 @@
 			"rawModeData": "{\n\t\"from_payment_system\": \"privat24\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"smith@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 110,\n\t\"from_wallet\": \"123123123\",\n\t\"to_wallet\": \"123123123\"\n}"
 		},
 		{
+			"id": "b9189b16-dc42-cea8-85b1-c48540c875bb",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}}\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/review/{{id}}",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "PUT",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518537582540,
+			"name": "/api/v1/review/{{id}}",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"text\": \"Отзывчивая и вежливая тех. поддержка. Рекомендую!\"\n}"
+		},
+		{
 			"id": "bc3d05b3-aaf4-772c-ff87-4207b3f2b659",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -705,6 +755,41 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"token\": \"EAACEdEose0cBAPISZCEKTpWuAyBhOnomdOsdvamfPUOSSXO9BoDodU5aZBVr059ZAgHf3yuTvRzkLA5zKtvtCbodNd3A3YC1dyAzlFWTZAqaooZAtUhhbqJaGNHZASkM0ux5fLVWxIhBijgJlygMw32nCwGlBxClxpLnmWWz1ieZAGk10YxWMudmQUm9EaGZBoPIflUEgVdccFA8RPjJw2Y2DZBUWIlfA1OR2wZD\"\n}"
+		},
+		{
+			"id": "ef07ccc9-1ba0-3502-2843-b074b6a54f8a",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}}\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/review",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1518537349220,
+			"name": "/api/v1/review",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"text\": \"Деньги пришли быстро и без проблем\"\n}"
 		},
 		{
 			"id": "f7ef5585-d881-a112-44cd-3990d452ce2f",

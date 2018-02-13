@@ -69,4 +69,16 @@ return [
             'POST login'    => 'login',
         ],
     ],
+    /** Review */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'review' => 'api/v1/review/review',
+        ],
+        'patterns'   => [
+            'POST'     => 'create',
+            'PUT {id}' => 'update',
+        ],
+    ],
 ];
