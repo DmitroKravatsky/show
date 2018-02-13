@@ -6,10 +6,10 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 /**
- * Class UpdatePassword
+ * Class UpdatePasswordAction
  * @package rest\modules\api\v1\user\controllers\actions\profile
  */
-class UpdatePassword extends Action
+class UpdatePasswordAction extends Action
 {
     /**
      * Update User password

@@ -5,7 +5,7 @@ namespace rest\modules\api\v1\user\controllers;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    GetProfileAction, UpdateAction, UpdatePassword
+    GetProfileAction, UpdateAction, UpdatePasswordAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -61,7 +61,7 @@ class UserProfileController extends Controller
         ];
 
         $actions['update-password'] = [
-            'class'      => UpdatePassword::class,
+            'class'      => UpdatePasswordAction::class,
             'modelClass' => RestUserEntity::class
         ];
         
