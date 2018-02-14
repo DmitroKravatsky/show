@@ -4,7 +4,6 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\behaviors\ValidatePostParameters;
 use common\models\bid\BidEntity;
-use rest\modules\api\v1\bid\controllers\BidController;
 use Yii;
 use yii\web\ServerErrorHttpException;
 
@@ -15,9 +14,6 @@ use yii\web\ServerErrorHttpException;
  */
 class UpdateAction extends \yii\rest\Action
 {
-    /** @var BidController */
-    public $controller;
-
     /**
      * @var array
      */
@@ -59,16 +55,8 @@ class UpdateAction extends \yii\rest\Action
     public function run($id)
     {
         /** @var BidEntity $bid */
-        $bid = $this->findModel($id);
-        $bid->setScenario(BidEntity::SCENARIO_UPDATE);
-        $bid->setAttributes(Yii::$app->request->bodyParams);
-
-        if ($bid->save()) {
-            return $this->controller->setResponse(200, Yii::t('app', 'Заявка успешно изменена.'), $bid->getAttributes());
-        } elseif ($bid->hasErrors()) {
-            $this->controller->throwModelException($bid->errors);
-        }
-
-        throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменена заявки.'));
+        $bid = new BidEntity();
+        
+        return $bid->updateBid($id);
     }
 }

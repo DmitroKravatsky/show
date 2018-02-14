@@ -3,12 +3,16 @@
 namespace common\models\bid;
 
 use common\models\{ bid\repositories\RestBidRepository, user\User };
+use rest\behaviors\ResponseBehavior;
+use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
  * Class BidEntity
  * @package common\models\bid
+ * @mixin ValidationExceptionFirstMessage
+ * @mixin ResponseBehavior
  *
  * @property integer $id
  * @property integer $created_by
@@ -162,7 +166,9 @@ class BidEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
+            'TimestampBehavior'               => TimestampBehavior::className(),
+            'ResponseBehavior'                => ResponseBehavior::className(),
+            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
         ];
     }
 
