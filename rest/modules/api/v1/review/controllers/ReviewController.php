@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\review\controllers;
 
 use common\models\review\ReviewEntity;
+use rest\modules\api\v1\review\controllers\actions\DeleteAction;
 use rest\modules\api\v1\review\controllers\actions\ListAction;
 use rest\modules\api\v1\review\controllers\actions\UpdateAction;
 use yii\filters\VerbFilter;
@@ -34,12 +35,13 @@ class ReviewController extends Controller
                 'create' => ['POST'],
                 'update' => ['PUT'],
                 'list'   => ['GET'],
+                'delete' => ['DELETE'],
             ]
         ];
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::className(),
-            'only'  => ['create', 'update'],
+            'only'  => ['create', 'update', 'delete'],
         ];
 
         return $behaviors;
@@ -59,8 +61,12 @@ class ReviewController extends Controller
                 'class'      => UpdateAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'list' => [
+            'list'   => [
                 'class'      => ListAction::className(),
+                'modelClass' => $this->modelClass
+            ],
+            'delete' => [
+                'class'      => DeleteAction::className(),
                 'modelClass' => $this->modelClass
             ],
         ];

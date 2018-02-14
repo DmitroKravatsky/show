@@ -77,9 +77,10 @@ return [
             'review' => 'api/v1/review/review',
         ],
         'patterns'   => [
-            'POST'     => 'create',
-            'PUT {id}' => 'update',
-            'GET list' => 'list',
+            'POST'        => 'create',
+            'PUT {id}'    => 'update',
+            'GET list'    => 'list',
+            'DELETE {id}' => 'delete',
         ],
     ],
 ];

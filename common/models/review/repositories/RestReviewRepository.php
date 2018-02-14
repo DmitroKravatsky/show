@@ -4,7 +4,10 @@ namespace common\models\review\repositories;
 
 use common\models\review\ReviewEntity;
 use yii\data\ArrayDataProvider;
+use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
+use Yii;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestReviewRepository
@@ -37,11 +40,9 @@ trait RestReviewRepository
      */
     public function updateReview($id, $params)
     {
-        if (empty($reviewModel = ReviewEntity::findOne(['id' => $id, 'created_by' => \Yii::$app->user->id]))) {
-            throw new NotFoundHttpException('Отзыв не найден.');
-        }
-
+        $reviewModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
         $reviewModel->setAttributes($params);
+
         if (!$reviewModel->save()) {
             $this->throwModelException($reviewModel->errors);
         }
@@ -70,5 +71,36 @@ trait RestReviewRepository
         ]);
 
         return $dataProvider;
+    }
+
+    /**
+     * @param $id
+     * @return mixed
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     * @throws \yii\db\StaleObjectException
+     */
+    public function deleteReview($id)
+    {
+        $reviewModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        if ($reviewModel->delete()) {
+            return $this->setResponse(200, 'Отзыв успешно удалён.');
+        }
+
+        throw new ServerErrorHttpException('Произошла ошибка при удалении отзыва.');
+    }
+
+    /**
+     * @param $params
+     * @return BaseActiveRecord
+     * @throws NotFoundHttpException
+     */
+    public function findModel($params): BaseActiveRecord
+    {
+        if (empty($reviewModel = self::findOne($params))) {
+            throw new NotFoundHttpException('Отзыв не найден');
+        }
+
+        return $reviewModel;
     }
 }
