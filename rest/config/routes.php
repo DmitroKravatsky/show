@@ -79,6 +79,7 @@ return [
         'patterns'   => [
             'POST'     => 'create',
             'PUT {id}' => 'update',
+            'GET list' => 'list',
         ],
     ],
 ];

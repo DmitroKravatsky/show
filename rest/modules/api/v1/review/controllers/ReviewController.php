@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\review\controllers;
 
 use common\models\review\ReviewEntity;
+use rest\modules\api\v1\review\controllers\actions\ListAction;
 use rest\modules\api\v1\review\controllers\actions\UpdateAction;
 use yii\filters\VerbFilter;
 use yii\rest\Controller;
@@ -31,11 +32,14 @@ class ReviewController extends Controller
             'class'   => VerbFilter::className(),
             'actions' => [
                 'create' => ['POST'],
+                'update' => ['PUT'],
+                'list'   => ['GET'],
             ]
         ];
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::className(),
+            'only'  => ['create', 'update'],
         ];
 
         return $behaviors;
@@ -53,6 +57,10 @@ class ReviewController extends Controller
             ],
             'update' => [
                 'class'      => UpdateAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'list' => [
+                'class'      => ListAction::className(),
                 'modelClass' => $this->modelClass
             ],
         ];
