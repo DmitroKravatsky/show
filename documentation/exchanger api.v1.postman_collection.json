@@ -66,7 +66,9 @@
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"order": [
 				"ef07ccc9-1ba0-3502-2843-b074b6a54f8a",
-				"b9189b16-dc42-cea8-85b1-c48540c875bb"
+				"b9189b16-dc42-cea8-85b1-c48540c875bb",
+				"c409fae8-0d83-99b7-b06e-f0d00e87adb9",
+				"a560f662-f83a-9921-335c-4210fe821b59"
 			],
 			"owner": "2101684",
 			"folders_order": [],
@@ -152,7 +154,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/authorization/login",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/authorization/login",
 			"folder": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c",
 			"queryParams": [],
 			"events": [],
@@ -163,7 +165,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526359832,
+			"time": 1518612401636,
 			"name": "/api/v1/authorization/authorization/login",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -189,7 +191,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile",
+			"url": "http://dev.ratkus.biz.ua/api/v1/user/user-profile",
+			"folder": "1baa4021-527b-58c3-085e-5544acde217a",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -199,7 +202,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526635755,
+			"time": 1518612312953,
 			"name": "/api/v1/user/user-profile",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -219,23 +222,22 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/reserve/{{id}}",
+			"url": "http://dev.ratkus.biz.ua/api/v1/reserve/{{id}}",
+			"folder": "1174a2ef-0820-6d85-3c73-8e370e454813",
 			"queryParams": [],
+			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
-			"events": [],
-			"auth": null,
 			"method": "PUT",
-			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"data": [],
 			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518612416868,
 			"name": "/api/v1/reserve/{{id}}",
 			"description": "",
-			"descriptionFormat": "html",
-			"time": 1518525702220,
-			"version": 2,
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"folder": "1174a2ef-0820-6d85-3c73-8e370e454813",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"payment_system\": \"yandex_money\",\n\t\"currency\": \"eur\",\n\t\"sum\": \"110.2\"\n}"
@@ -257,7 +259,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile/update-password",
+			"url": "http://dev.ratkus.biz.ua/api/v1/user/user-profile/update-password",
+			"folder": "1baa4021-527b-58c3-085e-5544acde217a",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -267,7 +270,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526638665,
+			"time": 1518612305147,
 			"name": "/api/v1/user/user-profile/update-password",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -293,7 +296,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}api/v1/bid/detail?id={{id}}",
+			"url": "http://dev.ratkus.biz.ua/api/v1/bid/detail?id={{id}}",
 			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [
 				{
@@ -312,7 +315,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526751440,
+			"time": 1518611944499,
 			"name": "/api/v1/bid/detail",
 			"description": "Метод подробоной информации о заявке",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -332,7 +335,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/gmail-register",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/gmail-register",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -343,14 +346,14 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523966457,
+			"time": 1518613894451,
 			"name": "/api/v1/authorization/social/gmail-register",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
 			"currentHelper": null,
 			"helperAttributes": null,
-			"rawModeData": "{\n\t\"token\": \"ya29.GltaBeHFe1A8sZNoX0lL1AN2PR796lTU3yv11UpfOBBLczyVO-5h3k5k6QvgP_Ozx1pA1GfrLBa2Cup7nd5x4PBa-EO2Nd3H27y8CFu6zfWq6c2xqC5D-4PVNu4Rwpzc8U\"\n}"
+			"rawModeData": "{\n\t\"token\": \"ya29.GltaBeHFe1A8sZNoX0lL1AN2PR796lTU3yv11UpfOBBLczyVO-5h3k5k6QvgP_Ozx1pA1GfrLBa2Cup7nd5x4PBa-EO2Nd3H27y8CFu6zfWq6c2xqC5D-4PVNu4Rwpzc8U\",\n\t\"terms_condition\": 1\n}"
 		},
 		{
 			"id": "5514ad68-6e3a-9f76-c694-1ccc8d93aedd",
@@ -363,7 +366,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/reserve/reserve/list",
+			"url": "http://dev.ratkus.biz.ua/api/v1/reserve/reserve/list",
+			"folder": "1174a2ef-0820-6d85-3c73-8e370e454813",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -373,7 +377,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518525578773,
+			"time": 1518612408069,
 			"name": "/api/v1/reserve/reserve/list",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -399,9 +403,17 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/bid/list",
+			"url": "http://dev.ratkus.biz.ua/api/v1/bid/list?created_at=week",
 			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
-			"queryParams": [],
+			"queryParams": [
+				{
+					"key": "created_at",
+					"value": "week",
+					"equals": true,
+					"description": "",
+					"enabled": true
+				}
+			],
 			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
@@ -410,9 +422,9 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526807622,
+			"time": 1518621012835,
 			"name": "/api/v1/bid/list",
-			"description": "Список заявок с фильтрацией по времени\n",
+			"description": "Список заявок с фильтрацией по времени\nПараметр created_at (month, week)",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
 			"currentHelper": null,
@@ -436,7 +448,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/user/user-profile",
+			"url": "http://dev.ratkus.biz.ua/api/v1/user/user-profile",
+			"folder": "1baa4021-527b-58c3-085e-5544acde217a",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -446,7 +459,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526645613,
+			"time": 1518612319251,
 			"name": "/api/v1/user/user-profile",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -472,7 +485,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/bid",
+			"url": "http://dev.ratkus.biz.ua/api/v1/bid",
 			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
@@ -483,7 +496,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526838125,
+			"time": 1518612031100,
 			"name": "/api/v1/bid",
 			"description": "Метод создания заявки пользователем",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -503,7 +516,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/authorization/register",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/authorization/register",
+			"folder": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -513,7 +527,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526293932,
+			"time": 1518612393987,
 			"name": "/api/v1/authorization/authorization/register",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -533,7 +547,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/vk-register",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/vk-register",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -544,7 +558,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523905996,
+			"time": 1518612338803,
 			"name": "/api/v1/authorization/social/vk-register",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -570,7 +584,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/bid/{{id}}",
+			"url": "http://dev.ratkus.biz.ua/api/v1/bid/{{id}}",
 			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
@@ -581,7 +595,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526854629,
+			"time": 1518612778894,
 			"name": "/api/v1/bid",
 			"description": "метод редактирования заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -589,6 +603,41 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"from_payment_system\": \"privat24\",\n\t\"to_payment_system\": \"yandex_money\",\n\t\"from_currency\": \"rub\",\n\t\"to_currency\": \"rub\",\n\t\"name\": \"john\",\n\t\"last_name\": \"smith\",\n\t\"phone_number\": \"123\",\n\t\"email\": \"smith@gmail.com\",\n\t\"from_sum\": 100,\n\t\"to_sum\": 110,\n\t\"from_wallet\": \"123123123\",\n\t\"to_wallet\": \"123123123\"\n}"
+		},
+		{
+			"id": "a560f662-f83a-9921-335c-4210fe821b59",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}}\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://dev.ratkus.biz.ua/api/v1/review/{{id}}",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "DELETE",
+			"data": [],
+			"dataMode": "raw",
+			"auth": null,
+			"time": 1518620942030,
+			"name": "/api/v1/review/{{id}}",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
 		},
 		{
 			"id": "b9189b16-dc42-cea8-85b1-c48540c875bb",
@@ -607,7 +656,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/review/{{id}}",
+			"url": "http://dev.ratkus.biz.ua/api/v1/review/{{id}}",
+			"folder": "427ea829-6d74-b531-1b02-e4b520dedc57",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -617,7 +667,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518537582540,
+			"time": 1518612433122,
 			"name": "/api/v1/review/{{id}}",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -637,7 +687,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/vk-login",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/vk-login",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -648,7 +698,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523917883,
+			"time": 1518612329331,
 			"name": "/api/v1/authorization/social/vk-login",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -674,7 +724,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/bid/{{id}}",
+			"url": "http://dev.ratkus.biz.ua/api/v1/bid/{{id}}",
 			"folder": "4fada8ef-683a-83b6-efb6-a680971fad6d",
 			"queryParams": [],
 			"events": [],
@@ -685,7 +735,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518526826052,
+			"time": 1518611952317,
 			"name": "/api/v1/bid",
 			"description": "Удаление заявки",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -693,6 +743,37 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": ""
+		},
+		{
+			"id": "c409fae8-0d83-99b7-b06e-f0d00e87adb9",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "http://dev.ratkus.biz.ua/api/v1/review/list",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "GET",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": null,
+			"dataMode": "params",
+			"name": "/api/v1/review/list",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1518613324108,
+			"version": 2,
+			"responses": [],
+			"folder": "427ea829-6d74-b531-1b02-e4b520dedc57",
+			"currentHelper": null,
+			"helperAttributes": null
 		},
 		{
 			"id": "c93c88a0-a30a-2853-9c6a-eb4a3db873de",
@@ -705,7 +786,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/gmail-login",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/gmail-login",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -716,7 +797,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523974590,
+			"time": 1518612374532,
 			"name": "/api/v1/authorization/social/gmail-login",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -736,7 +817,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/fb-login",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/fb-login",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -747,7 +828,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523805280,
+			"time": 1518612367428,
 			"name": "/api/v1/authorization/social/fb-login",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -773,7 +854,8 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/review",
+			"url": "http://dev.ratkus.biz.ua/api/v1/review",
+			"folder": "427ea829-6d74-b531-1b02-e4b520dedc57",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -782,7 +864,7 @@
 			"data": [],
 			"dataMode": "raw",
 			"auth": null,
-			"time": 1518537349220,
+			"time": 1518612425474,
 			"name": "/api/v1/review",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
@@ -802,7 +884,7 @@
 					"enabled": true
 				}
 			],
-			"url": "http://{{server}}:{{port}}/{{prefix}}/api/v1/authorization/social/fb-register",
+			"url": "http://dev.ratkus.biz.ua/api/v1/authorization/social/fb-register",
 			"folder": "63e1588c-9c25-d1ad-00b9-659b43e92aaf",
 			"queryParams": [],
 			"events": [],
@@ -813,7 +895,7 @@
 			"dataMode": "raw",
 			"version": 2,
 			"auth": null,
-			"time": 1518523788094,
+			"time": 1518612356537,
 			"name": "/api/v1/authorization/social/fb-register",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
