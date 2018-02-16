@@ -71,4 +71,13 @@ trait RestUserProfileRepository
             throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменении профиля.'));
         }
     }
+
+    public static function getFullName($userId)
+    {
+        if (!empty($userProfile = self::findOne($userId))) {
+            return $userProfile->name . ' ' . $userProfile->last_name;
+        }
+
+        throw new NotFoundHttpException('Пользователь не найден.');
+    }
 }

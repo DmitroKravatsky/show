@@ -2,7 +2,9 @@
 
 namespace common\models\bid;
 
-use common\models\{ bid\repositories\RestBidRepository, user\User };
+use common\models\{
+    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity, userProfile\UserProfileEntity
+};
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
@@ -172,5 +174,36 @@ class BidEntity extends \yii\db\ActiveRecord
         ];
     }
 
+    /**
+     * @param $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if ($this->status == self::STATUS_DONE) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::TYPE_BID,
+                UserNotificationsEntity::getMessageForDoneBid([
+                    'created_by'  => $this->created_by,
+                    'to_sum'      => $this->to_sum,
+                    'to_currency' => $this->to_currency,
+                    'to_wallet'   => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        } elseif ($this->status == self::STATUS_REJECTED) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::TYPE_BID,
+                UserNotificationsEntity::getMessageForRejectedBid([
+                    'created_by'  => $this->created_by,
+                    'to_sum'      => $this->to_sum,
+                    'to_currency' => $this->to_currency,
+                    'to_wallet'   => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        }
 
+        return parent::beforeSave($insert);
+    }
 }

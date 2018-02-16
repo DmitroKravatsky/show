@@ -29,6 +29,17 @@ return [
             'PUT update-password' => 'update-password',
         ],
     ],
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'user/user-notifications' => 'api/v1/user/user-notifications',
+        ],
+        'patterns'   => [
+            'GET list'    => 'list',
+            'DELETE {id}' => 'delete'
+        ],
+    ],
     /** Reserve Module */
     [
         'class'      => 'yii\rest\UrlRule',
