@@ -65,8 +65,9 @@ return [
             'authorization' => 'api/v1/authorization/authorization',
         ],
         'patterns'   => [
-            'POST register' => 'register',
-            'POST login'    => 'login',
+            'POST register'    => 'register',
+            'POST login'       => 'login',
+            'POST login-guest' => 'login-guest'
         ],
     ],
     /** Review */
