@@ -643,38 +643,30 @@
 		},
 		{
 			"id": "ab391073-de3f-69b0-6739-f64a735d7e27",
-			"headers": "Content-Type: application/json\n//Authorization: Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6MywiZXhwIjoxNTE5MDMxNDU2fQ.SbAzhWcSSavQq6ZqTjpZT9Pr2uQnQ1cEunvl5F51hXg\n",
+			"headers": "Content-Type: application/json\n",
 			"headerData": [
 				{
 					"key": "Content-Type",
 					"value": "application/json",
 					"description": "",
 					"enabled": true
-				},
-				{
-					"key": "Authorization",
-					"value": "Bearer eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJ1c2VyX2lkIjozLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImp0aSI6MywiZXhwIjoxNTE5MDMxNDU2fQ.SbAzhWcSSavQq6ZqTjpZT9Pr2uQnQ1cEunvl5F51hXg",
-					"description": "",
-					"enabled": false
 				}
 			],
 			"url": "dev.ratkus.biz.ua/api/v1/authorization/authorization/login-guest",
 			"queryParams": [],
+			"events": [],
 			"pathVariables": {},
 			"pathVariableData": [],
-			"events": [],
-			"auth": null,
 			"method": "POST",
-			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"data": [],
 			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518873167482,
 			"name": "/api/v1/authorization/authorization/login-guest",
 			"description": "",
-			"descriptionFormat": "html",
-			"time": 1518866075661,
-			"version": 2,
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
-			"folder": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c",
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": ""
