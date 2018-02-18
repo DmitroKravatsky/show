@@ -72,14 +72,13 @@ trait RestUserNotificationsRepository
     }
 
     /**
-     * @param $type
      * @param $text
      * @param $recipientId
      * @return mixed
      */
-    public function addNotify($type, $text, $recipientId)
+    public function addNotify($text, int $recipientId)
     {
-        $this->setAttributes(['type' => $type, 'text' => $text, 'recipient_id' => $recipientId]);
+        $this->setAttributes(['text' => $text, 'recipient_id' => $recipientId]);
         return $this->save();
     }
 
@@ -121,5 +120,13 @@ EOT;
 EOT;
 
         return $message;
+    }
+
+    /**
+     * @return string
+     */
+    public static function getMessageForLoginGuest(): string
+    {
+        return 'Вы вошли как "Гость", для доступа ко всему функционалу приложения, пройдите этап регистрации.';
     }
 }

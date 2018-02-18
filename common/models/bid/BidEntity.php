@@ -3,7 +3,7 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity, userProfile\UserProfileEntity
+    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity
 };
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
@@ -182,7 +182,6 @@ class BidEntity extends \yii\db\ActiveRecord
     {
         if ($this->status == self::STATUS_DONE) {
             (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::TYPE_BID,
                 UserNotificationsEntity::getMessageForDoneBid([
                     'created_by'  => $this->created_by,
                     'to_sum'      => $this->to_sum,
@@ -193,7 +192,6 @@ class BidEntity extends \yii\db\ActiveRecord
             );
         } elseif ($this->status == self::STATUS_REJECTED) {
             (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::TYPE_BID,
                 UserNotificationsEntity::getMessageForRejectedBid([
                     'created_by'  => $this->created_by,
                     'to_sum'      => $this->to_sum,

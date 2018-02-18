@@ -17,7 +17,6 @@ use yii\db\ActiveRecord;
  * @property integer $id
  * @property integer $recipient_id
  * @property string $text
- * @property string $type
  * @property string $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -25,12 +24,6 @@ use yii\db\ActiveRecord;
 class UserNotificationsEntity extends ActiveRecord
 {
     use RestUserNotificationsRepository;
-
-    const TYPE_REPLENISH = 'replenish';
-    const TYPE_WRITE_OFF = 'write_off';
-    const TYPE_BID       = 'bid';
-    const TYPE_NEWS      = 'news';
-    const TYPE_INFO      = 'info';
 
     const STATUS_READ   = 'read';
     const STATUS_UNREAD = 'unread';
@@ -53,7 +46,6 @@ class UserNotificationsEntity extends ActiveRecord
             'recipient_id' => 'Получатель',
             'text'         => 'Текст',
             'status'       => 'Статус',
-            'type'         => 'Тип уведомления',
             'created_at'   => 'Дата создания',
             'updated_at'   => 'Дата обновления',
         ];
@@ -67,11 +59,6 @@ class UserNotificationsEntity extends ActiveRecord
         return [
             ['recipient_id', 'integer'],
             ['text', 'string'],
-            [
-                'type',
-                'in',
-                'range' => [self::TYPE_REPLENISH, self::TYPE_WRITE_OFF, self::TYPE_BID, self::TYPE_INFO, self::TYPE_NEWS]
-            ],
             ['status', 'in', 'range' => [self::STATUS_READ, self::STATUS_UNREAD]],
             [
                 'recipient_id',

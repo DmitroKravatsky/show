@@ -21,7 +21,6 @@ class m180215_073401_user_notifications extends Migration
 
         $this->createTable($this->tableName, [
             'id' => $this->primaryKey(),
-            'type' => "ENUM('bid', 'news', 'info', 'replenish', 'write_off')",
             'status' => "ENUM('read', 'unread') DEFAULT 'unread'",
             'recipient_id' => $this->integer()->notNull(),
             'text' => $this->text(),
