@@ -157,4 +157,13 @@ trait AuthorizationRepository
 
         throw new UnauthorizedHttpException('Ошибка авторизации.');
     }
+
+    /**
+     * @param $roleName
+     * @return array
+     */
+    public function findByRole($roleName):array 
+    {
+        return Yii::$app->authManager->getUserIdsByRole($roleName);
+    }
 }
