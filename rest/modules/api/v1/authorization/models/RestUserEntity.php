@@ -6,10 +6,15 @@ use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
+use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use common\models\user\User;
 use rest\modules\api\v1\authorization\models\repositories\SocialRepository;
 use Yii;
+use yii\web\ErrorHandler;
+use yii\web\HttpException;
+use yii\web\ServerErrorHttpException;
+use yii\db\Exception as ExceptionDb;
 
 /**
  * Class RestUserEntity
@@ -18,6 +23,7 @@ use Yii;
  * @package rest\modules\api\v1\authorization\models
  * @property integer $id
  * @property string $password
+ * @property string $confirm_password
  * @property string $password_reset_token
  * @property string $email
  * @property string $auth_key
@@ -27,7 +33,10 @@ use Yii;
  * @property integer $terms_condition
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $recovery_code
+ * @property integer $created_recovery_code
  */
+
 class RestUserEntity extends User
 {
     use SocialRepository, AuthorizationJwt, AuthorizationRepository;
@@ -71,6 +80,8 @@ class RestUserEntity extends User
             'current_password' => 'Текущий пароль',
             'created_at'       => 'Дата создания',
             'updated_at'       => 'Дата изменения',
+            'created_recovery_code'       => 'Дата создания кода востановления',
+            'recovery_code'       => 'Код востановления',
         ];
     }
 
@@ -86,7 +97,7 @@ class RestUserEntity extends User
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
-            'email', 'password', 'confirm_password', 'phone_number', 'source', 'source_id'
+            'email', 'password', 'confirm_password', 'phone_number','recovery_code'
         ];
 
         $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number',];
@@ -125,7 +136,7 @@ class RestUserEntity extends User
                     return empty($model->phone_number);
                 },
                 'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,]
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]
             ],
             [
                 'phone_number',
@@ -134,7 +145,7 @@ class RestUserEntity extends User
                     return empty($model->email);
                 },
                 'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,]
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]
             ],
             [
                 'terms_condition',
@@ -166,6 +177,11 @@ class RestUserEntity extends User
                 'on' => [self::SCENARIO_REGISTER,]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
+            [
+                ['email','password', 'confirm_password','recovery_code'],
+                'required',
+                'on' => [self::SCENARIO_RECOVERY_PWD,]
+            ],
             [
                 'confirm_password',
                 'compare',
@@ -206,6 +222,23 @@ class RestUserEntity extends User
         return true;
     }
 
+    public function resetRecoveryCode()
+    {
+        return Yii::$app->db->createCommand()
+            ->update(self::tableName(), [
+                'recovery_code'         => null,
+                'created_recovery_code' => null
+            ], ['id' => $this->getId()])->execute();
+    }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+        if ($this->scenario === self::SCENARIO_RECOVERY_PWD) {
+            $this->resetRecoveryCode();
+        }
+    }
+
     /**
      * Check User current password
      * @param $attribute
@@ -218,6 +251,67 @@ class RestUserEntity extends User
             return false;
         }
 
+        return true;
+    }
+
+    public function getUserByEmail($email)
+    {
+
+        $restUser = RestUserEntity::findOne(['email' => $email]);
+
+        if (!$restUser) {
+            throw new ServerErrorHttpException('Пользователя с таким email не существует, 
+            пройдите процедуру регистрации.');
+        }
+
+        return $restUser;
+    }
+
+    public function getUserByPhoneNumber($phoneNumber)
+    {
+
+        $restUser = RestUserEntity::findOne(['phone_number' => $phoneNumber]);
+
+        if (!$restUser) {
+            throw new ServerErrorHttpException('Пользователя с таким номером телефона не существует, 
+            пройдите процедуру регистрации.');
+        }
+
+        return $restUser;
+    }
+
+    public function recoveryCode($postData)
+    {
+
+        $recoveryCode = $this->recovery_code;
+        $createdRecoveryCode = $this->created_recovery_code;
+        try{
+            //var_dump($postData);exit;
+            $this->setAttributes($postData);
+
+            if ($this->validate() and $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
+                return $this->save();
+            }
+        } catch (ExceptionDb $e) {
+            throw new HttpException(422, $e->getMessage());
+        } catch (Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
+        }
+        throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
+
+    }
+
+    public function checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData)
+    {
+        if ($recoveryCode != $postData) {
+            $this->addError('recovery_code', 'Код восстановления неверен!');
+            return false;
+        }elseif
+            (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
+            $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
+            return false;
+        }
         return true;
     }
 }

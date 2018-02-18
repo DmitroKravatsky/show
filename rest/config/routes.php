@@ -67,6 +67,8 @@ return [
         'patterns'   => [
             'POST register' => 'register',
             'POST login'    => 'login',
+            'POST password-recovery' => 'password-recovery',
+            'POST send-recovery-code' => 'send-recovery-code'
         ],
     ],
 ];

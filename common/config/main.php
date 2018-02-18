@@ -9,5 +9,7 @@ return [
         'cache' => [
             'class' => 'yii\caching\FileCache',
         ],
+        'sendSms' => ['class' => 'common\components\SendSms'],
+        'sendMail' => ['class' => 'common\components\SendMail'],
     ],
 ];
