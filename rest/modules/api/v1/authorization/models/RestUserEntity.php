@@ -32,6 +32,9 @@ class RestUserEntity extends User
 {
     use SocialRepository, AuthorizationJwt, AuthorizationRepository;
 
+    const ROLE_USER  = 'user';
+    const ROLE_GUEST = 'guest';
+
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
@@ -45,6 +48,7 @@ class RestUserEntity extends User
     public $confirm_password;
     public $current_password;
     public $new_password;
+    public $role;
     
     /**
      * @return string
@@ -82,7 +86,7 @@ class RestUserEntity extends User
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password'
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role'
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
@@ -117,6 +121,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
+            ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
                 'email',
@@ -204,6 +209,22 @@ class RestUserEntity extends User
         }
 
         return true;
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        parent::afterSave($insert, $changedAttributes);
+
+        if ($this->scenario == self::SCENARIO_REGISTER) {
+            $this->role = self::ROLE_USER;
+            $userRole = Yii::$app->authManager->getRole($this->role);
+            Yii::$app->authManager->assign($userRole, $this->getId());
+        }
+
     }
 
     /**

@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -27,8 +28,9 @@ class AuthorizationController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
             'actions' => [
-                'register' => ['post'],
-                'login'    => ['post'],
+                'register'    => ['POST'],
+                'login'       => ['POST'],
+                'login-guest' => ['POST'],
             ]
         ];
 
@@ -40,18 +42,19 @@ class AuthorizationController extends Controller
      */
     public function actions(): array
     {
-        $actions = parent::actions();
-
-        $actions['register'] = [
-            'class'      => RegisterAction::class,
-            'modelClass' => $this->modelClass
+        return [
+            'register' => [
+                'class'      => RegisterAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'login' => [
+                'class'      => LoginAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'login-guest' => [
+                'class'      => LoginGuestAction::className(),
+                'modelClass' => $this->modelClass
+            ],
         ];
-
-        $actions['login'] = [
-            'class'      => LoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        return $actions;
     }
 }

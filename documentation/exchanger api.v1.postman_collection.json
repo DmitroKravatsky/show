@@ -10,7 +10,8 @@
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"order": [
 				"7c3cee7b-de0d-3128-45a1-03a97bf0ea1c",
-				"038bf48f-8312-cc64-747a-75551fe87b26"
+				"038bf48f-8312-cc64-747a-75551fe87b26",
+				"ab391073-de3f-69b0-6739-f64a735d7e27"
 			],
 			"owner": "2101684",
 			"folder": "eb47b84b-636b-7473-8e17-9c478fc8b8df",
@@ -622,6 +623,7 @@
 				}
 			],
 			"url": "http://dev.ratkus.biz.ua/api/v1/review/{{id}}",
+			"folder": "427ea829-6d74-b531-1b02-e4b520dedc57",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -632,6 +634,36 @@
 			"auth": null,
 			"time": 1518620942030,
 			"name": "/api/v1/review/{{id}}",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"responses": [],
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
+		},
+		{
+			"id": "ab391073-de3f-69b0-6739-f64a735d7e27",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/authorization/authorization/login-guest",
+			"queryParams": [],
+			"events": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"method": "POST",
+			"data": [],
+			"dataMode": "raw",
+			"version": 2,
+			"auth": null,
+			"time": 1518873167482,
+			"name": "/api/v1/authorization/authorization/login-guest",
 			"description": "",
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"responses": [],
