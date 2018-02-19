@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\bid\controllers;
 
 use common\models\bid\BidEntity;
-use rest\behaviors\{ ResponseBehavior, ValidationExceptionFirstMessage };
 use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
@@ -11,8 +10,6 @@ use yii\filters\auth\HttpBearerAuth;
 
 /**
  * Class BidController
- * @mixin ResponseBehavior
- * @mixin ValidationExceptionFirstMessage
  * @package rest\modules\api\v1\bid\controllers
  */
 class BidController extends \yii\rest\Controller
@@ -26,10 +23,6 @@ class BidController extends \yii\rest\Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-
-        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::className(),

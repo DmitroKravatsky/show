@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
+use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UnauthorizedHttpException;
@@ -74,7 +75,8 @@ trait AuthorizationRepository
 
     /**
      * @param $params
-     * @return array|bool
+     * @return mixed
+     * @throws NotFoundHttpException
      * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -88,12 +90,12 @@ trait AuthorizationRepository
             return $this->throwModelException($user->errors);
         }
 
+        /** @var RestUserEntity $user */
         $user = $this->getUser($params);
 
-        if (Yii::$app->getSecurity()->validatePassword($params['password'], $user->password)) {
+        if ($user->validatePassword($params['password'])) {
             return $this->setResponse(
-                200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-            );
+                200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
         }
 
         throw new UnauthorizedHttpException('Ошибка авторизации.');
@@ -102,14 +104,17 @@ trait AuthorizationRepository
     /**
      * @param $params
      * @return mixed
+     * @throws NotFoundHttpException
      */
     protected function getUser($params)
     {
-        if (isset($params['email'])) {
-            return self::findOne(['email' => $params['email']]);
+        if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
+            return $user;
+        } elseif (isset($params['phone_number']) && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))) {
+            return $user;
         }
 
-        return self::findOne(['phone_number' => $params['phone_number']]);
+        throw new NotFoundHttpException('Пользователь не найден, пройдите этап регистрации.');
     }
 
     /**
@@ -134,5 +139,31 @@ trait AuthorizationRepository
         }
         
         return $this->throwModelException($userModel->errors);
+    }
+
+    /**
+     * @return mixed
+     * @throws UnauthorizedHttpException
+     */
+    public function loginGuest()
+    {
+        /** @var RestUserEntity $userModel */
+        $userModel = $this->getUser(['email' => Yii::$app->params['guest-email']]);
+
+        if ($userModel && $userModel->validatePassword(Yii::$app->params['guest-password'])) {
+            return $this->setResponse(
+                200, 'Авторизация прошла успешно.', ['access_token' => $userModel->getJWT(['user_id' => $userModel->id])]);
+        }
+
+        throw new UnauthorizedHttpException('Ошибка авторизации.');
+    }
+
+    /**
+     * @param $roleName
+     * @return array
+     */
+    public function findByRole($roleName):array 
+    {
+        return Yii::$app->authManager->getUserIdsByRole($roleName);
     }
 }

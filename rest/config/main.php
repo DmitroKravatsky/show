@@ -32,6 +32,9 @@ return [
                         'authorization' => [
                             'class' => 'rest\modules\api\v1\authorization\Module'
                         ],
+                        'review' => [
+                            'class' => 'rest\modules\api\v1\review\Module'
+                        ],
                     ],
                 ],
             ],

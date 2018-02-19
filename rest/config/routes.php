@@ -29,6 +29,17 @@ return [
             'PUT update-password' => 'update-password',
         ],
     ],
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'user/user-notifications' => 'api/v1/user/user-notifications',
+        ],
+        'patterns'   => [
+            'GET list'    => 'list',
+            'DELETE {id}' => 'delete'
+        ],
+    ],
     /** Reserve Module */
     [
         'class'      => 'yii\rest\UrlRule',
@@ -65,10 +76,25 @@ return [
             'authorization' => 'api/v1/authorization/authorization',
         ],
         'patterns'   => [
-            'POST register' => 'register',
-            'POST login'    => 'login',
+            'POST register'    => 'register',
+            'POST login'       => 'login',
+            'POST login-guest' => 'login-guest',
             'POST password-recovery' => 'password-recovery',
             'POST send-recovery-code' => 'send-recovery-code'
+        ],
+    ],
+    /** Review */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'review' => 'api/v1/review/review',
+        ],
+        'patterns'   => [
+            'POST'        => 'create',
+            'PUT {id}'    => 'update',
+            'GET list'    => 'list',
+            'DELETE {id}' => 'delete',
         ],
     ],
 ];

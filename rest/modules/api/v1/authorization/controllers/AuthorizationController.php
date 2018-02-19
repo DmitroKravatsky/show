@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecovery;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
@@ -14,10 +15,8 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
  * Class AuthorizationController
  * @package rest\modules\api\v1\authorization\controllers
  */
-
 class AuthorizationController extends Controller
 {
-
     /** @var RestUserEntity */
     public $modelClass = RestUserEntity::class;
 
@@ -31,8 +30,9 @@ class AuthorizationController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::className(),
             'actions' => [
-                'register' => ['post'],
-                'login'    => ['post'],
+                'register'    => ['POST'],
+                'login'       => ['POST'],
+                'login-guest' => ['POST'],
                 'send-recovery-code'    => ['post'],
                 'password-recovery'    => ['post'],
             ]
@@ -46,26 +46,27 @@ class AuthorizationController extends Controller
      */
     public function actions(): array
     {
-        $actions = parent::actions();
-
-        $actions['register'] = [
-            'class'      => RegisterAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['login'] = [
-            'class'      => LoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-        $actions['send-recovery-code'] = [
+        return [
+            'register' => [
+                'class'      => RegisterAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'login' => [
+                'class'      => LoginAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'login-guest' => [
+                'class'      => LoginGuestAction::className(),
+                'modelClass' => $this->modelClass
+            ],
+        'send-recovery-code' => [
             'class'      => SendRecoveryCode::class,
-            'modelClass' => $this->modelClass
-        ];
-        $actions['password-recovery'] = [
+            'modelClass' => $this->modelClass,
+            ],
+        'password-recovery' => [
             'class'      => PasswordRecovery::class,
             'modelClass' => $this->modelClass
+            ],
         ];
-
-        return $actions;
     }
 }

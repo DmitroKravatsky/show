@@ -2,13 +2,19 @@
 
 namespace common\models\bid;
 
-use common\models\{ bid\repositories\RestBidRepository, user\User };
+use common\models\{
+    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity
+};
+use rest\behaviors\ResponseBehavior;
+use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use Yii;
 
 /**
  * Class BidEntity
  * @package common\models\bid
+ * @mixin ValidationExceptionFirstMessage
+ * @mixin ResponseBehavior
  *
  * @property integer $id
  * @property integer $created_by
@@ -162,9 +168,40 @@ class BidEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
+            'TimestampBehavior'               => TimestampBehavior::className(),
+            'ResponseBehavior'                => ResponseBehavior::className(),
+            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
         ];
     }
 
+    /**
+     * @param $insert
+     * @return bool
+     */
+    public function beforeSave($insert)
+    {
+        if ($this->status == self::STATUS_DONE) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::getMessageForDoneBid([
+                    'created_by'  => $this->created_by,
+                    'to_sum'      => $this->to_sum,
+                    'to_currency' => $this->to_currency,
+                    'to_wallet'   => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        } elseif ($this->status == self::STATUS_REJECTED) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::getMessageForRejectedBid([
+                    'created_by'  => $this->created_by,
+                    'to_sum'      => $this->to_sum,
+                    'to_currency' => $this->to_currency,
+                    'to_wallet'   => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        }
 
+        return parent::beforeSave($insert);
+    }
 }
