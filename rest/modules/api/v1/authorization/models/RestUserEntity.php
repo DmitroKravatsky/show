@@ -303,7 +303,6 @@ class RestUserEntity extends User
         $recoveryCode = $this->recovery_code;
         $createdRecoveryCode = $this->created_recovery_code;
         try{
-            //var_dump($postData);exit;
             $this->setAttributes($postData);
 
             if ($this->validate() and $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){

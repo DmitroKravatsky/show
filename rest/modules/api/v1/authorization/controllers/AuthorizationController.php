@@ -28,13 +28,13 @@ class AuthorizationController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class'   => VerbFilter::className(),
+            'class' => VerbFilter::className(),
             'actions' => [
-                'register'    => ['POST'],
-                'login'       => ['POST'],
+                'register' => ['POST'],
+                'login' => ['POST'],
                 'login-guest' => ['POST'],
-                'send-recovery-code'    => ['post'],
-                'password-recovery'    => ['post'],
+                'send-recovery-code' => ['post'],
+                'password-recovery' => ['post'],
             ]
         ];
 
@@ -48,24 +48,24 @@ class AuthorizationController extends Controller
     {
         return [
             'register' => [
-                'class'      => RegisterAction::class,
+                'class' => RegisterAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login' => [
-                'class'      => LoginAction::class,
+                'class' => LoginAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login-guest' => [
-                'class'      => LoginGuestAction::className(),
+                'class' => LoginGuestAction::className(),
                 'modelClass' => $this->modelClass
             ],
-        'send-recovery-code' => [
-            'class'      => SendRecoveryCode::class,
-            'modelClass' => $this->modelClass,
+            'send-recovery-code' => [
+                'class' => SendRecoveryCode::class,
+                'modelClass' => $this->modelClass,
             ],
-        'password-recovery' => [
-            'class'      => PasswordRecovery::class,
-            'modelClass' => $this->modelClass
+            'password-recovery' => [
+                'class' => PasswordRecovery::class,
+                'modelClass' => $this->modelClass
             ],
         ];
     }

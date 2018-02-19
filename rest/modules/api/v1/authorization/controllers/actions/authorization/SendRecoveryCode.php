@@ -22,20 +22,22 @@ class SendRecoveryCode extends Action
         $phoneNumber = \Yii::$app->request->post('phone_number');
         $recoveryCode = rand(1000,9999);
         $user = new RestUserEntity();
-        if(!empty($email)) {
+        if (!empty($email)) {
             $user = $user->getUserByEmail($email);
-        }elseif (!empty($phoneNumber)){
+        }elseif
+            (!empty($phoneNumber)){
             $user = $user->getUserByPhoneNumber($phoneNumber);
         }
         $user->recovery_code = $recoveryCode;
         $user->created_recovery_code = time();
 
-        if(!empty($email)) {
+        if (!empty($email)) {
             Yii::$app->sendMail->run('@common/views/mail/sendSecurityCode-html.php',
                 ['email' => $email, 'recoveryCode' => $user->recovery_code],
                 Yii::$app->params['supportEmail'], $email,'Востановление пароля'
             );
-        }elseif (!empty($phoneNumber)){
+        }elseif
+            (!empty($phoneNumber)) {
             Yii::$app->sendSms->run('Ваш код востановления пароля ,'. $user->recovery_code.' он будет активен в течении часа',
                 $phoneNumber);
         }

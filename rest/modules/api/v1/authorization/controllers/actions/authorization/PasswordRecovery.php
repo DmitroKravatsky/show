@@ -24,9 +24,10 @@ class PasswordRecovery extends Action
     {
         $email = Yii::$app->request->post('email');
         $user = new RestUserEntity();
-        if(!empty($email)) {
+        if (!empty($email)) {
             $user = $user->getUserByEmail($email);
-        }elseif (!empty($phoneNumber)){
+        } elseif
+            (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         }
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
@@ -36,7 +37,7 @@ class PasswordRecovery extends Action
                 $response->setStatusCode('200', 'OK');
                 $response->format = Response::FORMAT_JSON;
                 return $response->content = [
-                    'status'  => $response->statusCode,
+                    'status' => $response->statusCode,
                     'message' => 'Восстановления пароля прошло успешно'
                 ];
             }
