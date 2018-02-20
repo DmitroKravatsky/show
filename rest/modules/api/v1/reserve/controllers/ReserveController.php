@@ -3,8 +3,6 @@
 namespace rest\modules\api\v1\reserve\controllers;
 
 use common\models\reserve\ReserveEntity;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
 use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
@@ -12,8 +10,6 @@ use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
 /**
  * Class ReserveController
  * @package rest\modules\api\v1\reserve\controllers
- * @mixin ResponseBehavior
- * @mixin ValidationExceptionFirstMessage
  */
 class ReserveController extends \yii\rest\Controller
 {
@@ -26,10 +22,6 @@ class ReserveController extends \yii\rest\Controller
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-
-        $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         $behaviors['verbs'] = [
             'class'   => \yii\filters\VerbFilter::className(),
@@ -48,23 +40,19 @@ class ReserveController extends \yii\rest\Controller
      */
     public function actions(): array
     {
-        $actions = parent::actions();
-
-        $actions['list'] = [
-            'class' => ListAction::class,
-            'modelClass' => $this->modelClass,
+        return [
+            'list' => [
+                'class' => ListAction::class,
+                'modelClass' => $this->modelClass,
+            ],
+            'update' => [
+                'class' => UpdateAction::class,
+                'modelClass' => $this->modelClass,
+            ],
+            'create' => [
+                'class' => CreateAction::class,
+                'modelClass' => $this->modelClass,
+            ],
         ];
-
-        $actions['update'] = [
-            'class' => UpdateAction::class,
-            'modelClass' => $this->modelClass,
-        ];
-
-        $actions['create'] = [
-            'class' => CreateAction::class,
-            'modelClass' => $this->modelClass,
-        ];
-
-        return $actions;
     }
 }
