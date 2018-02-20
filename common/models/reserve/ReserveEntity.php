@@ -2,12 +2,19 @@
 
 namespace common\models\reserve;
 
+use common\models\reserve\repositories\RestReserveRepository;
+use rest\behaviors\ResponseBehavior;
+use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
 /**
  * Class ReserveEntity
  * @package common\models\reserve
+ *
+ * @mixin ValidationExceptionFirstMessage
+ * @mixin ResponseBehavior
+ *
  * @property integer $id
  * @property string $payment_system
  * @property string $currency
@@ -17,6 +24,8 @@ use yii\behaviors\TimestampBehavior;
  */
 class ReserveEntity extends ActiveRecord
 {
+    use RestReserveRepository;
+
     const YANDEX_MONEY = 'yandex_money';
     const WEB_MONEY    = 'web_money';
     const TINCOFF      = 'tincoff';
@@ -78,6 +87,8 @@ class ReserveEntity extends ActiveRecord
     {
         return [
             TimestampBehavior::className(),
+            ResponseBehavior::className(),
+            ValidationExceptionFirstMessage::className(),
         ];
     }
 }

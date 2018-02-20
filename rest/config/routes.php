@@ -50,6 +50,7 @@ return [
         'patterns'   => [
             'GET'      => 'list',
             'PUT {id}' => 'update',
+            'POST'     => 'create',
         ],
     ],
     /** Social Authorization */

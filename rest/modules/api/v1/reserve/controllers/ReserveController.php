@@ -5,6 +5,7 @@ namespace rest\modules\api\v1\reserve\controllers;
 use common\models\reserve\ReserveEntity;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
 use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
 
@@ -33,8 +34,9 @@ class ReserveController extends \yii\rest\Controller
         $behaviors['verbs'] = [
             'class'   => \yii\filters\VerbFilter::className(),
             'actions' => [
-                'update' => ['put'],
-                'list'   => ['get'],
+                'update' => ['PUT'],
+                'create' => ['POST'],
+                'list'   => ['GET'],
             ]
         ];
 
@@ -55,6 +57,11 @@ class ReserveController extends \yii\rest\Controller
 
         $actions['update'] = [
             'class' => UpdateAction::class,
+            'modelClass' => $this->modelClass,
+        ];
+
+        $actions['create'] = [
+            'class' => CreateAction::class,
             'modelClass' => $this->modelClass,
         ];
 
