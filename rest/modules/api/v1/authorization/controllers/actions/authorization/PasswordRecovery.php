@@ -9,37 +9,50 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 
-use Codeception\Coverage\Subscriber\RemoteServer;
-use common\behaviors\ValidatePostParameters;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\base\Exception;
-use yii\web\Response;
 use yii\rest\Action;
 use yii\web\HttpException;
 
+/**
+ * Class PasswordRecovery
+ * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ */
 class PasswordRecovery extends Action
 {
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
+
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
+
+        return $behaviors;
+    }
+
+    /**
+     * @return mixed
+     * @throws HttpException
+     */
     public function run()
     {
         $email = Yii::$app->request->post('email');
         $user = new RestUserEntity();
         if (!empty($email)) {
             $user = $user->getUserByEmail($email);
-        } elseif
-            (!empty($phoneNumber)) {
+        } elseif (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         }
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
-                $response = Yii::$app->getResponse();
-                $response->setStatusCode('200', 'OK');
-                $response->format = Response::FORMAT_JSON;
-                return $response->content = [
-                    'status' => $response->statusCode,
-                    'message' => 'Восстановления пароля прошло успешно'
-                ];
+                return $this->setResponse(
+                    200, 'Восстановления пароля прошло успешно'
+                );
             }
         } catch (Exception $e) {
             throw new HttpException(422, $e->getMessage());

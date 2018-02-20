@@ -8,14 +8,32 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use common\behaviors\ValidatePostParameters;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
-use yii\{rest\Action,web\Response,web\ServerErrorHttpException};
+use yii\{rest\Action,web\ServerErrorHttpException};
 
+/**
+ * Class SendRecoveryCode
+ * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ */
 class SendRecoveryCode extends Action
 {
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        $behaviors = parent::behaviors();
 
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
+
+        return $behaviors;
+    }
+    /**
+     * @return array
+     * @throws ServerErrorHttpException
+     */
     public function run()
     {
         $email = \Yii::$app->request->post('email');
@@ -24,8 +42,7 @@ class SendRecoveryCode extends Action
         $user = new RestUserEntity();
         if (!empty($email)) {
             $user = $user->getUserByEmail($email);
-        }elseif
-            (!empty($phoneNumber)){
+        } elseif (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         }
         $user->recovery_code = $recoveryCode;
@@ -34,21 +51,19 @@ class SendRecoveryCode extends Action
         if (!empty($email)) {
             Yii::$app->sendMail->run('@common/views/mail/sendSecurityCode-html.php',
                 ['email' => $email, 'recoveryCode' => $user->recovery_code],
-                Yii::$app->params['supportEmail'], $email,'Востановление пароля'
+                Yii::$app->params['supportEmail'],
+                $email,
+                'Востановление пароля'
             );
-        }elseif
-            (!empty($phoneNumber)) {
+        } elseif (!empty($phoneNumber)) {
             Yii::$app->sendSms->run('Ваш код востановления пароля ,'. $user->recovery_code.' он будет активен в течении часа',
-                $phoneNumber);
+                $phoneNumber
+            );
         }
         if ($user->save(false)) {
-            $response = Yii::$app->getResponse();
-            $response->setStatusCode('200', 'OK');
-            $response->format = Response::FORMAT_JSON;
-            return $response->content = [
-                'status'  => $response->statusCode,
-                'message' => 'Отправка кода восстановления прошло успешно'
-            ];
+            return $this->setResponse(
+                200, 'Отправка кода восстановления прошло успешно'
+            );
         }
 
         throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');

@@ -7,9 +7,6 @@ use yii\db\Migration;
  */
 class m180218_080535_add_recovery_collums_to_user extends Migration
 {
-
-
-    // Use up()/down() to run migration code without a transaction.
     public function up()
     {
         $this->addColumn('user','recovery_code',$this->integer(4));

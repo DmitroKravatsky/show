@@ -73,19 +73,19 @@ class RestUserEntity extends User
     public function attributeLabels(): array
     {
         return [
-            'id'               => '#',
-            'email'            => 'Email',
-            'phone_number'     => 'Номер телефона',
-            'source'           => 'Социальная сеть',
-            'source_id'        => 'Пользователь в социальной сети',
-            'terms_condition'  => 'Пользовательское соглашение',
-            'password'         => 'Пароль',
-            'new_password'     => 'Новый пароль',
-            'current_password' => 'Текущий пароль',
-            'created_at'       => 'Дата создания',
-            'updated_at'       => 'Дата изменения',
-            'created_recovery_code'       => 'Дата создания кода востановления',
-            'recovery_code'       => 'Код востановления',
+            'id'                    => '#',
+            'email'                 => 'Email',
+            'phone_number'          => 'Номер телефона',
+            'source'                => 'Социальная сеть',
+            'source_id'             => 'Пользователь в социальной сети',
+            'terms_condition'       => 'Пользовательское соглашение',
+            'password'              => 'Пароль',
+            'new_password'          => 'Новый пароль',
+            'current_password'      => 'Текущий пароль',
+            'created_at'            => 'Дата создания',
+            'updated_at'            => 'Дата изменения',
+            'created_recovery_code' => 'Дата создания кода востановления',
+            'recovery_code'         => 'Код востановления',
         ];
     }
 
@@ -223,10 +223,13 @@ class RestUserEntity extends User
                 $this->password = Yii::$app->security->generateRandomString(32);
             }
         }
-
         return true;
     }
 
+    /**
+     * Reserts recovery code after recovery password
+     * @return int
+     */
     public function resetRecoveryCode()
     {
         return Yii::$app->db->createCommand()
@@ -271,12 +274,15 @@ class RestUserEntity extends User
         return true;
     }
 
+    /**
+     * Check user by email and get his data
+     * @param $email
+     * @return null|static
+     * @throws ServerErrorHttpException
+     */
     public function getUserByEmail($email)
     {
-
-        $restUser = RestUserEntity::findOne(['email' => $email]);
-
-        if (!$restUser) {
+        if (empty($restUser = RestUserEntity::findOne(['email' => $email]))) {
             throw new ServerErrorHttpException('Пользователя с таким email не существует, 
             пройдите процедуру регистрации.');
         }
@@ -284,12 +290,15 @@ class RestUserEntity extends User
         return $restUser;
     }
 
+    /**
+     * Check user by phone_number and get his data
+     * @param $phoneNumber
+     * @return null|static
+     * @throws ServerErrorHttpException
+     */
     public function getUserByPhoneNumber($phoneNumber)
     {
-
-        $restUser = RestUserEntity::findOne(['phone_number' => $phoneNumber]);
-
-        if (!$restUser) {
+        if (empty($restUser = RestUserEntity::findOne(['phone_number' => $phoneNumber]))) {
             throw new ServerErrorHttpException('Пользователя с таким номером телефона не существует, 
             пройдите процедуру регистрации.');
         }
@@ -297,6 +306,13 @@ class RestUserEntity extends User
         return $restUser;
     }
 
+    /**
+     * Recovery users password
+     * @param $postData
+     * @return bool
+     * @throws HttpException
+     * @throws ServerErrorHttpException
+     */
     public function recoveryCode($postData)
     {
 
@@ -305,7 +321,7 @@ class RestUserEntity extends User
         try{
             $this->setAttributes($postData);
 
-            if ($this->validate() and $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
+            if ($this->validate() && $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
                 return $this->save();
             }
         } catch (ExceptionDb $e) {
@@ -318,13 +334,19 @@ class RestUserEntity extends User
 
     }
 
+    /**
+     * Validate users recovery code
+     * @param $recoveryCode
+     * @param $createdRecoveryCode
+     * @param $postData
+     * @return bool
+     */
     public function checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData)
     {
         if ($recoveryCode != $postData) {
             $this->addError('recovery_code', 'Код восстановления неверен!');
             return false;
-        }elseif
-            (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
+        }elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
             $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
             return false;
         }
