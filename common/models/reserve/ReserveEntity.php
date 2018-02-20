@@ -12,7 +12,6 @@ use yii\behaviors\TimestampBehavior;
  * @property string $payment_system
  * @property string $currency
  * @property float $sum
- * @property string $image
  * @property integer $created_at
  * @property  integer $updated_at
  */
@@ -47,7 +46,6 @@ class ReserveEntity extends ActiveRecord
             'id'             => '#',
             'payment_system' => 'Платежная система',
             'currency'       => 'Валюта',
-            'image'          => 'Изображение',
             'sum'            => 'Сумма',
             'created_at'     => 'Дата создания',
             'updated_at'     => 'Дата изменения',
@@ -69,7 +67,6 @@ class ReserveEntity extends ActiveRecord
                 'range' => [self::PRIVAT24, self::SBERBANK, self::TINCOFF, self::WEB_MONEY, self::YANDEX_MONEY, self::QIWI]
             ],
             ['currency', 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]],
-            ['image', 'string'],
             [['created_at', 'updated_at'], 'safe'],
         ];
     }
