@@ -42,11 +42,11 @@ trait AuthorizationRepository
             if (!$user->validate()) {
                 return $this->throwModelException($user->errors);
             }
+            var_dump($user->save());exit;
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
             }
-
             $userProfile = new UserProfileEntity();
             $userProfile->setScenario(UserProfileEntity::SCENARIO_CREATE);
             $userProfile->setAttributes([

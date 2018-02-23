@@ -25,6 +25,8 @@ use Yii;
  * @property string $source_id
  * @property string $phone_number
  * @property integer $terms_condition
+ * @property string  $refresh_token
+ * @property integer $token_created_date
  * @property integer $created_at
  * @property integer $updated_at
  */
@@ -222,6 +224,7 @@ class RestUserEntity extends User
         if ($this->scenario == self::SCENARIO_REGISTER) {
             $this->role = self::ROLE_USER;
             $userRole = Yii::$app->authManager->getRole($this->role);
+            var_dump(1);exit;
             Yii::$app->authManager->assign($userRole, $this->getId());
         }
 

@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
+use rest\modules\api\v1\authorization\controllers\actions\authorization\GenerateNewAccessTokenAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
@@ -53,6 +54,10 @@ class AuthorizationController extends Controller
             ],
             'login-guest' => [
                 'class'      => LoginGuestAction::className(),
+                'modelClass' => $this->modelClass
+            ],
+            'generate-new-access-token' => [
+                'class'      => GenerateNewAccessTokenAction::className(),
                 'modelClass' => $this->modelClass
             ],
         ];
