@@ -3,7 +3,6 @@
 namespace common\models\wallet;
 
 use common\models\wallet\repositories\RestWalletRepository;
-use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
@@ -13,7 +12,6 @@ use yii\behaviors\TimestampBehavior;
  * @package common\models\wallet
  *
  * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  *
  * @property integer $id
  * @property integer $created_by
@@ -48,9 +46,8 @@ class WalletEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            'TimestampBehavior'               => TimestampBehavior::className(),
-            'ResponseBehavior'                => ResponseBehavior::className(),
-            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::className(),
+            ValidationExceptionFirstMessage::className(),
         ];
     }
 

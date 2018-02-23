@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\wallet\controllers;
 
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\wallet\controllers\actions\DeleteAction;
 use rest\modules\api\v1\wallet\controllers\actions\ListAction;
 use rest\modules\api\v1\wallet\controllers\actions\UpdateAction;
@@ -14,6 +15,8 @@ use rest\modules\api\v1\wallet\controllers\actions\CreateAction;
 /**
  * Class WalletController
  * @package rest\modules\api\v1\wallet\controllers
+ * 
+ * @mixin ResponseBehavior
  */
 class WalletController extends \yii\rest\Controller
 {
@@ -52,6 +55,8 @@ class WalletController extends \yii\rest\Controller
                 ],
             ],
         ];
+        
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }
