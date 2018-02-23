@@ -8,12 +8,12 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\base\Exception;
 use yii\rest\Action;
+use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
 
 /**
@@ -41,11 +41,14 @@ class PasswordRecovery extends Action
     public function run()
     {
         $email = Yii::$app->request->post('email');
+        $phoneNumber = \Yii::$app->request->post('phone_number');
         $user = new RestUserEntity();
         if (!empty($email)) {
             $user = $user->getUserByEmail($email);
         } elseif (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
+        } else {
+            throw new BadRequestHttpException('Укажите email или номер телефона.');
         }
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {

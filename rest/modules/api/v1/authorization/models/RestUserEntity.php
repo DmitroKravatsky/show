@@ -315,7 +315,6 @@ class RestUserEntity extends User
      */
     public function recoveryCode($postData)
     {
-
         $recoveryCode = $this->recovery_code;
         $createdRecoveryCode = $this->created_recovery_code;
         try{
@@ -331,7 +330,6 @@ class RestUserEntity extends User
             throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
         }
         throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
-
     }
 
     /**
@@ -341,7 +339,7 @@ class RestUserEntity extends User
      * @param $postData
      * @return bool
      */
-    public function checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData)
+    public function checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData)
     {
         if ($recoveryCode != $postData) {
             $this->addError('recovery_code', 'Код восстановления неверен!');
