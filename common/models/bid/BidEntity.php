@@ -5,7 +5,6 @@ namespace common\models\bid;
 use common\models\{
     bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity
 };
-use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use Yii;
@@ -13,9 +12,8 @@ use Yii;
 /**
  * Class BidEntity
  * @package common\models\bid
- * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  *
+ * @mixin ValidationExceptionFirstMessage
  * @property integer $id
  * @property integer $created_by
  * @property string $name
@@ -168,9 +166,8 @@ class BidEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            'TimestampBehavior'               => TimestampBehavior::className(),
-            'ResponseBehavior'                => ResponseBehavior::className(),
-            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::className(),
+            ValidationExceptionFirstMessage::className(),
         ];
     }
 
