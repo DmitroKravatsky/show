@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\reserve\controllers;
 
 use common\models\reserve\ReserveEntity;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
 use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
@@ -10,6 +11,8 @@ use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
 /**
  * Class ReserveController
  * @package rest\modules\api\v1\reserve\controllers
+ * 
+ * @mixin ResponseBehavior
  */
 class ReserveController extends \yii\rest\Controller
 {
@@ -31,6 +34,8 @@ class ReserveController extends \yii\rest\Controller
                 'list'   => ['GET'],
             ]
         ];
+        
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }

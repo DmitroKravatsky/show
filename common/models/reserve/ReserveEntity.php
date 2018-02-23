@@ -3,7 +3,6 @@
 namespace common\models\reserve;
 
 use common\models\reserve\repositories\RestReserveRepository;
-use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
@@ -13,7 +12,6 @@ use yii\behaviors\TimestampBehavior;
  * @package common\models\reserve
  *
  * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  *
  * @property integer $id
  * @property string $payment_system
@@ -87,7 +85,6 @@ class ReserveEntity extends ActiveRecord
     {
         return [
             TimestampBehavior::className(),
-            ResponseBehavior::className(),
             ValidationExceptionFirstMessage::className(),
         ];
     }

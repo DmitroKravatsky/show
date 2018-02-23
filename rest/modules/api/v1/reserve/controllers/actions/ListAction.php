@@ -11,7 +11,10 @@ use Yii;
  */
 class ListAction extends \yii\rest\Action
 {
-    public function run()
+    /**
+     * @return array
+     */
+    public function run(): array
     {
         /** @var ReserveEntity $reserve */
         $reserve = new $this->modelClass;
