@@ -3,8 +3,6 @@
 namespace common\models\userProfile\repositories;
 
 use common\models\userProfile\UserProfileEntity;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -19,6 +17,7 @@ trait RestUserProfileRepository
 {
     /**
      * Returns User attribute values
+     * 
      * @return array
      * @throws NotFoundHttpException
      */
@@ -34,12 +33,12 @@ trait RestUserProfileRepository
 
     /**
      * @param $params
-     * @return array|bool
+     * @return UserProfileEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function updateProfile($params)
+    public function updateProfile($params): UserProfileEntity
     {
         $transaction = Yii::$app->db->beginTransaction();
         
@@ -47,19 +46,19 @@ trait RestUserProfileRepository
             $user = RestUserEntity::findOne(Yii::$app->user->id);
             $user->setAttributes($params);
             if (!$user->validate()) {
-                return (new ValidationExceptionFirstMessage)->throwModelException($user->errors);
+                $this->throwModelException($user->errors);
             }
 
             $userProfile = UserProfileEntity::findOne(['user_id' => $user->id]);
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
             $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
-                return (new ValidationExceptionFirstMessage)->throwModelException($userProfile->errors);
+                $this->throwModelException($userProfile->errors);
             }
 
             if ($user->save() && $userProfile->save()) {
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(200, Yii::t('app', 'Профиль успешно изменён.'));
+                return $userProfile;
             }
 
             throw new ServerErrorHttpException;

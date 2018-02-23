@@ -113,7 +113,8 @@ trait AuthorizationRepository
 
     /**
      * @param $params
-     * @return mixed
+     * @return bool
+     * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
     public function updatePassword($params)
@@ -129,10 +130,10 @@ trait AuthorizationRepository
         $userModel->password = $params['new_password'];
 
         if ($userModel->save(false)) {
-            return $this->setResponse(200, 'Пароль успешно изменён.');
+            return true;
         }
         
-        return $this->throwModelException($userModel->errors);
+        $this->throwModelException($userModel->errors);
     }
 
     /**

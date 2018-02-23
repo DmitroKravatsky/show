@@ -12,8 +12,8 @@ use yii\db\ActiveRecord;
 /**
  * Class UserNotificationsEntity
  * @package common\models\userNotifications
+ *
  * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  * @property integer $id
  * @property integer $recipient_id
  * @property string $text
@@ -77,7 +77,6 @@ class UserNotificationsEntity extends ActiveRecord
     {
         return [
             'TimestampBehavior'               => TimestampBehavior::className(),
-            'ResponseBehavior'                => ResponseBehavior::className(),
             'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
         ];
     }

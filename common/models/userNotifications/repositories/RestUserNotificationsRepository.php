@@ -41,20 +41,17 @@ trait RestUserNotificationsRepository
 
     /**
      * @param $id
-     * @return array
+     * @return bool
      * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteNotify($id): array
+    public function deleteNotify($id): bool
     {
-        $userNotificationsModel = $this->findModel(['id' => $id, 'recipient_id' => Yii::$app->user->id]);
-
+        $userNotificationsModel = $this->findModel(['id' => (int) $id, 'recipient_id' => Yii::$app->user->id]);
         if ($userNotificationsModel->delete()) {
-            return $this->setResponse(200, 'Уведомление успешно удалено.');
+            return true;
         }
-        
-        throw new ServerErrorHttpException('Произошла оибка при удалении уведомления.');
+        return false;
     }
 
     /**
