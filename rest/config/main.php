@@ -35,6 +35,9 @@ return [
                         'review' => [
                             'class' => 'rest\modules\api\v1\review\Module'
                         ],
+                        'wallet' => [
+                            'class' => 'rest\modules\api\v1\wallet\Module'
+                        ],
                     ],
                 ],
             ],

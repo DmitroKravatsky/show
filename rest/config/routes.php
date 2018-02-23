@@ -50,6 +50,7 @@ return [
         'patterns'   => [
             'GET'      => 'list',
             'PUT {id}' => 'update',
+            'POST'     => 'create',
         ],
     ],
     /** Social Authorization */
@@ -95,6 +96,21 @@ return [
             'PUT {id}'    => 'update',
             'GET list'    => 'list',
             'DELETE {id}' => 'delete',
+        ],
+    ],
+    /** Wallet */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'wallet' => 'api/v1/wallet/wallet',
+        ],
+        'patterns'   => [
+            'POST'        => 'create',
+            'PUT {id}'    => 'update',
+            'GET list'    => 'list',
+            'DELETE {id}' => 'delete',
+            'GET'         => 'list'
         ],
     ],
 ];

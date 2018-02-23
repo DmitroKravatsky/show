@@ -54,7 +54,8 @@
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"order": [
 				"5514ad68-6e3a-9f76-c694-1ccc8d93aedd",
-				"318fc31b-3a13-1f83-8e35-bc8a7bf01a94"
+				"318fc31b-3a13-1f83-8e35-bc8a7bf01a94",
+				"5a1de10c-3be4-2a7a-96f5-9fcb109f628d"
 			],
 			"owner": "2101684",
 			"folders_order": [],
@@ -107,6 +108,20 @@
 			"folders_order": [],
 			"auth": null,
 			"id": "1baa4021-527b-58c3-085e-5544acde217a"
+		},
+		{
+			"name": "wallet",
+			"description": "",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"order": [
+				"e9c5f8f6-036b-a097-d1ed-1fb5503fba12",
+				"c9262c5d-98a4-1709-2814-6ad3478fda70",
+				"e642ea56-28ac-9153-8b46-59c6a8a7b2db",
+				"7607612f-96d6-6476-4f0c-306ba030ed10"
+			],
+			"owner": "2101684",
+			"folders_order": [],
+			"id": "b183de6c-34aa-6015-b885-b2da152e991d"
 		}
 	],
 	"folders_order": [
@@ -114,7 +129,8 @@
 		"1baa4021-527b-58c3-085e-5544acde217a",
 		"eb47b84b-636b-7473-8e17-9c478fc8b8df",
 		"1174a2ef-0820-6d85-3c73-8e370e454813",
-		"427ea829-6d74-b531-1b02-e4b520dedc57"
+		"427ea829-6d74-b531-1b02-e4b520dedc57",
+		"b183de6c-34aa-6015-b885-b2da152e991d"
 	],
 	"timestamp": 1516630267051,
 	"owner": "2101684",
@@ -388,6 +404,38 @@
 			"rawModeData": ""
 		},
 		{
+			"id": "5a1de10c-3be4-2a7a-96f5-9fcb109f628d",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/reserve",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/reserve",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1519129376124,
+			"version": 2,
+			"responses": [],
+			"folder": "1174a2ef-0820-6d85-3c73-8e370e454813",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"payment_system\": \"yandex_money\",\n\t\"currency\": \"rub\",\n\t\"sum\": \"100\"\n}"
+		},
+		{
 			"id": "70d449bd-1f07-b130-66ba-67b692b0473d",
 			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}}\n",
 			"headerData": [
@@ -468,6 +516,44 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"name\": \"John\",\n\t\"last_name\": \"Smith\",\n\t\"phone_number\": \"+79789797123\",\n\t\"email\": \"email@mail.ru\"\n}"
+		},
+		{
+			"id": "7607612f-96d6-6476-4f0c-306ba030ed10",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}} \n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/wallet/{{id}}",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "DELETE",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/wallet",
+			"description": "Deletes an existing Wallet model",
+			"descriptionFormat": "html",
+			"time": 1519035523767,
+			"version": 2,
+			"responses": [],
+			"folder": "b183de6c-34aa-6015-b885-b2da152e991d",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
 		},
 		{
 			"id": "78ee6bcb-cd9e-8bbf-2cb3-d2a16887fe79",
@@ -650,9 +736,16 @@
 					"value": "application/json",
 					"description": "",
 					"enabled": true
+				},
+				{
+					"key": "",
+					"value": "",
+					"description": "",
+					"enabled": false
 				}
 			],
 			"url": "dev.ratkus.biz.ua/api/v1/authorization/authorization/login-guest",
+			"folder": "6da7e4c4-7534-12a1-c119-5f4ccb2aee6c",
 			"queryParams": [],
 			"events": [],
 			"pathVariables": {},
@@ -808,6 +901,44 @@
 			"helperAttributes": null
 		},
 		{
+			"id": "c9262c5d-98a4-1709-2814-6ad3478fda70",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}} \n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/wallet",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/wallet",
+			"description": "Creates a new Wallet model",
+			"descriptionFormat": "html",
+			"time": 1519035396290,
+			"version": 2,
+			"responses": [],
+			"folder": "b183de6c-34aa-6015-b885-b2da152e991d",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"name\": \"Мой первый кошелек\",\n\t\"number\": \"1234 1234 1234 1234\",\n\t\"payment_system\": \"yandex_money\"\n}"
+		},
+		{
 			"id": "c93c88a0-a30a-2853-9c6a-eb4a3db873de",
 			"headers": "Content-Type: application/json\n",
 			"headerData": [
@@ -868,6 +999,82 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": "{\n\t\"token\": \"EAACEdEose0cBAPISZCEKTpWuAyBhOnomdOsdvamfPUOSSXO9BoDodU5aZBVr059ZAgHf3yuTvRzkLA5zKtvtCbodNd3A3YC1dyAzlFWTZAqaooZAtUhhbqJaGNHZASkM0ux5fLVWxIhBijgJlygMw32nCwGlBxClxpLnmWWz1ieZAGk10YxWMudmQUm9EaGZBoPIflUEgVdccFA8RPjJw2Y2DZBUWIlfA1OR2wZD\"\n}"
+		},
+		{
+			"id": "e642ea56-28ac-9153-8b46-59c6a8a7b2db",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}} \n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/wallet/{{id}}",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "PUT",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/wallet",
+			"description": "Updates an existing Wallet model",
+			"descriptionFormat": "html",
+			"time": 1519035447216,
+			"version": 2,
+			"responses": [],
+			"folder": "b183de6c-34aa-6015-b885-b2da152e991d",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"name\": \"Мой первый кошелек\",\n\t\"number\": \"1234 1234 1234 1234\",\n\t\"payment_system\": \"yandex_money\"\n}"
+		},
+		{
+			"id": "e9c5f8f6-036b-a097-d1ed-1fb5503fba12",
+			"headers": "Content-Type: application/json\nAuthorization: Bearer {{access_token}} \n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				},
+				{
+					"key": "Authorization",
+					"value": "Bearer {{access_token}}",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/wallet",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "GET",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/wallet",
+			"description": "Lists all wallet models",
+			"descriptionFormat": "html",
+			"time": 1519035278329,
+			"version": 2,
+			"responses": [],
+			"folder": "b183de6c-34aa-6015-b885-b2da152e991d",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": ""
 		},
 		{
 			"id": "ef07ccc9-1ba0-3502-2843-b074b6a54f8a",
