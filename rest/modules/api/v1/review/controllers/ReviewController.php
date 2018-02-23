@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\review\controllers;
 
 use common\models\review\ReviewEntity;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\review\controllers\actions\DeleteAction;
 use rest\modules\api\v1\review\controllers\actions\ListAction;
 use rest\modules\api\v1\review\controllers\actions\UpdateAction;
@@ -14,6 +15,8 @@ use yii\filters\auth\HttpBearerAuth;
 /**
  * Class ReviewController
  * @package rest\modules\api\v1\review\controllers
+ *
+ * @mixin ResponseBehavior
  */
 class ReviewController extends Controller
 {
@@ -43,6 +46,8 @@ class ReviewController extends Controller
             'class' => HttpBearerAuth::className(),
             'only'  => ['create', 'update', 'delete'],
         ];
+
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }
