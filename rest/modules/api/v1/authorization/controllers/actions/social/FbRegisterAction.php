@@ -3,16 +3,21 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
+use rest\modules\api\v1\authorization\controllers\SocialController;
 use yii\rest\Action;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 
 /**
  * Class FbRegisterAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
  * @mixin ValidatePostParameters
  */
 class FbRegisterAction extends Action
 {
+    /** @var  SocialController */
+    public $controller;
+    
     /**
      * @var array
      */
@@ -44,15 +49,18 @@ class FbRegisterAction extends Action
     }
 
     /**
-     * @return array|bool
+     * @return array
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run()
+    public function run(): array
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
-
-        return $userModel->fbRegister(\Yii::$app->request->bodyParams);
+        /** @var RestUserEntity $model */
+        $model = new $this->modelClass;
+        $user = $model->fbRegister(\Yii::$app->request->bodyParams);
+        
+        return $this->controller->setResponse(
+            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+        );
     }
 }

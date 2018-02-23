@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
+use rest\modules\api\v1\authorization\controllers\SocialController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
@@ -13,6 +14,9 @@ use yii\rest\Action;
  */
 class GmailRegisterAction extends Action
 {
+    /** @var  SocialController */
+    public $controller;
+    
     /**
      * @var array
      */
@@ -50,9 +54,12 @@ class GmailRegisterAction extends Action
      */
     public function run()
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
+        /** @var RestUserEntity $model */
+        $model = new $this->modelClass;
+        $user = $model->gmailRegister(\Yii::$app->request->bodyParams);
 
-        return $userModel->gmailRegister(\Yii::$app->request->bodyParams);
+        return $this->controller->setResponse(
+            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+        );
     }
 }

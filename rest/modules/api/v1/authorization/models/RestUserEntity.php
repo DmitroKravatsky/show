@@ -2,7 +2,6 @@
 
 namespace rest\modules\api\v1\authorization\models;
 
-use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
@@ -13,8 +12,8 @@ use Yii;
 
 /**
  * Class RestUserEntity
+ * 
  * @mixin ValidationExceptionFirstMessage
- * @mixin ResponseBehavior
  * @package rest\modules\api\v1\authorization\models
  * @property integer $id
  * @property string $password
@@ -108,7 +107,6 @@ class RestUserEntity extends User
         $behaviors = parent::behaviors();
 
         $behaviors['timestampBehavior'] = TimestampBehavior::className();
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
         $behaviors['validationExceptionFirstMessage'] = ValidationExceptionFirstMessage::className();
 
         return $behaviors;

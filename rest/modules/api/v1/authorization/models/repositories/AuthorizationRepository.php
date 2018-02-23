@@ -7,7 +7,6 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
-use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
@@ -18,7 +17,7 @@ trait AuthorizationRepository
 {
     /**
      * @param $params
-     * @return array|bool
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
@@ -61,23 +60,21 @@ trait AuthorizationRepository
             }
 
             $transaction->commit();
-            return $this->setResponse(
-                201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-            );
+            return $user;
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
+            Yii::error($e->getMessage());
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
     }
 
     /**
      * @param $params
-     * @return mixed
+     * @return null|AuthorizationRepository|RestUserEntity
      * @throws NotFoundHttpException
-     * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
      */
     public function login($params)
@@ -85,20 +82,17 @@ trait AuthorizationRepository
         $user = new self();
         $user->setScenario(self::SCENARIO_LOGIN);
         $user->setAttributes($params);
-
         if (!$user->validate()) {
-            return $this->throwModelException($user->errors);
+            $this->throwModelException($user->errors);
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUser($params);
-
+        $user = $this->getUserByParams($params);
         if ($user->validatePassword($params['password'])) {
-            return $this->setResponse(
-                200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+            return $user;
         }
 
-        throw new UnauthorizedHttpException('Ошибка авторизации.');
+        return null;
     }
 
     /**
@@ -106,7 +100,7 @@ trait AuthorizationRepository
      * @return mixed
      * @throws NotFoundHttpException
      */
-    protected function getUser($params)
+    protected function getUserByParams($params)
     {
         if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
             return $user;
@@ -142,20 +136,17 @@ trait AuthorizationRepository
     }
 
     /**
-     * @return mixed
-     * @throws UnauthorizedHttpException
+     * @return null|RestUserEntity
+     * @throws NotFoundHttpException
      */
     public function loginGuest()
     {
         /** @var RestUserEntity $userModel */
-        $userModel = $this->getUser(['email' => Yii::$app->params['guest-email']]);
-
+        $userModel = $this->getUserByParams(['email' => Yii::$app->params['guest-email']]);
         if ($userModel && $userModel->validatePassword(Yii::$app->params['guest-password'])) {
-            return $this->setResponse(
-                200, 'Авторизация прошла успешно.', ['access_token' => $userModel->getJWT(['user_id' => $userModel->id])]);
+            return $userModel;
         }
-
-        throw new UnauthorizedHttpException('Ошибка авторизации.');
+        return null;
     }
 
     /**

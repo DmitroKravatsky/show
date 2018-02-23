@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
+use rest\modules\api\v1\authorization\controllers\SocialController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
@@ -13,6 +14,9 @@ use yii\rest\Action;
  */
 class FbLoginAction extends Action
 {
+    /** @var  SocialController */
+    public $controller;
+    
     /**
      * @var array
      */
@@ -50,9 +54,12 @@ class FbLoginAction extends Action
      */
     public function run(): array
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
+        /** @var RestUserEntity $model */
+        $model = new $this->modelClass;
+        $user = $model->fbLogin(\Yii::$app->request->post('token'));
 
-        return $userModel->fbLogin(\Yii::$app->request->post('token'));
+        return $this->controller->setResponse(
+            200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+        );
     }
 }

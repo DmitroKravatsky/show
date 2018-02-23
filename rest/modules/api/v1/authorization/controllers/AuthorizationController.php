@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
@@ -12,6 +13,8 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 /**
  * Class AuthorizationController
  * @package rest\modules\api\v1\authorization\controllers
+ *
+ * @mixin ResponseBehavior
  */
 class AuthorizationController extends Controller
 {
@@ -33,6 +36,8 @@ class AuthorizationController extends Controller
                 'login-guest' => ['POST'],
             ]
         ];
+
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }

@@ -2,8 +2,13 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
+use yii\web\NotFoundHttpException;
+use yii\web\UnauthorizedHttpException;
+use yii\web\UnprocessableEntityHttpException;
+use Yii;
 
 /**
  * Class LoginAction
@@ -11,16 +16,36 @@ use yii\rest\Action;
  */
 class LoginAction extends Action
 {
+    /** @var  AuthorizationController */
+    public $controller;
+
     /**
      * Login action
+     *
      * @return array
-     * @throws \yii\web\UnauthorizedHttpException
+     * @throws NotFoundHttpException
+     * @throws UnauthorizedHttpException
+     * @throws UnprocessableEntityHttpException
      */
-    public function run(): array
+    public function run()
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
+        try {
+            /** @var RestUserEntity $userModel */
+            $userModel = new $this->modelClass;
 
-        return $userModel->login(\Yii::$app->request->bodyParams);
+            if ($user = $userModel->login(Yii::$app->request->bodyParams)) {
+                return $this->controller->setResponse(
+                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+            }
+
+            throw new UnauthorizedHttpException();
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            throw new UnauthorizedHttpException('Ошибка авторизации.');
+        }
     }
 }

@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 
 /**
@@ -10,17 +11,24 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
  */
 class RegisterAction extends \yii\rest\Action
 {
+    /** @var  AuthorizationController */
+    public $controller;
+
     /**
      * Register User action
-     * @return array|bool
+     * 
+     * @return array
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
     public function run()
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
+        /** @var RestUserEntity $model */
+        $model = new $this->modelClass;
+        $user = $model->register(\Yii::$app->request->bodyParams);
 
-        return $userModel->register(\Yii::$app->request->bodyParams);
+        return $this->controller->setResponse(
+            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+        );
     }
 }
