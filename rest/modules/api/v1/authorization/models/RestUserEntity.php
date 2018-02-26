@@ -344,7 +344,7 @@ class RestUserEntity extends User
         if ($recoveryCode != $postData) {
             $this->addError('recovery_code', 'Код восстановления неверен!');
             return false;
-        }elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
+        } elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
             $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
             return false;
         }

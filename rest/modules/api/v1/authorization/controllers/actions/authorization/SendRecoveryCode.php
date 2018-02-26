@@ -63,7 +63,7 @@ class SendRecoveryCode extends Action
                 'Востановление пароля'
             );
         } elseif (!empty($phoneNumber)) {
-            Yii::$app->sendSms->run('Ваш код востановления пароля ,'. $user->recovery_code.' он будет активен в течении часа',
+            Yii::$app->sendSms->run('Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
                 $phoneNumber
             );
         }
