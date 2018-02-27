@@ -26,23 +26,25 @@ trait AuthorizationRepository
     public function register($params)
     {
         $transaction = Yii::$app->db->beginTransaction();
+        $refresh_token = \Yii::$app->security->generateRandomString(100);
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
-                'source'           => self::NATIVE,
-                'phone_number'     => $params['phone_number'] ?? null,
-                'email'            => $params['email'] ?? null,
-                'terms_condition'  => $params['terms_condition'] ?? 0,
-                'password'         => $params['password'] ?? null,
-                'confirm_password' => $params['confirm_password'] ?? null,
+                'source'             => self::NATIVE,
+                'phone_number'       => $params['phone_number'] ?? null,
+                'email'              => $params['email'] ?? null,
+                'terms_condition'    => $params['terms_condition'] ?? 0,
+                'password'           => $params['password'] ?? null,
+                'confirm_password'   => $params['confirm_password'] ?? null,
+                'refresh_token'      => $refresh_token,
+                'token_created_date' => time(),
             ]);
 
             if (!$user->validate()) {
                 return $this->throwModelException($user->errors);
             }
-            var_dump($user->save());exit;
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
@@ -62,7 +64,10 @@ trait AuthorizationRepository
 
             $transaction->commit();
             return $this->setResponse(
-                201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+                201, 'Регистрация прошла успешно.', [
+                    'access_token'  => $user->getJWT(),
+                    'refresh_token' => $refresh_token
+                ]
             );
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();

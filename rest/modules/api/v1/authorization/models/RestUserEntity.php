@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\models;
 
+use PHPUnit\Util\Blacklist;
 use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
@@ -88,7 +89,8 @@ class RestUserEntity extends User
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role'
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'refresh_token', 'token_created_date'
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
@@ -123,6 +125,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
+            ['token_created_date', 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
@@ -182,7 +185,7 @@ class RestUserEntity extends User
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'refresh_token'], 'safe'],
         ];
     }
 
@@ -224,7 +227,6 @@ class RestUserEntity extends User
         if ($this->scenario == self::SCENARIO_REGISTER) {
             $this->role = self::ROLE_USER;
             $userRole = Yii::$app->authManager->getRole($this->role);
-            var_dump(1);exit;
             Yii::$app->authManager->assign($userRole, $this->getId());
         }
 
@@ -243,5 +245,36 @@ class RestUserEntity extends User
         }
 
         return true;
+    }
+
+    /**
+     * Method adds token if it isn there yet
+     * @param $token
+     * @return bool
+     */
+    public function addBlackListToken($token)
+    {
+        if (BlockToken::findOne(['token' => $token])) {
+            return true;
+        }
+        $blockedToken = new BlockToken();
+        $blockedToken->setScenario(BlockToken::SCENARIO_CREATE_BLOCK);
+
+        $blockedToken->setAttributes([
+            'user_id'    => self::getPayload($token,'jti'),
+            'expired_at' => self::getPayload($token,'exp'),
+            'token'      => $token
+        ]);
+        return $blockedToken->save();
+    }
+
+    /**
+     *
+     * @param $userId
+     * @return mixed
+     */
+    public function getUserRole($userId)
+    {
+        return current(Yii::$app->authManager->getRolesByUser($userId))->name;
     }
 }

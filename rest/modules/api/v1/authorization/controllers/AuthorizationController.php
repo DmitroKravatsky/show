@@ -32,6 +32,7 @@ class AuthorizationController extends Controller
                 'register'    => ['POST'],
                 'login'       => ['POST'],
                 'login-guest' => ['POST'],
+                'generate-new-access-token' => ['POST'],
             ]
         ];
 

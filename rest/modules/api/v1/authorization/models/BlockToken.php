@@ -9,6 +9,7 @@
 namespace rest\modules\api\v1\authorization\models;
 
 
+use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 
 /**
