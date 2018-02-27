@@ -3,13 +3,15 @@
 namespace common\models\userProfile;
 
 use common\models\userProfile\repositories\RestUserProfileRepository;
+use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
 /**
  * Class UserProfileEntity
  * @package common\models\userProfile
- * 
+ *
+ * @mixin ValidationExceptionFirstMessage
  * @property integer $id
  * @property integer $user_id
  * @property string $name
@@ -71,6 +73,7 @@ class UserProfileEntity extends ActiveRecord
     {
         return [
             TimestampBehavior::className(),
+            ValidationExceptionFirstMessage::className(),
         ];
     }
 

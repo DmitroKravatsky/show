@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\bid\controllers;
 
 use common\models\bid\BidEntity;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
@@ -11,6 +12,8 @@ use yii\filters\auth\HttpBearerAuth;
 /**
  * Class BidController
  * @package rest\modules\api\v1\bid\controllers
+ *
+ * @mixin ResponseBehavior
  */
 class BidController extends \yii\rest\Controller
 {
@@ -38,6 +41,8 @@ class BidController extends \yii\rest\Controller
                 'detail' => ['get'],
             ]
         ];
+
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }

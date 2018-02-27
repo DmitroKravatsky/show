@@ -3,8 +3,10 @@
 namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\models\bid\BidEntity;
+use rest\modules\api\v1\bid\controllers\BidController;
 use yii\web\ServerErrorHttpException;
 use Yii;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class CreateAction
@@ -12,14 +14,29 @@ use Yii;
  */
 class CreateAction extends \yii\rest\Action
 {
+    /** @var  BidController */
+    public $controller;
+
     /**
-     * @return mixed
+     * Creates a new Bid model
+     *
+     * @return array
      * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
      */
-    public function run()
+    public function run(): array
     {
-        /** @var BidEntity $bid */
-        $bid = new $this->modelClass;
-        return $bid->createBid();
+        try {
+            /** @var BidEntity $bid */
+            $bid = new $this->modelClass;
+            $bid = $bid->createBid();
+
+            return $this->controller->setResponse(201, Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при создании заявки.'));
+        }
     }
 }

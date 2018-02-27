@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
+use rest\modules\api\v1\authorization\controllers\SocialController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use common\behaviors\ValidatePostParameters;
@@ -13,6 +14,9 @@ use common\behaviors\ValidatePostParameters;
  */
 class GmailLoginAction extends Action
 {
+    /** @var  SocialController */
+    public $controller;
+    
     /**
      * @var array
      */
@@ -50,9 +54,12 @@ class GmailLoginAction extends Action
      */
     public function run(): array
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
+        /** @var RestUserEntity $model */
+        $model = new $this->modelClass;
+        $user = $model->gmailLogin(\Yii::$app->request->post('token'));
 
-        return $userModel->gmailLogin(\Yii::$app->request->post('token'));
+        return $this->controller->setResponse(
+            200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+        );
     }
 }

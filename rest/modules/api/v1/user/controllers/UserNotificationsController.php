@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userNotifications\UserNotificationsEntity;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\user\controllers\actions\notifications\DeleteAction;
 use rest\modules\api\v1\user\controllers\actions\notifications\ListAction;
 use yii\rest\Controller;
@@ -12,6 +13,8 @@ use yii\filters\VerbFilter;
 /**
  * Class UserNotificationsController
  * @package rest\modules\api\v1\user\controllers
+ * 
+ * @mixin ResponseBehavior
  */
 class UserNotificationsController extends Controller
 {
@@ -35,6 +38,8 @@ class UserNotificationsController extends Controller
                 'delete' => ['DELETE'],
             ]
         ];
+        
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }

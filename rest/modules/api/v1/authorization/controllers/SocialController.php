@@ -7,10 +7,13 @@ use rest\modules\api\v1\authorization\controllers\actions\social\{
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
+use rest\behaviors\ResponseBehavior;
 
 /**
  * Class SocialController
  * @package rest\modules\api\v1\authorization\controllers
+ *
+ * @mixin ResponseBehavior
  */
 class SocialController extends \yii\rest\Controller
 {
@@ -35,6 +38,8 @@ class SocialController extends \yii\rest\Controller
                 'fb-login'       => ['post'],
             ]
         ];
+
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
 
         return $behaviors;
     }

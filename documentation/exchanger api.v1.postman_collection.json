@@ -54,7 +54,8 @@
 			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
 			"order": [
 				"5514ad68-6e3a-9f76-c694-1ccc8d93aedd",
-				"318fc31b-3a13-1f83-8e35-bc8a7bf01a94"
+				"318fc31b-3a13-1f83-8e35-bc8a7bf01a94",
+				"5a1de10c-3be4-2a7a-96f5-9fcb109f628d"
 			],
 			"owner": "2101684",
 			"folders_order": [],
@@ -401,6 +402,38 @@
 			"currentHelper": null,
 			"helperAttributes": null,
 			"rawModeData": ""
+		},
+		{
+			"id": "5a1de10c-3be4-2a7a-96f5-9fcb109f628d",
+			"headers": "Content-Type: application/json\n",
+			"headerData": [
+				{
+					"key": "Content-Type",
+					"value": "application/json",
+					"description": "",
+					"enabled": true
+				}
+			],
+			"url": "dev.ratkus.biz.ua/api/v1/reserve",
+			"queryParams": [],
+			"pathVariables": {},
+			"pathVariableData": [],
+			"events": [],
+			"auth": null,
+			"method": "POST",
+			"collectionId": "9c031674-346c-48e1-a528-4a60d937fc1a",
+			"data": [],
+			"dataMode": "raw",
+			"name": "/api/v1/reserve",
+			"description": "",
+			"descriptionFormat": "html",
+			"time": 1519129376124,
+			"version": 2,
+			"responses": [],
+			"folder": "1174a2ef-0820-6d85-3c73-8e370e454813",
+			"currentHelper": null,
+			"helperAttributes": null,
+			"rawModeData": "{\n\t\"payment_system\": \"yandex_money\",\n\t\"currency\": \"rub\",\n\t\"sum\": \"100\"\n}"
 		},
 		{
 			"id": "70d449bd-1f07-b130-66ba-67b692b0473d",

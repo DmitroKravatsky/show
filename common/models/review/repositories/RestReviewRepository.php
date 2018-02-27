@@ -7,7 +7,6 @@ use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
 use Yii;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestReviewRepository
@@ -17,10 +16,10 @@ trait RestReviewRepository
 {
     /**
      * @param $params
-     * @return mixed
+     * @return ReviewEntity
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function create($params)
+    public function create($params): ReviewEntity
     {
         $reviewModel = new self;
         $reviewModel->setAttributes($params);
@@ -28,26 +27,26 @@ trait RestReviewRepository
             $this->throwModelException($reviewModel->errors);
         }
 
-        return $this->setResponse(201, 'Отзыв успешно добавлен.', $reviewModel->getAttributes(['id', 'text']));
+        return $reviewModel;
     }
 
     /**
      * @param $id
      * @param $params
-     * @return mixed
+     * @return ReviewEntity
      * @throws NotFoundHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateReview($id, $params)
+    public function updateReview($id, $params): ReviewEntity
     {
-        $reviewModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        $reviewModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
         $reviewModel->setAttributes($params);
 
         if (!$reviewModel->save()) {
             $this->throwModelException($reviewModel->errors);
         }
 
-        return $this->setResponse(200, 'Отзыв успешно изменён.', $reviewModel->getAttributes(['id', 'text']));
+        return $reviewModel;
     }
 
     /**
@@ -75,19 +74,17 @@ trait RestReviewRepository
 
     /**
      * @param $id
-     * @return mixed
+     * @return bool
      * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteReview($id)
+    public function deleteReview($id): bool
     {
-        $reviewModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        $reviewModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
         if ($reviewModel->delete()) {
-            return $this->setResponse(200, 'Отзыв успешно удалён.');
+            return true;
         }
-
-        throw new ServerErrorHttpException('Произошла ошибка при удалении отзыва.');
+        return false;
     }
 
     /**

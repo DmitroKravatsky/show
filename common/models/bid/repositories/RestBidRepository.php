@@ -8,7 +8,6 @@ use yii\db\ActiveQuery;
 use Yii;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestBidRepository
@@ -58,11 +57,11 @@ trait RestBidRepository
 
     /**
      * @param $id
-     * @return mixed
+     * @return BidEntity
      * @throws NotFoundHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateBid($id)
+    public function updateBid($id): BidEntity
     {
         $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
         $bid->setScenario(BidEntity::SCENARIO_UPDATE);
@@ -72,43 +71,39 @@ trait RestBidRepository
             $this->throwModelException($bid->errors);
         }
 
-        return $this->setResponse(200, Yii::t('app', 'Заявка успешно изменена.'), $bid->getAttributes());
+        return $bid;
     }
 
     /**
      * @param $id
+     * @return bool
      * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteBid($id)
+    public function deleteBid($id): bool 
     {
         $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
         if ($bid->delete()) {
-            return $this->setResponse(200, Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
+           return true;
         }
-
-        throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при удалении заявки.'));
+        return false;
     }
 
     /**
-     * @return mixed
-     * @throws ServerErrorHttpException
+     * @return BidEntity
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function createBid()
+    public function createBid(): BidEntity
     {
         $bid = new self;
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
         $bid->setAttributes(Yii::$app->request->bodyParams);
 
-        if ($bid->save()) {
-            return $this->setResponse(201, Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
-        } elseif ($bid->hasErrors()) {
+        if (!$bid->save()) {
             $this->throwModelException($bid->errors);
         }
 
-        throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при добавлении заявки.'));
+        return $bid;
     }
 
     /**
@@ -116,7 +111,7 @@ trait RestBidRepository
      * @return BaseActiveRecord
      * @throws NotFoundHttpException
      */
-    public function findModel($params): BaseActiveRecord
+    protected function findModel($params): BaseActiveRecord
     {
         if (empty($bidModel = self::findOne($params))) {
             throw new NotFoundHttpException('Заявка не найдена');

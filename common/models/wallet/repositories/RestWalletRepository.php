@@ -7,7 +7,6 @@ use Yii;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestWalletRepository
@@ -16,11 +15,11 @@ use yii\web\ServerErrorHttpException;
 trait RestWalletRepository
 {
     /**
-     * @param array $params
-     * @return mixed
+     * @param $params
+     * @return WalletEntity
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function createWallet(array $params)
+    public function createWallet($params): WalletEntity
     {
         $walletModel = new WalletEntity();
         $walletModel->setAttributes($params);
@@ -29,55 +28,44 @@ trait RestWalletRepository
             $this->throwModelException($walletModel->errors);
         }
 
-        return $this->setResponse(
-            201,
-            'Шаблон кошелька успешно создан.',
-            $walletModel->getAttributes(['id', 'name', 'number', 'payment_system', 'created_at'])
-        );
-
+        return $walletModel;
     }
 
     /**
      * @param $id
-     * @return array
+     * @param $params
+     * @return WalletEntity
      * @throws NotFoundHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateWallet($id): array 
+    public function updateWallet($id, $params): WalletEntity
     {
         /** @var WalletEntity $walletModel */
-        $walletModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
-        $walletModel->setAttributes(Yii::$app->request->bodyParams);
+        $walletModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
+        $walletModel->setAttributes($params);
 
         if (!$walletModel->save()) {
             $this->throwModelException($walletModel->errors);
         }
 
-        return $this->setResponse(
-            200,
-            'Шаблон кошелька успешно изменён.',
-            $walletModel->getAttributes(['id', 'name', 'number', 'payment_system', 'created_at'])
-        );
+        return $walletModel;
     }
 
     /**
      * @param $id
-     * @return mixed
+     * @return bool
      * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
      * @throws \Exception
      * @throws \Throwable
      */
-    public function deleteWallet($id)
+    public function deleteWallet($id): bool
     {
         /** @var WalletEntity $walletModel */
-        $walletModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
-
+        $walletModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
         if ($walletModel->delete()) {
-            return $this->setResponse(200, 'Шаблон кошелька успешно удалён.', ['id' => $id]);
+            return true;
         }
-
-        throw new ServerErrorHttpException('Произошла ошибка при удалении шаблона кошелька.');
+        return false;
     }
 
     /**

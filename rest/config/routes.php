@@ -50,6 +50,7 @@ return [
         'patterns'   => [
             'GET'      => 'list',
             'PUT {id}' => 'update',
+            'POST'     => 'create',
         ],
     ],
     /** Social Authorization */
@@ -79,7 +80,9 @@ return [
             'POST register'                  => 'register',
             'POST login'                     => 'login',
             'POST login-guest'               => 'login-guest',
-            'POST generate-new-access-token' => 'generate-new-access-token'
+            'POST generate-new-access-token' => 'generate-new-access-token',
+            'POST password-recovery' => 'password-recovery',
+            'POST send-recovery-code' => 'send-recovery-code',
         ],
     ],
     /** Review */

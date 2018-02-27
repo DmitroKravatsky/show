@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
+use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
     GetProfileAction, UpdateAction, UpdatePasswordAction
@@ -10,10 +11,13 @@ use rest\modules\api\v1\user\controllers\actions\profile\{
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
+use yii\filters\AccessControl;
 
 /**
  * Class UserProfileController
  * @package rest\modules\api\v1\user\controllers
+ * 
+ * @mixin ResponseBehavior;
  */
 class UserProfileController extends Controller
 {
@@ -38,6 +42,18 @@ class UserProfileController extends Controller
                 'get-profile'     => ['get'],
                 'update-password' => ['put'],
             ]
+        ];
+        
+        $behaviors['responseBehavior'] = ResponseBehavior::className();
+
+        $behaviors['accessControl'] = [
+            'class' => AccessControl::className(),
+            'rules' => [
+                [
+                    'allow' => true,
+                    'roles' => ['user'],
+                ],
+            ],
         ];
         
         return $behaviors;

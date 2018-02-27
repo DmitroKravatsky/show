@@ -4,8 +4,6 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
-use rest\behaviors\ResponseBehavior;
-use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -21,14 +19,15 @@ trait SocialRepository
 {
     /**
      * Vk register
+     *
      * @param $params
-     * @return array|bool
+     * @return RestUserEntity
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function vkRegister($params)
+    public function vkRegister($params): RestUserEntity
     {
         if (!isset($params['email']) && !isset($params['phone_number'])) {
             throw new BadRequestHttpException('Необходимо заполнить «Email» или «Номер телефона».');
@@ -74,7 +73,7 @@ trait SocialRepository
                 $user->scenario = self::SCENARIO_REGISTER;
                 $user->setAttributes($data);
                 if (!$user->save()) {
-                    return $this->throwModelException($user->errors);
+                    $this->throwModelException($user->errors);
                 }
 
                 $userProfile = new UserProfileEntity();
@@ -87,13 +86,11 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return $this->throwModelException($userProfile->errors);
+                    $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
-                return $this->setResponse(
-                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-                );
+                return $user;
             }
 
             throw new ServerErrorHttpException;
@@ -101,6 +98,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
+            Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -108,12 +106,13 @@ trait SocialRepository
 
     /**
      * Vk authorization
+     *
      * @param $token
-     * @return array
+     * @return RestUserEntity
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function vkLogin($token)
+    public function vkLogin($token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -133,16 +132,7 @@ trait SocialRepository
                 if (isset($userData->error)) {
                     throw new ServerErrorHttpException;
                 }
-
-                $uid = array_shift($userData->response)->id;
-
-                if (empty($user = RestUserEntity::findOne(['source' => self::VK, 'source_id' => $uid]))) {
-                    throw new NotFoundHttpException;
-                }
-
-                return $this->setResponse(
-                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])
-                ]);
+                return $this->findModelByParams(['source' => self::VK, 'source_id' => array_shift($userData->response)->id]);
             }
             throw new ServerErrorHttpException;
         } catch (NotFoundHttpException $e) {
@@ -154,13 +144,14 @@ trait SocialRepository
 
     /**
      * Gmail register
+     *
      * @param $params
-     * @return array|bool
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function gmailRegister($params)
+    public function gmailRegister($params): RestUserEntity
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -192,7 +183,7 @@ trait SocialRepository
                 $user->setAttributes($data);
 
                 if (!$user->save()) {
-                    return $this->throwModelException($user->errors);
+                    $this->throwModelException($user->errors);
                 }
 
                 $userProfile = new UserProfileEntity();
@@ -205,13 +196,11 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return $this->throwModelException($userProfile->errors);
+                    $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
-                return (new ResponseBehavior())->setResponse(
-                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-                );
+                return $user;
             }
 
             $transaction->rollBack();
@@ -220,6 +209,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
+            Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -227,12 +217,13 @@ trait SocialRepository
 
     /**
      * Gmail authorization
+     *
      * @param $token
-     * @return array
+     * @return RestUserEntity
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function gmailLogin($token): array
+    public function gmailLogin($token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -248,14 +239,7 @@ trait SocialRepository
 
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
-
-                if (empty($user = RestUserEntity::findOne(['source' => self::GMAIL, 'source_id' => (string) $userData->id]))) {
-                    throw new NotFoundHttpException;
-                }
-
-                return $this->setResponse(
-                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-                );
+                return $this->findModelByParams(['source' => self::GMAIL, 'source_id' => (string) $userData->id]);
             }
 
             throw new ServerErrorHttpException;
@@ -268,13 +252,14 @@ trait SocialRepository
 
     /**
      * Facebook register
+     *
      * @param $params
-     * @return array|bool
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function fbRegister($params)
+    public function fbRegister($params): RestUserEntity
     {
         $transaction = Yii::$app->db->beginTransaction();
 
@@ -312,7 +297,7 @@ trait SocialRepository
                 $user->scenario = self::SCENARIO_REGISTER;
                 $user->setAttributes($data);
                 if (!$user->save()) {
-                    return (new ValidationExceptionFirstMessage())->throwModelException($user->errors);
+                    $this->throwModelException($user->errors);
                 }
 
                 $userProfile = new UserProfileEntity();
@@ -325,13 +310,11 @@ trait SocialRepository
                 ]);
 
                 if (!$userProfile->save()) {
-                    return $this->throwModelException($userProfile->errors);
+                    $this->throwModelException($userProfile->errors);
                 }
 
                 $transaction->commit();
-                return $this->setResponse(
-                    201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-                );
+                return $user;
             }
 
             $transaction->rollBack();
@@ -340,6 +323,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
+            Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -347,12 +331,13 @@ trait SocialRepository
 
     /**
      * Facebook login
+     *
      * @param $token
-     * @return array
+     * @return RestUserEntity
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function fbLogin($token): array
+    public function fbLogin($token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -370,21 +355,26 @@ trait SocialRepository
 
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
-
-                if (empty($user = RestUserEntity::findOne(['source' => self::FB, 'source_id' => (string) $userData->id]))) {
-                    throw new NotFoundHttpException;
-                }
-
-                return $this->setResponse(
-                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-                );
+                return $this->findModelByParams(['source' => self::FB, 'source_id' => (string) $userData->id]);
             }
-
             throw new ServerErrorHttpException;
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
         } catch (\Exception $e) {
             throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
+    }
+
+    /**
+     * @param $params
+     * @return null|static
+     * @throws NotFoundHttpException
+     */
+    protected function findModelByParams($params)
+    {
+        if (empty($user = RestUserEntity::findOne((array) $params))) {
+            throw new NotFoundHttpException();
+        }
+        return $user;
     }
 }
