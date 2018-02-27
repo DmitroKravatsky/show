@@ -5,7 +5,9 @@ namespace rest\modules\api\v1\authorization\controllers;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecovery;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -29,11 +31,13 @@ class AuthorizationController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class'   => VerbFilter::className(),
+            'class' => VerbFilter::className(),
             'actions' => [
-                'register'    => ['POST'],
-                'login'       => ['POST'],
+                'register' => ['POST'],
+                'login' => ['POST'],
                 'login-guest' => ['POST'],
+                'send-recovery-code' => ['post'],
+                'password-recovery' => ['post'],
             ]
         ];
 
@@ -49,15 +53,23 @@ class AuthorizationController extends Controller
     {
         return [
             'register' => [
-                'class'      => RegisterAction::class,
+                'class' => RegisterAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login' => [
-                'class'      => LoginAction::class,
+                'class' => LoginAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login-guest' => [
-                'class'      => LoginGuestAction::className(),
+                'class' => LoginGuestAction::className(),
+                'modelClass' => $this->modelClass
+            ],
+            'send-recovery-code' => [
+                'class' => SendRecoveryCode::class,
+                'modelClass' => $this->modelClass,
+            ],
+            'password-recovery' => [
+                'class' => PasswordRecovery::class,
                 'modelClass' => $this->modelClass
             ],
         ];

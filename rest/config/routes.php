@@ -79,7 +79,9 @@ return [
         'patterns'   => [
             'POST register'    => 'register',
             'POST login'       => 'login',
-            'POST login-guest' => 'login-guest'
+            'POST login-guest' => 'login-guest',
+            'POST password-recovery' => 'password-recovery',
+            'POST send-recovery-code' => 'send-recovery-code'
         ],
     ],
     /** Review */
