@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\models;
 
+use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
@@ -17,8 +18,9 @@ use yii\db\Exception as ExceptionDb;
 
 /**
  * Class RestUserEntity
- * 
+ *
  * @mixin ValidationExceptionFirstMessage
+ * @mixin ResponseBehavior
  * @package rest\modules\api\v1\authorization\models
  * @property integer $id
  * @property string $password
@@ -30,6 +32,8 @@ use yii\db\Exception as ExceptionDb;
  * @property string $source_id
  * @property string $phone_number
  * @property integer $terms_condition
+ * @property string  $refresh_token
+ * @property integer $token_created_date
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $recovery_code
@@ -85,6 +89,8 @@ class RestUserEntity extends User
             'updated_at'            => 'Дата изменения',
             'created_recovery_code' => 'Дата создания кода востановления',
             'recovery_code'         => 'Код востановления',
+            'refresh_token'         => 'Токен обновления',
+            'token_created_date'    => 'Дата создания токена доступа',
         ];
     }
 
@@ -96,7 +102,8 @@ class RestUserEntity extends User
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role'
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'refresh_token', 'token_created_date'
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
@@ -130,6 +137,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
+            ['token_created_date', 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
@@ -194,7 +202,7 @@ class RestUserEntity extends User
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
-            [['created_at', 'updated_at'], 'safe'],
+            [['created_at', 'updated_at', 'refresh_token'], 'safe'],
         ];
     }
 
@@ -347,5 +355,36 @@ class RestUserEntity extends User
             return false;
         }
         return true;
+    }
+
+    /**
+     * Method adds token if it isn there yet
+     * @param $token
+     * @return bool
+     */
+    public function addBlackListToken($token)
+    {
+        if (BlockToken::findOne(['token' => $token])) {
+            return true;
+        }
+        $blockedToken = new BlockToken();
+        $blockedToken->setScenario(BlockToken::SCENARIO_CREATE_BLOCK);
+
+        $blockedToken->setAttributes([
+            'user_id'    => self::getPayload($token, 'jti'),
+            'expired_at' => self::getPayload($token, 'exp'),
+            'token'      => $token
+        ]);
+        return $blockedToken->save();
+    }
+
+    /**
+     *
+     * @param $userId
+     * @return mixed
+     */
+    public function getUserRole($userId)
+    {
+        return current(Yii::$app->authManager->getRolesByUser($userId))->name;
     }
 }

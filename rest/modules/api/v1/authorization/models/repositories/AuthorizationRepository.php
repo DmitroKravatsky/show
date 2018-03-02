@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
+use yii\filters\auth\HttpBearerAuth;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
@@ -17,7 +18,7 @@ trait AuthorizationRepository
 {
     /**
      * @param $params
-     * @return RestUserEntity
+     * @return array|bool
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
@@ -25,17 +26,20 @@ trait AuthorizationRepository
     public function register($params)
     {
         $transaction = Yii::$app->db->beginTransaction();
+        $refresh_token = \Yii::$app->security->generateRandomString(100);
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
-                'source'           => self::NATIVE,
-                'phone_number'     => $params['phone_number'] ?? null,
-                'email'            => $params['email'] ?? null,
-                'terms_condition'  => $params['terms_condition'] ?? 0,
-                'password'         => $params['password'] ?? null,
-                'confirm_password' => $params['confirm_password'] ?? null,
+                'source'             => self::NATIVE,
+                'phone_number'       => $params['phone_number'] ?? null,
+                'email'              => $params['email'] ?? null,
+                'terms_condition'    => $params['terms_condition'] ?? 0,
+                'password'           => $params['password'] ?? null,
+                'confirm_password'   => $params['confirm_password'] ?? null,
+                'refresh_token'      => $refresh_token,
+                'token_created_date' => time(),
             ]);
 
             if (!$user->validate()) {
@@ -60,6 +64,7 @@ trait AuthorizationRepository
             }
 
             $transaction->commit();
+
             return $user;
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
@@ -157,5 +162,46 @@ trait AuthorizationRepository
     public function findByRole($roleName):array 
     {
         return Yii::$app->authManager->getUserIdsByRole($roleName);
+    }
+
+    public function generateNewAccessToken()
+    {
+        $oldAccessToken = $this->getAuthKey();
+        $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::className());
+        $userId = $userModel->id;
+        $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
+
+        $user = RestUserEntity::findOne(['refresh_token' => $currentRefreshToken, 'id' => $userId]);
+
+        if (!$user) {
+            throw new NotFoundHttpException('Пользователь с таким токеном не найден.');
+        }
+        $transaction = \Yii::$app->db->beginTransaction();
+        try {
+            $user->addBlackListToken($oldAccessToken);
+            $newAccessToken = $user->getJWT();
+
+            $transaction->commit();
+
+            return [
+                'access_token'  => $newAccessToken,
+                'refresh_token' => $user->refresh_token,
+                'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
+                'user' => [
+                    'id'         => $user->getId(),
+                    'email'      => $user->email,
+                    'role'       => $user->getUserRole($user->id),
+                    'created_at' => $user->created_at
+                ]
+            ];
+
+        } catch (ExceptionDb $e) {
+            $transaction->rollBack();
+            throw new HttpException(422, $e->getMessage());
+        } catch (Exception $e){
+            $transaction->rollBack();
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
+        }
     }
 }
