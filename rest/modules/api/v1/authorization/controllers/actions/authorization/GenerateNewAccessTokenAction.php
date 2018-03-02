@@ -43,22 +43,9 @@ class GenerateNewAccessTokenAction extends Action
     public function run()
     {
         $restUser = new $this->modelClass();
-        $restUser = $restUser->generateNewAccessToken();
-        $newAccessToken = $restUser->getJWT();
+        $responseData = $restUser->generateNewAccessToken();
 
-        return $this->setResponse(201, 'New token is created', [
-            'access_token'  => $newAccessToken,
-            'refresh_token' => $restUser->refresh_token,
-            'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
-            'user' => [
-                'id'         => $restUser->getId(),
-                'email'      => $restUser->email,
-                'role'       => $restUser->getUserRole($restUser->id),
-                'created_at' => $restUser->created_at
-            ]
-        ]);
-
-
+        return $this->setResponse(201, 'New token is created', $responseData);
     }
 
 }
