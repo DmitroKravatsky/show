@@ -371,8 +371,8 @@ class RestUserEntity extends User
         $blockedToken->setScenario(BlockToken::SCENARIO_CREATE_BLOCK);
 
         $blockedToken->setAttributes([
-            'user_id'    => self::getPayload($token,'jti'),
-            'expired_at' => self::getPayload($token,'exp'),
+            'user_id'    => self::getPayload($token, 'jti'),
+            'expired_at' => self::getPayload($token, 'exp'),
             'token'      => $token
         ]);
         return $blockedToken->save();
