@@ -179,21 +179,9 @@ trait AuthorizationRepository
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $user->addBlackListToken($oldAccessToken);
-            $newAccessToken = $user->getJWT();
-
             $transaction->commit();
+
             return $user;
-            return $this->setResponse(201, 'New token is created', [
-                'access_token'  => $newAccessToken,
-                'refresh_token' => $user->refresh_token,
-                'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
-                'user' => [
-                    'id'         => $user->getId(),
-                    'email'      => $user->email,
-                    'role'       => $user->getUserRole($user->id),
-                    'created_at' => $user->created_at
-                ]
-            ]);
 
         } catch (ExceptionDb $e) {
             $transaction->rollBack();
