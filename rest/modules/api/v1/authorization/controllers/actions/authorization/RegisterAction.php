@@ -28,7 +28,10 @@ class RegisterAction extends \yii\rest\Action
         $user = $model->register(\Yii::$app->request->bodyParams);
 
         return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+            201, 'Регистрация прошла успешно.', [
+                'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                'refresh_token' => $user->refresh_token
+            ]
         );
     }
 }

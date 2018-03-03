@@ -27,6 +27,7 @@ trait AuthorizationRepository
     {
         $transaction = Yii::$app->db->beginTransaction();
         $refresh_token = \Yii::$app->security->generateRandomString(100);
+        $verificationCode = rand(1000,9999);
 
         try {
             $user = new RestUserEntity();
@@ -40,6 +41,7 @@ trait AuthorizationRepository
                 'confirm_password'   => $params['confirm_password'] ?? null,
                 'refresh_token'      => $refresh_token,
                 'token_created_date' => time(),
+                'verification_code'   => $verificationCode,
             ]);
 
             if (!$user->validate()) {
@@ -61,6 +63,16 @@ trait AuthorizationRepository
 
             if (!$userProfile->save()) {
                 return $this->throwModelException($userProfile->errors);
+            }
+            $viewPath = '@common/views/mail/sendVerificationCode-html.php';
+            if (!empty($user->email)) {
+                Yii::$app->sendMail->run(
+                    $viewPath,
+                    ['email' => $user->email, 'verificationCode' => $user->verification_code],
+                    Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
+                );
+            } elseif (!empty($user->phone_number)) {
+                Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
             }
 
             $transaction->commit();
@@ -164,6 +176,11 @@ trait AuthorizationRepository
         return Yii::$app->authManager->getUserIdsByRole($roleName);
     }
 
+    /**
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
     public function generateNewAccessToken()
     {
         $oldAccessToken = $this->getAuthKey();
@@ -203,5 +220,44 @@ trait AuthorizationRepository
             Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
+    }
+
+    /**
+     * @param $params
+     * @return bool
+     * @throws NotFoundHttpException
+     */
+    public function verifyUser($params)
+    {
+        if (empty($params['verification_code'])) {
+            throw new NotFoundHttpException('Введите код верификации');
+        }
+
+        $this->scenario = self::SCENARIO_VERIFY_PROFILE;
+        $currentToken = $this->getAuthKey();
+        $userModel = RestUserEntity::findIdentityByAccessToken($currentToken, HttpBearerAuth::className());
+        $userId = $userModel->id;
+
+        $user = RestUserEntity::findOne(['id' => $userId]);
+        if (!$user) {
+            throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
+        }
+        if ($user->status == RestUserEntity::STATUS_VERIFIED
+            && $user->verification_code == null
+        ) {
+            return true;
+        }
+
+        if ($user->verification_code != $params['verification_code']) {
+            throw new NotFoundHttpException('Неправильный код верификации');
+        }
+
+        $user->status = RestUserEntity::STATUS_VERIFIED;
+        $user->verification_code = null;
+
+        if (!$user->save()) {
+            return $this->throwModelException($user->errors);
+        }
+        return true;
     }
 }

@@ -38,6 +38,8 @@ use yii\db\Exception as ExceptionDb;
  * @property integer $updated_at
  * @property integer $recovery_code
  * @property integer $created_recovery_code
+ * @property integer $status
+ * @property string  $verification_code
  */
 
 class RestUserEntity extends User
@@ -51,6 +53,10 @@ class RestUserEntity extends User
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
     const SCENARIO_LOGIN           = 'login';
+    const SCENARIO_VERIFY_PROFILE  = 'verify';
+
+    const STATUS_UNVERIFIED = 'UNVERIFIED';
+    const STATUS_VERIFIED   = 'VERIFIED';
 
     const FB     = 'fb';
     const VK     = 'vk';
@@ -91,6 +97,8 @@ class RestUserEntity extends User
             'recovery_code'         => 'Код востановления',
             'refresh_token'         => 'Токен обновления',
             'token_created_date'    => 'Дата создания токена доступа',
+            'status'                => 'Статус полльзователя',
+            'verification_code'     => 'Код подтверждения аккаунта',
         ];
     }
 
@@ -103,7 +111,7 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
-            'refresh_token', 'token_created_date'
+            'refresh_token', 'token_created_date', 'verification_code'
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
@@ -137,7 +145,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            ['token_created_date', 'integer'],
+            [['token_created_date', 'verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
@@ -202,7 +210,9 @@ class RestUserEntity extends User
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
-            [['created_at', 'updated_at', 'refresh_token'], 'safe'],
+            [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
+            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
+
         ];
     }
 
