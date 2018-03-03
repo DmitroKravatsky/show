@@ -12,7 +12,7 @@ use Yii;
  * Class DeleteAction
  * @package rest\modules\api\v1\bid\controllers\actions
  */
-class DeleteAction extends \yii\rest\Action
+class DeleteAction extends \yii\rest\Action // todo исправить
 {
     /** @var  BidController */
     public $controller;

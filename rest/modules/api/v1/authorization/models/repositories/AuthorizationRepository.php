@@ -16,6 +16,8 @@ use yii\web\UnprocessableEntityHttpException;
  */
 trait AuthorizationRepository
 {
+    // todo нужно описывать подробно что делает метод. Какие параметры принимает, тип их, что возвращает.
+    // todo учесть для всех методов в моделях или репозиториях!!!!
     /**
      * @param $params
      * @return array|bool
@@ -155,6 +157,7 @@ trait AuthorizationRepository
         return null;
     }
 
+    // todo перенести в модель User
     /**
      * @param $roleName
      * @return array
@@ -164,6 +167,7 @@ trait AuthorizationRepository
         return Yii::$app->authManager->getUserIdsByRole($roleName);
     }
 
+    // todo где комментарий к методу. PHP7
     public function generateNewAccessToken()
     {
         $oldAccessToken = $this->getAuthKey();
@@ -195,12 +199,12 @@ trait AuthorizationRepository
                 ]
             ];
 
-        } catch (ExceptionDb $e) {
+        } catch (ExceptionDb $e) { // todo ошибка. PHPStrom же подсвечивает http://joxi.ru/52a1N89tG7G3b2
             $transaction->rollBack();
-            throw new HttpException(422, $e->getMessage());
-        } catch (Exception $e){
+            throw new HttpException(422, $e->getMessage()); // todo ошибка
+        } catch (Exception $e){ // todo ошибка
             $transaction->rollBack();
-            Yii::error(ErrorHandler::convertExceptionToString($e));
+            Yii::error(ErrorHandler::convertExceptionToString($e)); // todo ошибка
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
     }

@@ -12,7 +12,7 @@ use yii\web\NotFoundHttpException;
  * Class UpdateAction
  * @package rest\modules\api\v1\bid\controllers\actions
  */
-class UpdateAction extends \yii\rest\Action
+class UpdateAction extends \yii\rest\Action // todo исправить
 {
     /** @var  BidController */
     public $controller;

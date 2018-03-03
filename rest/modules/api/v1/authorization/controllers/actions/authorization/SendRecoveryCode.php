@@ -70,7 +70,7 @@ class SendRecoveryCode extends Action
         if ($user->save(false)) {
             return $this->setResponse(
                 200, 'Отправка кода восстановления прошло успешно'
-            );
+            ); // todo нотации
         }
 
         throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');

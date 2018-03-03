@@ -12,7 +12,7 @@ use yii\web\UnprocessableEntityHttpException;
  * Class CreateAction
  * @package rest\modules\api\v1\comment\controllers\actions
  */
-class CreateAction extends \yii\rest\Action
+class CreateAction extends \yii\rest\Action // todo исправить
 {
     /** @var  BidController */
     public $controller;

@@ -8,7 +8,7 @@ use common\models\bid\BidEntity;
  * Class ListAction
  * @package rest\modules\api\v1\bid\controllers\actions
  */
-class ListAction extends \yii\rest\Action
+class ListAction extends \yii\rest\Action // todo исправить
 {
     /**
      * @return \yii\data\ArrayDataProvider

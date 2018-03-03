@@ -10,7 +10,7 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
-use Yii;
+use Yii; // todo вот такого не должно быть.
 use yii\rest\Action;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
@@ -29,7 +29,7 @@ class GenerateNewAccessTokenAction extends Action
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::className(); // todo тебе phpstrorm подсказывает, что он деприкайтет
 
         return $behaviors;
     }
@@ -42,10 +42,11 @@ class GenerateNewAccessTokenAction extends Action
      */
     public function run()
     {
-        $restUser = new $this->modelClass();
+        /** @var  $restUser RestUserEntity */
+        $restUser = new $this->modelClass(); // todo где нотации, чтобы я мог перейти на метод. Добавил для примера
         $responseData = $restUser->generateNewAccessToken();
 
-        return $this->setResponse(201, 'New token is created', $responseData);
+        return $this->setResponse(201, 'New token is created', $responseData); // todo опять нотации. я должен иметь возможность перейти на setResponse
     }
 
 }

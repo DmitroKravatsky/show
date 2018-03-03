@@ -8,7 +8,7 @@ use Yii;
  * Class ResponseBehavior
  * @package rest\behaviors
  */
-class ResponseBehavior extends \yii\base\Behavior
+class ResponseBehavior extends \yii\base\Behavior // todo исправить
 {
     /**
      * @param $statusCode

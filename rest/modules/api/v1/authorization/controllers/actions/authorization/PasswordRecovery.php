@@ -55,7 +55,7 @@ class PasswordRecovery extends Action
             if ($user->recoveryCode(Yii::$app->request->post())) {
                 return $this->setResponse(
                     200, 'Восстановления пароля прошло успешно'
-                );
+                ); // todo опять нотации
             }
         } catch (Exception $e) {
             throw new HttpException(422, $e->getMessage());
