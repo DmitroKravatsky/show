@@ -3,12 +3,13 @@
 namespace rest\behaviors;
 
 use Yii;
+use yii\base\Behavior;
 
 /**
  * Class ResponseBehavior
  * @package rest\behaviors
  */
-class ResponseBehavior extends \yii\base\Behavior
+class ResponseBehavior extends Behavior
 {
     /**
      * @param $statusCode

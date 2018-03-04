@@ -244,6 +244,7 @@ class RestUserEntity extends User
 
     /**
      * Reserts recovery code after recovery password
+     *
      * @return int
      */
     public function resetRecoveryCode()
@@ -292,8 +293,9 @@ class RestUserEntity extends User
 
     /**
      * Check user by email and get his data
+     *
      * @param $email
-     * @return null|static
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      */
     public function getUserByEmail($email)
@@ -308,8 +310,9 @@ class RestUserEntity extends User
 
     /**
      * Check user by phone_number and get his data
+     *
      * @param $phoneNumber
-     * @return null|static
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      */
     public function getUserByPhoneNumber($phoneNumber)
@@ -324,6 +327,7 @@ class RestUserEntity extends User
 
     /**
      * Recovery users password
+     *
      * @param $postData
      * @return bool
      * @throws HttpException
@@ -349,7 +353,8 @@ class RestUserEntity extends User
     }
 
     /**
-     * Validate users recovery code
+     * Validate user recovery code
+     *
      * @param $recoveryCode
      * @param $createdRecoveryCode
      * @param $postData
@@ -389,6 +394,7 @@ class RestUserEntity extends User
     }
 
     /**
+     * Get user's role by Id
      *
      * @param $userId
      * @return mixed

@@ -34,6 +34,8 @@ class SendRecoveryCode extends Action
     }
 
     /**
+     * Send recovery code action
+     *
      * @return mixed
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
@@ -68,6 +70,7 @@ class SendRecoveryCode extends Action
             );
         }
         if ($user->save(false)) {
+            /** @var $this ResponseBehavior */
             return $this->setResponse(
                 200, 'Отправка кода восстановления прошло успешно'
             );

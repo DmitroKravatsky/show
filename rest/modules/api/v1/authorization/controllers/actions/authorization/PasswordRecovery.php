@@ -29,13 +29,16 @@ class PasswordRecovery extends Action
     {
         $behaviors = parent::behaviors();
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
 
     /**
-     * @return mixed
+     * Password recovery action
+     *
+     * @return array
+     * @throws BadRequestHttpException
      * @throws HttpException
      */
     public function run()
@@ -53,6 +56,7 @@ class PasswordRecovery extends Action
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
+                /** @var $this ResponseBehavior */
                 return $this->setResponse(
                     200, 'Восстановления пароля прошло успешно'
                 );
