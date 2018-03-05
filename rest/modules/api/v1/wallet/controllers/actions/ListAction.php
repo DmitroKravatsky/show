@@ -15,6 +15,51 @@ class ListAction extends Action
     /**
      * Lists all Wallet models
      *
+     * @SWG\Get(path="/wallet",
+     *      tags={"Wallet module"},
+     *      summary="Get wallets by User",
+     *      description="Get wallets by User",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
+     *      ),
+     *      @SWG\Response(
+     *         response = 201,
+     *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="integer", description="Wallet id"),
+     *                  @SWG\Property(property="number", type="integer", description="Wallet number"),
+     *                  @SWG\Property(property="created_by", type="integer", description="Author Wallet"),
+     *                  @SWG\Property(property="name", type="string", description="Wallet name"),
+     *                  @SWG\Property(property="payment_system", type="string", description="Payment system"),
+     *                  @SWG\Property(property="created_at", type="integer", description="created at"),
+     *                  @SWG\Property(property="updated_at", type="integer", description="updated at")
+     *              ),
+     *         ),
+     *         examples = {
+     *              "status": 200,
+     *              "message": "",
+     *              "data": {
+     *                  "id": 6,
+     *                  "created_by": 2,
+     *                  "name": "Мой первый шалон",
+     *                  "number": "1234123412341234",
+     *                  "payment_system": "yandex_money",
+     *                  "created_at": 1520246365,
+     *                  "updated_at": 1520246365
+     *              }
+     *         }
+     *     )
+     * )
+     *
      * @return ArrayDataProvider
      */
     public function run(): ArrayDataProvider

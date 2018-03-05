@@ -13,6 +13,28 @@ use yii\rest\Action;
 class ListAction extends Action
 {
     /**
+     * @SWG\Get(path="/user/user-notifications/list",
+     *      tags={"User module"},
+     *      summary="Get user profile",
+     *      description="Get user profile",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
+     *      ),
+     *      @SWG\Response(
+     *         response = 200,
+     *         description = "success"
+     *     ),
+     *     @SWG\Response (
+     *         response = 401,
+     *         description = "Invalid credentials or Expired token"
+     *     )
+     * )
+     *
      * @return \yii\data\ArrayDataProvider
      */
     public function run(): ArrayDataProvider
