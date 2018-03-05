@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
+use rest\modules\api\v1\authorization\controllers\actions\authorization\GenerateNewAccessTokenAction;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
@@ -33,11 +34,12 @@ class AuthorizationController extends Controller
         $behaviors['verbs'] = [
             'class' => VerbFilter::className(),
             'actions' => [
-                'register' => ['POST'],
-                'login' => ['POST'],
+                'register'    => ['POST'],
+                'login'       => ['POST'],
                 'login-guest' => ['POST'],
-                'send-recovery-code' => ['post'],
-                'password-recovery' => ['post'],
+                'generate-new-access-token' => ['POST'],
+                'send-recovery-code'        => ['post'],
+                'password-recovery'         => ['post'],
             ]
         ];
 
@@ -53,15 +55,19 @@ class AuthorizationController extends Controller
     {
         return [
             'register' => [
-                'class' => RegisterAction::class,
+                'class'      => RegisterAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login' => [
-                'class' => LoginAction::class,
+                'class'      => LoginAction::class,
                 'modelClass' => $this->modelClass
             ],
             'login-guest' => [
-                'class' => LoginGuestAction::className(),
+                'class'      => LoginGuestAction::className(),
+                'modelClass' => $this->modelClass
+            ],
+            'generate-new-access-token' => [
+                'class'      => GenerateNewAccessTokenAction::className(),
                 'modelClass' => $this->modelClass
             ],
             'send-recovery-code' => [

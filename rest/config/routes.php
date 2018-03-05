@@ -77,11 +77,12 @@ return [
             'authorization' => 'api/v1/authorization/authorization',
         ],
         'patterns'   => [
-            'POST register'    => 'register',
-            'POST login'       => 'login',
-            'POST login-guest' => 'login-guest',
+            'POST register'                  => 'register',
+            'POST login'                     => 'login',
+            'POST login-guest'               => 'login-guest',
+            'POST generate-new-access-token' => 'generate-new-access-token',
             'POST password-recovery' => 'password-recovery',
-            'POST send-recovery-code' => 'send-recovery-code'
+            'POST send-recovery-code' => 'send-recovery-code',
         ],
     ],
     /** Review */
