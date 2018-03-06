@@ -122,6 +122,8 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
 
+        $scenarios[self::SCENARIO_VERIFY_PROFILE]  = ['verification_code'];
+
         return $scenarios;
     }
 

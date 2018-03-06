@@ -10,6 +10,8 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\Password
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfile;
+use yii\filters\auth\CompositeAuth;
+use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -45,7 +47,12 @@ class AuthorizationController extends Controller
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
+
+        $behaviors['bearerAuth'] = [
+            'class' => HttpBearerAuth::class,
+            'only'  => ['verification-profile']
+        ];
 
         return $behaviors;
     }
