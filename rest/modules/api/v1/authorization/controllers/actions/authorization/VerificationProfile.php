@@ -19,7 +19,50 @@ class VerificationProfile extends Action
     public $controller;
 
     /**
-     * @return mixed
+     * VerificationProfile action
+     *
+     * @SWG\Post(path="/authorization/verification-profile",
+     *      tags={"Authorization module"},
+     *      summary="User verification-profile",
+     *      description="User verification-profile",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "verification_code",
+     *          description = "User verification code",
+     *          required = true,
+     *          type = "string"
+     *      @SWG\Response(
+     *         response = 200,
+     *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *         ),
+     *         examples = {
+     *              "status": 201,
+     *              "message": "Ваш профиль подтвержден",
+     *              "data": {
+     *              }
+     *         }
+     *     ),
+     *     @SWG\Response(
+     *         response = 404,
+     *         description = "User is not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 422,
+     *         description = "Validation Error"
+     *     )
+     * )
+     *
+    /**
+     * Verify user's account
+     *
+     * @return array
+     * @throws NotFoundHttpException
+     * @throws UnprocessableEntityHttpException
      */
     public function run()
     {
@@ -29,6 +72,6 @@ class VerificationProfile extends Action
 
         /** @var $result ResponseBehavior */
         $result = $this->controller;
-        return $result->setResponse(201, 'Your profile has been verified');
+        return $result->setResponse(201, 'Ваш профиль подтвержден');
     }
 }

@@ -33,7 +33,74 @@ class PasswordRecovery extends Action
 
         return $behaviors;
     }
-
+    /**
+     * Pasword recovery action
+     *
+     * @SWG\Post(path="/authorization/password-recovery",
+     *      tags={"Authorization module"},
+     *      summary="User password recovery",
+     *      description="User password-recovery",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "email",
+     *          description = "User email",
+     *          required = false,
+     *          type = "string"
+     *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "phone_number",
+     *          description = "User phone number",
+     *          required = false,
+     *          type = "string"
+     *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "password",
+     *          description = "User new password",
+     *          required = true,
+     *          type = "string"
+     *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "confirm_password",
+     *          description = "User password confirmation",
+     *          required = true,
+     *          type = "string"
+     *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "recovery_code",
+     *          description = "User phone number",
+     *          required = true,
+     *          type = "integer"
+     *      ),
+     *      @SWG\Response(
+     *         response = 200,
+     *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *         ),
+     *         examples = {
+     *              "status": 200,
+     *              "message": "Восстановления пароля прошло успешно.",
+     *              "data": {
+     *              }
+     *         }
+     *     ),
+     *      @SWG\Response (
+     *         response = 422,
+     *         description = "Validation Error"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Internal Server Error"
+     *     )
+     * )
+     *
     /**
      * Password recovery action
      *

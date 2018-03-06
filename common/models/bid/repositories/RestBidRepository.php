@@ -5,7 +5,6 @@ namespace common\models\bid\repositories;
 use common\models\bid\BidEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
-use Yii;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
 
@@ -15,16 +14,17 @@ use yii\web\NotFoundHttpException;
  */
 trait RestBidRepository
 {
-    // todo нет описаний к методам
-
     /**
-     * @param $params
+     * Method of getting user's bids by Bid id and User id
+     *
+     * @param $params array of the POST data
+     *
      * @return ArrayDataProvider
      */
-    public function getBids($params): ArrayDataProvider
+    public function getBids(array $params): ArrayDataProvider
     {
         /** @var ActiveQuery $query */
-        $query = self::find()->where(['created_by' => Yii::$app->user->id]);
+        $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
 
         if (isset($params['created_at']) && $params['created_at'] == 'week') {
             $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
@@ -43,13 +43,17 @@ trait RestBidRepository
     }
 
     /**
+     * Get a bid's detail by Bid id and User id
+     *
      * @param $id
+     *
      * @return array
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such bid
      */
     public function getBidDetails($id)
     {
-        $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         
         return $bid->getAttributes([
             'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
@@ -58,16 +62,21 @@ trait RestBidRepository
     }
 
     /**
-     * @param $id
+     * Updates User's bid by Bid id and User id
+     *
+     * @param $id int
+     * @param $postData array of the POST data
+     *
      * @return BidEntity
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such bid
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateBid($id): BidEntity
+    public function updateBid(int $id, array $postData): BidEntity
     {
-        $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         $bid->setScenario(BidEntity::SCENARIO_UPDATE);
-        $bid->setAttributes(Yii::$app->request->bodyParams);
+        $bid->setAttributes($postData);
 
         if (!$bid->save()) {
             $this->throwModelException($bid->errors);
@@ -77,14 +86,18 @@ trait RestBidRepository
     }
 
     /**
-     * @param $id
+     * Removes a user's bid by Bid id and User id
+     *
+     * @param $id int
+     *
      * @return bool
+     *
      * @throws NotFoundHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteBid($id): bool 
+    public function deleteBid(int $id): bool
     {
-        $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
+        $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         if ($bid->delete()) {
            return true;
         }
@@ -92,14 +105,19 @@ trait RestBidRepository
     }
 
     /**
-     * @return BidEntity
+     * Add new bid to db with the set of income data
+     *
+     * @param $postData array of the POST data
+     *
+     * @return BidEntity whether the attributes are valid and the record is inserted successfully
+     *
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function createBid(): BidEntity
+    public function createBid(array $postData): BidEntity
     {
         $bid = new self;
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
-        $bid->setAttributes(Yii::$app->request->bodyParams);
+        $bid->setAttributes($postData);
 
         if (!$bid->save()) {
             $this->throwModelException($bid->errors);
@@ -109,11 +127,15 @@ trait RestBidRepository
     }
 
     /**
-     * @param $params
+     * Finds a Bid model by params
+     *
+     * @param $params array
+     *
      * @return BaseActiveRecord
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such bid
      */
-    protected function findModel($params): BaseActiveRecord
+    protected function findModel(array $params): BaseActiveRecord
     {
         if (empty($bidModel = self::findOne($params))) {
             throw new NotFoundHttpException('Заявка не найдена');

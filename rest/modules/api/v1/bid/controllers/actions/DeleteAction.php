@@ -7,7 +7,6 @@ use rest\modules\api\v1\bid\controllers\BidController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 /**
  * Class DeleteAction
@@ -19,6 +18,58 @@ class DeleteAction extends Action
     public $controller;
 
     /**
+     * @SWG\Delete(path="/bid/{id}",
+     *      tags={"Bid module"},
+     *      summary="Bid delete",
+     *      description="Delete a user bid",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
+     *      ),
+     *      @SWG\Parameter(
+     *        in = "path",
+     *        name = "id",
+     *        description = "Bid id",
+     *        required = true,
+     *        type = "integer"
+     *      ),
+     *      @SWG\Response(
+     *         response = 200,
+     *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="integer", description="User id")
+     *              ),
+     *         ),
+     *         examples = {
+     *              "status": 200,
+     *              "message": "Заявка успешно удалёна.",
+     *              "data": {
+     *                  "id": 6
+     *              }
+     *         }
+     *     ),
+     *     @SWG\Response (
+     *         response = 401,
+     *         description = "Invalid credentials or Expired token"
+     *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "Bid not found"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Internal Server Error"
+     *     )
+     * )
+     *
      * Deletes an existing Bid model
      *
      * @param $id
@@ -32,13 +83,13 @@ class DeleteAction extends Action
             /** @var BidEntity $bid */
             $bid = new BidEntity();
             if ($bid->deleteBid($id)) {
-                return $this->controller->setResponse(200, Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
+                return $this->controller->setResponse(200, \Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
             }
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при удалении заявки.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении заявки.'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException();
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             throw new ServerErrorHttpException();
         }
     }

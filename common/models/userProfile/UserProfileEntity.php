@@ -12,6 +12,7 @@ use yii\behaviors\TimestampBehavior;
  * @package common\models\userProfile
  *
  * @mixin ValidationExceptionFirstMessage
+ *
  * @property integer $id
  * @property integer $user_id
  * @property string $name
@@ -72,8 +73,8 @@ class UserProfileEntity extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
-            ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 

@@ -7,7 +7,6 @@ use GuzzleHttp\Client;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 use yii\web\UnprocessableEntityHttpException;
 use yii\web\BadRequestHttpException;
 
@@ -20,20 +19,22 @@ trait SocialRepository
     /**
      * Vk register
      *
-     * @param $params
-     * @return RestUserEntity
+     * @param $params array of post data
+     *
+     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
+     *
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function vkRegister($params): RestUserEntity
+    public function vkRegister(array $params): RestUserEntity
     {
         if (!isset($params['email']) && !isset($params['phone_number'])) {
             throw new BadRequestHttpException('Необходимо заполнить «Email» или «Номер телефона».');
         }
 
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
             $result = $client->request(
@@ -59,7 +60,7 @@ trait SocialRepository
                     'source'           => self::VK,
                     'source_id'        => (string) $userData->uid,
                     'terms_condition'  => $params['terms_condition'],
-                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = \Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
@@ -98,7 +99,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -107,12 +108,14 @@ trait SocialRepository
     /**
      * Vk authorization
      *
-     * @param $token
+     * @param $token string
+     *
      * @return RestUserEntity
+     *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function vkLogin($token): RestUserEntity
+    public function vkLogin(string $token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -145,15 +148,17 @@ trait SocialRepository
     /**
      * Gmail register
      *
-     * @param $params
-     * @return RestUserEntity
+     * @param $params array of post data
+     *
+     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
+     *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function gmailRegister($params): RestUserEntity
+    public function gmailRegister(array $params): RestUserEntity
     {
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
 
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -174,7 +179,7 @@ trait SocialRepository
                     'source_id'        => (string) $userData->id,
                     'terms_condition'  => $params['terms_condition'],
                     'email'            => $userData->email,
-                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = \Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
@@ -209,7 +214,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -218,12 +223,14 @@ trait SocialRepository
     /**
      * Gmail authorization
      *
-     * @param $token
+     * @param $token string
+     *
      * @return RestUserEntity
+     *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function gmailLogin($token): RestUserEntity
+    public function gmailLogin(string $token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -253,15 +260,17 @@ trait SocialRepository
     /**
      * Facebook register
      *
-     * @param $params
-     * @return RestUserEntity
+     * @param $params array of post data
+     *
+     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
+     *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function fbRegister($params): RestUserEntity
+    public function fbRegister(array $params): RestUserEntity
     {
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
 
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -283,7 +292,7 @@ trait SocialRepository
                     'source'           => self::FB,
                     'source_id'        => (string) $userData->id,
                     'terms_condition'  => $params['terms_condition'],
-                    'password'         => $pass = Yii::$app->security->generateRandomString(32),
+                    'password'         => $pass = \Yii::$app->security->generateRandomString(32),
                     'confirm_password' => $pass
                 ];
 
@@ -323,7 +332,7 @@ trait SocialRepository
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             $transaction->rollBack();
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
@@ -332,12 +341,14 @@ trait SocialRepository
     /**
      * Facebook login
      *
-     * @param $token
+     * @param $token string
+     *
      * @return RestUserEntity
+     *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function fbLogin($token): RestUserEntity
+    public function fbLogin(string $token): RestUserEntity
     {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -366,11 +377,15 @@ trait SocialRepository
     }
 
     /**
-     * @param $params
+     * Finds a User by params
+     *
+     * @param $params array
+     *
      * @return null|static
+     *
      * @throws NotFoundHttpException
      */
-    protected function findModelByParams($params)
+    protected function findModelByParams(array $params)
     {
         if (empty($user = RestUserEntity::findOne((array) $params))) {
             throw new NotFoundHttpException();

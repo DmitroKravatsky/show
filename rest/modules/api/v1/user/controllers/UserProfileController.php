@@ -32,22 +32,22 @@ class UserProfileController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(),
+            'class' => HttpBearerAuth::class,
         ];
 
         $behaviors['verbs'] = [
-            'class'   => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
-                'update'          => ['put'],
-                'get-profile'     => ['get'],
-                'update-password' => ['put'],
+                'update'          => ['PUT'],
+                'get-profile'     => ['GET'],
+                'update-password' => ['PUT'],
             ]
         ];
         
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         $behaviors['accessControl'] = [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,

@@ -11,6 +11,7 @@ use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use common\models\wallet\WalletEntity;
 use rest\modules\api\v1\wallet\controllers\actions\CreateAction;
+use yii\rest\Controller;
 
 /**
  * Class WalletController
@@ -18,7 +19,7 @@ use rest\modules\api\v1\wallet\controllers\actions\CreateAction;
  * 
  * @mixin ResponseBehavior
  */
-class WalletController extends \yii\rest\Controller
+class WalletController extends Controller
 {
     /**
      * @var WalletEntity $modelClass
@@ -33,7 +34,7 @@ class WalletController extends \yii\rest\Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbFilter'] = [
-            'class'   => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
                 'create' => ['POST'],
                 'update' => ['PUT'],
@@ -43,11 +44,11 @@ class WalletController extends \yii\rest\Controller
         ];
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(),
+            'class' => HttpBearerAuth::class,
         ];
 
         $behaviors['AccessControl'] = [
-            'class' => AccessControl::className(),
+            'class' => AccessControl::class,
             'rules' => [
                 [
                     'allow' => true,
@@ -56,7 +57,7 @@ class WalletController extends \yii\rest\Controller
             ],
         ];
         
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -76,11 +77,11 @@ class WalletController extends \yii\rest\Controller
                 'modelClass' => $this->modelClass
             ],
             'list'   => [
-                'class'      => ListAction::className(),
+                'class'      => ListAction::class,
                 'modelClass' => $this->modelClass
             ],
             'delete' => [
-                'class'      => DeleteAction::className(),
+                'class'      => DeleteAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

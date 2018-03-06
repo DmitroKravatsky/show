@@ -7,13 +7,14 @@ use common\models\{
 };
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
-use Yii;
+use yii\db\ActiveRecord;
 
 /**
  * Class BidEntity
  * @package common\models\bid
  *
  * @mixin ValidationExceptionFirstMessage
+ *
  * @property integer $id
  * @property integer $created_by
  * @property string $name
@@ -32,7 +33,7 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class BidEntity extends \yii\db\ActiveRecord // todo исправить
+class BidEntity extends ActiveRecord
 {
     use RestBidRepository;
 
@@ -126,7 +127,7 @@ class BidEntity extends \yii\db\ActiveRecord // todo исправить
                 'created_by',
                 'exist',
                 'skipOnError'     => false,
-                'targetClass'     => User::className(),
+                'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
             ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_PAID, self::STATUS_DONE]],
@@ -154,7 +155,7 @@ class BidEntity extends \yii\db\ActiveRecord // todo исправить
                 'required',
                 'on'            => self::SCENARIO_CREATE,
                 'requiredValue' => 1,
-                'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
+                'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
             ],
 
         ];
@@ -166,8 +167,8 @@ class BidEntity extends \yii\db\ActiveRecord // todo исправить
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
-            ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 

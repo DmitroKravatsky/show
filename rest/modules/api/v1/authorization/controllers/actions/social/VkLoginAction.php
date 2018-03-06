@@ -39,6 +39,7 @@ class VkLoginAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -48,7 +49,51 @@ class VkLoginAction extends Action
     }
 
     /**
+     * Vk login action
+     *
+     * @SWG\Post(path="/social/vk-login",
+     *      tags={"Authorization module"},
+     *      summary="User vk login",
+     *      description="User login via vk",
+     *      produces={"application/json"},
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "token",
+     *          description = "user's token on vk",
+     *          required = true,
+     *          type = "string"
+     *      ),
+     *      @SWG\Response(
+     *         response = 200,
+     *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="access_token", type="string", description="access token")
+     *              ),
+     *         ),
+     *         examples = {
+     *              "status": 200,
+     *              "message": "Авторизация прошла успешно.",
+     *              "data": {
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *              }
+     *         }
+     *     ),
+     *      @SWG\Response(
+     *         response = 404,
+     *         description = "User not found"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Internal Server Error"
+     *     )
+     * )
+     *
      * @return array
+     * 
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\web\ServerErrorHttpException
      */

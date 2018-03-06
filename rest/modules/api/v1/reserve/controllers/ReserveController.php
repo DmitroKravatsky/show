@@ -7,6 +7,8 @@ use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
 use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
+use yii\rest\Controller;
+use yii\filters\VerbFilter;
 
 /**
  * Class ReserveController
@@ -14,9 +16,11 @@ use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
  * 
  * @mixin ResponseBehavior
  */
-class ReserveController extends \yii\rest\Controller
+class ReserveController extends Controller
 {
-    /** @var ReserveEntity $modelClass */
+    /**
+     * @var ReserveEntity $modelClass
+     */
     public $modelClass = ReserveEntity::class;
 
     /**
@@ -27,7 +31,7 @@ class ReserveController extends \yii\rest\Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class'   => \yii\filters\VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
                 'update' => ['PUT'],
                 'create' => ['POST'],
@@ -35,7 +39,7 @@ class ReserveController extends \yii\rest\Controller
             ]
         ];
         
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
