@@ -72,6 +72,6 @@ class VerificationProfile extends Action
 
         /** @var $result ResponseBehavior */
         $result = $this->controller;
-        return $result->setResponse(201, 'Ваш профиль подтвержден');
+        return $result->setResponse(201, 'Your profile has been verified');
     }
 }

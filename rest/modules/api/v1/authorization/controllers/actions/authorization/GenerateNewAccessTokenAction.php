@@ -15,17 +15,7 @@ use yii\web\ServerErrorHttpException;
  */
 class GenerateNewAccessTokenAction extends Action
 {
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
 
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
-
-        return $behaviors;
-    }
     /**
      * Register action
      *
@@ -53,7 +43,7 @@ class GenerateNewAccessTokenAction extends Action
      *                  @SWG\Property(property="refresh_token", type="string",  description="refresh token"),
      *                  @SWG\Property(property="exp",           type="int",     description="time of token expiration"),
      *                  @SWG\Property(property="data", type="object",
-     *                      @SWG\Property(property="user_id",       type="integer", description="user's id"),
+     *                      @SWG\Property(property="id",            type="integer", description="id"),
      *                      @SWG\Property(property="email",         type="string",  description="user's email"),
      *                      @SWG\Property(property="role",          type="string",  description="user's role"),
      *                      @SWG\Property(property="created_at",    type="string",  description="creation time")
@@ -67,7 +57,7 @@ class GenerateNewAccessTokenAction extends Action
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c"
      *                  "exp": "1520070475"
      *                      "user": {
-     *                          "user_id": "531"
+     *                          "id": "531"
      *                          "email": "guest@gmail.com"
      *                          "role": "user"
      *                          "created_at": "1520070475"
@@ -105,7 +95,7 @@ class GenerateNewAccessTokenAction extends Action
 
         /** @var $result ResponseBehavior */
         $result = $this->controller;
-        return $result->setResponse(201, 'Новый токен сгенерирован', $responseData);
+        return $result->setResponse(201, 'New token is created', $responseData);
     }
 
 }

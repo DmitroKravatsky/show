@@ -34,7 +34,7 @@ class PasswordRecovery extends Action
         return $behaviors;
     }
     /**
-     * Pasword recovery action
+     * Password recovery action
      *
      * @SWG\Post(path="/authorization/password-recovery",
      *      tags={"Authorization module"},
@@ -125,7 +125,7 @@ class PasswordRecovery extends Action
             if ($user->recoveryCode(Yii::$app->request->post())) {
                 /** @var $this ResponseBehavior */
                 return $this->setResponse(
-                    200, 'Восстановления пароля прошло успешно'
+                    200, 'Password recovery has been ended successfully '
                 );
             }
         } catch (Exception $e) {
