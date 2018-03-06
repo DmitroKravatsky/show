@@ -4,11 +4,15 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
+use yii\base\ErrorHandler;
+use yii\base\Exception;
 use yii\filters\auth\HttpBearerAuth;
+use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
+use yii\db\Exception as ExceptionDb;
 
 /**
  * Class AuthorizationRepository
@@ -16,17 +20,21 @@ use yii\web\UnprocessableEntityHttpException;
  */
 trait AuthorizationRepository
 {
+    // todo нужно описывать подробно что делает метод. Какие параметры принимает, тип их, что возвращает.
+    // todo учесть для всех методов в моделях или репозиториях!!!!
     /**
-     * @param $params
-     * @return array|bool
+     * Add new user to db with the set of income data
+     *
+     * @param $params array of POST data
+     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully.
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
-     * @throws \yii\db\Exception
      */
     public function register($params)
     {
         $transaction = Yii::$app->db->beginTransaction();
         $refresh_token = \Yii::$app->security->generateRandomString(100);
+        $verificationCode = rand(1000,9999);
 
         try {
             $user = new RestUserEntity();
@@ -40,6 +48,7 @@ trait AuthorizationRepository
                 'confirm_password'   => $params['confirm_password'] ?? null,
                 'refresh_token'      => $refresh_token,
                 'token_created_date' => time(),
+                'verification_code'   => $verificationCode,
             ]);
 
             if (!$user->validate()) {
@@ -62,6 +71,16 @@ trait AuthorizationRepository
             if (!$userProfile->save()) {
                 return $this->throwModelException($userProfile->errors);
             }
+            $viewPath = '@common/views/mail/sendVerificationCode-html.php';
+            if (!empty($user->email)) {
+                Yii::$app->sendMail->run(
+                    $viewPath,
+                    ['email' => $user->email, 'verificationCode' => $user->verification_code],
+                    Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
+                );
+            } elseif (!empty($user->phone_number)) {
+                Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
+            }
 
             $transaction->commit();
 
@@ -77,7 +96,9 @@ trait AuthorizationRepository
     }
 
     /**
-     * @param $params
+     * Request user profile and return user model
+     *
+     * @param $params array of the POST data
      * @return null|AuthorizationRepository|RestUserEntity
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
@@ -101,9 +122,11 @@ trait AuthorizationRepository
     }
 
     /**
-     * @param $params
-     * @return mixed
-     * @throws NotFoundHttpException
+     * Get user's data from db
+     *
+     * @param $params array of the POST data
+     * @return RestUserEntity
+     * @throws NotFoundHttpException if there is no such user
      */
     protected function getUserByParams($params)
     {
@@ -117,8 +140,10 @@ trait AuthorizationRepository
     }
 
     /**
-     * @param $params
-     * @return bool
+     * Notes new users password in db
+     *
+     * @param $params array of the POST data
+     * @return bool the user's record was updated with a new password successfully
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -156,14 +181,13 @@ trait AuthorizationRepository
     }
 
     /**
-     * @param $roleName
+     * Create new access token using refresh_token
+     *
      * @return array
+     * @throws HttpException
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
      */
-    public function findByRole($roleName):array 
-    {
-        return Yii::$app->authManager->getUserIdsByRole($roleName);
-    }
-
     public function generateNewAccessToken()
     {
         $oldAccessToken = $this->getAuthKey();
@@ -203,5 +227,46 @@ trait AuthorizationRepository
             Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
+    }
+
+    /**
+     * Change status of the user's profile
+     *
+     * @param $params array of the POST input data
+     * @return bool
+     * @throws NotFoundHttpException
+     */
+    public function verifyUser($params)
+    {
+        if (empty($params['verification_code'])) {
+            throw new NotFoundHttpException('Введите код верификации');
+        }
+
+        $this->scenario = self::SCENARIO_VERIFY_PROFILE;
+        $currentToken = $this->getAuthKey();
+        $userModel = RestUserEntity::findIdentityByAccessToken($currentToken, HttpBearerAuth::className());
+        $userId = $userModel->id;
+
+        $user = RestUserEntity::findOne(['id' => $userId]);
+        if (!$user) {
+            throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
+        }
+        if ($user->status == RestUserEntity::STATUS_VERIFIED
+            && $user->verification_code == null
+        ) {
+            return true;
+        }
+
+        if ($user->verification_code != $params['verification_code']) {
+            throw new NotFoundHttpException('Неправильный код верификации');
+        }
+
+        $user->status = RestUserEntity::STATUS_VERIFIED;
+        $user->verification_code = null;
+
+        if (!$user->save()) {
+            return $this->throwModelException($user->errors);
+        }
+        return true;
     }
 }

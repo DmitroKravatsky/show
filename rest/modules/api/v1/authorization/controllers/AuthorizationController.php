@@ -9,6 +9,7 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGue
 use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecovery;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfile;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -38,8 +39,9 @@ class AuthorizationController extends Controller
                 'login'       => ['POST'],
                 'login-guest' => ['POST'],
                 'generate-new-access-token' => ['POST'],
-                'send-recovery-code'        => ['post'],
-                'password-recovery'         => ['post'],
+                'send-recovery-code'        => ['POST'],
+                'password-recovery'         => ['POST'],
+                'verification-profile'      => ['POST'],
             ]
         ];
 
@@ -76,6 +78,10 @@ class AuthorizationController extends Controller
             ],
             'password-recovery' => [
                 'class' => PasswordRecovery::class,
+                'modelClass' => $this->modelClass
+            ],
+            'verification-profile' => [
+                'class' => VerificationProfile::class,
                 'modelClass' => $this->modelClass
             ],
         ];

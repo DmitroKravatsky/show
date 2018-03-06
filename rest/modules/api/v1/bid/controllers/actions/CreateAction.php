@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\models\bid\BidEntity;
 use rest\modules\api\v1\bid\controllers\BidController;
+use yii\rest\Action;
 use yii\web\ServerErrorHttpException;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
@@ -12,7 +13,7 @@ use yii\web\UnprocessableEntityHttpException;
  * Class CreateAction
  * @package rest\modules\api\v1\comment\controllers\actions
  */
-class CreateAction extends \yii\rest\Action
+class CreateAction extends Action
 {
     /** @var  BidController */
     public $controller;

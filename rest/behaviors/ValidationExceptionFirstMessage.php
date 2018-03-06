@@ -2,13 +2,14 @@
 
 namespace rest\behaviors;
 
+use yii\base\Behavior;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class ValidationExceptionFirstMessage
  * @package rest\behaviors
  */
-class ValidationExceptionFirstMessage extends \yii\base\Behavior
+class ValidationExceptionFirstMessage extends Behavior
 {
     /**
      * Method of validation post data

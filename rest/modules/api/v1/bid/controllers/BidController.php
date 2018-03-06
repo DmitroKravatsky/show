@@ -15,7 +15,7 @@ use yii\filters\auth\HttpBearerAuth;
  *
  * @mixin ResponseBehavior
  */
-class BidController extends \yii\rest\Controller
+class BidController extends \yii\rest\Controller // todo париписывать в use а не исполльзовать длинные названия
 {
     /** @var BidEntity $modelClass */
     public $modelClass = BidEntity::class;
@@ -28,11 +28,11 @@ class BidController extends \yii\rest\Controller
         $behaviors = parent::behaviors();
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(),
+            'class' => HttpBearerAuth::className(), // todo deprecated className
         ];
 
         $behaviors['verbs'] = [
-            'class'   => \yii\filters\VerbFilter::className(),
+            'class'   => \yii\filters\VerbFilter::className(), // todo deprecated className
             'actions' => [
                 'create' => ['post'],
                 'update' => ['put'],
@@ -42,7 +42,7 @@ class BidController extends \yii\rest\Controller
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::className(); // todo deprecated className
 
         return $behaviors;
     }

@@ -32,7 +32,7 @@ use Yii;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class BidEntity extends \yii\db\ActiveRecord
+class BidEntity extends \yii\db\ActiveRecord // todo исправить
 {
     use RestBidRepository;
 

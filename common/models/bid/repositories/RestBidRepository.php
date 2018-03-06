@@ -15,6 +15,8 @@ use yii\web\NotFoundHttpException;
  */
 trait RestBidRepository
 {
+    // todo нет описаний к методам
+
     /**
      * @param $params
      * @return ArrayDataProvider

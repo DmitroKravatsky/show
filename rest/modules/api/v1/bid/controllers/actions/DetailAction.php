@@ -9,7 +9,7 @@ use common\behaviors\ValidateGetParameters;
  * @mixin ValidateGetParameters
  * @package rest\modules\api\v1\bid\controllers\actions
  */
-class DetailAction extends \yii\rest\Action
+class DetailAction extends \yii\rest\Action // todo исправить
 {
     /**
      * @var array
