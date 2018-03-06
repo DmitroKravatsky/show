@@ -73,6 +73,7 @@ class CreateAction extends Action
      * )
      *
      * @return array
+     *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      */

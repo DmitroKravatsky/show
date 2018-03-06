@@ -16,6 +16,8 @@ class RegisterAction extends Action
     public $controller;
 
     /**
+     * Register action
+     *
      * @SWG\Post(path="/authorization/register",
      *      tags={"Authorization module"},
      *      summary="User register",

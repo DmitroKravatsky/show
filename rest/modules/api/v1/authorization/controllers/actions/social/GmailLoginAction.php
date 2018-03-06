@@ -10,6 +10,7 @@ use common\behaviors\ValidatePostParameters;
 /**
  * Class GmailLoginAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
  * @mixin ValidatePostParameters
  */
 class GmailLoginAction extends Action
@@ -39,6 +40,7 @@ class GmailLoginAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -48,6 +50,8 @@ class GmailLoginAction extends Action
     }
 
     /**
+     * Gmail login action
+     *
      * @SWG\Post(path="/social/gmail-login",
      *      tags={"Authorization module"},
      *      summary="User gmail login",
@@ -91,6 +95,7 @@ class GmailLoginAction extends Action
      *
      *
      * @return array
+     * 
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\web\ServerErrorHttpException
      */

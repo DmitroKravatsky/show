@@ -46,8 +46,8 @@ class WalletEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
-            ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 
@@ -79,7 +79,7 @@ class WalletEntity extends \yii\db\ActiveRecord
                 'created_by',
                 'exist',
                 'skipOnError'     => false,
-                'targetClass'     => RestUserEntity::className(),
+                'targetClass'     => RestUserEntity::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
             ['name', 'string', 'max' => 64],

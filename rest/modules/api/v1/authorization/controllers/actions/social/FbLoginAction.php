@@ -10,6 +10,7 @@ use yii\rest\Action;
 /**
  * Class FbLoginAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
  * @mixin ValidatePostParameters
  */
 class FbLoginAction extends Action
@@ -39,6 +40,7 @@ class FbLoginAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -48,6 +50,8 @@ class FbLoginAction extends Action
     }
 
     /**
+     * Facebook login action
+     *
      * @SWG\Post(path="/social/fb-login",
      *      tags={"Authorization module"},
      *      summary="User facebook login",
@@ -90,6 +94,7 @@ class FbLoginAction extends Action
      * )
      *
      * @return array
+     * 
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\web\ServerErrorHttpException
      */

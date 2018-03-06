@@ -3,13 +3,14 @@
 namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\behaviors\ValidateGetParameters;
+use yii\rest\Action;
 
 /**
  * Class DetailAction
  * @mixin ValidateGetParameters
  * @package rest\modules\api\v1\bid\controllers\actions
  */
-class DetailAction extends \yii\rest\Action // todo исправить
+class DetailAction extends Action
 {
     /**
      * @var array

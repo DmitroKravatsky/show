@@ -6,7 +6,6 @@ use common\models\review\ReviewEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
-use Yii;
 
 /**
  * Class RestReviewRepository
@@ -15,11 +14,15 @@ use Yii;
 trait RestReviewRepository
 {
     /**
-     * @param $params
+     * Add new review to db with the set of income data
+     *
+     * @param $params array of the POST data
+     *
      * @return ReviewEntity
+     *
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function create($params): ReviewEntity
+    public function create(array $params): ReviewEntity
     {
         $reviewModel = new self;
         $reviewModel->setAttributes($params);
@@ -31,15 +34,19 @@ trait RestReviewRepository
     }
 
     /**
-     * @param $id
-     * @param $params
+     * Updates an existing Review model by Review id and User id
+     *
+     * @param $id int
+     * @param $params array of the POST data
+     *
      * @return ReviewEntity
+     *
      * @throws NotFoundHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateReview($id, $params): ReviewEntity
+    public function updateReview(int $id, array $params): ReviewEntity
     {
-        $reviewModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
+        $reviewModel = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         $reviewModel->setAttributes($params);
 
         if (!$reviewModel->save()) {
@@ -50,10 +57,13 @@ trait RestReviewRepository
     }
 
     /**
-     * @param $params
+     * Returns list of reviews
+     *
+     * @param $params array
+     *
      * @return ArrayDataProvider
      */
-    public function listReviews($params): ArrayDataProvider
+    public function listReviews(array $params): ArrayDataProvider
     {
         $reviews = ReviewEntity::find()
             ->select(['name', 'text', 'review.created_at'])
@@ -73,14 +83,18 @@ trait RestReviewRepository
     }
 
     /**
-     * @param $id
+     * Removes a Review by Review id and User id
+     *
+     * @param $id int
+     *
      * @return bool
+     *
      * @throws NotFoundHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteReview($id): bool
+    public function deleteReview(int $id): bool
     {
-        $reviewModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
+        $reviewModel = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         if ($reviewModel->delete()) {
             return true;
         }
@@ -88,11 +102,15 @@ trait RestReviewRepository
     }
 
     /**
-     * @param $params
+     * Finds a Review model by params
+     *
+     * @param $params array
+     *
      * @return BaseActiveRecord
+     *
      * @throws NotFoundHttpException
      */
-    public function findModel($params): BaseActiveRecord
+    public function findModel(array $params): BaseActiveRecord
     {
         if (empty($reviewModel = self::findOne($params))) {
             throw new NotFoundHttpException('Отзыв не найден');

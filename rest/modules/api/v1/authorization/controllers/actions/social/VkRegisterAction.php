@@ -39,6 +39,7 @@ class VkRegisterAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -48,6 +49,8 @@ class VkRegisterAction extends Action
     }
 
     /**
+     * Vk register action
+     *
      * @SWG\Post(path="/social/vk-register",
      *      tags={"Authorization module"},
      *      summary="User vk registration",
@@ -98,6 +101,7 @@ class VkRegisterAction extends Action
      * )
      *
      * @return array
+     * 
      * @throws \yii\web\BadRequestHttpException
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException

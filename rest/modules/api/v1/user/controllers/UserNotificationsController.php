@@ -28,18 +28,18 @@ class UserNotificationsController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(),
+            'class' => HttpBearerAuth::class,
         ];
 
         $behaviors['verbs'] = [
-            'class'   => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
                 'list'   => ['GET'],
                 'delete' => ['DELETE'],
             ]
         ];
         
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -52,11 +52,11 @@ class UserNotificationsController extends Controller
 
         return [
             'list'   => [
-                'class'      => ListAction::className(),
+                'class'      => ListAction::class,
                 'modelClass' => $this->modelClass
             ],
             'delete' => [
-                'class'      => DeleteAction::className(),
+                'class'      => DeleteAction::class,
                 'modelClass' => $this->modelClass,
             ],
         ];

@@ -33,7 +33,7 @@ class AuthorizationController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
+            'class' => VerbFilter::class,
             'actions' => [
                 'register'    => ['POST'],
                 'login'       => ['POST'],
@@ -45,7 +45,7 @@ class AuthorizationController extends Controller
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -65,11 +65,11 @@ class AuthorizationController extends Controller
                 'modelClass' => $this->modelClass
             ],
             'login-guest' => [
-                'class'      => LoginGuestAction::className(),
+                'class'      => LoginGuestAction::class,
                 'modelClass' => $this->modelClass
             ],
             'generate-new-access-token' => [
-                'class'      => GenerateNewAccessTokenAction::className(),
+                'class'      => GenerateNewAccessTokenAction::class,
                 'modelClass' => $this->modelClass
             ],
             'send-recovery-code' => [

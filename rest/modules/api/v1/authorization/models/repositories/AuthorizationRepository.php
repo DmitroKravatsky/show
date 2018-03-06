@@ -10,7 +10,6 @@ use yii\filters\auth\HttpBearerAuth;
 use yii\web\HttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 use yii\web\UnprocessableEntityHttpException;
 use yii\db\Exception as ExceptionDb;
 
@@ -20,19 +19,19 @@ use yii\db\Exception as ExceptionDb;
  */
 trait AuthorizationRepository
 {
-    // todo нужно описывать подробно что делает метод. Какие параметры принимает, тип их, что возвращает.
-    // todo учесть для всех методов в моделях или репозиториях!!!!
     /**
      * Add new user to db with the set of income data
      *
      * @param $params array of POST data
+     *
      * @return RestUserEntity whether the attributes are valid and the record is inserted successfully.
+     *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      */
-    public function register($params)
+    public function register(array $params)
     {
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         $refresh_token = \Yii::$app->security->generateRandomString(100);
         $verificationCode = rand(1000,9999);
 
@@ -73,13 +72,13 @@ trait AuthorizationRepository
             }
             $viewPath = '@common/views/mail/sendVerificationCode-html.php';
             if (!empty($user->email)) {
-                Yii::$app->sendMail->run(
+                \Yii::$app->sendMail->run(
                     $viewPath,
                     ['email' => $user->email, 'verificationCode' => $user->verification_code],
-                    Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
+                    \Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
                 );
             } elseif (!empty($user->phone_number)) {
-                Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
+                \Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
             }
 
             $transaction->commit();
@@ -90,7 +89,7 @@ trait AuthorizationRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
     }
@@ -99,11 +98,13 @@ trait AuthorizationRepository
      * Request user profile and return user model
      *
      * @param $params array of the POST data
+     *
      * @return null|AuthorizationRepository|RestUserEntity
+     *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
-    public function login($params)
+    public function login(array $params)
     {
         $user = new self();
         $user->setScenario(self::SCENARIO_LOGIN);
@@ -125,10 +126,12 @@ trait AuthorizationRepository
      * Get user's data from db
      *
      * @param $params array of the POST data
+     *
      * @return RestUserEntity
+     *
      * @throws NotFoundHttpException if there is no such user
      */
-    protected function getUserByParams($params)
+    protected function getUserByParams(array $params)
     {
         if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
             return $user;
@@ -143,13 +146,15 @@ trait AuthorizationRepository
      * Notes new users password in db
      *
      * @param $params array of the POST data
+     *
      * @return bool the user's record was updated with a new password successfully
+     *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
-    public function updatePassword($params)
+    public function updatePassword(array $params)
     {
-        $userModel = RestUserEntity::findOne(Yii::$app->user->id);
+        $userModel = RestUserEntity::findOne(\Yii::$app->user->id);
         $userModel->setScenario(RestUserEntity::SCENARIO_UPDATE_PASSWORD);
         $userModel->setAttributes($params);
 
@@ -168,13 +173,14 @@ trait AuthorizationRepository
 
     /**
      * @return null|RestUserEntity
+     *
      * @throws NotFoundHttpException
      */
     public function loginGuest()
     {
         /** @var RestUserEntity $userModel */
-        $userModel = $this->getUserByParams(['email' => Yii::$app->params['guest-email']]);
-        if ($userModel && $userModel->validatePassword(Yii::$app->params['guest-password'])) {
+        $userModel = $this->getUserByParams(['email' => \Yii::$app->params['guest-email']]);
+        if ($userModel && $userModel->validatePassword(\Yii::$app->params['guest-password'])) {
             return $userModel;
         }
         return null;
@@ -184,6 +190,7 @@ trait AuthorizationRepository
      * Create new access token using refresh_token
      *
      * @return array
+     *
      * @throws HttpException
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
@@ -191,7 +198,7 @@ trait AuthorizationRepository
     public function generateNewAccessToken()
     {
         $oldAccessToken = $this->getAuthKey();
-        $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::className());
+        $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::class);
         $userId = $userModel->id;
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
 
@@ -224,7 +231,7 @@ trait AuthorizationRepository
             throw new HttpException(422, $e->getMessage());
         } catch (Exception $e){
             $transaction->rollBack();
-            Yii::error(ErrorHandler::convertExceptionToString($e));
+            \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
     }
@@ -233,10 +240,12 @@ trait AuthorizationRepository
      * Change status of the user's profile
      *
      * @param $params array of the POST input data
+     *
      * @return bool
+     *
      * @throws NotFoundHttpException
      */
-    public function verifyUser($params)
+    public function verifyUser(array $params)
     {
         if (empty($params['verification_code'])) {
             throw new NotFoundHttpException('Введите код верификации');
@@ -244,7 +253,7 @@ trait AuthorizationRepository
 
         $this->scenario = self::SCENARIO_VERIFY_PROFILE;
         $currentToken = $this->getAuthKey();
-        $userModel = RestUserEntity::findIdentityByAccessToken($currentToken, HttpBearerAuth::className());
+        $userModel = RestUserEntity::findIdentityByAccessToken($currentToken, HttpBearerAuth::class);
         $userId = $userModel->id;
 
         $user = RestUserEntity::findOne(['id' => $userId]);

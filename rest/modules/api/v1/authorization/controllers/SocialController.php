@@ -8,6 +8,7 @@ use rest\modules\api\v1\authorization\controllers\actions\social\{
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
 use rest\behaviors\ResponseBehavior;
+use yii\rest\Controller;
 
 /**
  * Class SocialController
@@ -15,7 +16,7 @@ use rest\behaviors\ResponseBehavior;
  *
  * @mixin ResponseBehavior
  */
-class SocialController extends \yii\rest\Controller
+class SocialController extends Controller
 {
     /** @var RestUserEntity */
     public $modelClass = RestUserEntity::class;
@@ -28,18 +29,18 @@ class SocialController extends \yii\rest\Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class'   => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
-                'vk-register'    => ['post'],
-                'vk-login'       => ['post'],
-                'gmail-register' => ['post'],
-                'gmail-login'    => ['post'],
-                'fb-register'    => ['post'],
-                'fb-login'       => ['post'],
+                'vk-register'    => ['POST'],
+                'vk-login'       => ['POST'],
+                'gmail-register' => ['POST'],
+                'gmail-login'    => ['POST'],
+                'fb-register'    => ['POST'],
+                'fb-login'       => ['POST'],
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }

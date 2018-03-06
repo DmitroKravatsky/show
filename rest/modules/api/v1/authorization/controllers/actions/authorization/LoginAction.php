@@ -8,7 +8,6 @@ use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
-use Yii;
 
 /**
  * Class LoginAction
@@ -20,6 +19,8 @@ class LoginAction extends Action
     public $controller;
 
     /**
+     * Login action
+     * 
      * @SWG\Post(path="/authorization/login",
      *      tags={"Authorization module"},
      *      summary="User login",
@@ -82,6 +83,7 @@ class LoginAction extends Action
      * Login action
      *
      * @return array
+     *
      * @throws NotFoundHttpException
      * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
@@ -92,7 +94,7 @@ class LoginAction extends Action
             /** @var RestUserEntity $userModel */
             $userModel = new $this->modelClass;
 
-            if ($user = $userModel->login(Yii::$app->request->bodyParams)) {
+            if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
                 return $this->controller->setResponse(
                     200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
             }
@@ -103,7 +105,7 @@ class LoginAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             throw new UnauthorizedHttpException('Ошибка авторизации.');
         }
     }

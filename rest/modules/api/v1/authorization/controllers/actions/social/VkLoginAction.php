@@ -39,6 +39,7 @@ class VkLoginAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -48,6 +49,8 @@ class VkLoginAction extends Action
     }
 
     /**
+     * Vk login action
+     *
      * @SWG\Post(path="/social/vk-login",
      *      tags={"Authorization module"},
      *      summary="User vk login",
@@ -90,6 +93,7 @@ class VkLoginAction extends Action
      * )
      *
      * @return array
+     * 
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\web\ServerErrorHttpException
      */

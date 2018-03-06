@@ -4,7 +4,6 @@ namespace common\models\userProfile\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
-use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -19,31 +18,36 @@ trait RestUserProfileRepository
      * Returns User attribute values
      * 
      * @return array
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such user
      */
     public function getProfile(): array
     {
         return self::find()
             ->select(['name', 'last_name', 'avatar', 'email', 'phone_number'])
             ->leftJoin('user', 'user_profile.user_id = user.id')
-            ->where(['user.id' => Yii::$app->user->id])
+            ->where(['user.id' => \Yii::$app->user->id])
             ->asArray()
             ->one();
     }
 
     /**
-     * @param $params
+     * Updates a user profile
+     *
+     * @param $params array of the POST data
+     *
      * @return UserProfileEntity
+     *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function updateProfile($params): UserProfileEntity
+    public function updateProfile(array $params): UserProfileEntity
     {
-        $transaction = Yii::$app->db->beginTransaction();
+        $transaction = \Yii::$app->db->beginTransaction();
         
         try {
-            $user = RestUserEntity::findOne(Yii::$app->user->id);
+            $user = RestUserEntity::findOne(\Yii::$app->user->id);
             $user->setAttributes($params);
             if (!$user->validate()) {
                 $this->throwModelException($user->errors);
@@ -67,11 +71,20 @@ trait RestUserProfileRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             $transaction->rollBack();
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменении профиля.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении профиля.'));
         }
     }
 
-    public static function getFullName($userId)
+    /**
+     * Generates a user full name
+     *
+     * @param $userId int
+     *
+     * @return string
+     *
+     * @throws NotFoundHttpException if there is no such user
+     */
+    public static function getFullName(int $userId)
     {
         if (!empty($userProfile = self::findOne($userId))) {
             return $userProfile->name . ' ' . $userProfile->last_name;

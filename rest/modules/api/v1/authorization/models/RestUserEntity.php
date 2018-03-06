@@ -10,7 +10,6 @@ use yii\base\Exception;
 use yii\behaviors\TimestampBehavior;
 use common\models\user\User;
 use rest\modules\api\v1\authorization\models\repositories\SocialRepository;
-use Yii;
 use yii\web\ErrorHandler;
 use yii\web\HttpException;
 use yii\web\ServerErrorHttpException;
@@ -21,6 +20,7 @@ use yii\db\Exception as ExceptionDb;
  *
  * @mixin ValidationExceptionFirstMessage
  * @mixin ResponseBehavior
+ *
  * @package rest\modules\api\v1\authorization\models
  * @property integer $id
  * @property string $password
@@ -171,7 +171,7 @@ class RestUserEntity extends User
                 'required',
                 'on'            => self::SCENARIO_REGISTER,
                 'requiredValue' => 1,
-                'message'       => Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
+                'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
             ],
             ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER,]],
             [
@@ -230,13 +230,13 @@ class RestUserEntity extends User
             || $this->scenario === self::SCENARIO_RECOVERY_PWD
             || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
         ) {
-            $this->auth_key = Yii::$app->security->generateRandomString();
-            $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
 
             if ($this->source == self::NATIVE) {
-                $this->password = Yii::$app->security->generatePasswordHash($this->password);
+                $this->password = \Yii::$app->security->generatePasswordHash($this->password);
             } else {
-                $this->password = Yii::$app->security->generateRandomString(32);
+                $this->password = \Yii::$app->security->generateRandomString(32);
             }
         }
         return true;
@@ -249,7 +249,7 @@ class RestUserEntity extends User
      */
     public function resetRecoveryCode()
     {
-        return Yii::$app->db->createCommand()
+        return \Yii::$app->db->createCommand()
             ->update(self::tableName(), [
                 'recovery_code'         => null,
                 'created_recovery_code' => null
@@ -267,8 +267,8 @@ class RestUserEntity extends User
 
         if ($this->scenario == self::SCENARIO_REGISTER) {
             $this->role = self::ROLE_USER;
-            $userRole = Yii::$app->authManager->getRole($this->role);
-            Yii::$app->authManager->assign($userRole, $this->getId());
+            $userRole = \Yii::$app->authManager->getRole($this->role);
+            \Yii::$app->authManager->assign($userRole, $this->getId());
         }
         if ($this->scenario === self::SCENARIO_RECOVERY_PWD) {
             $this->resetRecoveryCode();
@@ -283,8 +283,8 @@ class RestUserEntity extends User
      */
     public function validateCurrentPassword($attribute)
     {
-        if (!Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
-            $this->addError($this->{$attribute}, Yii::t('app', 'Неверно введен старый пароль.'));
+        if (!\Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
+            $this->addError($this->{$attribute}, \Yii::t('app', 'Неверно введен старый пароль.'));
             return false;
         }
 
@@ -346,7 +346,7 @@ class RestUserEntity extends User
         } catch (ExceptionDb $e) {
             throw new HttpException(422, $e->getMessage());
         } catch (Exception $e) {
-            Yii::error(ErrorHandler::convertExceptionToString($e));
+            \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
         }
         throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
@@ -401,6 +401,6 @@ class RestUserEntity extends User
      */
     public function getUserRole($userId)
     {
-        return current(Yii::$app->authManager->getRolesByUser($userId))->name;
+        return current(\Yii::$app->authManager->getRolesByUser($userId))->name;
     }
 }
