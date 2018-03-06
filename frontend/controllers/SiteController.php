@@ -12,6 +12,7 @@ use frontend\models\PasswordResetRequestForm;
 use frontend\models\ResetPasswordForm;
 use frontend\models\SignupForm;
 use frontend\models\ContactForm;
+use yii\helpers\Url;
 
 /**
  * Site controller
@@ -61,6 +62,59 @@ class SiteController extends Controller
             'captcha' => [
                 'class' => 'yii\captcha\CaptchaAction',
                 'fixedVerifyCode' => YII_ENV_TEST ? 'testme' : null,
+            ],
+            'doc' => [
+                'class' => 'light\swagger\SwaggerAction',
+                'restUrl' => Url::to(['/site/api'], true),
+            ],
+            //The resultUrl action.
+            'api' => [
+                'class' => 'light\swagger\SwaggerApiAction',
+                //The scan directories, you should use real path there.
+                'scanDir' => [
+                    Yii::getAlias('@docs'),
+                    // Authorization module
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/RegisterAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginGuestAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailLoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkRegisterAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkLoginAction.php'),
+                    // Bid module
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/CreateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/UpdateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DeleteAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/ListAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DetailAction.php'),
+                    // Reserve module
+                    Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/CreateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/UpdateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/ListAction.php'),
+                    // Review module
+                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/CreateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/UpdateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/DeleteAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/ListAction.php'),
+                    // User module
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/GetProfileAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdatePasswordAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/ListAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/DeleteAction.php'),
+                    // Wallet module
+                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/CreateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/UpdateAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/ListAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/DeleteAction.php'),
+                ],
+            ],
+
+            'doc-user' => [
+                'class'   => 'light\swagger\SwaggerAction',
+                'restUrl' => Url::to(['site/api-user']),
             ],
         ];
     }

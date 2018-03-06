@@ -20,7 +20,9 @@
         "yiisoft/yii2-swiftmailer": "~2.0.0 || ~2.1.0",
         "guzzlehttp/guzzle": "^6.3",
         "fedemotta/yii2-aws-sdk": "*",
-        "firebase/php-jwt": "^5.0"
+        "firebase/php-jwt": "^5.0",
+        "light/yii2-swagger": "^1.0",
+        "doctrine/annotations": "1.4"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
