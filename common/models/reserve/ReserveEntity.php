@@ -18,7 +18,7 @@ use yii\behaviors\TimestampBehavior;
  * @property string $currency
  * @property float $sum
  * @property integer $created_at
- * @property  integer $updated_at
+ * @property integer $updated_at
  */
 class ReserveEntity extends ActiveRecord
 {
@@ -84,8 +84,8 @@ class ReserveEntity extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
-            ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 }

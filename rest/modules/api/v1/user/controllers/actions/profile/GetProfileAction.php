@@ -12,6 +12,8 @@ use yii\rest\Action;
 class GetProfileAction extends Action
 {
     /**
+     * Returns a user profile
+     * 
      * @SWG\Get(path="/user/user-profile",
      *      tags={"User module"},
      *      summary="Get user profile",

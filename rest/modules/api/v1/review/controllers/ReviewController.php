@@ -33,7 +33,7 @@ class ReviewController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbFilter'] = [
-            'class'   => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
                 'create' => ['POST'],
                 'update' => ['PUT'],
@@ -43,11 +43,11 @@ class ReviewController extends Controller
         ];
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(),
+            'class' => HttpBearerAuth::class,
             'only'  => ['create', 'update', 'delete'],
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -67,11 +67,11 @@ class ReviewController extends Controller
                 'modelClass' => $this->modelClass
             ],
             'list'   => [
-                'class'      => ListAction::className(),
+                'class'      => ListAction::class,
                 'modelClass' => $this->modelClass
             ],
             'delete' => [
-                'class'      => DeleteAction::className(),
+                'class'      => DeleteAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

@@ -7,7 +7,6 @@ use rest\modules\api\v1\review\controllers\ReviewController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 /**
  * Class UpdateAction
@@ -87,7 +86,9 @@ class UpdateAction extends Action
      * )
      * 
      * @param $id
+     *
      * @return array
+     *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
@@ -96,13 +97,13 @@ class UpdateAction extends Action
         try {
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
-            $reviewModel = $reviewModel->updateReview($id, Yii::$app->request->bodyParams);
+            $reviewModel = $reviewModel->updateReview($id, \Yii::$app->request->bodyParams);
             return $this->controller->setResponse(200, 'Отзыв успешно изменён.', $reviewModel->getAttributes(['id', 'text']));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
         }
     }
 }

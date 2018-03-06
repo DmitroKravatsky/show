@@ -40,6 +40,7 @@ class FbRegisterAction extends Action
 
     /**
      * @return bool
+     *
      * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun(): bool
@@ -49,6 +50,8 @@ class FbRegisterAction extends Action
     }
 
     /**
+     * Facebook register action
+     *
      * @SWG\Post(path="/social/fb-register",
      *      tags={"Authorization module"},
      *      summary="User facebook registration",
@@ -99,6 +102,7 @@ class FbRegisterAction extends Action
      * )
      *
      * @return array
+     * 
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */

@@ -7,7 +7,6 @@ use rest\modules\api\v1\wallet\controllers\WalletController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 /**
  * Class UpdateAction
@@ -108,7 +107,9 @@ class UpdateAction extends Action
      * )
      *
      * @param int $id
+     *
      * @return array
+     *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
@@ -117,7 +118,7 @@ class UpdateAction extends Action
         try {
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
-            $walletModel = $walletModel->updateWallet($id, Yii::$app->request->bodyParams);
+            $walletModel = $walletModel->updateWallet($id, \Yii::$app->request->bodyParams);
             
             return $this->controller->setResponse(
                 200,
@@ -127,8 +128,8 @@ class UpdateAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
         }
     }
 }

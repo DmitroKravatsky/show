@@ -10,7 +10,6 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\Password
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfile;
-use yii\filters\auth\CompositeAuth;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -35,7 +34,7 @@ class AuthorizationController extends Controller
         $behaviors = parent::behaviors();
 
         $behaviors['verbs'] = [
-            'class' => VerbFilter::className(),
+            'class'   => VerbFilter::class,
             'actions' => [
                 'register'    => ['POST'],
                 'login'       => ['POST'],
@@ -72,11 +71,11 @@ class AuthorizationController extends Controller
                 'modelClass' => $this->modelClass
             ],
             'login-guest' => [
-                'class'      => LoginGuestAction::className(),
+                'class'      => LoginGuestAction::class,
                 'modelClass' => $this->modelClass
             ],
             'generate-new-access-token' => [
-                'class'      => GenerateNewAccessTokenAction::className(),
+                'class'      => GenerateNewAccessTokenAction::class,
                 'modelClass' => $this->modelClass
             ],
             'send-recovery-code' => [

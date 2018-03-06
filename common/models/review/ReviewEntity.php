@@ -5,10 +5,12 @@ namespace common\models\review;
 use common\models\review\repositories\RestReviewRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
 
 /**
  * Class ReviewEntity
  * @package common\models\review
+ *
  * @mixin ValidationExceptionFirstMessage
  * 
  * @property integer $id
@@ -17,7 +19,7 @@ use yii\behaviors\TimestampBehavior;
  * @property integer $created_at
  * @property integer $updated_at
  */
-class ReviewEntity extends \yii\db\ActiveRecord
+class ReviewEntity extends ActiveRecord
 {
     use RestReviewRepository;
 
@@ -61,8 +63,8 @@ class ReviewEntity extends \yii\db\ActiveRecord
     public function behaviors(): array
     {
         return [
-            TimestampBehavior::className(),
-            ValidationExceptionFirstMessage::className(),
+            TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 }

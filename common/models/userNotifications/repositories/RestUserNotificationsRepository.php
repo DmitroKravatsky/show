@@ -4,10 +4,8 @@ namespace common\models\userNotifications\repositories;
 
 use common\models\userNotifications\UserNotificationsEntity;
 use yii\data\ArrayDataProvider;
-use Yii;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
 use common\models\userProfile\UserProfileEntity;
 
 /**
@@ -17,10 +15,12 @@ use common\models\userProfile\UserProfileEntity;
 trait RestUserNotificationsRepository
 {
     /**
-     * @param $userId
+     * Returns a user by User id
+     *
+     * @param $userId int
      * @return ArrayDataProvider
      */
-    public function getUserNotificationsByUser($userId): ArrayDataProvider
+    public function getUserNotificationsByUser(int $userId): ArrayDataProvider
     {
         $userNotificationsModel = UserNotificationsEntity::find()
             ->select(['text', 'created_at'])
@@ -32,7 +32,7 @@ trait RestUserNotificationsRepository
         $dataProvider = new ArrayDataProvider([
             'allModels' => $userNotificationsModel,
             'pagination' => [
-                'pageSize' => Yii::$app->request->get('per-page') ?? 10
+                'pageSize' => \Yii::$app->request->get('per-page') ?? 10
             ]
         ]);
 
@@ -40,14 +40,18 @@ trait RestUserNotificationsRepository
     }
 
     /**
-     * @param $id
+     * Removes a notify by Notification id and User id
+     *
+     * @param $id int
+     *
      * @return bool
+     *
      * @throws NotFoundHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteNotify($id): bool
+    public function deleteNotify(int $id): bool
     {
-        $userNotificationsModel = $this->findModel(['id' => (int) $id, 'recipient_id' => Yii::$app->user->id]);
+        $userNotificationsModel = $this->findModel(['id' => $id, 'recipient_id' => \Yii::$app->user->id]);
         if ($userNotificationsModel->delete()) {
             return true;
         }
@@ -55,11 +59,15 @@ trait RestUserNotificationsRepository
     }
 
     /**
-     * @param $params
+     * Finds a Notify by params
+     *
+     * @param $params array
+     *
      * @return BaseActiveRecord
+     *
      * @throws NotFoundHttpException
      */
-    public function findModel($params): BaseActiveRecord
+    public function findModel(array $params): BaseActiveRecord
     {
         if (empty($userNotificationsModel = self::findOne($params))) {
             throw new NotFoundHttpException('Уведомление не найдено.');
@@ -69,22 +77,29 @@ trait RestUserNotificationsRepository
     }
 
     /**
-     * @param $text
-     * @param $recipientId
+     * Creates a new notify
+     *
+     * @param $text string
+     * @param $recipientId int
+     *
      * @return mixed
      */
-    public function addNotify($text, int $recipientId)
+    public function addNotify(string $text, int $recipientId)
     {
         $this->setAttributes(['text' => $text, 'recipient_id' => $recipientId]);
         return $this->save();
     }
 
     /**
-     * @param $params
+     * Generates a message for a bid with status done
+     *
+     * @param $params array
+     *
      * @return string
+     *
      * @throws NotFoundHttpException
      */
-    public static function getMessageForDoneBid($params)
+    public static function getMessageForDoneBid(array $params)
     {
         $fullName = UserProfileEntity::getFullName($params['created_by']);
         $sum = $params['to_sum'];
@@ -100,11 +115,15 @@ EOT;
     }
 
     /**
-     * @param $params
+     * Generates a message for a bid with status rejected
+     *
+     * @param $params array
+     *
      * @return string
+     *
      * @throws NotFoundHttpException
      */
-    public static function getMessageForRejectedBid($params)
+    public static function getMessageForRejectedBid(array $params)
     {
         $fullName = UserProfileEntity::getFullName($params['created_by']);
         $sum = $params['to_sum'];
@@ -120,6 +139,8 @@ EOT;
     }
 
     /**
+     * Generates a message for a guest User
+     *
      * @return string
      */
     public static function getMessageForLoginGuest(): string

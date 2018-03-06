@@ -3,7 +3,6 @@
 namespace common\models\reserve\repositories;
 
 use common\models\reserve\ReserveEntity;
-use Yii;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -13,11 +12,15 @@ use yii\web\NotFoundHttpException;
 trait RestReserveRepository
 {
     /**
-     * @param $params
+     * Add new reserve to db with the set of income data
+     * 
+     * @param $params array of the POST data
+     *
      * @return ReserveEntity
+     *
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function createReserve($params): ReserveEntity
+    public function createReserve(array $params): ReserveEntity
     {
         $reserveModel = new self();
         $reserveModel->setAttributes($params);
@@ -29,16 +32,21 @@ trait RestReserveRepository
     }
 
     /**
-     * @param $id
+     * Updates a reserve by id
+     *
+     * @param $id int
+     * @param $postData array of the POST data
+     *
      * @return ReserveEntity
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such reserve
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateReserve($id): ReserveEntity
+    public function updateReserve(int $id, array $postData): ReserveEntity
     {
-        $reserveModel = $this->findModel((int) $id);
+        $reserveModel = $this->findModel(['id' => $id]);
 
-        $reserveModel->setAttributes(Yii::$app->request->bodyParams);
+        $reserveModel->setAttributes($postData);
         if (!$reserveModel->save()) {
             $this->throwModelException($reserveModel->errors);
         }
@@ -49,11 +57,13 @@ trait RestReserveRepository
     /**
      * Finds an existing Reserve model
      *
-     * @param $params
+     * @param $params array
+     *
      * @return ReserveEntity
-     * @throws NotFoundHttpException
+     * 
+     * @throws NotFoundHttpException if there is no such reserve
      */
-    protected function findModel($params): ReserveEntity
+    protected function findModel(array $params): ReserveEntity
     {
         if (empty($reserveModel = self::findOne($params))) {
             throw new NotFoundHttpException('Резервы не найдены.');

@@ -5,7 +5,6 @@ namespace rest\modules\api\v1\reserve\controllers\actions;
 use common\models\reserve\ReserveEntity;
 use rest\modules\api\v1\reserve\controllers\ReserveController;
 use yii\rest\Action;
-use Yii;
 use yii\web\UnprocessableEntityHttpException;
 use yii\web\ServerErrorHttpException;
 
@@ -99,7 +98,7 @@ class CreateAction extends Action
         try {
             /** @var ReserveEntity $reserveModel */
             $reserveModel = new $this->modelClass();
-            $reserveModel = $reserveModel->createReserve(Yii::$app->request->bodyParams);
+            $reserveModel = $reserveModel->createReserve(\Yii::$app->request->bodyParams);
             return $this->controller->setResponse(
                 201,
                 'Резервы успешно созданы.',
@@ -108,8 +107,8 @@ class CreateAction extends Action
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при создании заявки.'));
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при создании заявки.'));
         }
     }
 }

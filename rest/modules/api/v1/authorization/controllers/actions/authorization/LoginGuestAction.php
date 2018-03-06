@@ -51,6 +51,7 @@ class LoginGuestAction extends Action
      *     )
      * )
      * @return array
+     * 
      * @throws UnauthorizedHttpException
      */
     public function run(): array

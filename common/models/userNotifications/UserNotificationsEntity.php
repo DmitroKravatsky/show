@@ -3,7 +3,6 @@
 namespace common\models\userNotifications;
 
 use common\models\userNotifications\repositories\RestUserNotificationsRepository;
-use rest\behaviors\ResponseBehavior;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
@@ -14,6 +13,7 @@ use yii\db\ActiveRecord;
  * @package common\models\userNotifications
  *
  * @mixin ValidationExceptionFirstMessage
+ *
  * @property integer $id
  * @property integer $recipient_id
  * @property string $text
@@ -64,7 +64,7 @@ class UserNotificationsEntity extends ActiveRecord
                 'recipient_id',
                 'exist',
                 'skipOnError'     => false,
-                'targetClass'     => RestUserEntity::className(),
+                'targetClass'     => RestUserEntity::class,
                 'targetAttribute' => ['recipient_id' => 'id'],
             ],
         ];
@@ -76,8 +76,8 @@ class UserNotificationsEntity extends ActiveRecord
     public function behaviors(): array
     {
         return [
-            'TimestampBehavior'               => TimestampBehavior::className(),
-            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::className(),
+            'TimestampBehavior'               => TimestampBehavior::class,
+            'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::class,
         ];
     }
 }

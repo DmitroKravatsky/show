@@ -7,7 +7,6 @@ use rest\modules\api\v1\bid\controllers\BidController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 /**
  * Class DeleteAction
@@ -84,13 +83,13 @@ class DeleteAction extends Action
             /** @var BidEntity $bid */
             $bid = new BidEntity();
             if ($bid->deleteBid($id)) {
-                return $this->controller->setResponse(200, Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
+                return $this->controller->setResponse(200, \Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
             }
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при удалении заявки.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении заявки.'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException();
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             throw new ServerErrorHttpException();
         }
     }

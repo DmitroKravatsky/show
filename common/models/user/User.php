@@ -1,7 +1,7 @@
 <?php
+
 namespace common\models\user;
 
-use Yii;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -37,7 +37,7 @@ class User extends ActiveRecord implements IdentityInterface
     public function behaviors()
     {
         return [
-            TimestampBehavior::className(),
+            TimestampBehavior::class,
         ];
     }
 
@@ -98,7 +98,7 @@ class User extends ActiveRecord implements IdentityInterface
         }
 
         $timestamp = (int) substr($token, strrpos($token, '_') + 1);
-        $expire = Yii::$app->params['user.passwordResetTokenExpire'];
+        $expire = \Yii::$app->params['user.passwordResetTokenExpire'];
         return $timestamp + $expire >= time();
     }
 
@@ -134,7 +134,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function validatePassword($password)
     {
-        return Yii::$app->security->validatePassword($password, $this->password);
+        return \Yii::$app->security->validatePassword($password, $this->password);
     }
 
     /**
@@ -144,7 +144,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function setPassword($password)
     {
-        $this->password = Yii::$app->security->generatePasswordHash($password);
+        $this->password = \Yii::$app->security->generatePasswordHash($password);
     }
 
     /**
@@ -152,7 +152,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generateAuthKey()
     {
-        $this->auth_key = Yii::$app->security->generateRandomString();
+        $this->auth_key = \Yii::$app->security->generateRandomString();
     }
 
     /**
@@ -160,7 +160,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function generatePasswordResetToken()
     {
-        $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+        $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
     }
 
     /**
@@ -177,6 +177,6 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function findByRole($roleName):array
     {
-        return Yii::$app->authManager->getUserIdsByRole($roleName);
+        return \Yii::$app->authManager->getUserIdsByRole($roleName);
     }
 }

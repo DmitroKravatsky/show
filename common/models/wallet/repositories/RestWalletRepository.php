@@ -3,7 +3,6 @@
 namespace common\models\wallet\repositories;
 
 use common\models\wallet\WalletEntity;
-use Yii;
 use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\web\NotFoundHttpException;
@@ -15,11 +14,15 @@ use yii\web\NotFoundHttpException;
 trait RestWalletRepository
 {
     /**
-     * @param $params
+     * Add new wallet to db with the set of income data
+     *
+     * @param $params array of the POST data
+     *
      * @return WalletEntity
+     *
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function createWallet($params): WalletEntity
+    public function createWallet(array $params): WalletEntity
     {
         $walletModel = new WalletEntity();
         $walletModel->setAttributes($params);
@@ -32,16 +35,20 @@ trait RestWalletRepository
     }
 
     /**
-     * @param $id
-     * @param $params
+     * Updates a wallet by Wallet id and User id
+     *
+     * @param $id int
+     * @param $params array of the POST data
+     *
      * @return WalletEntity
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such wallet
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function updateWallet($id, $params): WalletEntity
+    public function updateWallet(int $id, array $params): WalletEntity
     {
         /** @var WalletEntity $walletModel */
-        $walletModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
+        $walletModel = $this->findModel(['id' => (int) $id, 'created_by' => \Yii::$app->user->id]);
         $walletModel->setAttributes($params);
 
         if (!$walletModel->save()) {
@@ -52,16 +59,20 @@ trait RestWalletRepository
     }
 
     /**
-     * @param $id
+     * Removes a wallet by Wallet id and User id
+     *
+     * @param $id int
+     *
      * @return bool
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such wallet
      * @throws \Exception
      * @throws \Throwable
      */
-    public function deleteWallet($id): bool
+    public function deleteWallet(int $id): bool
     {
         /** @var WalletEntity $walletModel */
-        $walletModel = $this->findModel(['id' => (int) $id, 'created_by' => Yii::$app->user->id]);
+        $walletModel = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
         if ($walletModel->delete()) {
             return true;
         }
@@ -69,13 +80,16 @@ trait RestWalletRepository
     }
 
     /**
+     * Returns list of wallets by User id
+     *
      * @param array $params
+     * 
      * @return ArrayDataProvider
      */
     public function getWallets(array $params): ArrayDataProvider
     {
         /** @var ActiveQuery $query */
-        $query = self::find()->where(['created_by' => Yii::$app->user->id]);
+        $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
 
         $dataProvider = new ArrayDataProvider([
             'allModels'  => $query->orderBy(['created_at' => SORT_DESC])->all(),
@@ -91,8 +105,10 @@ trait RestWalletRepository
      * Finds an existing Wallet model
      *
      * @param array $params
+     *
      * @return mixed
-     * @throws NotFoundHttpException
+     *
+     * @throws NotFoundHttpException if there is no such wallet
      */
     protected function findModel(array $params)
     {

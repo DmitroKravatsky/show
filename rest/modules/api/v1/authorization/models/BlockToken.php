@@ -15,6 +15,7 @@ use yii\db\ActiveRecord;
 /**
  * Class BlockToken
  * @package rest\modules\api\v1\authorization\models
+ * 
  * @property integer $id
  * @property string $token
  * @property integer $user_id

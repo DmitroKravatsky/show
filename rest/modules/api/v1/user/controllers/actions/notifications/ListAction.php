@@ -13,6 +13,8 @@ use yii\rest\Action;
 class ListAction extends Action
 {
     /**
+     * Returns list of user notifications
+     * 
      * @SWG\Get(path="/user/user-notifications/list",
      *      tags={"User module"},
      *      summary="Get user profile",

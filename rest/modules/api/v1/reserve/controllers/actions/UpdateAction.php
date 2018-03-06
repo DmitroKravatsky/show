@@ -5,7 +5,6 @@ namespace rest\modules\api\v1\reserve\controllers\actions;
 use common\models\reserve\ReserveEntity;
 use rest\modules\api\v1\reserve\controllers\ReserveController;
 use yii\rest\Action;
-use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
@@ -111,17 +110,17 @@ class UpdateAction extends Action
         try {
             /** @var ReserveEntity $reserveModel */
             $reserveModel = new $this->modelClass();
-            $reserveModel = $reserveModel->updateReserve($id);
+            $reserveModel = $reserveModel->updateReserve($id, \Yii::$app->request->bodyParams);
             return $this->controller->setResponse(
                 200,
-                Yii::t('app', 'Резервы успешно изменены.'),
+                \Yii::t('app', 'Резервы успешно изменены.'),
                 $reserveModel->getAttributes(['id', 'payment_system', 'currency', 'sum', 'created_at'])
             );
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException();
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при изменении заявки.'));
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении заявки.'));
         }
     }
 }

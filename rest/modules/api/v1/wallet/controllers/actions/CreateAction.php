@@ -7,7 +7,6 @@ use rest\modules\api\v1\wallet\controllers\WalletController;
 use yii\rest\Action;
 use yii\web\UnprocessableEntityHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 /**
  * Class CreateAction
@@ -97,6 +96,7 @@ class CreateAction extends Action
      * )
      *
      * @return array
+     * 
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -114,8 +114,8 @@ class CreateAction extends Action
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при создании шаблона кошелька.'));
+            \Yii::error($e->getMessage());
+            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при создании шаблона кошелька.'));
         }
     }
 }

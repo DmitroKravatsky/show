@@ -7,7 +7,6 @@ use rest\modules\api\v1\user\controllers\UserNotificationsController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use Yii;
 
 class DeleteAction extends Action
 {
@@ -86,7 +85,7 @@ class DeleteAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            Yii::error($e->getMessage());
+            \Yii::error($e->getMessage());
             throw new ServerErrorHttpException('Произошла ошибка при удалении уведомления.');
         }
     }

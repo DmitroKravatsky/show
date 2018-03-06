@@ -8,6 +8,8 @@ use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
 use yii\filters\auth\HttpBearerAuth;
+use yii\rest\Controller;
+use yii\filters\VerbFilter;
 
 /**
  * Class BidController
@@ -15,7 +17,7 @@ use yii\filters\auth\HttpBearerAuth;
  *
  * @mixin ResponseBehavior
  */
-class BidController extends \yii\rest\Controller // todo париписывать в use а не исполльзовать длинные названия
+class BidController extends Controller
 {
     /** @var BidEntity $modelClass */
     public $modelClass = BidEntity::class;
@@ -28,21 +30,21 @@ class BidController extends \yii\rest\Controller // todo париписыват�
         $behaviors = parent::behaviors();
 
         $behaviors['bearerAuth'] = [
-            'class' => HttpBearerAuth::className(), // todo deprecated className
+            'class' => HttpBearerAuth::class,
         ];
 
         $behaviors['verbs'] = [
-            'class'   => \yii\filters\VerbFilter::className(), // todo deprecated className
+            'class'   => VerbFilter::class,
             'actions' => [
-                'create' => ['post'],
-                'update' => ['put'],
-                'delete' => ['delete'],
-                'list'   => ['get'],
-                'detail' => ['get'],
+                'create' => ['POST'],
+                'update' => ['PUT'],
+                'delete' => ['DELETE'],
+                'list'   => ['GET'],
+                'detail' => ['GET'],
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::className(); // todo deprecated className
+        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
