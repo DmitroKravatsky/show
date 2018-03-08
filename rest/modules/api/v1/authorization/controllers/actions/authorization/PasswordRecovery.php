@@ -72,7 +72,7 @@ class PasswordRecovery extends Action
      *      @SWG\Parameter(
      *          in = "formData",
      *          name = "recovery_code",
-     *          description = "User phone number",
+     *          description = "User password recovery code",
      *          required = true,
      *          type = "integer"
      *      ),
