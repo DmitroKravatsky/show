@@ -6,10 +6,10 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\Generate
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecovery;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecoveryAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfile;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCodeAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfileAction;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -79,15 +79,15 @@ class AuthorizationController extends Controller
                 'modelClass' => $this->modelClass
             ],
             'send-recovery-code' => [
-                'class' => SendRecoveryCode::class,
+                'class' => SendRecoveryCodeAction::class,
                 'modelClass' => $this->modelClass,
             ],
             'password-recovery' => [
-                'class' => PasswordRecovery::class,
+                'class' => PasswordRecoveryAction::class,
                 'modelClass' => $this->modelClass
             ],
             'verification-profile' => [
-                'class' => VerificationProfile::class,
+                'class' => VerificationProfileAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

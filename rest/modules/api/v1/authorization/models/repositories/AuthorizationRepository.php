@@ -152,7 +152,7 @@ trait AuthorizationRepository
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
      */
-    public function updatePassword($params)
+    public function updatePassword(array $params)
     {
         $userModel = RestUserEntity::findOne(\Yii::$app->user->id);
         $userModel->setScenario(RestUserEntity::SCENARIO_UPDATE_PASSWORD);
@@ -240,6 +240,7 @@ trait AuthorizationRepository
      * Changes the status of user's account
      *
      * @param $params array of the POST input data
+     *
      * @return bool
      *
      * @throws NotFoundHttpException
@@ -249,22 +250,17 @@ trait AuthorizationRepository
     {
         $user = new RestUserEntity();
         $user->setScenario(self::SCENARIO_VERIFY_PROFILE);
-        $user->setAttributes([
-            'verification_code'  => $params['verification_code'] ?? null,
-        ]);
+        $user->setAttributes($params);
         if (!$user->validate()) {
             return $this->throwModelException($user->errors);
         }
 
-        $userId = \Yii::$app->user->identity->getId();
-        $user = RestUserEntity::findOne(['id' => $userId]);
+        $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
         if (!$user) {
             throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
         }
 
-        $userVerificationCode = intval($params['verification_code']);
-
-        if ($user->verification_code !== $userVerificationCode) {
+        if ($user->verification_code !== (int)($params['verification_code'])) {
             throw new UnprocessableEntityHttpException('Неправильный код верификации');
         }
 
