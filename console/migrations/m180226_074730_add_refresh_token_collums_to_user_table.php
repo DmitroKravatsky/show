@@ -18,6 +18,7 @@ class m180226_074730_add_refresh_token_collums_to_user_table extends Migration
     public function down()
     {
         $this->dropColumn('user', 'refresh_token');
+
     }
 
 }

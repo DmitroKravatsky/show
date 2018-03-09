@@ -47,7 +47,7 @@ trait AuthorizationRepository
                 'confirm_password'   => $params['confirm_password'] ?? null,
                 'refresh_token'      => $refresh_token,
                 'token_created_date' => time(),
-                'verification_code'   => $verificationCode,
+                'verification_code'  => $verificationCode,
             ]);
 
             if (!$user->validate()) {
@@ -237,37 +237,33 @@ trait AuthorizationRepository
     }
 
     /**
-     * Change status of the user's profile
+     * Changes the status of user's account
      *
      * @param $params array of the POST input data
      *
      * @return bool
      *
      * @throws NotFoundHttpException
+     * @throws UnprocessableEntityHttpException
      */
     public function verifyUser(array $params)
     {
-        if (empty($params['verification_code'])) {
-            throw new NotFoundHttpException('Введите код верификации');
+        $user = new RestUserEntity();
+        $user->setScenario(self::SCENARIO_VERIFY_PROFILE);
+        $user->setAttributes([
+            'verification_code'  => $params['verification_code'] ?? null,
+        ]);
+        if (!$user->validate()) {
+            return $this->throwModelException($user->errors);
         }
 
-        $this->scenario = self::SCENARIO_VERIFY_PROFILE;
-        $currentToken = $this->getAuthKey();
-        $userModel = RestUserEntity::findIdentityByAccessToken($currentToken, HttpBearerAuth::class);
-        $userId = $userModel->id;
-
-        $user = RestUserEntity::findOne(['id' => $userId]);
+        $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
         if (!$user) {
             throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
         }
-        if ($user->status == RestUserEntity::STATUS_VERIFIED
-            && $user->verification_code == null
-        ) {
-            return true;
-        }
 
-        if ($user->verification_code != $params['verification_code']) {
-            throw new NotFoundHttpException('Неправильный код верификации');
+        if ($user->verification_code !== (int)($params['verification_code'])) {
+            throw new UnprocessableEntityHttpException('Неправильный код верификации');
         }
 
         $user->status = RestUserEntity::STATUS_VERIFIED;
