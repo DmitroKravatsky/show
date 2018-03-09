@@ -21,7 +21,7 @@ use yii\web\HttpException;
  * Class PasswordRecovery
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
  */
-class PasswordRecovery extends Action
+class PasswordRecoveryAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;

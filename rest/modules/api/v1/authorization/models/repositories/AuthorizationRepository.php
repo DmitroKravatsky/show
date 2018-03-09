@@ -250,9 +250,7 @@ trait AuthorizationRepository
     {
         $user = new RestUserEntity();
         $user->setScenario(self::SCENARIO_VERIFY_PROFILE);
-        $user->setAttributes([
-            'verification_code'  => $params['verification_code'] ?? null,
-        ]);
+        $user->setAttributes($params);
         if (!$user->validate()) {
             return $this->throwModelException($user->errors);
         }

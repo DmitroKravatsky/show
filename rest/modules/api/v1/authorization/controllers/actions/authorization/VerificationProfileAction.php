@@ -13,7 +13,7 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use rest\behaviors\ResponseBehavior;
 
-class VerificationProfile extends Action
+class VerificationProfileAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
