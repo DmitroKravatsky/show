@@ -257,15 +257,12 @@ trait AuthorizationRepository
             return $this->throwModelException($user->errors);
         }
 
-        $userId = \Yii::$app->user->identity->getId();
-        $user = RestUserEntity::findOne(['id' => $userId]);
+        $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
         if (!$user) {
             throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
         }
 
-        $userVerificationCode = intval($params['verification_code']);
-
-        if ($user->verification_code !== $userVerificationCode) {
+        if ($user->verification_code !== (int)($params['verification_code'])) {
             throw new UnprocessableEntityHttpException('Неправильный код верификации');
         }
 

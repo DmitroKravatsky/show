@@ -59,7 +59,7 @@ class GenerateNewAccessTokenAction extends Action
      *                      "user": {
      *                          "id": "531"
      *                          "email": "guest@gmail.com"
-     *                          "role": "user"
+     *                          "role": "guest"
      *                          "created_at": "1520070475"
      *                      }
      *              }
