@@ -68,10 +68,9 @@ class VerificationProfile extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $pofileVerification = $model->verifyUser(\Yii::$app->request->bodyParams);
+        $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var $result ResponseBehavior */
-        $result = $this->controller;
-        return $result->setResponse(201, 'Your profile has been verified');
+        /** @var ResponseBehavior */
+        return $this->controller->setResponse(201, 'Your profile has been verified');
     }
 }
