@@ -92,6 +92,10 @@ class PasswordRecovery extends Action
      *         }
      *     ),
      *      @SWG\Response (
+     *         response = 400,
+     *         description = "Validation Error"
+     *     ),
+     *      @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),
