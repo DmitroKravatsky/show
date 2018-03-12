@@ -81,7 +81,8 @@ class RegisterAction extends Action
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token")
+     *                  @SWG\Property(property="access_token", type="string", description="access token"),
+     *                  @SWG\Property(property="refresh_token", type="string", description="refresh token")
      *              ),
      *         ),
      *         examples = {
@@ -89,7 +90,7 @@ class RegisterAction extends Action
      *              "message": "Регистрация прошла успешно.",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "OiJKV1QiLCyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJh"
+     *                  "refresh_token": "OiJKV1QiLCyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJh",
      *                  "id" : 21
      *              }
      *         }
