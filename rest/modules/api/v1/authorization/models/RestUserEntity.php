@@ -32,14 +32,14 @@ use yii\db\Exception as ExceptionDb;
  * @property string $source_id
  * @property string $phone_number
  * @property integer $terms_condition
- * @property string  $refresh_token
- * @property integer $token_created_date
+ * @property string $refresh_token
+ * @property integer $created_refresh_token
  * @property integer $created_at
  * @property integer $updated_at
  * @property integer $recovery_code
  * @property integer $created_recovery_code
  * @property integer $status
- * @property string  $verification_code
+ * @property integer $verification_code
  */
 
 class RestUserEntity extends User
@@ -96,7 +96,7 @@ class RestUserEntity extends User
             'created_recovery_code' => 'Дата создания кода востановления',
             'recovery_code'         => 'Код востановления',
             'refresh_token'         => 'Токен обновления',
-            'token_created_date'    => 'Дата создания токена доступа',
+            'created_refresh_token' => 'Дата создания токена доступа',
             'status'                => 'Статус полльзователя',
             'verification_code'     => 'Код подтверждения аккаунта',
         ];
@@ -111,7 +111,7 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
-            'refresh_token', 'token_created_date', 'verification_code'
+            'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [

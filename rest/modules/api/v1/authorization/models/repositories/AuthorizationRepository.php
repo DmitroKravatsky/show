@@ -33,21 +33,20 @@ trait AuthorizationRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
         $refresh_token = \Yii::$app->security->generateRandomString(100);
-        $verificationCode = rand(1000,9999);
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
-                'source'             => self::NATIVE,
-                'phone_number'       => $params['phone_number'] ?? null,
-                'email'              => $params['email'] ?? null,
-                'terms_condition'    => $params['terms_condition'] ?? 0,
-                'password'           => $params['password'] ?? null,
-                'confirm_password'   => $params['confirm_password'] ?? null,
-                'refresh_token'      => $refresh_token,
-                'token_created_date' => time(),
-                'verification_code'  => $verificationCode,
+                'source'                => self::NATIVE,
+                'phone_number'          => $params['phone_number'] ?? null,
+                'email'                 => $params['email'] ?? null,
+                'terms_condition'       => $params['terms_condition'] ?? 0,
+                'password'              => $params['password'] ?? null,
+                'confirm_password'      => $params['confirm_password'] ?? null,
+                'refresh_token'         => $refresh_token,
+                'created_refresh_token' => time(),
+                'verification_code'     => rand(1000, 9999),
             ]);
 
             if (!$user->validate()) {
