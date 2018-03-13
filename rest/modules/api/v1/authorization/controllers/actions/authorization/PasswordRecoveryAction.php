@@ -9,6 +9,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use rest\behaviors\ResponseBehavior;
+use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\base\Exception;
@@ -20,19 +21,10 @@ use yii\web\HttpException;
  * Class PasswordRecovery
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
  */
-class PasswordRecovery extends Action
+class PasswordRecoveryAction extends Action
 {
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
-
-        return $behaviors;
-    }
+    /** @var  AuthorizationController */
+    public $controller;
     /**
      * Password recovery action
      *
@@ -92,6 +84,10 @@ class PasswordRecovery extends Action
      *         }
      *     ),
      *      @SWG\Response (
+     *         response = 400,
+     *         description = "Validation Error"
+     *     ),
+     *      @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),
@@ -124,7 +120,7 @@ class PasswordRecovery extends Action
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
                 /** @var $this ResponseBehavior */
-                return $this->setResponse(
+                return $this->controller->setResponse(
                     200, 'Password recovery has been ended successfully '
                 );
             }

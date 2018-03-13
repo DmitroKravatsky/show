@@ -13,7 +13,7 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use rest\behaviors\ResponseBehavior;
 
-class VerificationProfile extends Action
+class VerificationProfileAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
@@ -68,10 +68,9 @@ class VerificationProfile extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $pofileVerification = $model->verifyUser(\Yii::$app->request->bodyParams);
+        $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var $result ResponseBehavior */
-        $result = $this->controller;
-        return $result->setResponse(201, 'Your profile has been verified');
+        /** @var ResponseBehavior */
+        return $this->controller->setResponse(201, 'Your profile has been verified');
     }
 }

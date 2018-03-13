@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use rest\behaviors\ResponseBehavior;
+use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use yii\web\HttpException;
@@ -15,7 +16,10 @@ use yii\web\ServerErrorHttpException;
  */
 class GenerateNewAccessTokenAction extends Action
 {
+    /** @var  AuthorizationController */
+    public $controller;
 
+    /**
     /**
      * Register action
      *
@@ -59,7 +63,7 @@ class GenerateNewAccessTokenAction extends Action
      *                      "user": {
      *                          "id": "531"
      *                          "email": "guest@gmail.com"
-     *                          "role": "user"
+     *                          "role": "guest"
      *                          "created_at": "1520070475"
      *                      }
      *              }
@@ -93,9 +97,8 @@ class GenerateNewAccessTokenAction extends Action
         $restUser = new $this->modelClass();
         $responseData = $restUser->generateNewAccessToken();
 
-        /** @var $result ResponseBehavior */
-        $result = $this->controller;
-        return $result->setResponse(201, 'New token is created', $responseData);
+        /** @var $this ResponseBehavior */
+        return $this->controller->setResponse(201, 'New token is created', $responseData);
     }
 
 }

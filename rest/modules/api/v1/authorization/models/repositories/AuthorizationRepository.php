@@ -33,21 +33,20 @@ trait AuthorizationRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
         $refresh_token = \Yii::$app->security->generateRandomString(100);
-        $verificationCode = rand(1000,9999);
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
-                'source'             => self::NATIVE,
-                'phone_number'       => $params['phone_number'] ?? null,
-                'email'              => $params['email'] ?? null,
-                'terms_condition'    => $params['terms_condition'] ?? 0,
-                'password'           => $params['password'] ?? null,
-                'confirm_password'   => $params['confirm_password'] ?? null,
-                'refresh_token'      => $refresh_token,
-                'token_created_date' => time(),
-                'verification_code'  => $verificationCode,
+                'source'                => self::NATIVE,
+                'phone_number'          => $params['phone_number'] ?? null,
+                'email'                 => $params['email'] ?? null,
+                'terms_condition'       => $params['terms_condition'] ?? 0,
+                'password'              => $params['password'] ?? null,
+                'confirm_password'      => $params['confirm_password'] ?? null,
+                'refresh_token'         => $refresh_token,
+                'created_refresh_token' => time(),
+                'verification_code'     => rand(1000, 9999),
             ]);
 
             if (!$user->validate()) {
@@ -250,22 +249,17 @@ trait AuthorizationRepository
     {
         $user = new RestUserEntity();
         $user->setScenario(self::SCENARIO_VERIFY_PROFILE);
-        $user->setAttributes([
-            'verification_code'  => $params['verification_code'] ?? null,
-        ]);
+        $user->setAttributes($params);
         if (!$user->validate()) {
             return $this->throwModelException($user->errors);
         }
 
-        $userId = \Yii::$app->user->identity->getId();
-        $user = RestUserEntity::findOne(['id' => $userId]);
+        $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
         if (!$user) {
             throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
         }
 
-        $userVerificationCode = intval($params['verification_code']);
-
-        if ($user->verification_code !== $userVerificationCode) {
+        if ($user->verification_code !== (int)($params['verification_code'])) {
             throw new UnprocessableEntityHttpException('Неправильный код верификации');
         }
 
