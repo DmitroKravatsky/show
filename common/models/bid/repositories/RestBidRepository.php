@@ -35,7 +35,8 @@ trait RestBidRepository
         $dataProvider = new ArrayDataProvider([
             'allModels'  => $query->orderBy(['created_at' => SORT_DESC])->all(),
             'pagination' => [
-                'pageSize' => $params['per-page'] ?? 10
+                'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
+                'page'     => ($params['page'] ? $params['page'] - 1 : 0)
             ]
         ]);
 
