@@ -7,6 +7,7 @@ use yii\data\ArrayDataProvider;
 use yii\db\ActiveQuery;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestBidRepository
@@ -51,15 +52,23 @@ trait RestBidRepository
      * @return array
      *
      * @throws NotFoundHttpException if there is no such bid
+     * @throws ServerErrorHttpException if there is no such bid
      */
     public function getBidDetails($id)
     {
-        $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
-        
-        return $bid->getAttributes([
-            'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
-            'to_currency', 'from_sum', 'to_sum'
-        ]);
+        try{
+            $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
+
+            return $bid->getAttributes([
+                'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
+                'to_currency', 'from_sum', 'to_sum'
+            ]);
+        }catch (NotFoundHttpException $e){
+            throw new NotFoundHttpException($e->getMessage());
+        }catch (ServerErrorHttpException $e){
+            throw new ServerErrorHttpException('Server error occurred , please try later');
+        }
+
     }
 
     /**
@@ -139,7 +148,7 @@ trait RestBidRepository
     protected function findModel(array $params): BaseActiveRecord
     {
         if (empty($bidModel = self::findOne($params))) {
-            throw new NotFoundHttpException('Заявка не найдена');
+            throw new NotFoundHttpException('Bid is not found');
         }
 
         return $bidModel;
