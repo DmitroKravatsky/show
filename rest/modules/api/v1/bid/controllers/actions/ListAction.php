@@ -131,6 +131,14 @@ class ListAction extends Action
                         "perPage": 2
                     }
      *         }
+     *     ),
+     *      @SWG\Response (
+     *         response = 401,
+     *         description = "Invalid credentials or Expired token"
+     *     ),
+     *      @SWG\Response(
+     *         response = 500,
+     *         description = "Internal Server Error"
      *     )
      * )
      *
