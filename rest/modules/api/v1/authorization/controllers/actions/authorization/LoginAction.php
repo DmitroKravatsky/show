@@ -6,6 +6,7 @@ use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -77,6 +78,10 @@ class LoginAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Unauthorized Error"
+     *     ),
+     *     @SWG\Response (
+     *         response = 500,
+     *         description = "Server internal error"
      *     )
      * )
      *
@@ -87,6 +92,7 @@ class LoginAction extends Action
      * @throws NotFoundHttpException
      * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws ServerErrorHttpException
      */
     public function run()
     {
@@ -104,6 +110,8 @@ class LoginAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Server internal error');
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             throw new UnauthorizedHttpException('Ошибка авторизации.');
