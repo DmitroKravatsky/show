@@ -63,9 +63,9 @@ trait RestBidRepository
                 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
                 'to_currency', 'from_sum', 'to_sum'
             ]);
-        }catch (NotFoundHttpException $e) {
+        } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        }catch (ServerErrorHttpException $e) {
+        } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Server error occurred , please try later');
         }
 
