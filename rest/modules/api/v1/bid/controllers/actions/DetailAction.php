@@ -100,11 +100,16 @@ class DetailAction extends Action
      *     @SWG\Response(
      *         response = 404,
      *         description = "Bid not found"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Server error occurred , please try later"
      *     )
      * )
      *
      * @return array
      * @throws \yii\web\NotFoundHttpException
+     * @throws \yii\web\ServerErrorHttpException
      */
     public function run()
     {
