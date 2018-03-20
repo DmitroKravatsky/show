@@ -21,27 +21,35 @@ trait RestBidRepository
      * @param $params array of the POST data
      *
      * @return ArrayDataProvider
+     *
+     * @throws ServerErrorHttpException
      */
     public function getBids(array $params): ArrayDataProvider
     {
-        /** @var ActiveQuery $query */
-        $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
+        try {
 
-        if (isset($params['created_at']) && $params['created_at'] == 'week') {
-            $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
-        } elseif (isset($params['created_at']) && $params['created_at'] == 'month') {
-            $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
+            /** @var ActiveQuery $query */
+            $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
+
+            if (isset($params['created_at']) && $params['created_at'] === 'week') {
+                $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
+            } elseif (isset($params['created_at']) && $params['created_at'] === 'month') {
+                $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
+            }
+
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $query->orderBy(['created_at' => SORT_DESC])->all(),
+                'pagination' => [
+                    'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
+                    'page' => ($params['page'] ? $params['page'] - 1 : 0)
+                ]
+            ]);
+
+            return $dataProvider;
+
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Internal server error');
         }
-
-        $dataProvider = new ArrayDataProvider([
-            'allModels'  => $query->orderBy(['created_at' => SORT_DESC])->all(),
-            'pagination' => [
-                'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
-                'page'     => ($params['page'] ? $params['page'] - 1 : 0)
-            ]
-        ]);
-
-        return $dataProvider;
     }
 
     /**
