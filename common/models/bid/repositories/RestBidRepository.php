@@ -31,9 +31,9 @@ trait RestBidRepository
             /** @var ActiveQuery $query */
             $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
 
-            if (isset($params['created_at']) && $params['created_at'] == 'week') {
+            if (isset($params['created_at']) && $params['created_at'] === 'week') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
-            } elseif (isset($params['created_at']) && $params['created_at'] == 'month') {
+            } elseif (isset($params['created_at']) && $params['created_at'] === 'month') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
             }
 
@@ -47,7 +47,7 @@ trait RestBidRepository
 
             return $dataProvider;
 
-        }catch (ServerErrorHttpException $e) {
+        } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }
     }
