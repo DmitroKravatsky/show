@@ -27,7 +27,7 @@ class ListAction extends Action
      *      ),
      *      @SWG\Parameter(
      *        in = "formData",
-     *        name = "perPage",
+     *        name = "per-page",
      *        description = "Amount of posts per page",
      *        required = false,
      *        type = "integer"
@@ -67,26 +67,26 @@ class ListAction extends Action
      *                  @SWG\Property(property="self", type="object",
      *                      @SWG\Property(property="href", type="string", description="Current link"),
      *                  ),
-     *                   @SWG\Property(property="first", type="object",
+     *                  @SWG\Property(property="first", type="object",
      *                      @SWG\Property(property="href", type="string", description="First page link"),
      *                  ),
-     *                   @SWG\Property(property="prev", type="object",
+     *                  @SWG\Property(property="prev", type="object",
      *                      @SWG\Property(property="href", type="string", description="Prev page link"),
      *                  ),
-     *                   @SWG\Property(property="next", type="object",
+     *                  @SWG\Property(property="next", type="object",
      *                      @SWG\Property(property="href", type="string", description="Next page link"),
      *                  ),
      *                  @SWG\Property(property="last", type="object",
      *                      @SWG\Property(property="href", type="string", description="Last page link"),
      *                  ),
      *             ),
-     *               @SWG\Property(property="_meta", type="object",
-     *                  @SWG\Property(property="self", type="object",
-     *                      @SWG\Property(property="total-count", type="string", description="Total number of items"),
-     *                      @SWG\Property(property="page-count", type="integer", description="Current page"),
-     *                      @SWG\Property(property="current-page", type="integer", description="Current page"),
-     *                      @SWG\Property(property="per-page", type="integer", description="Number of items per page"),
-     *                  )
+     *             @SWG\Property(property="_meta", type="object",
+     *                @SWG\Property(property="self", type="object",
+     *                    @SWG\Property(property="total-count", type="string", description="Total number of items"),
+     *                    @SWG\Property(property="page-count", type="integer", description="Current page"),
+     *                    @SWG\Property(property="current-page", type="integer", description="Current page"),
+     *                    @SWG\Property(property="per-page", type="integer", description="Number of items per page"),
+     *                )
      *             ),
      *         ),
      *         examples = {
@@ -150,13 +150,13 @@ class ListAction extends Action
      *         }
      *
      *     ),
-     *      @SWG\Response (
-     *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *     @SWG\Response (
+     *        response = 401,
+     *        description = "Invalid credentials or Expired token"
      *     ),
-     *      @SWG\Response(
-     *         response = 500,
-     *         description = "Internal Server Error"
+     *     @SWG\Response(
+     *        response = 500,
+     *        description = "Internal Server Error"
      *     )
      * )
      *
