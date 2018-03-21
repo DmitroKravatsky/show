@@ -21,7 +21,7 @@ return [
         'class'      => 'yii\rest\UrlRule',
         'prefix'     => 'api/v1/',
         'controller' => [
-            'user/user-profile' => 'api/v1/user/user-profile',
+            'user/profile' => 'api/v1/user/user-profile',
         ],
         'patterns'   => [
             'PUT'                 => 'update',
