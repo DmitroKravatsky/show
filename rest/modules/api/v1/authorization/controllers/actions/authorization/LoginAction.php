@@ -126,10 +126,10 @@ class LoginAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Server internal error');
         } catch (ForbiddenHttpException $e) {
             throw new ForbiddenHttpException('Check your credentials');
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Server internal error');
         }
     }
 }
