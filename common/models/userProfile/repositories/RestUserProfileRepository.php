@@ -38,7 +38,7 @@ trait RestUserProfileRepository
             return $userProfile;
 
         } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('Users profile is not found');
+            throw new NotFoundHttpException('User profile is not found');
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }
