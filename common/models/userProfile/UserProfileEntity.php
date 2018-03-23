@@ -4,6 +4,7 @@ namespace common\models\userProfile;
 
 use common\models\userProfile\repositories\RestUserProfileRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 
@@ -89,5 +90,13 @@ class UserProfileEntity extends ActiveRecord
         $scenarios[self::SCENARIO_UPDATE] = ['id', 'user_id', 'name', 'last_name', 'avatar',];
 
         return $scenarios;
+    }
+
+    /** Get user data from user table
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUser()
+    {
+        return $this->hasOne(RestUserEntity::class, ['id' => 'user_id']);
     }
 }

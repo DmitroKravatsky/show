@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\models;
 
+use common\models\userProfile\UserProfileEntity;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
@@ -400,5 +401,14 @@ class RestUserEntity extends User
     public function getUserRole($userId)
     {
         return current(\Yii::$app->authManager->getRolesByUser($userId))->name;
+    }
+
+    /**
+     * Get user profile info
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'id']);
     }
 }

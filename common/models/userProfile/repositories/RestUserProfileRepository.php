@@ -26,9 +26,9 @@ trait RestUserProfileRepository
     {
         try {
             $userProfile =  self::find()
-                ->select(['name', 'last_name', 'avatar', 'email', 'phone_number'])
-                ->leftJoin('user', 'user_profile.user_id = user.id')
-                ->where(['user.id' => \Yii::$app->user->id])
+                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar', 'user.email', 'user.phone_number'])
+                ->joinWith('user', false)
+                ->where(['user_profile.user_id' => \Yii::$app->user->id])
                 ->asArray()
                 ->one();
 

@@ -71,7 +71,7 @@ class GetProfileAction extends Action
      *
      * @return array
      */
-    public function run(): array
+    public function run()
     {
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;
