@@ -77,6 +77,7 @@ class SiteController extends Controller
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/RegisterAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginGuestAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/GenerateNewAccessTokenAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
