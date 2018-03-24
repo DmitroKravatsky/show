@@ -8,6 +8,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use common\behaviors\ValidatePostParameters;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -23,8 +24,37 @@ use yii\web\HttpException;
  */
 class PasswordRecoveryAction extends Action
 {
+    /**
+     * @var array
+     */
+    public $params = [];
+
     /** @var  AuthorizationController */
     public $controller;
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'       => ValidatePostParameters::class,
+                'inputParams' => ['password', 'confirm_password', 'recovery_code']
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->validationParams();
+
+        return parent::beforeRun();
+    }
+
     /**
      * Password recovery action
      *
@@ -78,14 +108,14 @@ class PasswordRecoveryAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Восстановления пароля прошло успешно.",
+     *              "message": "Password recovery was successfully ended",
      *              "data": {
      *              }
      *         }
      *     ),
      *      @SWG\Response (
      *         response = 400,
-     *         description = "Validation Error"
+     *         description = "Not enough income params"
      *     ),
      *      @SWG\Response (
      *         response = 422,
@@ -97,7 +127,7 @@ class PasswordRecoveryAction extends Action
      *     )
      * )
      *
-    /**
+     *
      * Password recovery action
      *
      * @return array
@@ -116,6 +146,7 @@ class PasswordRecoveryAction extends Action
         } else {
             throw new BadRequestHttpException('Укажите email или номер телефона.');
         }
+
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
