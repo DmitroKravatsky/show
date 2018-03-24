@@ -9,8 +9,7 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGue
 use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecovery;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCode;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfile;
-use yii\filters\auth\CompositeAuth;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfileAction;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -88,7 +87,7 @@ class AuthorizationController extends Controller
                 'modelClass' => $this->modelClass
             ],
             'verification-profile' => [
-                'class' => VerificationProfile::class,
+                'class' => VerificationProfileAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];
