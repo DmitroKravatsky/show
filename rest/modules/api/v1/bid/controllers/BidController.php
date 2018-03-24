@@ -22,6 +22,11 @@ class BidController extends Controller
     /** @var BidEntity $modelClass */
     public $modelClass = BidEntity::class;
 
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items'
+    ];
+
     /**
      * @return array
      */

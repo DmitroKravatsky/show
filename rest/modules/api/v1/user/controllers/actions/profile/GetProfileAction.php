@@ -58,12 +58,20 @@ class GetProfileAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
+     *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "NotFoundHttpException"
+     *     ),
+     *     @SWG\Response (
+     *         response = 500,
+     *         description = "ServerErrorHttpException"
      *     )
      * )
      *
      * @return array
      */
-    public function run(): array
+    public function run()
     {
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;

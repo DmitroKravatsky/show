@@ -9,6 +9,7 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use rest\behaviors\ResponseBehavior;
+use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\{
@@ -19,19 +20,10 @@ use yii\{
  * Class SendRecoveryCode
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
  */
-class SendRecoveryCode extends Action
+class SendRecoveryCodeAction extends Action
 {
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        $behaviors = parent::behaviors();
-
-        $behaviors['responseBehavior'] = ResponseBehavior::className();
-
-        return $behaviors;
-    }
+    /** @var  AuthorizationController */
+    public $controller;
 
     /**
      * Send recovery code action
@@ -119,8 +111,8 @@ class SendRecoveryCode extends Action
             );
         }
         if ($user->save(false)) {
-            /** @var $this ResponseBehavior */
-            return $this->setResponse(
+            /** @var ResponseBehavior */
+            return $this->controller->setResponse(
                 200, 'Отправка кода восстановления прошло успешно'
             );
         }

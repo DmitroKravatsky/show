@@ -20,15 +20,28 @@ trait RestUserProfileRepository
      * @return array
      *
      * @throws NotFoundHttpException if there is no such user
+     * @throws ServerErrorHttpException
      */
     public function getProfile(): array
     {
-        return self::find()
-            ->select(['name', 'last_name', 'avatar', 'email', 'phone_number'])
-            ->leftJoin('user', 'user_profile.user_id = user.id')
-            ->where(['user.id' => \Yii::$app->user->id])
-            ->asArray()
-            ->one();
+        try {
+            $userProfile =  self::find()
+                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar', 'user.email', 'user.phone_number'])
+                ->joinWith('user', false)
+                ->where(['user_profile.user_id' => \Yii::$app->user->id])
+                ->asArray()
+                ->one();
+
+            if (!$userProfile) {
+                throw new NotFoundHttpException();
+            }
+            return $userProfile;
+
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException('User profile is not found');
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Internal server error');
+        }
     }
 
     /**
