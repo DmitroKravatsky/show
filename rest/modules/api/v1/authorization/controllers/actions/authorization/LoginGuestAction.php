@@ -6,7 +6,10 @@ use common\models\userNotifications\UserNotificationsEntity;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
+use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class LoginGuestAction
@@ -48,21 +51,40 @@ class LoginGuestAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Unauthorized Error"
+     *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "User not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 500,
+     *         description = "Internal Server Error"
      *     )
      * )
      * @return array
      * 
+     * @throws NotFoundHttpException
      * @throws UnauthorizedHttpException
+     * @throws ServerErrorHttpException
      */
     public function run(): array
     {
-        $this->modelClass = new RestUserEntity();
-        if ($user = $this->modelClass->loginGuest()) {
-            return $this->controller->setResponse(
-                200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+        try {
+            $this->modelClass = new RestUserEntity();
+            if ($user = $this->modelClass->loginGuest()) {
+                return $this->controller->setResponse(
+                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+            }
+
+            throw new UnauthorizedHttpException('Ошибка авторизации.');
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (UnauthorizedHttpException $e) {
+            throw new UnauthorizedHttpException($e->getMessage());
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Internal server error');
         }
-        
-        throw new UnauthorizedHttpException('Ошибка авторизации.');
+
     }
 
     /**
