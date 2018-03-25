@@ -7,6 +7,7 @@ use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
 use common\models\userProfile\UserProfileEntity;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class RestUserNotificationsRepository
@@ -17,26 +18,37 @@ trait RestUserNotificationsRepository
     /**
      * Returns a user by User id
      *
-     * @param $userId int
+     * @param $params array
      * @return ArrayDataProvider
+     *
+     * @throws ServerErrorHttpException
      */
-    public function getUserNotificationsByUser(int $userId): ArrayDataProvider
+    public function getUserNotificationsByUser(array $params): ArrayDataProvider
     {
-        $userNotificationsModel = UserNotificationsEntity::find()
-            ->select(['text', 'created_at'])
-            ->where(['recipient_id' => $userId])
-            ->orderBy(['created_at' => SORT_DESC])
-            ->asArray()
-            ->all();
+        try {
+            $userNotificationsModel = UserNotificationsEntity::find()
+                ->select(['text', 'created_at'])
+                ->where(['recipient_id' => \Yii::$app->user->id]);
+            if (isset($params['status'])) {
+                $userNotificationsModel->andWhere(['status' => $params['status']]);
+            }
 
-        $dataProvider = new ArrayDataProvider([
-            'allModels' => $userNotificationsModel,
-            'pagination' => [
-                'pageSize' => \Yii::$app->request->get('per-page') ?? 10
-            ]
-        ]);
+            $page = isset($params['page']) ? $params['page'] - 1 : 0;
 
-        return $dataProvider;
+            $dataProvider = new ArrayDataProvider([
+                'allModels' => $userNotificationsModel->orderBy(['created_at' => SORT_DESC])->all(),
+                'pagination' => [
+                    'pageSize' => \Yii::$app->request->get('per-page') ?? 10,
+                    'page' => $page
+                ]
+            ]);
+
+            return $dataProvider;
+
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Internal server error');
+        }
+
     }
 
     /**

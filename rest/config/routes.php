@@ -33,7 +33,7 @@ return [
         'class'      => 'yii\rest\UrlRule',
         'prefix'     => 'api/v1/',
         'controller' => [
-            'user/user-notifications' => 'api/v1/user/user-notifications',
+            'user/notifications' => 'api/v1/user/user-notifications',
         ],
         'patterns'   => [
             'GET list'    => 'list',
