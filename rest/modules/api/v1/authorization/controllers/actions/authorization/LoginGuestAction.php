@@ -53,17 +53,12 @@ class LoginGuestAction extends Action
      *         description = "Unauthorized Error"
      *     ),
      *     @SWG\Response (
-     *         response = 404,
-     *         description = "User not found"
-     *     ),
-     *     @SWG\Response (
      *         response = 500,
      *         description = "Internal Server Error"
      *     )
      * )
      * @return array
-     * 
-     * @throws NotFoundHttpException
+     *
      * @throws UnauthorizedHttpException
      * @throws ServerErrorHttpException
      */
@@ -77,8 +72,6 @@ class LoginGuestAction extends Action
             }
 
             throw new UnauthorizedHttpException('Ошибка авторизации.');
-        } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException($e->getMessage());
         } catch (UnauthorizedHttpException $e) {
             throw new UnauthorizedHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
