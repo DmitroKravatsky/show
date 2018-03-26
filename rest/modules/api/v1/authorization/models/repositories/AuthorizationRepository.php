@@ -260,7 +260,7 @@ trait AuthorizationRepository
 
             $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
             if (!$user) {
-                throw new NotFoundHttpException('There is no such user');
+                throw new NotFoundHttpException('User not found');
             }
 
             if ($user->verification_code !== (int)($params['verification_code'])) {
