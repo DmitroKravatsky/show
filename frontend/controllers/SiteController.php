@@ -74,9 +74,7 @@ class SiteController extends Controller
                 'scanDir' => [
                     Yii::getAlias('@docs'),
                     // Authorization module
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/RegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization/LoginGuestAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
