@@ -30,8 +30,8 @@ class SendRecoveryCodeAction extends Action
      *
      * @SWG\Post(path="/authorization/send recovery code",
      *      tags={"Authorization module"},
-     *      summary="User send recovery code",
-     *      description="User send recovery code",
+     *      summary=" send recovery code",
+     *      description="Send code to recovery",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
@@ -54,12 +54,11 @@ class SendRecoveryCodeAction extends Action
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
-     *               "data": {
-     *              }
+     *              @SWG\Property(property="data", type="object")
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Отправка кода восстановления прошло успешно.",
+     *              "message": "Recovery code was successfully sent",
      *              "data": {
      *              }
      *         }
@@ -74,8 +73,8 @@ class SendRecoveryCodeAction extends Action
      *     )
      * )
      *
-    /**
-     * Send recovery code action
+     *
+     * Send recovery code to user
      *
      * @return array
      * @throws BadRequestHttpException

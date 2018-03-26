@@ -20,13 +20,12 @@ class GenerateNewAccessTokenAction extends Action
     public $controller;
 
     /**
-    /**
-     * Register action
+     * GenerateNewAccessToken action
      *
      * @SWG\Post(path="/authorization/generate-new-access-token",
      *      tags={"Authorization module"},
-     *      summary="User generate-new-access-token",
-     *      description="User generate-new-access-token",
+     *      summary="Generate-new-access-token for user",
+     *      description="Generate new access_token for user",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
@@ -51,21 +50,22 @@ class GenerateNewAccessTokenAction extends Action
      *                      @SWG\Property(property="email",         type="string",  description="user's email"),
      *                      @SWG\Property(property="role",          type="string",  description="user's role"),
      *                      @SWG\Property(property="created_at",    type="string",  description="creation time")
+     *                  ),
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
      *              "message": "Новый токен сгенерирован",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
-     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c"
-     *                  "exp": "1520070475"
-     *                      "user": {
-     *                          "id": "531"
-     *                          "email": "guest@gmail.com"
-     *                          "role": "guest"
-     *                          "created_at": "1520070475"
-     *                      }
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c",
+     *                  "exp": "1520070475",
+     *                  "user": {
+     *                      "id": "531",
+     *                      "email": "guest@gmail.com",
+     *                      "role": "guest",
+     *                      "created_at": "1520070475"
+     *                  }
      *              }
      *         }
      *     ),
@@ -83,8 +83,8 @@ class GenerateNewAccessTokenAction extends Action
      *     )
      * )
      *
-    /**
-     * Generate New Access Token action
+     *
+     * Generate New Access Token
      *
      * @return array
      * @throws HttpException

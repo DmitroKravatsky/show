@@ -27,7 +27,6 @@ trait RestBidRepository
     public function getBids(array $params): ArrayDataProvider
     {
         try {
-
             /** @var ActiveQuery $query */
             $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
 
@@ -37,11 +36,14 @@ trait RestBidRepository
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
             }
 
+            $pageSize = intval($params['per-page'] ?? \Yii::$app->params['posts-per-page']);
+            $page = intval(isset($params['page']) ? $params['page'] - 1 : 0);
+
             $dataProvider = new ArrayDataProvider([
                 'allModels' => $query->orderBy(['created_at' => SORT_DESC])->all(),
                 'pagination' => [
-                    'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
-                    'page' => ($params['page'] ? $params['page'] - 1 : 0)
+                    'pageSize' => $pageSize,
+                    'page' => $page
                 ]
             ]);
 
@@ -68,8 +70,8 @@ trait RestBidRepository
             $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
 
             return $bid->getAttributes([
-                'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
-                'to_currency', 'from_sum', 'to_sum'
+                'id', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet',
+                'from_currency', 'to_currency', 'from_sum', 'to_sum'
             ]);
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());

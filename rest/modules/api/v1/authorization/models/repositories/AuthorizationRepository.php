@@ -244,31 +244,43 @@ trait AuthorizationRepository
      *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws ServerErrorHttpException
      */
     public function verifyUser(array $params)
     {
         $user = new RestUserEntity();
         $user->setScenario(self::SCENARIO_VERIFY_PROFILE);
-        $user->setAttributes($params);
-        if (!$user->validate()) {
-            return $this->throwModelException($user->errors);
-        }
+        try {
+            $user->setAttributes([
+                'verification_code' => $params['verification_code'] ?? null,
+            ]);
+            if (!$user->validate()) {
+                return $this->throwModelException($user->errors);
+            }
 
-        $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
-        if (!$user) {
-            throw new NotFoundHttpException('Такого пользователя нет, пройдите регистрацию');
-        }
+            $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
+            if (!$user) {
+                throw new NotFoundHttpException('User not found');
+            }
 
-        if ($user->verification_code !== (int)($params['verification_code'])) {
-            throw new UnprocessableEntityHttpException('Неправильный код верификации');
-        }
+            if ($user->verification_code !== (int)($params['verification_code'])) {
+                throw new UnprocessableEntityHttpException('Wrong verification code');
+            }
 
-        $user->status = RestUserEntity::STATUS_VERIFIED;
-        $user->verification_code = null;
+            $user->status = RestUserEntity::STATUS_VERIFIED;
+            $user->verification_code = null;
 
-        if (!$user->save()) {
-            return $this->throwModelException($user->errors);
+            if (!$user->save()) {
+                return $this->throwModelException($user->errors);
+            }
+            return true;
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException('Internal server error');
+
         }
-        return true;
     }
 }

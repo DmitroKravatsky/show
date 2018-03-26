@@ -200,4 +200,19 @@ trait AuthorizationJwt
     {
         return (bool) JWT::decode($token, self::getSecretKey(), [static::getAlgorithm()]);
     }
+
+    /**
+     * Check token expire status
+     *
+     * @param int $createdRefreshToken  date of token creation
+     * @return bool
+     */
+    public static function isRefreshTokenExpired($createdRefreshToken) :bool
+    {
+        if (($createdRefreshToken + Yii::$app->params['tokenExpireDays'] * 3600 * 24) < time()) {
+           return true;
+        }
+
+        return false;
+    }
 }

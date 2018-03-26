@@ -338,17 +338,16 @@ class RestUserEntity extends User
         $createdRecoveryCode = $this->created_recovery_code;
         try{
             $this->setAttributes($postData);
-
             if ($this->validate() && $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
                 return $this->save();
             }
+            $this->validationExceptionFirstMessage($this->errors);
         } catch (ExceptionDb $e) {
             throw new HttpException(422, $e->getMessage());
         } catch (Exception $e) {
             \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
         }
-        throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
     }
 
     /**
@@ -390,6 +389,24 @@ class RestUserEntity extends User
             'token'      => $token
         ]);
         return $blockedToken->save();
+    }
+
+    /**
+     * Method of validation post data
+     *
+     * @param $modelErrors
+     * @return bool
+     * @throws ExceptionDb
+     */
+    private function validationExceptionFirstMessage($modelErrors)
+    {
+        if (is_array($modelErrors) && !empty($modelErrors)) {
+            $fields = array_keys($modelErrors);
+            $firstMessage = current($modelErrors[$fields[0]]);
+            throw new ExceptionDb($firstMessage);
+        }
+
+        return false;
     }
 
     /**

@@ -20,6 +20,10 @@ class UserNotificationsController extends Controller
 {
     public $modelClass = UserNotificationsEntity::class;
 
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items',
+    ];
     /**
      * @return array
      */

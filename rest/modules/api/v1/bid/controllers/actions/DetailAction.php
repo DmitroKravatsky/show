@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\behaviors\ValidateGetParameters;
+use rest\modules\api\v1\bid\controllers\BidController;
 use yii\rest\Action;
 
 /**
@@ -12,6 +13,8 @@ use yii\rest\Action;
  */
 class DetailAction extends Action
 {
+    /** @var  BidController */
+    public $controller;
     /**
      * @var array
      */
@@ -24,7 +27,7 @@ class DetailAction extends Action
     {
         return [
             'reportParams' => [
-                'class'       => ValidateGetParameters::className(),
+                'class'       => ValidateGetParameters::class,
                 'inputParams' => ['id']
             ],
         ];
@@ -67,6 +70,7 @@ class DetailAction extends Action
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="integer", description="Bid id"),
      *                  @SWG\Property(property="status", type="string", description="Bid status"),
      *                  @SWG\Property(property="from_payment_system", type="string", description="from payment system"),
      *                  @SWG\Property(property="to_payment_system", type="string", description="to payment system"),
@@ -81,6 +85,7 @@ class DetailAction extends Action
      *         examples = {
      *              "status": 200,
      *              "data": {
+     *                  "id" : "1",
      *                  "status": "accepted",
      *                  "from_payment_system": "yandex_money",
      *                  "to_payment_system": "privat24",
@@ -92,6 +97,10 @@ class DetailAction extends Action
      *                  "to_sum": "123.5"
      *              }
      *         }
+     *     ),
+     *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request, id required"
      *     ),
      *     @SWG\Response (
      *         response = 401,
@@ -115,7 +124,9 @@ class DetailAction extends Action
     {
         /** @var \common\models\bid\BidEntity $bid */
         $bid = new $this->modelClass;
+        $bid = $bid->getBidDetails(\Yii::$app->request->get('id'));
 
-        return $bid->getBidDetails(\Yii::$app->request->get('id'));
+        /** ResponseBehavior */
+        return $this->controller->setResponse('200', 'Detail info', $bid);
     }
 }
