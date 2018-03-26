@@ -70,6 +70,10 @@ class LoginAction extends Action
      *              }
      *         }
      *     ),
+     *      @SWG\Response (
+     *         response = 401,
+     *         description = "Wrong credentials"
+     *     ),
      *      @SWG\Response(
      *         response = 404,
      *         description = "User not found"
@@ -77,10 +81,6 @@ class LoginAction extends Action
      *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
-     *     ),
-     *     @SWG\Response (
-     *         response = 403,
-     *         description = "Wrong credentials"
      *     ),
      *     @SWG\Response (
      *         response = 500,
@@ -93,7 +93,7 @@ class LoginAction extends Action
      * @return array
      *
      * @throws NotFoundHttpException
-     * @throws ForbiddenHttpException
+     * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
      * @throws ServerErrorHttpException
      */
@@ -116,18 +116,19 @@ class LoginAction extends Action
 
                 return $this->controller->setResponse(
                     200, 'Авторизация прошла успешно.', [
+                        'user_id' => $user->id,
                         'access_token'  => $user->getJWT(['user_id' => $user->id]),
                         'refresh_token' => $user->refresh_token
                 ]);
             }
 
-            throw new ForbiddenHttpException();
+            throw new UnauthorizedHttpException();
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ForbiddenHttpException $e) {
-            throw new ForbiddenHttpException('Check your credentials');
+        } catch (UnauthorizedHttpException $e) {
+            throw new UnauthorizedHttpException('Check your credentials');
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Server internal error');
         }
