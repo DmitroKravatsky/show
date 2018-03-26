@@ -68,8 +68,8 @@ trait RestBidRepository
             $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
 
             return $bid->getAttributes([
-                'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency',
-                'to_currency', 'from_sum', 'to_sum'
+                'id', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet',
+                'from_currency', 'to_currency', 'from_sum', 'to_sum'
             ]);
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
