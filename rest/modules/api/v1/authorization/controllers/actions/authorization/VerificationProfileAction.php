@@ -12,6 +12,9 @@ use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 use rest\behaviors\ResponseBehavior;
+use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 class VerificationProfileAction extends Action
 {
@@ -32,6 +35,7 @@ class VerificationProfileAction extends Action
      *          description = "User verification code",
      *          required = true,
      *          type = "string"
+     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -39,6 +43,7 @@ class VerificationProfileAction extends Action
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
+     *              @SWG\Property(property="data", type="object")
      *         ),
      *         examples = {
      *              "status": 201,
@@ -54,15 +59,20 @@ class VerificationProfileAction extends Action
      *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Internal sever error"
      *     )
      * )
      *
-    /**
+     *
      * Verify user's account
      *
      * @return array
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws ServerErrorHttpException
      */
     public function run()
     {
