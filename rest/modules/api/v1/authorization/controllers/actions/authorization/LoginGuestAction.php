@@ -49,10 +49,6 @@ class LoginGuestAction extends Action
      *         }
      *     ),
      *     @SWG\Response (
-     *         response = 401,
-     *         description = "Unauthorized Error"
-     *     ),
-     *     @SWG\Response (
      *         response = 500,
      *         description = "Internal Server Error"
      *     )
@@ -71,13 +67,9 @@ class LoginGuestAction extends Action
                     200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
             }
 
-            throw new UnauthorizedHttpException('Ошибка авторизации.');
-        } catch (UnauthorizedHttpException $e) {
-            throw new UnauthorizedHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }
-
     }
 
     /**
