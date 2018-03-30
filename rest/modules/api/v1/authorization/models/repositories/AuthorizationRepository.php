@@ -77,7 +77,7 @@ trait AuthorizationRepository
                     \Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
                 );
             } elseif (!empty($user->phone_number)) {
-                \Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
+                \Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
             }
 
             $transaction->commit();
