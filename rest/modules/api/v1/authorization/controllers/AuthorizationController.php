@@ -6,6 +6,7 @@ use rest\modules\api\v1\authorization\controllers\actions\authorization\Generate
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\LogoutAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecoveryAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCodeAction;
@@ -50,7 +51,7 @@ class AuthorizationController extends Controller
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::class,
-            'only'  => ['verification-profile']
+            'only'  => ['verification-profile', 'logout']
         ];
 
         return $behaviors;
@@ -88,6 +89,10 @@ class AuthorizationController extends Controller
             ],
             'verification-profile' => [
                 'class' => VerificationProfileAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'logout' => [
+                'class' => LogoutAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];
