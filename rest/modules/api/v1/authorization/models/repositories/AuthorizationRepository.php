@@ -57,16 +57,7 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            $viewPath = '@common/views/mail/sendVerificationCode-html.php';
-            if (!empty($user->email)) {
-                \Yii::$app->sendMail->run(
-                    $viewPath,
-                    ['email' => $user->email, 'verificationCode' => $user->verification_code],
-                    \Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
-                );
-            } elseif (!empty($user->phone_number)) {
-                \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
-            }
+            \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
 
             $transaction->commit();
 
