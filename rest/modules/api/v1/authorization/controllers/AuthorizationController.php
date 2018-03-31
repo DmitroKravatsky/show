@@ -40,6 +40,7 @@ class AuthorizationController extends Controller
                 'register'    => ['POST'],
                 'login'       => ['POST'],
                 'login-guest' => ['POST'],
+                'logout'      => ['GET'],
                 'generate-new-access-token' => ['POST'],
                 'send-recovery-code'        => ['POST'],
                 'password-recovery'         => ['POST'],

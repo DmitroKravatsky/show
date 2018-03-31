@@ -286,7 +286,10 @@ trait AuthorizationRepository
     }
 
     /**
+     * Logout user from a system
      *
+     * @return bool
+     * @throws ServerErrorHttpException
      */
     public function logout()
     {

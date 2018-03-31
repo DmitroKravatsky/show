@@ -24,17 +24,17 @@ class LogoutAction extends Action
     /**
      * GenerateNewAccessToken action
      *
-     * @SWG\Post(path="/authorization/logout",
+     * @SWG\Get(path="/authorization/logout",
      *      tags={"Authorization module"},
-     *      summary="Generate-new-access-token for user",
-     *      description="Generate new access_token for user",
+     *      summary="Logout user",
+     *      description="Logout user from a system",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *          in = "header",
-     *          name = "access_token",
-     *          description = "User email",
-     *          required = true,
-     *          type = "string"
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
      *      ),
      *      @SWG\Response(
      *         response = 200,
