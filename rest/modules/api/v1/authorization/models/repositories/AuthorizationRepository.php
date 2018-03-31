@@ -57,18 +57,6 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            $userProfile = new UserProfileEntity();
-            $userProfile->setScenario(UserProfileEntity::SCENARIO_CREATE);
-            $userProfile->setAttributes([
-                'name'      => $params['name'] ?? null,
-                'last_name' => $params['last_name'] ?? null,
-                'user_id'   => $user->id,
-                'avatar'    => $params['avatar'] ?? null
-            ]);
-
-            if (!$userProfile->save()) {
-                return $this->throwModelException($userProfile->errors);
-            }
             $viewPath = '@common/views/mail/sendVerificationCode-html.php';
             if (!empty($user->email)) {
                 \Yii::$app->sendMail->run(

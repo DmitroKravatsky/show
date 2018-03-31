@@ -53,20 +53,6 @@ class RegisterAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "name",
-     *          description = "User name",
-     *          required = true,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
-     *          name = "last_name",
-     *          description = "User last name",
-     *          required = true,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
      *          name = "terms_condition",
      *          description = "Terms condition",
      *          required = true,
