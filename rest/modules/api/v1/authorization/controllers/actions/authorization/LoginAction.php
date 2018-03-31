@@ -30,16 +30,9 @@ class LoginAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Parameter(
@@ -66,7 +59,7 @@ class LoginAction extends Action
      *              "message": "Авторизация прошла успешно.",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *     "refresh_token": "7xrWq_jXqZQxSu_PlmjGml0278VHxU5-UStp12cDe2cO2UGs4rL8LYcQQiVMYmp5pqBwJK1hmKvFcUWzsIdRiAQ-o4E5lBm06gmn"
+     *                  "refresh_token": "7xrWq_jXqZQxSu_PlmjGml0278VHxU5-UStp12cDe2cO2UGs4rL8LYcQQiVMYmp5pqBwJK1hmKvFcUWzsIdRiAQ-o4E5lBm06gmn"
      *              }
      *         }
      *     ),
