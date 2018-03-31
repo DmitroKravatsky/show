@@ -62,7 +62,7 @@ class LogoutAction extends Action
      * )
      *
      *
-     * Generate New Access Token
+     * Logout user from a system
      *
      * @return array
      * @throws ServerErrorHttpException

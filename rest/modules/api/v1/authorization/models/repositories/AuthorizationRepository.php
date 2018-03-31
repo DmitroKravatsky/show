@@ -290,6 +290,7 @@ trait AuthorizationRepository
      *
      * @return bool
      * @throws ServerErrorHttpException
+     * @throws ServerErrorHttpException
      */
     public function logout()
     {
