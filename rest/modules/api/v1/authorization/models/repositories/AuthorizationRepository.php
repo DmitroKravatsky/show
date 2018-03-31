@@ -40,7 +40,6 @@ trait AuthorizationRepository
             $user->setAttributes([
                 'source'                => self::NATIVE,
                 'phone_number'          => $params['phone_number'] ?? null,
-                'email'                 => $params['email'] ?? null,
                 'terms_condition'       => $params['terms_condition'] ?? 0,
                 'password'              => $params['password'] ?? null,
                 'confirm_password'      => $params['confirm_password'] ?? null,
@@ -69,16 +68,8 @@ trait AuthorizationRepository
             if (!$userProfile->save()) {
                 return $this->throwModelException($userProfile->errors);
             }
-            $viewPath = '@common/views/mail/sendVerificationCode-html.php';
-            if (!empty($user->email)) {
-                \Yii::$app->sendMail->run(
-                    $viewPath,
-                    ['email' => $user->email, 'verificationCode' => $user->verification_code],
-                    \Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
-                );
-            } elseif (!empty($user->phone_number)) {
-                \Yii::$app->sendSms->run('Ваш код верификации', $this->phone_number);
-            }
+
+            \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
 
             $transaction->commit();
 

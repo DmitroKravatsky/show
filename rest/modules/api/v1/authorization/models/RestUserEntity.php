@@ -144,27 +144,10 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['token_created_date', 'verification_code'], 'integer'],
+            ['verification_code', 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
-            [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
-            [
-                'email',
-                'required',
-                'when' => function (User $model) {
-                    return empty($model->phone_number);
-                },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]
-            ],
-            [
-                'phone_number',
-                'required',
-                'when' => function (User $model) {
-                    return empty($model->email);
-                },
-                'message' => 'Необходимо заполнить «Email» или «Номер телефона».',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]
-            ],
+            ['phone_number', 'unique', 'on' => self::SCENARIO_REGISTER],
+            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]],
             [
                 'terms_condition',
                 'required',
@@ -196,7 +179,7 @@ class RestUserEntity extends User
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
-                ['email','password', 'confirm_password','recovery_code'],
+                ['phone_number', 'password', 'confirm_password','recovery_code'],
                 'required',
                 'on' => [self::SCENARIO_RECOVERY_PWD,]
             ],

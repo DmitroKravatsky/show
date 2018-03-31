@@ -25,16 +25,9 @@ class RegisterAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Parameter(
