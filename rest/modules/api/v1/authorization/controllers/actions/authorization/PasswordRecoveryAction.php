@@ -65,13 +65,6 @@ class PasswordRecoveryAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
      *          required = false,
@@ -136,15 +129,12 @@ class PasswordRecoveryAction extends Action
      */
     public function run()
     {
-        $email = Yii::$app->request->post('email');
         $phoneNumber = \Yii::$app->request->post('phone_number');
         $user = new RestUserEntity();
-        if (!empty($email)) {
-            $user = $user->getUserByEmail($email);
-        } elseif (!empty($phoneNumber)) {
+        if (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         } else {
-            throw new BadRequestHttpException('Укажите email или номер телефона.');
+            throw new BadRequestHttpException('Укажите номер телефона.');
         }
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
