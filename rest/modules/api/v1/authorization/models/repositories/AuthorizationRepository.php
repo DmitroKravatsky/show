@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
+use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
@@ -57,28 +58,7 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            $userProfile = new UserProfileEntity();
-            $userProfile->setScenario(UserProfileEntity::SCENARIO_CREATE);
-            $userProfile->setAttributes([
-                'name'      => $params['name'] ?? null,
-                'last_name' => $params['last_name'] ?? null,
-                'user_id'   => $user->id,
-                'avatar'    => $params['avatar'] ?? null
-            ]);
-
-            if (!$userProfile->save()) {
-                return $this->throwModelException($userProfile->errors);
-            }
-            $viewPath = '@common/views/mail/sendVerificationCode-html.php';
-            if (!empty($user->email)) {
-                \Yii::$app->sendMail->run(
-                    $viewPath,
-                    ['email' => $user->email, 'verificationCode' => $user->verification_code],
-                    \Yii::$app->params['supportEmail'], $user->email, 'верификация аккаунта'
-                );
-            } elseif (!empty($user->phone_number)) {
-                \Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
-            }
+            \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
 
             $transaction->commit();
 
@@ -282,5 +262,26 @@ trait AuthorizationRepository
             throw new ServerErrorHttpException('Internal server error');
 
         }
+    }
+
+    /**
+     * Logout user from a system
+     *
+     * @return bool
+     * @throws ServerErrorHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function logout()
+    {
+        $restUser = RestUserEntity::findOne(\Yii::$app->user->id);
+
+        try {
+            $restUser->addBlackListToken($restUser->getAuthKey());
+            return true;
+
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException;
+        }
+
     }
 }

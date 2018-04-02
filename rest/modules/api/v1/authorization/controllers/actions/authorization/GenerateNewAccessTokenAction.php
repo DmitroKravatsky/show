@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use common\behaviors\ValidatePostParameters;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -20,6 +21,36 @@ class GenerateNewAccessTokenAction extends Action
     public $controller;
 
     /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'       => ValidatePostParameters::class,
+                'inputParams' => [
+                    'refresh_token'
+                ]
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    public function beforeRun()
+    {
+        $this->validationParams();
+
+        return parent::beforeRun();
+    }
+
+    /**
      * GenerateNewAccessToken action
      *
      * @SWG\Post(path="/authorization/generate-new-access-token",
@@ -28,10 +59,17 @@ class GenerateNewAccessTokenAction extends Action
      *      description="Generate new access_token for user",
      *      produces={"application/json"},
      *      @SWG\Parameter(
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
+     *      ),
+     *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
+     *          name = "refresh_token",
+     *          description = "User refresh_token",
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Response(
@@ -68,6 +106,10 @@ class GenerateNewAccessTokenAction extends Action
      *                  }
      *              }
      *         }
+     *     ),
+     *     @SWG\Response(
+     *         response = 400,
+     *         description = "Parameter required"
      *     ),
      *     @SWG\Response(
      *         response = 404,
