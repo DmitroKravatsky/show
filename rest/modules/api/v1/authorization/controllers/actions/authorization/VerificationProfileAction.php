@@ -30,6 +30,13 @@ class VerificationProfileAction extends Action
      *      description="User verification-profile",
      *      produces={"application/json"},
      *      @SWG\Parameter(
+     *        in = "header",
+     *        name = "Authorization",
+     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        required = true,
+     *        type = "string"
+     *      ),
+     *      @SWG\Parameter(
      *          in = "formData",
      *          name = "verification_code",
      *          description = "User verification code",
@@ -51,6 +58,10 @@ class VerificationProfileAction extends Action
      *              "data": {
      *              }
      *         }
+     *     ),
+     *      @SWG\Response(
+     *         response = 401,
+     *         description = "Invalid credentials"
      *     ),
      *     @SWG\Response(
      *         response = 404,

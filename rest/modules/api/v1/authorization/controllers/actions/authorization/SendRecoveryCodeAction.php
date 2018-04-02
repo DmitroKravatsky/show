@@ -28,7 +28,7 @@ class SendRecoveryCodeAction extends Action
     /**
      * Send recovery code action
      *
-     * @SWG\Post(path="/authorization/send recovery code",
+     * @SWG\Post(path="/authorization/send-recovery-code",
      *      tags={"Authorization module"},
      *      summary=" send recovery code",
      *      description="Send code to recovery",
@@ -93,7 +93,7 @@ class SendRecoveryCodeAction extends Action
         if ($user->save(false)) {
             /** @var ResponseBehavior */
             return $this->controller->setResponse(
-                200, 'Отправка кода восстановления прошло успешно'
+                200, 'Recovery code was successfully sent'
             );
         }
 

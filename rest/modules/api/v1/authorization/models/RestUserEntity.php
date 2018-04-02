@@ -144,7 +144,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            ['verification_code', 'integer'],
+            [['verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             ['phone_number', 'unique', 'on' => self::SCENARIO_REGISTER],
             ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD]],
@@ -192,9 +192,9 @@ class RestUserEntity extends User
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
+            ['phone_number', 'udokmeci\yii2PhoneValidator\PhoneValidator'],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
-
         ];
     }
 
