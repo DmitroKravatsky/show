@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
+use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
@@ -261,5 +262,26 @@ trait AuthorizationRepository
             throw new ServerErrorHttpException('Internal server error');
 
         }
+    }
+
+    /**
+     * Logout user from a system
+     *
+     * @return bool
+     * @throws ServerErrorHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function logout()
+    {
+        $restUser = RestUserEntity::findOne(\Yii::$app->user->id);
+
+        try {
+            $restUser->addBlackListToken($restUser->getAuthKey());
+            return true;
+
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException;
+        }
+
     }
 }

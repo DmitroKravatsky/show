@@ -84,6 +84,7 @@ return [
             'POST password-recovery'     => 'password-recovery',
             'POST send-recovery-code'    => 'send-recovery-code',
             'POST verification-profile'  => 'verification-profile',
+            'GET  logout'                => 'logout',
         ],
     ],
     /** Review */
