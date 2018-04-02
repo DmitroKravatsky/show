@@ -41,7 +41,6 @@ trait AuthorizationRepository
             $user->setAttributes([
                 'source'                => self::NATIVE,
                 'phone_number'          => $params['phone_number'] ?? null,
-                'email'                 => $params['email'] ?? null,
                 'terms_condition'       => $params['terms_condition'] ?? 0,
                 'password'              => $params['password'] ?? null,
                 'confirm_password'      => $params['confirm_password'] ?? null,

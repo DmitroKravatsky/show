@@ -35,13 +35,6 @@ class SendRecoveryCodeAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
      *          required = false,
@@ -82,33 +75,21 @@ class SendRecoveryCodeAction extends Action
      */
     public function run()
     {
-        $email = \Yii::$app->request->post('email');
         $phoneNumber = \Yii::$app->request->post('phone_number');
 
         $recoveryCode = rand(1000,9999);
         $user = new RestUserEntity();
-        if (!empty($email)) {
-            $user = $user->getUserByEmail($email);
-        } elseif (!empty($phoneNumber)) {
+        if (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         } else {
-            throw new BadRequestHttpException('Укажите email или номер телефона.');
+            throw new BadRequestHttpException('Укажите номер телефона.');
         }
         $user->recovery_code = $recoveryCode;
         $user->created_recovery_code = time();
 
-        if (!empty($email)) {
-            Yii::$app->sendMail->run('@common/views/mail/sendSecurityCode-html.php',
-                ['email' => $email, 'recoveryCode' => $user->recovery_code],
-                Yii::$app->params['supportEmail'],
-                $email,
-                'Востановление пароля'
-            );
-        } elseif (!empty($phoneNumber)) {
-            Yii::$app->sendSms->run('Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
-                $phoneNumber
-            );
-        }
+        Yii::$app->sendSms->run('Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
+            $phoneNumber);
+
         if ($user->save(false)) {
             /** @var ResponseBehavior */
             return $this->controller->setResponse(
