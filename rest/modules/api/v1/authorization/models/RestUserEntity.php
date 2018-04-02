@@ -147,7 +147,7 @@ class RestUserEntity extends User
             ['verification_code', 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             ['phone_number', 'unique', 'on' => self::SCENARIO_REGISTER],
-            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN,self::SCENARIO_RECOVERY_PWD]],
+            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD]],
             [
                 'terms_condition',
                 'required',
