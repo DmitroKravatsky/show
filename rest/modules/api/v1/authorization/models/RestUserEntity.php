@@ -144,7 +144,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['token_created_date', 'verification_code'], 'integer'],
+            [['verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [['email', 'phone_number'], 'unique', 'on' => self::SCENARIO_REGISTER],
             [
