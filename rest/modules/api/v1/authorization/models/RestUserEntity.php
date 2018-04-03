@@ -209,7 +209,7 @@ class RestUserEntity extends User
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
-            ['phone_number', 'udokmeci\yii2PhoneValidator\PhoneValidator'],
+            [['phone_number'], 'udokmeci\yii2PhoneValidator\PhoneValidator', 'country' => ''],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
         ];
