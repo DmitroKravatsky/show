@@ -37,7 +37,7 @@ class SendRecoveryCodeAction extends Action
      *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Response(
@@ -58,7 +58,7 @@ class SendRecoveryCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Validation Error"
+     *         description = "Bad request"
      *     ),
      *     @SWG\Response(
      *         response = 500,
