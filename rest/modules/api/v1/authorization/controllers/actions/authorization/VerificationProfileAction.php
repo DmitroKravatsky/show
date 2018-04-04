@@ -44,7 +44,7 @@ class VerificationProfileAction extends Action
      *          type = "string"
      *      ),
      *      @SWG\Response(
-     *         response = 200,
+     *         response = 201,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
@@ -54,7 +54,7 @@ class VerificationProfileAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Ваш профиль подтвержден",
+     *              "message": "Your profile has been verified",
      *              "data": {
      *              }
      *         }
