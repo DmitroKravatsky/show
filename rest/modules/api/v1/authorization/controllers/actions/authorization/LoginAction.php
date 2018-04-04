@@ -50,14 +50,16 @@ class LoginAction extends Action
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="integer", description="user_id"),
      *                  @SWG\Property(property="access_token", type="string", description="access token"),
      *                  @SWG\Property(property="refresh_token", type="string", description="refresh token")
      *              ),
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Авторизация прошла успешно.",
+     *              "message": "Authorization was successful",
      *              "data": {
+     *                  "user_id" : "157"
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "7xrWq_jXqZQxSu_PlmjGml0278VHxU5-UStp12cDe2cO2UGs4rL8LYcQQiVMYmp5pqBwJK1hmKvFcUWzsIdRiAQ-o4E5lBm06gmn"
      *              }
@@ -108,7 +110,7 @@ class LoginAction extends Action
                 }
 
                 return $this->controller->setResponse(
-                    200, 'Авторизация прошла успешно.', [
+                    200, 'Authorization was successful', [
                         'user_id' => $user->id,
                         'access_token'  => $user->getJWT(['user_id' => $user->id]),
                         'refresh_token' => $user->refresh_token
