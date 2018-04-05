@@ -59,7 +59,7 @@ class LoginAction extends Action
      *              "status": 200,
      *              "message": "Authorization was successful",
      *              "data": {
-     *                  "user_id" : "157"
+     *                  "user_id" : "157",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "7xrWq_jXqZQxSu_PlmjGml0278VHxU5-UStp12cDe2cO2UGs4rL8LYcQQiVMYmp5pqBwJK1hmKvFcUWzsIdRiAQ-o4E5lBm06gmn"
      *              }
