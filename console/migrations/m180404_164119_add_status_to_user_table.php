@@ -16,7 +16,7 @@ class m180404_164119_add_status_to_user_table extends Migration
     // Use up()/down() to run migration code without a transaction.
     public function up()
     {
-        $this->addColumn($this->tableName, 'status', $this->string(11));
+        $this->addColumn($this->tableName, 'status', $this->string(11)->defaultValue('UNVERIFIED'));
     }
 
     public function down()
