@@ -42,7 +42,7 @@ class LoginGuestAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Авторизация прошла успешно.",
+     *              "message": "Authorization was successful",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
      *              }
@@ -64,7 +64,7 @@ class LoginGuestAction extends Action
             $this->modelClass = new RestUserEntity();
             if ($user = $this->modelClass->loginGuest()) {
                 return $this->controller->setResponse(
-                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+                    200, 'Authorization was successful', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
             }
 
         } catch (ServerErrorHttpException $e) {

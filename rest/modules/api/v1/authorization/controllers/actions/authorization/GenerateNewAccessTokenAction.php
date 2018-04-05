@@ -84,7 +84,7 @@ class GenerateNewAccessTokenAction extends Action
      *                  @SWG\Property(property="refresh_token", type="string",  description="refresh token"),
      *                  @SWG\Property(property="exp",           type="int",     description="time of token expiration"),
      *                  @SWG\Property(property="data", type="object",
-     *                      @SWG\Property(property="id",            type="integer", description="id"),
+     *                      @SWG\Property(property="id",            type="integer", description="user id"),
      *                      @SWG\Property(property="email",         type="string",  description="user's email"),
      *                      @SWG\Property(property="role",          type="string",  description="user's role"),
      *                      @SWG\Property(property="created_at",    type="string",  description="creation time")
@@ -93,7 +93,7 @@ class GenerateNewAccessTokenAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Новый токен сгенерирован",
+     *              "message": "New access token has been generated",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c",

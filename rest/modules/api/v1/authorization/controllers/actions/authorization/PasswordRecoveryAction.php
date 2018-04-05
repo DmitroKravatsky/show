@@ -67,7 +67,7 @@ class PasswordRecoveryAction extends Action
      *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Parameter(
@@ -134,7 +134,7 @@ class PasswordRecoveryAction extends Action
         if (!empty($phoneNumber)) {
             $user = $user->getUserByPhoneNumber($phoneNumber);
         } else {
-            throw new BadRequestHttpException('Укажите номер телефона.');
+            throw new BadRequestHttpException('Enter your phone number');
         }
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
