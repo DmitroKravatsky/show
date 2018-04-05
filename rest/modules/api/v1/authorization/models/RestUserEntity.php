@@ -88,6 +88,7 @@ class RestUserEntity extends User
             'source_id'             => 'Пользователь в социальной сети',
             'terms_condition'       => 'Пользовательское соглашение',
             'password'              => 'Пароль',
+            'confirm_password'      => 'Подтверждение пароля',
             'new_password'          => 'Новый пароль',
             'current_password'      => 'Текущий пароль',
             'created_at'            => 'Дата создания',
