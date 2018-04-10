@@ -179,4 +179,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return \Yii::$app->authManager->getUserIdsByRole($roleName);
     }
+
+    /**
+     * Find user by phone number
+     * @param $phoneNumber
+     * @return null|static
+     */
+    public static function findByPhoneNumber($phoneNumber)
+    {
+        return static::findOne(['phone_number' => $phoneNumber]);
+    }
 }
