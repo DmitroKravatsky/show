@@ -1,13 +1,5 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 13.04.18
- * Time: 18:41
- */
-
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
-
 
 use common\behaviors\ValidatePostParameters;
 use rest\modules\api\v1\authorization\controllers\SocialController;
