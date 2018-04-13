@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -19,6 +20,8 @@ use yii\helpers\Url;
  */
 class SiteController extends Controller
 {
+
+    public $response;
     /**
      * @inheritdoc
      */
@@ -75,12 +78,7 @@ class SiteController extends Controller
                     Yii::getAlias('@docs'),
                     // Authorization module
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkLoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social'),
                     // Bid module
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/CreateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/UpdateAction.php'),
@@ -262,4 +260,30 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    public function actionFace()
+    {
+        if (\Yii::$app->request->get('access_token')) {
+            var_dump(\Yii::$app->request->get('access_token')); exit;
+        }
+            $code = \Yii::$app->request->get('code');
+
+            $params = [
+                'client_id' =>  '1960922274176435',
+                'client_secret' => '1b3c5b7fef8a8d21dc5153f153e8a64e',
+                'redirectUri' => 'work.local/frontend/web/site/see',
+                'code' => $code
+            ];
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['secret_id'] . '&client_secret='  . Yii::$app->params['client_secret'] . '&redirect_uri=http://work.local/frontend/web/site/face&code='.$code);
+            curl_exec($ch);
+
+        if (!empty($this->response)){
+            echo '<pre>'; var_dump($this->response); exit;
+
+        }
+
+    }
+
 }
