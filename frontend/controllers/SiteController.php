@@ -1,7 +1,6 @@
 <?php
 namespace frontend\controllers;
 
-use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -20,8 +19,6 @@ use yii\helpers\Url;
  */
 class SiteController extends Controller
 {
-
-    public $response;
     /**
      * @inheritdoc
      */
@@ -279,10 +276,6 @@ class SiteController extends Controller
             curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['secret_id'] . '&client_secret='  . Yii::$app->params['client_secret'] . '&redirect_uri=http://work.local/frontend/web/site/face&code='.$code);
             curl_exec($ch);
 
-        if (!empty($this->response)){
-            echo '<pre>'; var_dump($this->response); exit;
-
-        }
 
     }
 
