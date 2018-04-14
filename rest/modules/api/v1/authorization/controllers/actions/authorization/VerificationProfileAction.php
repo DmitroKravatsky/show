@@ -8,6 +8,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use rest\behaviors\IsTokenLegal;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -20,6 +21,20 @@ class VerificationProfileAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
+
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'  => IsTokenLegal::class,
+            ]
+        ];
+    }
+    public function beforeRun()
+    {
+        $this->validateToken();
+        return parent::beforeRun();
+    }
 
     /**
      * VerificationProfile action
