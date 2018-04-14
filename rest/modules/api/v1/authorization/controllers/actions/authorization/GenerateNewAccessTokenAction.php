@@ -85,9 +85,10 @@ class GenerateNewAccessTokenAction extends Action
      *                  @SWG\Property(property="exp",           type="int",     description="time of token expiration"),
      *                  @SWG\Property(property="data", type="object",
      *                      @SWG\Property(property="id",            type="integer", description="user id"),
-     *                      @SWG\Property(property="email",         type="string",  description="user's email"),
+     *                      @SWG\Property(property="phone_number",  type="string",  description="user's phone number"),
      *                      @SWG\Property(property="role",          type="string",  description="user's role"),
-     *                      @SWG\Property(property="created_at",    type="string",  description="creation time")
+     *                      @SWG\Property(property="created_at",    type="string",  description="creation time"),
+     *                      @SWG\Property(property="status",        type="string",  description="user profile status")
      *                  ),
      *              ),
      *         ),
@@ -100,9 +101,10 @@ class GenerateNewAccessTokenAction extends Action
      *                  "exp": "1520070475",
      *                  "user": {
      *                      "id": "531",
-     *                      "email": "guest@gmail.com",
+     *                      "phone_number": "+380959751856",
      *                      "role": "guest",
-     *                      "created_at": "1520070475"
+     *                      "created_at": "1520070475",
+     *                      "status": "VERIFIED"
      *                  }
      *              }
      *         }
