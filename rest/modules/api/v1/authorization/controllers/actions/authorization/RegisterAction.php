@@ -68,9 +68,10 @@ class RegisterAction extends Action
      *              "status": 201,
      *              "message": "Регистрация прошла успешно.",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "OiJKV1QiLCyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJh",
-     *                  "id" : 21
+     *                  "id" : 21,
+     *                  "phone_number": "+380939353498",
+     *                   "status": "UNVERIFIED"
+
      *              }
      *         }
      *     ),
@@ -99,9 +100,10 @@ class RegisterAction extends Action
 
         return $this->controller->setResponse(
             201, 'Регистрация прошла успешно.', [
-                'access_token'  => $user->getJWT(['user_id' => $user->id]),
-                'refresh_token' => $user->refresh_token,
-                'id'            => $user->id
+                'id'            => $user->id,
+                'phone_number'  => $user->phone_number,
+                'status'        => $user->status,
+
             ]
         );
     }
