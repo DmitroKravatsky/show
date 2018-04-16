@@ -232,12 +232,13 @@ trait AuthorizationRepository
         try {
             $user->setAttributes([
                 'verification_code' => $params['verification_code'] ?? null,
+                'phone_number'      => $params['phone_number'] ?? null,
             ]);
             if (!$user->validate()) {
                 return $this->throwModelException($user->errors);
             }
 
-            $user = RestUserEntity::findOne(['id' => \Yii::$app->user->id]);
+            $user = RestUserEntity::findOne(['phone_number' => $user->phone_number]);
             if (!$user) {
                 throw new NotFoundHttpException('User not found');
             }
@@ -248,11 +249,13 @@ trait AuthorizationRepository
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
+            $user->refresh_token = \Yii::$app->security->generateRandomString(32);
+            $user->created_refresh_token = time();
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
             }
-            return true;
+            return $user;
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
