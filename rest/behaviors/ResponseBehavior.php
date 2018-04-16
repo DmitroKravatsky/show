@@ -11,6 +11,7 @@ use yii\base\Behavior;
  */
 class ResponseBehavior extends Behavior
 {
+    // todo не вижу смысла в этом поведении, так как есть стандартный в контролере
     /**
      * @param $statusCode
      * @param $message

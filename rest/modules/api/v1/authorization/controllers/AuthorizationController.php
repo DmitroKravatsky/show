@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
+// todo применить php7
 use rest\modules\api\v1\authorization\controllers\actions\authorization\GenerateNewAccessTokenAction;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
@@ -63,16 +64,17 @@ class AuthorizationController extends Controller
      */
     public function actions(): array
     {
+        // todo проверить чтобы везде => были выровнены. можно это дело настроить в phpstorm
         return [
-            'register' => [
+            'register'                  => [
                 'class'      => RegisterAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'login' => [
+            'login'                     => [
                 'class'      => LoginAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'login-guest' => [
+            'login-guest'               => [
                 'class'      => LoginGuestAction::class,
                 'modelClass' => $this->modelClass
             ],
@@ -80,20 +82,20 @@ class AuthorizationController extends Controller
                 'class'      => GenerateNewAccessTokenAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'send-recovery-code' => [
-                'class' => SendRecoveryCodeAction::class,
+            'send-recovery-code'        => [
+                'class'      => SendRecoveryCodeAction::class,
                 'modelClass' => $this->modelClass,
             ],
-            'password-recovery' => [
-                'class' => PasswordRecoveryAction::class,
+            'password-recovery'         => [
+                'class'      => PasswordRecoveryAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'verification-profile' => [
-                'class' => VerificationProfileAction::class,
+            'verification-profile'      => [
+                'class'      => VerificationProfileAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'logout' => [
-                'class' => LogoutAction::class,
+            'logout'                    => [
+                'class'      => LogoutAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

@@ -175,9 +175,14 @@ trait AuthorizationRepository
      */
     public function generateNewAccessToken()
     {
+        // todo все эти три сточки можно заменить на \Yii::$app->user->getId() но они вообще не нужны
         $oldAccessToken = $this->getAuthKey();
         $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::class);
         $userId = $userModel->id;
+
+        // todo у нас в refresh_token тоже должен быть зашит userID. Получив этот userID из refresh_token мы ищем пользователя в БД
+        // todo после того как я получил пользователя из БД я сравниваю refresh_token полученный и тот что в БД
+
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
 
         $user = RestUserEntity::findOne(['refresh_token' => $currentRefreshToken, 'id' => $userId]);
@@ -185,16 +190,17 @@ trait AuthorizationRepository
         if (!$user) {
             throw new NotFoundHttpException('Пользователь с таким токеном не найден.');
         }
+        // todo не вижу проверки на срок действия refresh_token
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $user->addBlackListToken($oldAccessToken);
+            $user->addBlackListToken($oldAccessToken); // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
             $newAccessToken = $user->getJWT();
 
             $transaction->commit();
 
             return [
                 'access_token'  => $newAccessToken,
-                'refresh_token' => $user->refresh_token,
+                'refresh_token' => $user->refresh_token, //todo если срок действия у refresh_token истек тоже, но нужно новый генерить
                 'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
                 'user' => [
                     'id'            => $user->getId(),
@@ -204,7 +210,7 @@ trait AuthorizationRepository
                     'status'        => $user->status
                 ]
             ];
-
+            // todo все эти  catch тут лишние
         } catch (ExceptionDb $e) {
             $transaction->rollBack();
             throw new HttpException(422, $e->getMessage());
