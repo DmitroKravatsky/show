@@ -197,10 +197,11 @@ trait AuthorizationRepository
                 'refresh_token' => $user->refresh_token,
                 'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
                 'user' => [
-                    'id'         => $user->getId(),
-                    'email'      => $user->email,
-                    'role'       => $user->getUserRole($user->id),
-                    'created_at' => $user->created_at
+                    'id'            => $user->getId(),
+                    'phone_number'  => $user->phone_number,
+                    'role'          => $user->getUserRole($user->id),
+                    'created_at'    => $user->created_at,
+                    'status'        => $user->status
                 ]
             ];
 
