@@ -1,10 +1,4 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 16.04.18
- * Time: 15:46
- */
 
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
@@ -13,6 +7,10 @@ use rest\modules\api\v1\authorization\controllers\SocialController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
+/**
+ * Class GmailAuthorizationAction
+ * @package rest\modules\api\v1\authorization\controllers\actions\social
+ */
 class GmailAuthorizationAction extends Action
 {
     /** @var  SocialController */
@@ -32,7 +30,7 @@ class GmailAuthorizationAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::class,
                 'inputParams' => [
-                    'token', 'terms_condition'
+                    'access_token', 'terms_condition'
                 ]
             ],
         ];
@@ -55,7 +53,7 @@ class GmailAuthorizationAction extends Action
      * @SWG\Post(path="/social/gmail-authorization",
      *      tags={"Authorization module"},
      *      summary="User gmail authorization",
-     *      description="User registration via authorization",
+     *      description="User authorization via gmail",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
@@ -87,7 +85,7 @@ class GmailAuthorizationAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Authorization have been",
+     *              "message": "You have been authorized",
      *              "data": {
      *                  "id": "93",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
@@ -121,7 +119,7 @@ class GmailAuthorizationAction extends Action
         $user = $model->gmailAuthorization(\Yii::$app->request->bodyParams);
 
         return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', [
+            201, 'You have been authorized', [
                 'id'            => $user->id,
                 'access_token'  => $user->getJWT(['user_id' => $user->id]),
                 'refresh_token' => $user->refresh_token,

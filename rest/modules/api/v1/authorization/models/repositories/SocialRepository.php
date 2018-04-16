@@ -163,7 +163,7 @@ trait SocialRepository
                 'https://www.googleapis.com/oauth2/v1/userinfo',
                 [
                     'query' => [
-                        'access_token' => $params['token'],
+                        'access_token' => $params['access_token'],
                     ]
                 ]
             );
@@ -195,10 +195,9 @@ trait SocialRepository
         }
 
     }
+
     /**
      * Gmail registration
-     * @param $params array of post data
-
      * @param $params array of post data
      *
      * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
@@ -255,7 +254,7 @@ trait SocialRepository
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function gmailLogin($user): RestUserEntity
+    public function gmailLogin(RestUserEntity $user): RestUserEntity
     {
         if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
             $user->created_refresh_token = time();
