@@ -65,7 +65,7 @@ return [
             'POST vk-login'          => 'vk-login',
             'POST gmail-register'    => 'gmail-register',
             'POST gmail-login'       => 'gmail-login',
-            'POST fb-authorization'  => 'fb-authorization',
+            'POST fb-authorize'      => 'fb-authorize',
         ],
     ],
     /** Authorization */

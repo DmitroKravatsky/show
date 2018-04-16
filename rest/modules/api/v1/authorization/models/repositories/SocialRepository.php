@@ -270,25 +270,33 @@ trait SocialRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $requestParams = http_build_query([
-                'access_token' => $params['token'],
-                'fields'       => 'id, first_name, last_name, picture.type(large), email',
-                'v'            => '2.12'
-            ]);
-            $url = 'https://graph.facebook.com/me' . '?' . $requestParams;
+            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
+            $result = $client->request(
+                'GET',
+                'https://graph.facebook.com/me',
+                [
+                    'query' => [
+                        'access_token' => $params['access_token'],
+                        'fields'       => 'id, first_name, last_name, picture.type(large), email',
+                        'v'            => '2.12'
+                    ]
+                ]
+            );
 
-            $userData = $this->makeCurlRequest($url);
+            if ($result->getStatusCode() == 200) {
+                $userData = json_decode($result->getBody()->getContents());
 
-            if (isset($userData->id)) {
-                $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
-                if ($existedUser) {
-                    return $this->FbLogin($existedUser);
+                if (isset($userData->id)) {
+                    $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
+                    if ($existedUser) {
+                        return $this->FbLogin($existedUser);
+                    }
+
+                    $newUser = $this->fbRegister($userData, $params);
+
+                    $transaction->commit();
+                    return $newUser;
                 }
-
-                $newUser = $this->fbRegister($userData, $params);
-
-                $transaction->commit();
-                return $newUser;
             }
 
         } catch (UnprocessableEntityHttpException $e) {
@@ -299,21 +307,6 @@ trait SocialRepository
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
         }
-    }
-
-    /**
-     * Creates a request to get users data from FaceBook
-     * @param $url string desirable url
-     * @return mixed
-     */
-    public function makeCurlRequest($url)
-    {
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        $userData = curl_exec($curl);
-        curl_close($curl);
-        return json_decode($userData);
     }
 
     /**

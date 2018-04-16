@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-    FbAuthorizeAction, FbLoginAction, FbRegisterAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
+    FbAuthorizeAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;

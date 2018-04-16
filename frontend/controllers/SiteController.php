@@ -265,15 +265,8 @@ class SiteController extends Controller
         }
             $code = \Yii::$app->request->get('code');
 
-            $params = [
-                'client_id' =>  '1960922274176435',
-                'client_secret' => '1b3c5b7fef8a8d21dc5153f153e8a64e',
-                'redirectUri' => 'work.local/frontend/web/site/see',
-                'code' => $code
-            ];
-
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['secret_id'] . '&client_secret='  . Yii::$app->params['client_secret'] . '&redirect_uri=http://work.local/frontend/web/site/face&code='.$code);
+            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['fb_secret_id'] . '&client_secret='  . Yii::$app->params['fb_client_secret'] . '&redirect_uri=http://work.local.com/frontend/web/site/face&code='.$code);
             curl_exec($ch);
 
 

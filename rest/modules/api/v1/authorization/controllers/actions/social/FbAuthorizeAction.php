@@ -3,6 +3,7 @@ namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
 use rest\modules\api\v1\authorization\controllers\SocialController;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 class FbAuthorizeAction extends Action
@@ -24,7 +25,7 @@ class FbAuthorizeAction extends Action
             'reportParams' => [
                 'class'       => ValidatePostParameters::class,
                 'inputParams' => [
-                    'token','terms_condition'
+                    'access_token', 'terms_condition'
                 ]
             ],
         ];
@@ -50,7 +51,7 @@ class FbAuthorizeAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "token",
+     *          name = "access_token",
      *          description = "user's token on facebook",
      *          required = true,
      *          type = "string"
@@ -78,11 +79,11 @@ class FbAuthorizeAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Авторизация прошла успешно",
+     *              "message": "You have been successfully authorized",
      *              "data": {
      *                  "user_id": "124",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUJKV1QIsImV4cCI6MTUxODE3MjA2NX0adwwf12YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "refresh_token": "b_pZ4P3Z10BbEwe0A6GE2Aij8cfDDAEc"
      *              }
      *         }
      *     ),
@@ -108,6 +109,7 @@ class FbAuthorizeAction extends Action
      */
     public function run()
     {
+        /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
         $user = $userModel->fbAuthorization(\Yii::$app->request->bodyParams);
 
