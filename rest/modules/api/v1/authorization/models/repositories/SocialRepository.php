@@ -149,7 +149,7 @@ trait SocialRepository
     /**
      * Gmail register
      *
-     * @param $params array of post data
+     * @param $params array of post datagit
      *
      * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
      *
@@ -173,7 +173,7 @@ trait SocialRepository
                 ]
             );
 
-            if ($result->getStatusCode() == 200) {
+            if ($result->getStatusCode() === 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 $data = [
                     'source'           => self::GMAIL,
