@@ -22,20 +22,6 @@ class VerificationProfileAction extends Action
     /** @var  AuthorizationController */
     public $controller;
 
-    public function behaviors()
-    {
-        return [
-            'reportParams' => [
-                'class'  => IsTokenLegal::class,
-            ]
-        ];
-    }
-    public function beforeRun()
-    {
-        $this->validateToken();
-        return parent::beforeRun();
-    }
-
     /**
      * VerificationProfile action
      *

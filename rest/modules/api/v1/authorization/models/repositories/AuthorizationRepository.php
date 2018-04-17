@@ -290,9 +290,9 @@ trait AuthorizationRepository
      * @param bool
      * @return bool
      */
-    public function isAlreadyBlocked()
+    public static function isAlreadyBlocked($token)
     {
-        if (BlockToken::find()->where(['token' => $this->getAuthKey()])->one()) {
+        if (BlockToken::find()->where(['token' => $token])->one()) {
             return true;
         }
         return false;
