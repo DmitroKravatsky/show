@@ -274,7 +274,7 @@ class SiteController extends Controller
                 'form_params' => [
                     'client_id' =>  Yii::$app->params['gmail_secret_id'],
                     'client_secret' => Yii::$app->params['gmail_client_secret'],
-                    'redirect_uri' => 'http://work.local.com/frontend/web/site/gmail',
+                    'redirect_uri' => 'http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/gmail',
                     'code' => \Yii::$app->request->get('code'),
                     'grant_type'  => 'authorization_code',
                 ]
