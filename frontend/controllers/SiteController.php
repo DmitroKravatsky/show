@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -265,26 +266,24 @@ class SiteController extends Controller
 
     public function actionGmail()
     {
-        $code = \Yii::$app->request->get('code');
-
-        $params = [
-            'client_id' =>  Yii::$app->params['gmail_secret_id'],
-            'client_secret' => Yii::$app->params['gmail_client_secret'],
-            'redirect_uri' => 'http://work.local.com/frontend/web/site/gmail',
-            'grant_type'  => 'authorization_code',
-            'code' => $code
-        ];
-        $url = 'https://accounts.google.com/o/oauth2/token';
-        $curl = curl_init();
-        curl_setopt($curl, CURLOPT_URL, $url);
-        curl_setopt($curl, CURLOPT_POST, 1);
-        curl_setopt($curl, CURLOPT_POSTFIELDS, urldecode(http_build_query($params)));
-        curl_setopt($curl, CURLOPT_RETURNTRANSFER, true);
-        curl_setopt($curl, CURLOPT_SSL_VERIFYPEER, false);
-        $result = curl_exec($curl);
-        curl_close($curl);
-        $tokenInfo = json_decode($result, true);
-        var_dump($tokenInfo); exit;
+        $client = new Client(['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']]);
+        $result = $client->request(
+            'POST',
+            'https://accounts.google.com/o/oauth2/token',
+            [
+                'form_params' => [
+                    'client_id' =>  Yii::$app->params['gmail_secret_id'],
+                    'client_secret' => Yii::$app->params['gmail_client_secret'],
+                    'redirect_uri' => 'http://work.local.com/frontend/web/site/gmail',
+                    'code' => \Yii::$app->request->get('code'),
+                    'grant_type'  => 'authorization_code',
+                ]
+            ]
+        );
+        if ($result->getStatusCode() == 200) {
+            $userData = json_decode($result->getBody()->getContents());
+            var_dump($userData); exit;
+        }
     }
 
 }

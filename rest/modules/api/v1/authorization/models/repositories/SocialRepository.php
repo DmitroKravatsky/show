@@ -238,11 +238,9 @@ trait SocialRepository
             'avatar'    => $userData->picture
         ]);
 
-        if (!$user->save(false)) throw new ServerErrorHttpException($user->errors);
+        if (!$user->save(false)) { throw new ServerErrorHttpException($user->errors); };
         return $user;
-
     }
-
 
     /**
      * Gmail login
