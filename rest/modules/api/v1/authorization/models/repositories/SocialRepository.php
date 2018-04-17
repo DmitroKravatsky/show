@@ -265,6 +265,7 @@ trait SocialRepository
      * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws BadRequestHttpException
      */
     public function fbAuthorization(array $params): RestUserEntity
     {
@@ -349,7 +350,7 @@ trait SocialRepository
             'terms_condition'  => $params['terms_condition'],
             'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             'confirm_password' => $pass,
-            'refresh_token'    => $pass,
+            'refresh_token'    => \Yii::$app->security->generateRandomString(100),
             'created_refresh_token' => time(),
         ];
 
@@ -366,6 +367,14 @@ trait SocialRepository
             $this->throwModelException($user->errors);
         }
 
+        $viewPath = '@common/views/mail/sendPassword-html.php';
+        if (!empty($userData->email)) {
+            \Yii::$app->sendMail->run(
+                $viewPath,
+                ['email' => $user->email, 'password' => $pass],
+                \Yii::$app->params['supportEmail'], $user->email, 'Your password'
+            );
+        }
         $userProfile = new UserProfileEntity();
         $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
         $userProfile->setAttributes([
