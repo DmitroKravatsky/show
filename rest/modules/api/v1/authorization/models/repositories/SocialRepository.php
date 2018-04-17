@@ -266,7 +266,7 @@ trait SocialRepository
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      */
-    public function fbAuthorization(array $params)
+    public function fbAuthorization(array $params): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
@@ -289,7 +289,7 @@ trait SocialRepository
                 if (isset($userData->id)) {
                     $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
                     if ($existedUser) {
-                        return $this->FbLogin($existedUser);
+                        return $this->fbLogin($existedUser);
                     }
 
                     $newUser = $this->fbRegister($userData, $params);
@@ -315,7 +315,7 @@ trait SocialRepository
      * @return mixed
      * @throws ServerErrorHttpException
      */
-    public function fbLogin($user)
+    public function fbLogin($user): RestUserEntity
     {
         if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
             $user->created_refresh_token = time();
@@ -342,7 +342,7 @@ trait SocialRepository
             'source'           => self::FB,
             'source_id'        => $userData->id,
             'terms_condition'  => $params['terms_condition'],
-            'password'         => $pass = \Yii::$app->security->generateRandomString(32),
+            'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             'confirm_password' => $pass,
             'refresh_token'    => $pass,
             'created_refresh_token' => time(),

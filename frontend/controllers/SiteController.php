@@ -258,6 +258,9 @@ class SiteController extends Controller
         ]);
     }
 
+    /**
+     * Method provides access_token for FbAuthorize action testing
+     */
     public function actionFace()
     {
         if (\Yii::$app->request->get('access_token')) {
@@ -266,9 +269,8 @@ class SiteController extends Controller
             $code = \Yii::$app->request->get('code');
 
             $ch = curl_init();
-            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['fb_secret_id'] . '&client_secret='  . Yii::$app->params['fb_client_secret'] . '&redirect_uri=http://work.local.com/frontend/web/site/face&code='.$code);
+            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['fb_secret_id'] . '&client_secret='  . Yii::$app->params['fb_client_secret'] . '&redirect_uri=http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/face&code='.$code);
             curl_exec($ch);
-
 
     }
 
