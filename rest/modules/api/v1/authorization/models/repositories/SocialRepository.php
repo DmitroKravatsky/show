@@ -184,6 +184,10 @@ trait SocialRepository
                     $transaction->commit();
                     return $newUser;
                 }
+
+                throw new ServerErrorHttpException('Internal server error');
+            } else {
+                throw new BadRequestHttpException('Bad Request');
             }
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
@@ -227,8 +231,9 @@ trait SocialRepository
         $user->scenario = self::SCENARIO_REGISTER;
         $user->setAttributes($data);
 
-        if (!$user->save(false)) throw new ServerErrorHttpException($user->errors);
-
+        if (!$user->save(false)) {
+            throw new ServerErrorHttpException($user->errors);
+        }
         $userProfile = new UserProfileEntity();
         $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
         $userProfile->setAttributes([
@@ -238,7 +243,9 @@ trait SocialRepository
             'avatar'    => $userData->picture
         ]);
 
-        if (!$user->save(false)) { throw new ServerErrorHttpException($user->errors); };
+        if (!$user->save(false)) {
+            throw new ServerErrorHttpException($user->errors);
+        }
         return $user;
     }
 
@@ -258,7 +265,9 @@ trait SocialRepository
             $user->created_refresh_token = time();
             $user->refresh_token = \Yii::$app->security->generateRandomString(100);
 
-            if (!$user->save(false)) throw new ServerErrorHttpException('Server internal error');
+            if (!$user->save(false)) {
+                throw new ServerErrorHttpException('Server internal error');
+            }
         }
         return $user;
 
