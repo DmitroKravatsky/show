@@ -297,11 +297,17 @@ trait SocialRepository
                     $transaction->commit();
                     return $newUser;
                 }
-            }
+                throw new ServerErrorHttpException('Internal server error');
 
+            } else {
+                throw new BadRequestHttpException('Bad Request');
+            }
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (BadRequestHttpException $e) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
@@ -322,8 +328,7 @@ trait SocialRepository
             $user->refresh_token = \Yii::$app->security->generateRandomString(100);
 
             if (!$user->save(false)) {
-                throw new ServerErrorHttpException(
-                    'Server internal error');
+                throw new ServerErrorHttpException('Server internal error');
             }
         }
         return $user;
@@ -373,6 +378,7 @@ trait SocialRepository
         if (!$userProfile->save()) {
             $this->throwModelException($userProfile->errors);
         }
+
         return $user;
 
     }
