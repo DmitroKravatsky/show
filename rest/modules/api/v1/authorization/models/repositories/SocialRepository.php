@@ -213,12 +213,12 @@ trait SocialRepository
     public function gmailRegister($userData, array $params): RestUserEntity
     {
         $data = [
-            'source'           => self::FB,
+            'source'           => self::GMAIL,
             'source_id'        => $userData->id,
             'terms_condition'  => $params['terms_condition'],
-            'password'         => $pass = \Yii::$app->security->generateRandomString(32),
+            'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             'confirm_password' => $pass,
-            'refresh_token'    => $pass,
+            'refresh_token'    => \Yii::$app->security->generateRandomString(100),
             'created_refresh_token' => time(),
         ];
 
@@ -234,6 +234,14 @@ trait SocialRepository
         if (!$user->save(false)) {
             throw new ServerErrorHttpException($user->errors);
         }
+        $viewPath = '@common/views/mail/sendPassword-html.php';
+        if (!empty($userData->email)) {
+            \Yii::$app->sendMail->run(
+                $viewPath,
+                ['email' => $user->email, 'password' => $pass],
+                \Yii::$app->params['supportEmail'], $user->email, 'Your password'
+            );
+        }
         $userProfile = new UserProfileEntity();
         $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
         $userProfile->setAttributes([
@@ -243,7 +251,7 @@ trait SocialRepository
             'avatar'    => $userData->picture
         ]);
 
-        if (!$user->save(false)) {
+        if (!$userProfile->save(false)) {
             throw new ServerErrorHttpException($user->errors);
         }
         return $user;

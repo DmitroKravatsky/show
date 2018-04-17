@@ -63,7 +63,7 @@ return [
         'patterns'   => [
             'POST vk-register'         => 'vk-register',
             'POST vk-login'            => 'vk-login',
-            'POST gmail-authorization' => 'gmail-authorization',
+            'POST gmail-authorize'     => 'gmail-authorize',
             'POST fb-register'         => 'fb-register',
             'POST fb-login'            => 'fb-login',
         ],

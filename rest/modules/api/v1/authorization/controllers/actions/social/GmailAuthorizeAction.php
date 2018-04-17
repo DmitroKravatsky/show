@@ -11,7 +11,7 @@ use yii\rest\Action;
  * Class GmailAuthorizationAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
  */
-class GmailAuthorizationAction extends Action
+class GmailAuthorizeAction extends Action
 {
     /** @var  SocialController */
     public $controller;
@@ -50,7 +50,7 @@ class GmailAuthorizationAction extends Action
     /**
      * Gmail authorization action
      *
-     * @SWG\Post(path="/social/gmail-authorization",
+     * @SWG\Post(path="/social/gmail-authorize",
      *      tags={"Authorization module"},
      *      summary="User gmail authorization",
      *      description="User authorization via gmail",
@@ -89,7 +89,7 @@ class GmailAuthorizationAction extends Action
      *              "data": {
      *                  "id": "93",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
-     *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
+     *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
      *         }
      *     ),
