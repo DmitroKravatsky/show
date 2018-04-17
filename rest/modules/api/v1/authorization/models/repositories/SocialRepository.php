@@ -168,7 +168,7 @@ trait SocialRepository
                 ]
             );
 
-            if ($result->getStatusCode() == 200) {
+            if ($result->getStatusCode() === 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 if (isset($userData->error)) {
                     throw new ServerErrorHttpException;
