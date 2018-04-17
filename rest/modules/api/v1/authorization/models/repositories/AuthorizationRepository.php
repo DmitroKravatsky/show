@@ -287,4 +287,18 @@ trait AuthorizationRepository
         }
 
     }
+
+    /**
+     * Check the token for the block
+     *
+     * @param bool
+     * @return bool
+     */
+    public static function isAlreadyBlocked($token)
+    {
+        if (BlockToken::find()->where(['token' => $token])->one()) {
+            return true;
+        }
+        return false;
+    }
 }

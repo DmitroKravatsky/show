@@ -49,7 +49,10 @@ trait AuthorizationJwt
     public static function findIdentityByAccessToken($token, $type = null)
     {
         if ($type == HttpBearerAuth::class) {
-            $decodedArray = static::decodeJWT($token);
+            if (RestUserEntity::isAlreadyBlocked($token)) {
+                throw new UnauthorizedHttpException('Unauthorized');
+            }
+                $decodedArray = static::decodeJWT($token);
             if (!isset($decodedArray['jti'])) {
                 throw new UnauthorizedHttpException('Unauthorized');
             }
