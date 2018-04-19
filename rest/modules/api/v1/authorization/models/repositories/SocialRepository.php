@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
+use PHPUnit\Framework\Exception;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -148,7 +149,7 @@ trait SocialRepository
     /**
      * Gmail register
      *
-     * @param $params array of post data
+     * @param $params array of post datagit
      *
      * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
      *
@@ -172,7 +173,7 @@ trait SocialRepository
                 ]
             );
 
-            if ($result->getStatusCode() == 200) {
+            if ($result->getStatusCode() === 200) {
                 $userData = json_decode($result->getBody()->getContents());
                 $data = [
                     'source'           => self::GMAIL,
@@ -258,98 +259,17 @@ trait SocialRepository
     }
 
     /**
-     * Facebook register
+     * Identify user with FaceBook
      *
-     * @param $params array of post data
-     *
-     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
-     *
+     * @param array $params
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
-     * @throws \yii\db\Exception
+     * @throws BadRequestHttpException
      */
-    public function fbRegister(array $params): RestUserEntity
+    public function fbAuthorization(array $params): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-
-        try {
-            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
-            $requestResult = $client->request(
-                'GET',
-                'https://graph.facebook.com/me',
-                [
-                    'query' => [
-                        'access_token' => $params['token'],
-                        'fields'       => 'id, first_name, last_name, picture.type(large), email',
-                        'v'            => '2.12'
-                    ]
-                ]
-            );
-
-            if ($requestResult->getStatusCode() == 200) {
-                $userData = json_decode($requestResult->getBody()->getContents());
-                $data = [
-                    'source'           => self::FB,
-                    'source_id'        => (string) $userData->id,
-                    'terms_condition'  => $params['terms_condition'],
-                    'password'         => $pass = \Yii::$app->security->generateRandomString(32),
-                    'confirm_password' => $pass
-                ];
-
-                if (isset($userData->email)) {
-                    $data['email'] = $userData->email;
-                } elseif (isset($params['phone_number'])) {
-                    $data['phone_number'] = $params['phone_number'];
-                }
-
-                $user = new RestUserEntity();
-                $user->scenario = self::SCENARIO_REGISTER;
-                $user->setAttributes($data);
-                if (!$user->save()) {
-                    $this->throwModelException($user->errors);
-                }
-
-                $userProfile = new UserProfileEntity();
-                $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
-                $userProfile->setAttributes([
-                    'name'      => $userData->first_name,
-                    'last_name' => $userData->last_name,
-                    'user_id'   => $user->id,
-                    'avatar'    => $userData->picture->data->url
-                ]);
-
-                if (!$userProfile->save()) {
-                    $this->throwModelException($userProfile->errors);
-                }
-
-                $transaction->commit();
-                return $user;
-            }
-
-            $transaction->rollBack();
-            throw new ServerErrorHttpException;
-        } catch (UnprocessableEntityHttpException $e) {
-            $transaction->rollBack();
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        } catch (\Exception $e) {
-            \Yii::error($e->getMessage());
-            $transaction->rollBack();
-            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
-        }
-    }
-
-    /**
-     * Facebook login
-     *
-     * @param $token string
-     *
-     * @return RestUserEntity
-     *
-     * @throws NotFoundHttpException
-     * @throws ServerErrorHttpException
-     */
-    public function fbLogin(string $token): RestUserEntity
-    {
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
             $result = $client->request(
@@ -357,8 +277,8 @@ trait SocialRepository
                 'https://graph.facebook.com/me',
                 [
                     'query' => [
-                        'access_token' => $token,
-                        'fields'       => 'id',
+                        'access_token' => $params['access_token'],
+                        'fields'       => 'id, first_name, last_name, picture.type(large), email',
                         'v'            => '2.12'
                     ]
                 ]
@@ -366,14 +286,110 @@ trait SocialRepository
 
             if ($result->getStatusCode() == 200) {
                 $userData = json_decode($result->getBody()->getContents());
-                return $this->findModelByParams(['source' => self::FB, 'source_id' => (string) $userData->id]);
+
+                if (isset($userData->id)) {
+                    $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
+                    if ($existedUser) {
+                        return $this->fbLogin($existedUser);
+                    }
+
+                    $newUser = $this->fbRegister($userData, $params);
+
+                    $transaction->commit();
+                    return $newUser;
+                }
+                throw new ServerErrorHttpException('Internal server error');
+
+            } else {
+                throw new BadRequestHttpException('Bad Request');
             }
-            throw new ServerErrorHttpException;
-        } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
+        } catch (UnprocessableEntityHttpException $e) {
+            $transaction->rollBack();
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (BadRequestHttpException $e) {
+            $transaction->rollBack();
+            throw new BadRequestHttpException($e->getMessage());
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
+            \Yii::error($e->getMessage());
+            $transaction->rollBack();
+            throw new ServerErrorHttpException($e->getMessage());
         }
+    }
+
+    /**
+     * Facebook login
+     * @param $user array user model
+     * @return mixed
+     * @throws ServerErrorHttpException
+     */
+    public function fbLogin($user): RestUserEntity
+    {
+        if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
+            $user->created_refresh_token = time();
+            $user->refresh_token = \Yii::$app->security->generateRandomString(100);
+
+            if (!$user->save(false)) {
+                throw new ServerErrorHttpException('Server internal error');
+            }
+        }
+        return $user;
+    }
+
+    /**
+     * Add user to a system
+     * @param $userData
+     * @param array $params
+     * @return RestUserEntity
+     * @throws UnprocessableEntityHttpException
+     */
+    public function fbRegister($userData, array $params): RestUserEntity
+    {
+        $data = [
+            'source'           => self::FB,
+            'source_id'        => $userData->id,
+            'terms_condition'  => $params['terms_condition'],
+            'password'         => $pass = \Yii::$app->security->generateRandomString(10),
+            'confirm_password' => $pass,
+            'refresh_token'    => \Yii::$app->security->generateRandomString(100),
+            'created_refresh_token' => time(),
+        ];
+
+        if (isset($userData->email)) {
+            $data['email'] = $userData->email;
+        } elseif (isset($params['phone_number'])) {
+            $data['phone_number'] = $params['phone_number'];
+        }
+        $user = new RestUserEntity();
+        $user->scenario = self::SCENARIO_REGISTER;
+        $user->setAttributes($data);
+
+        if (!$user->save(false)) {
+            $this->throwModelException($user->errors);
+        }
+
+        $viewPath = '@common/views/mail/sendPassword-html.php';
+        if (!empty($userData->email)) {
+            \Yii::$app->sendMail->run(
+                $viewPath,
+                ['email' => $user->email, 'password' => $pass],
+                \Yii::$app->params['supportEmail'], $user->email, 'Your password'
+            );
+        }
+        $userProfile = new UserProfileEntity();
+        $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+        $userProfile->setAttributes([
+            'name'      => $userData->first_name,
+            'last_name' => $userData->last_name,
+            'user_id'   => $user->id,
+            'avatar'    => $userData->picture->data->url
+        ]);
+
+        if (!$userProfile->save()) {
+            $this->throwModelException($userProfile->errors);
+        }
+
+        return $user;
+
     }
 
     /**

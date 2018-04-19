@@ -75,12 +75,7 @@ class SiteController extends Controller
                     Yii::getAlias('@docs'),
                     // Authorization module
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkLoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social'),
                     // Bid module
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/CreateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/UpdateAction.php'),
@@ -262,4 +257,21 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Method provides access_token for FbAuthorize action testing
+     */
+    public function actionFace()
+    {
+        if (\Yii::$app->request->get('access_token')) {
+            var_dump(\Yii::$app->request->get('access_token')); exit;
+        }
+            $code = \Yii::$app->request->get('code');
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['fb_secret_id'] . '&client_secret='  . Yii::$app->params['fb_client_secret'] . '&redirect_uri=http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/face&code='.$code);
+            curl_exec($ch);
+
+    }
+
 }
