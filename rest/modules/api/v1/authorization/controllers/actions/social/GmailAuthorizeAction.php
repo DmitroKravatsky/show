@@ -78,8 +78,8 @@ class GmailAuthorizeAction extends Action
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="id",            type="integer", description="user id")
-     *                  @SWG\Property(property="access_token",  type="string", description="access token")
+     *                  @SWG\Property(property="id",            type="integer", description="user id"),
+     *                  @SWG\Property(property="access_token",  type="string", description="access token"),
      *                  @SWG\Property(property="refresh_token", type="string", description="access token")
      *              ),
      *         ),
@@ -88,7 +88,7 @@ class GmailAuthorizeAction extends Action
      *              "message": "You have been authorized",
      *              "data": {
      *                  "id": "93",
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
      *         }
