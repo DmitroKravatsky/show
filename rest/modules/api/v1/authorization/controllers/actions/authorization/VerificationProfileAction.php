@@ -8,6 +8,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use rest\behaviors\IsTokenLegal;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -30,9 +31,9 @@ class VerificationProfileAction extends Action
      *      description="User verification-profile",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *        in = "header",
-     *        name = "Authorization",
-     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        in = "formData",
+     *        name = "Phone number",
+     *        description = "User phone number",
      *        required = true,
      *        type = "string"
      *      ),
@@ -58,10 +59,6 @@ class VerificationProfileAction extends Action
      *              "data": {
      *              }
      *         }
-     *     ),
-     *      @SWG\Response(
-     *         response = 401,
-     *         description = "Invalid credentials"
      *     ),
      *     @SWG\Response(
      *         response = 404,
@@ -89,9 +86,13 @@ class VerificationProfileAction extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $model->verifyUser(\Yii::$app->request->bodyParams);
+        $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
         /** @var ResponseBehavior */
-        return $this->controller->setResponse(201, 'Your profile has been verified');
+        return $this->controller->setResponse(201, 'Your profile has been verified', [
+            'id'            => $user->id,
+            'access_token'  => $user->getJWT(),
+            'refresh_token' => $user->refresh_token,
+        ]);
     }
 }

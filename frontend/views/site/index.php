@@ -4,6 +4,7 @@
 
 $this->title = 'My Yii Application';
 ?>
+
 <div class="site-index">
 
     <div class="jumbotron">
@@ -25,7 +26,7 @@ $this->title = 'My Yii Application';
                     ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
                     fugiat nulla pariatur.</p>
 
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
+                <p><a class="btn btn-default" href="https://www.facebook.com/dialog/oauth?client_id=<?= Yii::$app->params['fb_secret_id']?>&redirect_uri=http://<?= $_SERVER['HTTP_HOST'] ?>/frontend/web/site/face&response_type=code&scope=email">Yii Documentation &raquo;</a></p>
             </div>
             <div class="col-lg-4">
                 <h2>Heading</h2>

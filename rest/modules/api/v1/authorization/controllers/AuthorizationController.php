@@ -52,7 +52,7 @@ class AuthorizationController extends Controller
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::class,
-            'only'  => ['verification-profile', 'logout']
+            'only'  => ['logout']
         ];
 
         return $behaviors;

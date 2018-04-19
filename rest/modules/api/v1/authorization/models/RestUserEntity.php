@@ -122,7 +122,7 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
 
-        $scenarios[self::SCENARIO_VERIFY_PROFILE]  = ['verification_code'];
+        $scenarios[self::SCENARIO_VERIFY_PROFILE]  = ['verification_code', 'phone_number'];
 
         return $scenarios;
     }
@@ -149,7 +149,7 @@ class RestUserEntity extends User
             [['verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             ['phone_number', 'unique', 'on' => self::SCENARIO_REGISTER],
-            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD]],
+            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD, self::SCENARIO_VERIFY_PROFILE]],
             [
                 'terms_condition',
                 'required',
@@ -216,7 +216,7 @@ class RestUserEntity extends User
         ) {
             $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-
+            $this->status = self::STATUS_UNVERIFIED;
             if ($this->source == self::NATIVE) {
                 $this->password = \Yii::$app->security->generatePasswordHash($this->password);
             } else {

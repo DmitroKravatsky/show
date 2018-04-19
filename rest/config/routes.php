@@ -61,11 +61,19 @@ return [
             'social' => 'api/v1/authorization/social',
         ],
         'patterns'   => [
+<<<<<<< HEAD
             'POST vk-register'         => 'vk-register',
             'POST vk-login'            => 'vk-login',
             'POST gmail-authorize'     => 'gmail-authorize',
             'POST fb-register'         => 'fb-register',
             'POST fb-login'            => 'fb-login',
+=======
+            'POST vk-register'       => 'vk-register',
+            'POST vk-login'          => 'vk-login',
+            'POST gmail-register'    => 'gmail-register',
+            'POST gmail-login'       => 'gmail-login',
+            'POST fb-authorize'      => 'fb-authorize',
+>>>>>>> 2a3df51abbd3c454e76ff49a11b52449f82b7de0
         ],
     ],
     /** Authorization */
