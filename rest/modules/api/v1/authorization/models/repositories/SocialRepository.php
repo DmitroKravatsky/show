@@ -147,20 +147,18 @@ trait SocialRepository
     }
 
     /**
-     * Gmail register
+     * Authorization with Gmail
      *
      * @param $params array of post datagit
      *
-     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
-     *
+     * @param $params array of POST data
+     * @return RestUserEntity
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
-     * @throws \yii\db\Exception
      */
-    public function gmailRegister(array $params): RestUserEntity
+    public function gmailAuthorization(array $params): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
             $result = $client->request(
@@ -175,87 +173,115 @@ trait SocialRepository
 
             if ($result->getStatusCode() === 200) {
                 $userData = json_decode($result->getBody()->getContents());
-                $data = [
-                    'source'           => self::GMAIL,
-                    'source_id'        => (string) $userData->id,
-                    'terms_condition'  => $params['terms_condition'],
-                    'email'            => $userData->email,
-                    'password'         => $pass = \Yii::$app->security->generateRandomString(32),
-                    'confirm_password' => $pass
-                ];
-
-                $user = new RestUserEntity();
-                $user->scenario = RestUserEntity::SCENARIO_REGISTER;
-                $user->setAttributes($data);
-
-                if (!$user->save()) {
-                    $this->throwModelException($user->errors);
+                if (isset($userData->error)) {
+                    throw new ServerErrorHttpException;
                 }
 
-                $userProfile = new UserProfileEntity();
-                $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
-                $userProfile->setAttributes([
-                    'name'      => $userData->given_name,
-                    'last_name' => $userData->family_name,
-                    'user_id'   => $user->id,
-                    'avatar'    => $userData->picture
-                ]);
+                if (isset($userData->id)) {
+                    $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
+                    if ($existedUser) {
+                        return $this->gmailLogin($existedUser);
+                    }
+                    $newUser = $this->gmailRegister($userData, $params);
 
-                if (!$userProfile->save()) {
-                    $this->throwModelException($userProfile->errors);
+                    $transaction->commit();
+                    return $newUser;
                 }
 
-                $transaction->commit();
-                return $user;
+                throw new ServerErrorHttpException('Internal server error');
+            } else {
+                throw new BadRequestHttpException('Bad Request');
             }
-
-            $transaction->rollBack();
-            throw new ServerErrorHttpException;
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+            throw new ServerErrorHttpException($e->getMessage());
         }
+
     }
 
     /**
-     * Gmail authorization
+     * Gmail registration
+     * @param $params array of post data
      *
-     * @param $token string
+     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
+     *
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
+     */
+    public function gmailRegister($userData, array $params): RestUserEntity
+    {
+        $data = [
+            'source'           => self::GMAIL,
+            'source_id'        => $userData->id,
+            'terms_condition'  => $params['terms_condition'],
+            'password'         => $pass = \Yii::$app->security->generateRandomString(10),
+            'confirm_password' => $pass,
+            'refresh_token'    => \Yii::$app->security->generateRandomString(100),
+            'created_refresh_token' => time(),
+        ];
+
+        if (isset($userData->email)) {
+            $data['email'] = $userData->email;
+        } elseif (isset($params['phone_number'])) {
+            $data['phone_number'] = $params['phone_number'];
+        }
+        $user = new RestUserEntity();
+        $user->scenario = self::SCENARIO_REGISTER;
+        $user->setAttributes($data);
+
+        if (!$user->save(false)) {
+            throw new ServerErrorHttpException($user->errors);
+        }
+        $viewPath = '@common/views/mail/sendPassword-html.php';
+        if (!empty($userData->email)) {
+            \Yii::$app->sendMail->run(
+                $viewPath,
+                ['email' => $user->email, 'password' => $pass],
+                \Yii::$app->params['supportEmail'], $user->email, 'Your password'
+            );
+        }
+        $userProfile = new UserProfileEntity();
+        $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+        $userProfile->setAttributes([
+            'name'      => $userData->name,
+            'last_name' => $userData->family_name,
+            'user_id'   => $user->id,
+            'avatar'    => $userData->picture
+        ]);
+
+        if (!$userProfile->save(false)) {
+            throw new ServerErrorHttpException($user->errors);
+        }
+        return $user;
+    }
+
+    /**
+     * Gmail login
+     *
+     * @param $user
      *
      * @return RestUserEntity
      *
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
-    public function gmailLogin(string $token): RestUserEntity
+    public function gmailLogin(RestUserEntity $user): RestUserEntity
     {
-        try {
-            $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
-            $result = $client->request(
-                'GET',
-                'https://www.googleapis.com/oauth2/v1/userinfo',
-                [
-                    'query' => [
-                        'access_token' => $token,
-                    ]
-                ]
-            );
+        if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
+            $user->created_refresh_token = time();
+            $user->refresh_token = \Yii::$app->security->generateRandomString(100);
 
-            if ($result->getStatusCode() == 200) {
-                $userData = json_decode($result->getBody()->getContents());
-                return $this->findModelByParams(['source' => self::GMAIL, 'source_id' => (string) $userData->id]);
+            if (!$user->save(false)) {
+                throw new ServerErrorHttpException('Server internal error');
             }
-
-            throw new ServerErrorHttpException;
-        } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('Пользователь не найден, пройдите процедуру регистрации.');
-        } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Произошла ошибка при авторизации.');
         }
+        return $user;
+
     }
 
     /**

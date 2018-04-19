@@ -1,8 +1,10 @@
 <?php
+
 use yii\helpers\Html;
 
 /* @var $this yii\web\View */
-/* @var $user common\models\user\UserEntity */
+/* @var $user common\models\user\User */
+
 ?>
 <div class="recovery-password">
     <p>Уважаемый клиент <?= Html::encode($email) ?>,</p>

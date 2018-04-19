@@ -8,15 +8,14 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 /**
- * Class GmailRegisterAction
+ * Class GmailAuthorizationAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
- * @mixin ValidatePostParameters
  */
-class GmailRegisterAction extends Action
+class GmailAuthorizeAction extends Action
 {
     /** @var  SocialController */
     public $controller;
-    
+
     /**
      * @var array
      */
@@ -29,9 +28,9 @@ class GmailRegisterAction extends Action
     {
         return [
             'reportParams' => [
-                'class'       => ValidatePostParameters::className(),
+                'class'       => ValidatePostParameters::class,
                 'inputParams' => [
-                    'token', 'terms_condition'
+                    'access_token', 'terms_condition'
                 ]
             ],
         ];
@@ -49,12 +48,12 @@ class GmailRegisterAction extends Action
     }
 
     /**
-     * Gmail register action
+     * Gmail authorization action
      *
-     * @SWG\Post(path="/social/gmail-register",
+     * @SWG\Post(path="/social/gmail-authorize",
      *      tags={"Authorization module"},
-     *      summary="User gmail registration",
-     *      description="User registration via gmail",
+     *      summary="User gmail authorization",
+     *      description="User authorization via gmail",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
@@ -79,16 +78,24 @@ class GmailRegisterAction extends Action
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token")
+     *                  @SWG\Property(property="id",            type="integer", description="user id")
+     *                  @SWG\Property(property="access_token",  type="string", description="access token")
+     *                  @SWG\Property(property="refresh_token", type="string", description="access token")
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "You have been authorized",
      *              "data": {
+     *                  "id": "93",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
      *         }
+     *     ),
+     *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
      *     ),
      *      @SWG\Response (
      *         response = 422,
@@ -101,7 +108,7 @@ class GmailRegisterAction extends Action
      * )
      *
      * @return array|bool
-     * 
+     *
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
@@ -109,10 +116,14 @@ class GmailRegisterAction extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $user = $model->gmailRegister(\Yii::$app->request->bodyParams);
+        $user = $model->gmailAuthorization(\Yii::$app->request->bodyParams);
 
         return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+            201, 'You have been authorized', [
+                'id'            => $user->id,
+                'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                'refresh_token' => $user->refresh_token,
+            ]
         );
     }
 }

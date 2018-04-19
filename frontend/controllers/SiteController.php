@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -257,6 +258,32 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Method provides access_token for GmailAuthorize action testing
+     */
+    public function actionGmail()
+    {
+        $client = new Client(['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']]);
+        $result = $client->request(
+            'POST',
+            'https://accounts.google.com/o/oauth2/token',
+            [
+                'form_params' => [
+                    'client_id' =>  Yii::$app->params['gmail_secret_id'],
+                    'client_secret' => Yii::$app->params['gmail_client_secret'],
+                    'redirect_uri' => 'http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/gmail',
+                    'code' => \Yii::$app->request->get('code'),
+                    'grant_type'  => 'authorization_code',
+                ]
+            ]
+        );
+        if ($result->getStatusCode() == 200) {
+            $userData = json_decode($result->getBody()->getContents());
+            var_dump($userData); exit;
+        }
+    }
+
 
     /**
      * Method provides access_token for FbAuthorize action testing
