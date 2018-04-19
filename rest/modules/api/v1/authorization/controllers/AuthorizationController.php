@@ -49,7 +49,7 @@ class AuthorizationController extends Controller
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
+        $behaviors['responseBehavior'] = ResponseBehavior::class; // todo для чего мы подключаем это поведение?
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::class,
@@ -65,6 +65,7 @@ class AuthorizationController extends Controller
     public function actions(): array
     {
         // todo проверить чтобы везде => были выровнены. можно это дело настроить в phpstorm
+        // todo показал здесь как пример
         return [
             'register'                  => [
                 'class'      => RegisterAction::class,

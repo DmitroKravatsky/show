@@ -36,7 +36,7 @@ class FbAuthorizeAction extends Action
      */
     public function beforeRun()
     {
-        $this->validationParams();
+        $this->validationParams(); // todo
 
         return parent::beforeRun();
     }

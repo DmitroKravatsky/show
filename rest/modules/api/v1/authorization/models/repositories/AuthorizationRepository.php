@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\models\repositories;
 
-use common\models\userProfile\UserProfileEntity;
+use common\models\userProfile\UserProfileEntity; // todo
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
@@ -33,17 +33,17 @@ trait AuthorizationRepository
     public function register(array $params)
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        $refresh_token = \Yii::$app->security->generateRandomString(100);
+        $refresh_token = \Yii::$app->security->generateRandomString(100); // todo описывал раньше про refresh_token https://gist.github.com/zmts/802dc9c3510d79fd40f9dc38a12bccfc
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
                 'source'                => self::NATIVE,
-                'phone_number'          => $params['phone_number'] ?? null,
-                'terms_condition'       => $params['terms_condition'] ?? 0,
-                'password'              => $params['password'] ?? null,
-                'confirm_password'      => $params['confirm_password'] ?? null,
+                'phone_number'          => $params['phone_number'] ?? null, // todo зачем тут null? у нас может пользователь без номера телефона или пароля?
+                'terms_condition'       => $params['terms_condition'] ?? 0, // todo зачем тут 0
+                'password'              => $params['password'] ?? null, // todo зачем тут null
+                'confirm_password'      => $params['confirm_password'] ?? null, // todo зачем тут null
                 'refresh_token'         => $refresh_token,
                 'created_refresh_token' => time(),
                 'verification_code'     => rand(1000, 9999),
@@ -72,6 +72,7 @@ trait AuthorizationRepository
         }
     }
 
+    // todo что это за комментрий "Request user profile and return user model" ?
     /**
      * Request user profile and return user model
      *
@@ -92,7 +93,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByParams($params);
+        $user = $this->getUserByParams($params); // todo  для чего это если у нас при логине остался только телефон?
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -113,7 +114,7 @@ trait AuthorizationRepository
     {
         if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
             return $user;
-        } elseif (isset($params['phone_number']) && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))) {
+        } elseif (isset($params['phone_number']) && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))) { // todo 120 символов не больше в одну строку. Вот такую линию можно настроить в phpstorm http://joxi.ru/gmvR63DHxkowQm
             return $user;
         }
 
@@ -256,20 +257,19 @@ trait AuthorizationRepository
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
-            $user->refresh_token = \Yii::$app->security->generateRandomString(32);
-            $user->created_refresh_token = time();
+            $user->refresh_token = \Yii::$app->security->generateRandomString(32); // todo зачем?!!!!
+            $user->created_refresh_token = time(); // todo зачем?!!!!
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
             }
-            return $user;
+            return $user; // todo не смущает такое http://joxi.ru/krDp18Wt0pjVpr ?
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
-
         }
     }
 
@@ -287,11 +287,9 @@ trait AuthorizationRepository
         try {
             $restUser->addBlackListToken($restUser->getAuthKey());
             return true;
-
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException;
         }
-
     }
 
     /**

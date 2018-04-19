@@ -118,7 +118,7 @@ class RestUserEntity extends User
             'email', 'password', 'confirm_password', 'phone_number','recovery_code'
         ];
 
-        $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number',];
+        $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number'];
 
         $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
 
@@ -310,7 +310,7 @@ class RestUserEntity extends User
     }
 
     /**
-     * Recovery users password
+     * Recovery user`s password
      *
      * @param $postData
      * @return bool
@@ -323,7 +323,7 @@ class RestUserEntity extends User
         $createdRecoveryCode = $this->created_recovery_code;
         try{
             $this->setAttributes($postData);
-            if ($this->validate() && $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
+            if ($this->validate() && $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){ // todo PSR
                 return $this->save();
             }
             $this->validationExceptionFirstMessage($this->errors);

@@ -5,7 +5,7 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use yii\web\ForbiddenHttpException;
+use yii\web\ForbiddenHttpException; // todo убрать. Таких моментов не должно быть
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
@@ -101,20 +101,22 @@ class LoginAction extends Action
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
                 if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
                     $user->created_refresh_token = time();
-                    $user->refresh_token = \Yii::$app->security->generateRandomString(100);
+                    $user->refresh_token = \Yii::$app->security->generateRandomString(100); // todo refresh_token должен в себя включать user_id также как access_token
 
                     if (!$user->save(false)) {
-                        throw new ServerErrorHttpException(
-                            'Server internal error');
+                        throw new ServerErrorHttpException('Server internal error');
                     }
                 }
 
                 return $this->controller->setResponse(
-                    200, 'Authorization was successful', [
+                    200,
+                    'Authorization was successful',
+                    [
                         'user_id' => $user->id,
                         'access_token'  => $user->getJWT(['user_id' => $user->id]),
                         'refresh_token' => $user->refresh_token
-                ]);
+                    ]
+                );
             }
 
             throw new UnauthorizedHttpException();

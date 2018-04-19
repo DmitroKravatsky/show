@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-
     FbAuthorizeAction, GmailAuthorizeAction, VkLoginAction, VkRegisterAction
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -32,8 +31,8 @@ class SocialController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'vk-register'         => ['POST'],
-                'vk-login'            => ['POST'],
+                'vk-register'         => ['POST'], // todo удали пока вообще vk
+                'vk-login'            => ['POST'], // todo удали пока вообще vk
                 'gmail-authorize'     => ['POST'],
                 'fb-authorization'    => ['POST'],
             ]

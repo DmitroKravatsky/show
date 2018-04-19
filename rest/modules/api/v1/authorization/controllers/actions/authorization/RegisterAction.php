@@ -99,7 +99,9 @@ class RegisterAction extends Action
         $user = $model->register(\Yii::$app->request->bodyParams);
 
         return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', [
+            201,
+            'Регистрация прошла успешно.',
+            [
                 'id'            => $user->id,
                 'phone_number'  => $user->phone_number,
                 'status'        => $user->status,
