@@ -8,16 +8,14 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 /**
- * Class FbLoginAction
+ * Class GmailAuthorizationAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
- *
- * @mixin ValidatePostParameters
  */
-class FbLoginAction extends Action
+class GmailAuthorizeAction extends Action
 {
     /** @var  SocialController */
     public $controller;
-    
+
     /**
      * @var array
      */
@@ -30,9 +28,9 @@ class FbLoginAction extends Action
     {
         return [
             'reportParams' => [
-                'class'       => ValidatePostParameters::className(),
+                'class'       => ValidatePostParameters::class,
                 'inputParams' => [
-                    'token',
+                    'access_token', 'terms_condition'
                 ]
             ],
         ];
@@ -50,42 +48,58 @@ class FbLoginAction extends Action
     }
 
     /**
-     * Facebook login action
+     * Gmail authorization action
      *
-     * @SWG\Post(path="/social/fb-login",
+     * @SWG\Post(path="/social/gmail-authorize",
      *      tags={"Authorization module"},
-     *      summary="User facebook login",
-     *      description="user login via facebook",
+     *      summary="User gmail authorization",
+     *      description="User authorization via gmail",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
      *          name = "token",
-     *          description = "user's token on facebook",
+     *          description = "user's token on gmail",
      *          required = true,
      *          type = "string"
      *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "terms_condition",
+     *          description = "Terms condition",
+     *          required = true,
+     *          type = "integer",
+     *          enum = {0, 1}
+     *      ),
      *      @SWG\Response(
-     *         response = 200,
+     *         response = 201,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token")
+     *                  @SWG\Property(property="id",            type="integer", description="user id")
+     *                  @SWG\Property(property="access_token",  type="string", description="access token")
+     *                  @SWG\Property(property="refresh_token", type="string", description="access token")
      *              ),
      *         ),
      *         examples = {
-     *              "status": 200,
-     *              "message": "Авторизация прошла успешно.",
+     *              "status": 201,
+     *              "message": "You have been authorized",
      *              "data": {
+     *                  "id": "93",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
      *         }
      *     ),
-     *      @SWG\Response(
-     *         response = 404,
-     *         description = "User not found"
+     *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
+     *     ),
+     *      @SWG\Response (
+     *         response = 422,
+     *         description = "Validation Error"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -93,19 +107,23 @@ class FbLoginAction extends Action
      *     )
      * )
      *
-     * @return array
-     * 
-     * @throws \yii\web\NotFoundHttpException
+     * @return array|bool
+     *
      * @throws \yii\web\ServerErrorHttpException
+     * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run(): array
+    public function run()
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $user = $model->fbLogin(\Yii::$app->request->post('token'));
+        $user = $model->gmailAuthorization(\Yii::$app->request->bodyParams);
 
         return $this->controller->setResponse(
-            200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
+            201, 'You have been authorized', [
+                'id'            => $user->id,
+                'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                'refresh_token' => $user->refresh_token,
+            ]
         );
     }
 }

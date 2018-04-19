@@ -220,7 +220,7 @@ class RestUserEntity extends User
             if ($this->source == self::NATIVE) {
                 $this->password = \Yii::$app->security->generatePasswordHash($this->password);
             } else {
-                $this->password = \Yii::$app->security->generateRandomString(32);
+                $this->password = \Yii::$app->security->generatePasswordHash($this->password);
             }
         }
         return true;
