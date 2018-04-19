@@ -147,15 +147,9 @@ trait SocialRepository
     }
 
     /**
-<<<<<<< HEAD
      * Authorization with Gmail
-=======
-     * Gmail register
      *
      * @param $params array of post datagit
-     *
-     * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
->>>>>>> 2a3df51abbd3c454e76ff49a11b52449f82b7de0
      *
      * @param $params array of POST data
      * @return RestUserEntity
