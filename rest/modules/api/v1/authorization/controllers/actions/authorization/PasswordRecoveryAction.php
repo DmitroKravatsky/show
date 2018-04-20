@@ -17,10 +17,14 @@ use yii\base\Exception;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class PasswordRecovery
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class PasswordRecoveryAction extends Action
 {
@@ -40,7 +44,7 @@ class PasswordRecoveryAction extends Action
         return [
             'reportParams' => [
                 'class'       => ValidatePostParameters::class,
-                'inputParams' => ['password', 'confirm_password', 'recovery_code']
+                'inputParams' => ['password', 'confirm_password', 'recovery_code', 'phone_number']
             ]
         ];
     }
@@ -131,11 +135,8 @@ class PasswordRecoveryAction extends Action
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
         $user = new RestUserEntity();
-        if (!empty($phoneNumber)) { // todo данный кейс не возможен у тебя подключен ValidatePostParameters
-            $user = $user->getUserByPhoneNumber($phoneNumber);
-        } else {
-            throw new BadRequestHttpException('Enter your phone number');
-        }
+        // todo данный кейс не возможен у тебя подключен ValidatePostParameters
+        $user = $user->getUserByPhoneNumber($phoneNumber);
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
@@ -143,8 +144,10 @@ class PasswordRecoveryAction extends Action
                 /** @var $this ResponseBehavior */
                 return $this->controller->setResponse(200, 'Password recovery has been ended successfully');
             }
-        } catch (Exception $e) {
-            throw new HttpException(422, $e->getMessage()); // todo вот с такой реализацией у тебя не будет никогда 500 статуса, 400 как описано это в документации
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage()); // todo вот с такой реализацией у тебя не будет никогда 500 статуса, 400 как описано это в документации
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException($e->getMessage());
         }
     }
 }

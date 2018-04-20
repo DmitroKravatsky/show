@@ -8,6 +8,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use common\behaviors\ValidatePostParameters;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -19,11 +20,41 @@ use yii\{
 /**
  * Class SendRecoveryCode
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class SendRecoveryCodeAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
+
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'       => ValidatePostParameters::class,
+                'inputParams' => ['phone_number']
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->validationParams();
+
+        return parent::beforeRun();
+    }
 
     /**
      * Send recovery code action
@@ -79,11 +110,9 @@ class SendRecoveryCodeAction extends Action
 
         $recoveryCode = rand(1000, 9999);
         $user = new RestUserEntity();
-        if (!empty($phoneNumber)) { // todo вот эту проверку можно сделать на уровне валидации или же подключи наше кастомное поведение ValidatePostParameters
-            $user = $user->getUserByPhoneNumber($phoneNumber);
-        } else {
-            throw new BadRequestHttpException('Укажите номер телефона.');
-        }
+        // todo вот эту проверку можно сделать на уровне валидации или же подключи наше кастомное поведение ValidatePostParameters
+        $user = $user->getUserByPhoneNumber($phoneNumber);
+
         $user->recovery_code = $recoveryCode;
         $user->created_recovery_code = time();
 

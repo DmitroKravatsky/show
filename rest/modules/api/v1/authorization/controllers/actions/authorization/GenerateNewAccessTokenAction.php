@@ -14,6 +14,8 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class GenerateNewAccessTokenAction
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class GenerateNewAccessTokenAction extends Action
 {

@@ -7,6 +7,7 @@ use Yii;
 use Firebase\JWT\JWT;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\UnauthorizedHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class AuthorizationJwt
@@ -210,12 +211,53 @@ trait AuthorizationJwt
      * @param int $createdRefreshToken  date of token creation
      * @return bool
      */
-    public static function isRefreshTokenExpired($createdRefreshToken) :bool
+    public static function isRefreshTokenExpired($createdRefreshToken): bool
     {
-        if (($createdRefreshToken + Yii::$app->params['tokenExpireDays'] * 3600 * 24) < time()) {
+        if (($createdRefreshToken + Yii::$app->params['refreshTokenExpireDays'] * 3600 * 24) < time()) {
            return true;
         }
 
         return false;
+    }
+
+
+    /**
+     * Returns token expire period
+     *
+     * @return int
+     */
+    protected static function getRefreshTokenExpire()
+    {
+        return 3600 * 24 * Yii::$app->params['refreshTokenExpireDays'];
+    }
+
+    /**
+     * Method creates refresh_token
+     *
+     * @param array $payload
+     * @return string
+     */
+    public function getRefreshToken(array $payload): string
+    {
+        if (!isset($payload['exp'])) {
+            $payload['exp'] = time() + self::getRefreshTokenExpire();
+        }
+        return base64_encode(json_encode($payload));
+    }
+
+    /**
+     * Method returns user id
+     *
+     * @param $refreshToken
+     * @return mixed
+     * @throws UnprocessableEntityHttpException
+     */
+    public static function getRefreshTokenId($refreshToken): int
+    {
+        $token = json_decode(base64_decode($refreshToken));
+        if (isset($token->id)) {
+            return ($token->id);
+        }
+        throw new UnprocessableEntityHttpException('Invalid refresh token');
     }
 }

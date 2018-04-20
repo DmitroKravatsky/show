@@ -6,10 +6,10 @@ use common\models\userNotifications\UserNotificationsEntity;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use yii\web\NotFoundHttpException; // todo
+// todo
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
-use yii\web\UnprocessableEntityHttpException; // todo
+ // todo
 
 /**
  * Class LoginGuestAction

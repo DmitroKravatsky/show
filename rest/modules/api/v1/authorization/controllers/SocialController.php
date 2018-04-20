@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-    FbAuthorizeAction, GmailAuthorizeAction, VkLoginAction, VkRegisterAction
+    FbAuthorizeAction, GmailAuthorizeAction
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
@@ -31,10 +31,9 @@ class SocialController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'vk-register'         => ['POST'], // todo удали пока вообще vk
-                'vk-login'            => ['POST'], // todo удали пока вообще vk
-                'gmail-authorize'     => ['POST'],
-                'fb-authorization'    => ['POST'],
+                // todo удали пока вообще vk
+                'gmail-authorize'   => ['POST'],
+                'fb-authorization'  => ['POST'],
             ]
         ];
 
@@ -50,22 +49,12 @@ class SocialController extends Controller
     {
         $actions = parent::actions();
 
-        $actions['vk-register'] = [
-            'class'      => VkRegisterAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['vk-login'] = [
-            'class'      => VkLoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['gmail-authorize'] = [
+        $actions['gmail-authorize'] =  [
             'class'      => GmailAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];
 
-        $actions['fb-authorize'] = [
+        $actions['fb-authorize']    =  [
             'class'      => FbAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];

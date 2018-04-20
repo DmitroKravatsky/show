@@ -12,6 +12,7 @@ use yii\base\Behavior;
 class ResponseBehavior extends Behavior
 {
     // todo не вижу смысла в этом поведении, так как есть стандартный в контролере
+    // Разве что в краткости записи при использовании, удалять?
     /**
      * @param $statusCode
      * @param $message

@@ -7,8 +7,7 @@
  */
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
-
-use rest\behaviors\IsTokenLegal; // todo
+// todo
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -90,6 +89,7 @@ class VerificationProfileAction extends Action
 
         /** @var ResponseBehavior */
         return $this->controller->setResponse(201, 'Your profile has been verified', [
+            /** @var RestUserEntity $user */
             'id'            => $user->id, // todo не должно такого быть что не подсвечивает. Добавить аннотации для $user
             'access_token'  => $user->getJWT(),
             'refresh_token' => $user->refresh_token,

@@ -72,7 +72,7 @@ class LogoutAction extends Action
         /** @var RestUserEntity $user */
         $user = new $this->modelClass();
 
-        $user = $user->logout(); // todo зачем тебе переменная которую ты потом не используешь?
+        $user->logout(); // todo зачем тебе переменная которую ты потом не используешь?
         /** @var ResponseBehavior */
         return $this->controller->setResponse(200, 'You have been successfully logout');
     }

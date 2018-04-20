@@ -1,6 +1,6 @@
 <?php
 
-namespace rest\behaviors;
+namespace common\behaviors;
 
 use yii\base\Behavior;
 use yii\web\UnprocessableEntityHttpException;

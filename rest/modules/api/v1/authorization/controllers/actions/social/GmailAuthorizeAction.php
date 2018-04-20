@@ -10,6 +10,8 @@ use yii\rest\Action;
 /**
  * Class GmailAuthorizationAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
+ * @mixin ValidatePostParameters
  */
 class GmailAuthorizeAction extends Action
 {

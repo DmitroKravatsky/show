@@ -3,15 +3,10 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 // todo применить php7
-use rest\modules\api\v1\authorization\controllers\actions\authorization\GenerateNewAccessTokenAction;
 use rest\behaviors\ResponseBehavior;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LogoutAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecoveryAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCodeAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfileAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\{
+    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction, SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
+};
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -48,7 +43,7 @@ class AuthorizationController extends Controller
                 'verification-profile'      => ['POST'],
             ]
         ];
-
+        // Behaviour for making typical response format
         $behaviors['responseBehavior'] = ResponseBehavior::class; // todo для чего мы подключаем это поведение?
 
         $behaviors['bearerAuth'] = [

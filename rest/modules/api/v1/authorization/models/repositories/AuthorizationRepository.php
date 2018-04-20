@@ -2,16 +2,14 @@
 
 namespace rest\modules\api\v1\authorization\models\repositories;
 
-use common\models\userProfile\UserProfileEntity; // todo
+ // todo
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
-use yii\filters\auth\HttpBearerAuth;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnprocessableEntityHttpException;
+use yii\web\{
+    HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
+};
 use yii\db\Exception as ExceptionDb;
 
 /**
@@ -33,19 +31,18 @@ trait AuthorizationRepository
     public function register(array $params)
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        $refresh_token = \Yii::$app->security->generateRandomString(100); // todo описывал раньше про refresh_token https://gist.github.com/zmts/802dc9c3510d79fd40f9dc38a12bccfc
+
+         // todo описывал раньше про refresh_token https://gist.github.com/zmts/802dc9c3510d79fd40f9dc38a12bccfc
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
                 'source'                => self::NATIVE,
-                'phone_number'          => $params['phone_number'] ?? null, // todo зачем тут null? у нас может пользователь без номера телефона или пароля?
-                'terms_condition'       => $params['terms_condition'] ?? 0, // todo зачем тут 0
-                'password'              => $params['password'] ?? null, // todo зачем тут null
-                'confirm_password'      => $params['confirm_password'] ?? null, // todo зачем тут null
-                'refresh_token'         => $refresh_token,
-                'created_refresh_token' => time(),
+                'phone_number'          => $params['phone_number'], // todo зачем тут null? у нас может пользователь без номера телефона или пароля?
+                'terms_condition'       => $params['terms_condition'], // todo зачем тут 0
+                'password'              => $params['password'], // todo зачем тут null
+                'confirm_password'      => $params['confirm_password'], // todo зачем тут null
                 'verification_code'     => rand(1000, 9999),
             ]);
 
@@ -74,7 +71,7 @@ trait AuthorizationRepository
 
     // todo что это за комментрий "Request user profile and return user model" ?
     /**
-     * Request user profile and return user model
+     * Login user in a system
      *
      * @param $params array of the POST data
      *
@@ -93,7 +90,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByParams($params); // todo  для чего это если у нас при логине остался только телефон?
+        $user = $this->getUserByPhoneNumber($params); // todo  для чего это если у нас при логине остался только телефон?
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -114,11 +111,30 @@ trait AuthorizationRepository
     {
         if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
             return $user;
-        } elseif (isset($params['phone_number']) && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))) { // todo 120 символов не больше в одну строку. Вот такую линию можно настроить в phpstorm http://joxi.ru/gmvR63DHxkowQm
+        } elseif (
+            isset($params['phone_number'])
+            && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))
+        ) { // todo 120 символов не больше в одну строку. Вот такую линию можно настроить в phpstorm http://joxi.ru/gmvR63DHxkowQm
             return $user;
         }
 
         throw new NotFoundHttpException('Пользователь не найден, пройдите этап регистрации.');
+    }
+
+    /**
+     * @param string $phoneNumber
+     *
+     * @return RestUserEntity
+     *
+     * @throws NotFoundHttpException
+     */
+    protected function getUserByPhoneNumber(string $phoneNumber): RestUserEntity
+    {
+        $user = self::findOne(['phoneNumber' => $phoneNumber]);
+        if ($user) {
+            return $user;
+        }
+        throw new NotFoundHttpException('No such user');
     }
 
     /**
@@ -170,53 +186,66 @@ trait AuthorizationRepository
      *
      * @return array
      *
-     * @throws HttpException
+     * @throws UnauthorizedHttpException
+     * @throws UnprocessableEntityHttpException
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
     public function generateNewAccessToken()
     {
         // todo все эти три сточки можно заменить на \Yii::$app->user->getId() но они вообще не нужны
-        $oldAccessToken = $this->getAuthKey();
-        $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::class);
-        $userId = $userModel->id;
 
         // todo у нас в refresh_token тоже должен быть зашит userID. Получив этот userID из refresh_token мы ищем пользователя в БД
         // todo после того как я получил пользователя из БД я сравниваю refresh_token полученный и тот что в БД
-
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
 
-        $user = RestUserEntity::findOne(['refresh_token' => $currentRefreshToken, 'id' => $userId]);
-
-        if (!$user) {
-            throw new NotFoundHttpException('Пользователь с таким токеном не найден.');
-        }
-        // todo не вижу проверки на срок действия refresh_token
-        $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $user->addBlackListToken($oldAccessToken); // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
-            $newAccessToken = $user->getJWT();
+            $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
+            if (!$user) {
+                throw new NotFoundHttpException('No such user');
+            }
 
-            $transaction->commit();
+            if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
+                throw new UnauthorizedHttpException('Expired token');
+            }
+            if ($user->refresh_token != $currentRefreshToken) {
+                throw new UnprocessableEntityHttpException('Wrong refresh_token');
+            }
+
+            // todo не вижу проверки на срок действия refresh_token
+            // Так в bb, и решил ,что такая логика работы стокенами
+            // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
+            $newAccessToken = $user->getJWT();
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->created_refresh_token = time();
+
+            if (!$user->save()) {
+                return $this->throwModelException($user->errors);
+            }
 
             return [
-                'access_token'  => $newAccessToken,
-                'refresh_token' => $user->refresh_token, //todo если срок действия у refresh_token истек тоже, но нужно новый генерить
-                'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
+                'access_token' => $newAccessToken,
+                'refresh_token' => $user->refresh_token,
+                // а разве не в любом случает он должен обновиться?
+                //todo если срок действия у refresh_token истек тоже, но нужно новый генерить
+                'exp' => RestUserEntity::getPayload($newAccessToken, 'exp'),
                 'user' => [
-                    'id'            => $user->getId(),
-                    'phone_number'  => $user->phone_number,
-                    'role'          => $user->getUserRole($user->id),
-                    'created_at'    => $user->created_at,
-                    'status'        => $user->status
+                    'id' => $user->getId(),
+                    'phone_number' => $user->phone_number,
+                    'role' => $user->getUserRole($user->id),
+                    'created_at' => $user->created_at,
+                    'status' => $user->status
                 ]
             ];
+            // а почему?
             // todo все эти  catch тут лишние
-        } catch (ExceptionDb $e) {
-            $transaction->rollBack();
-            throw new HttpException(422, $e->getMessage());
+        } catch (UnauthorizedHttpException $e) {
+            throw new UnauthorizedHttpException($e->getMessage());
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e){
-            $transaction->rollBack();
             \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
@@ -227,7 +256,7 @@ trait AuthorizationRepository
      *
      * @param $params array of the POST input data
      *
-     * @return bool
+     * @return RestUserEntity
      *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
@@ -257,8 +286,9 @@ trait AuthorizationRepository
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
-            $user->refresh_token = \Yii::$app->security->generateRandomString(32); // todo зачем?!!!!
-            $user->created_refresh_token = time(); // todo зачем?!!!!
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);// todo зачем?!!!!
+            $user->created_refresh_token = time();  // todo зачем?!!!!
+
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
@@ -278,7 +308,6 @@ trait AuthorizationRepository
      *
      * @return bool
      * @throws ServerErrorHttpException
-     * @throws ServerErrorHttpException
      */
     public function logout()
     {
@@ -288,7 +317,7 @@ trait AuthorizationRepository
             $restUser->addBlackListToken($restUser->getAuthKey());
             return true;
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException;
+            throw new ServerErrorHttpException();
         }
     }
 
