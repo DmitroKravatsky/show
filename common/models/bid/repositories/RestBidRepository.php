@@ -30,9 +30,9 @@ trait RestBidRepository
             /** @var ActiveQuery $query */
             $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
 
-            if (isset($params['created_at']) && $params['created_at'] === 'week') {
+            if (isset($params['sort']) && $params['sort'] === 'week') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
-            } elseif (isset($params['created_at']) && $params['created_at'] === 'month') {
+            } elseif (isset($params['sort']) && $params['sort'] === 'month') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
             }
 

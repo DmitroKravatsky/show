@@ -39,6 +39,14 @@ class ListAction extends Action
      *        required = false,
      *        type = "integer"
      *      ),
+     *     @SWG\Parameter(
+     *        in = "formData",
+     *        name = "sort",
+     *        description = "field fo time sort",
+     *        required = false,
+     *        enum = {week, month},
+     *        type = "string"
+     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -132,13 +140,13 @@ class ListAction extends Action
      *              },
      *              "_links": {
      *                   "self": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=2"
+     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=2&sort=week"
      *                   },
      *                   "first": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1"
+     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
      *                   },
      *                   "prev": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1"
+     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
      *                   }
      *               },
      *               "_meta": {
