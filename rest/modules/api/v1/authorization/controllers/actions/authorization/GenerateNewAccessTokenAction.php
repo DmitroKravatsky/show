@@ -144,8 +144,8 @@ class GenerateNewAccessTokenAction extends Action
         $restUser = new $this->modelClass();
         $responseData = $restUser->generateNewAccessToken();
 
-        /** @var $this ResponseBehavior */
-        return $this->controller->setResponse(201, 'New token is created', $responseData);
+        \Yii::$app->getResponse()->setStatusCode(201, 'New token is created');
+        return $responseData;
     }
 
 }

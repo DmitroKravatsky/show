@@ -141,8 +141,12 @@ class PasswordRecoveryAction extends Action
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
-                /** @var $this ResponseBehavior */
-                return $this->controller->setResponse(200, 'Password recovery has been ended successfully');
+
+                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Password recovery has been ended successfully');
+                return $response->content = [
+                    'status' => $response->statusCode,
+                    'message' => 'Password recovery has been ended successfully'
+                ];
             }
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage()); // todo вот с такой реализацией у тебя не будет никогда 500 статуса, 400 как описано это в документации

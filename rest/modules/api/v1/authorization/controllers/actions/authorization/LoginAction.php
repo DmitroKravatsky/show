@@ -105,16 +105,13 @@ class LoginAction extends Action
                     if (!$user->save(false)) {
                         throw new ServerErrorHttpException('Server internal error');
                     }
+                \Yii::$app->getResponse()->setStatusCode(200, 'New token is created');
 
-                return $this->controller->setResponse(
-                    200,
-                    'Authorization was successful',
-                    [
-                        'user_id' => $user->id,
-                        'access_token'  => $user->getJWT(['user_id' => $user->id]),
-                        'refresh_token' => $user->refresh_token
-                    ]
-                );
+                return [
+                    'user_id' => $user->id,
+                    'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                    'refresh_token' => $user->refresh_token
+                ];
             }
 
             throw new UnauthorizedHttpException();

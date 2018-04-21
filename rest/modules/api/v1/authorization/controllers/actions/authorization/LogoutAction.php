@@ -73,7 +73,11 @@ class LogoutAction extends Action
         $user = new $this->modelClass();
 
         $user->logout(); // todo зачем тебе переменная которую ты потом не используешь?
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(200, 'You have been successfully logout');
+
+        $response = \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        return $response->content = [
+            'status' => $response->statusCode,
+            'message' => 'You have been successfully logout'
+        ];
     }
 }

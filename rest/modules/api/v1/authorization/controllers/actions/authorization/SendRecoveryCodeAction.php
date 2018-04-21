@@ -122,8 +122,13 @@ class SendRecoveryCodeAction extends Action
         );
 
         if ($user->save(false)) {
-            /** @var ResponseBehavior */
-            return $this->controller->setResponse(200, 'Recovery code was successfully sent');
+
+            $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
+            return $response->content = [
+                'status' => $response->statusCode,
+                'message' => 'Recovery code was successfully sent'
+            ];
+
         }
 
         throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');

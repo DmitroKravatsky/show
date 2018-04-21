@@ -63,11 +63,15 @@ class LoginGuestAction extends Action
         try {
             $this->modelClass = new RestUserEntity();
             if ($user = $this->modelClass->loginGuest()) {
-                return $this->controller->setResponse(
-                    200,
-                    'Authorization was successful',
-                    [ 'access_token' => $user->getJWT(['user_id' => $user->id]) ]
-                );
+
+                \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
+                return [
+                    'status'  => \Yii::$app->response->statusCode,
+                    'message' => "Authorization was successful",
+                    'data'    => [
+                        'access_token' => $user->getJWT(['user_id' => $user->id])
+                    ]
+                ];
             }
 
         } catch (ServerErrorHttpException $e) {

@@ -87,12 +87,12 @@ class VerificationProfileAction extends Action
         $model = new $this->modelClass;
         $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(201, 'Your profile has been verified', [
+        \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        return [
             /** @var RestUserEntity $user */
             'id'            => $user->id, // todo не должно такого быть что не подсвечивает. Добавить аннотации для $user
             'access_token'  => $user->getJWT(),
             'refresh_token' => $user->refresh_token,
-        ]);
+        ];
     }
 }
