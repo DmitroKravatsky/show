@@ -26,26 +26,26 @@ class ListAction extends Action
      *        type = "string"
      *      ),
      *      @SWG\Parameter(
-     *        in = "formData",
+     *        in = "query",
      *        name = "per-page",
      *        description = "Amount of posts per page",
      *        required = false,
      *        type = "integer"
      *      ),
      *      @SWG\Parameter(
-     *        in = "formData",
+     *        in = "query",
      *        name = "page",
      *        description = "next page",
      *        required = false,
      *        type = "integer"
      *      ),
      *     @SWG\Parameter(
-     *        in = "formData",
+     *        in = "query",
      *        name = "sort",
      *        description = "field fo time sort",
      *        required = false,
-     *        enum = {week, month},
-     *        type = "string"
+     *        type = "string",
+     *        enum = {"week", "month"},
      *      ),
      *      @SWG\Response(
      *         response = 200,
