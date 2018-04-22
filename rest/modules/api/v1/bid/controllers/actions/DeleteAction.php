@@ -83,7 +83,12 @@ class DeleteAction extends Action
             /** @var BidEntity $bid */
             $bid = new BidEntity();
             if ($bid->deleteBid($id)) {
-                return $this->controller->setResponse(200, \Yii::t('app', 'Заявка успешно удалёна.'), ['id' => $id]);
+                \Yii::$app->getResponse()->setStatusCode(200, 'The bid was successfully deleted');
+                return [
+                    'status'  => \Yii::$app->response->statusCode,
+                    'message' => "The bid was successfully deleted",
+                    'data'    => ['id' => $id]
+                ];
             }
             throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении заявки.'));
         } catch (NotFoundHttpException $e) {

@@ -8,7 +8,6 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use rest\behaviors\ResponseBehavior;
 use yii\rest\Action;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;

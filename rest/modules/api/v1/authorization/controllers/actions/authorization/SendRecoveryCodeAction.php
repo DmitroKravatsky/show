@@ -9,7 +9,6 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use common\behaviors\ValidatePostParameters;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;

@@ -11,7 +11,6 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;

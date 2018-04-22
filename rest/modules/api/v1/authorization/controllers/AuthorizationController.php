@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 // todo применить php7
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\actions\authorization\{
     LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction, SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
 };
@@ -16,7 +15,6 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
  * Class AuthorizationController
  * @package rest\modules\api\v1\authorization\controllers
  *
- * @mixin ResponseBehavior
  */
 class AuthorizationController extends Controller
 {
@@ -43,8 +41,6 @@ class AuthorizationController extends Controller
                 'verification-profile'      => ['POST'],
             ]
         ];
-        // Behaviour for making typical response format
-        $behaviors['responseBehavior'] = ResponseBehavior::class; // todo для чего мы подключаем это поведение?
 
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::class,

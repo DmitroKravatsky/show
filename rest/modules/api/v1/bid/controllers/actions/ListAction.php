@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\models\bid\BidEntity;
-use rest\modules\api\v1\bid\controllers\BidController;
 use yii\rest\Action;
 
 /**

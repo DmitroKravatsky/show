@@ -204,7 +204,12 @@ class CreateAction extends Action
             $bid = new $this->modelClass;
             $bid = $bid->createBid(\Yii::$app->request->bodyParams);
 
-            return $this->controller->setResponse(201, \Yii::t('app', 'Заявка успешно добавлена.'), $bid->getAttributes());
+            \Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
+            return [
+                'status'  => \Yii::$app->response->statusCode,
+                'message' => "Your bid was successfully granted",
+                'data'    => $bid->getAttributes()
+            ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
