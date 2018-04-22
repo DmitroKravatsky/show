@@ -108,8 +108,8 @@ class SendRecoveryCodeAction extends Action
         $phoneNumber = \Yii::$app->request->post('phone_number');
 
         $recoveryCode = rand(1000, 9999);
+        /** @var $user RestUserEntity */
         $user = new RestUserEntity();
-        // todo вот эту проверку можно сделать на уровне валидации или же подключи наше кастомное поведение ValidatePostParameters
         $user = $user->getUserByPhoneNumber($phoneNumber);
 
         $user->recovery_code = $recoveryCode;
@@ -121,7 +121,6 @@ class SendRecoveryCodeAction extends Action
         );
 
         if ($user->save(false)) {
-
             $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
             return $response->content = [
                 'status' => $response->statusCode,

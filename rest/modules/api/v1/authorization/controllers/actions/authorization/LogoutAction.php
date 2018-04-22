@@ -71,7 +71,7 @@ class LogoutAction extends Action
         /** @var RestUserEntity $user */
         $user = new $this->modelClass();
 
-        $user->logout(); // todo зачем тебе переменная которую ты потом не используешь?
+        $user->logout();
 
         $response = \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
         return $response->content = [

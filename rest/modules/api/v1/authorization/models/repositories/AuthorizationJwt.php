@@ -239,6 +239,7 @@ trait AuthorizationJwt
      */
     public function getRefreshToken(array $payload): string
     {
+        // todo а где secret как для access_token?
         if (!isset($payload['exp'])) {
             $payload['exp'] = time() + self::getRefreshTokenExpire();
         }

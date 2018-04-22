@@ -7,7 +7,7 @@
  */
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
-// todo
+
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -89,7 +89,7 @@ class VerificationProfileAction extends Action
         \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
         return [
             /** @var RestUserEntity $user */
-            'id'            => $user->id, // todo не должно такого быть что не подсвечивает. Добавить аннотации для $user
+            'id'            => $user->id,
             'access_token'  => $user->getJWT(),
             'refresh_token' => $user->refresh_token,
         ];

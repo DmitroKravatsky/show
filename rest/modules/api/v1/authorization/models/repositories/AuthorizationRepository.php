@@ -2,15 +2,13 @@
 
 namespace rest\modules\api\v1\authorization\models\repositories;
 
- // todo
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
 use yii\web\{
-    HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
+    NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
 };
-use yii\db\Exception as ExceptionDb;
 
 /**
  * Class AuthorizationRepository
@@ -32,17 +30,15 @@ trait AuthorizationRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
 
-         // todo описывал раньше про refresh_token https://gist.github.com/zmts/802dc9c3510d79fd40f9dc38a12bccfc
-
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
                 'source'                => self::NATIVE,
-                'phone_number'          => $params['phone_number'], // todo зачем тут null? у нас может пользователь без номера телефона или пароля?
-                'terms_condition'       => $params['terms_condition'], // todo зачем тут 0
-                'password'              => $params['password'], // todo зачем тут null
-                'confirm_password'      => $params['confirm_password'], // todo зачем тут null
+                'phone_number'          => $params['phone_number'],
+                'terms_condition'       => $params['terms_condition'],
+                'password'              => $params['password'],
+                'confirm_password'      => $params['confirm_password'],
                 'verification_code'     => rand(1000, 9999),
             ]);
 
@@ -69,7 +65,6 @@ trait AuthorizationRepository
         }
     }
 
-    // todo что это за комментрий "Request user profile and return user model" ?
     /**
      * Login user in a system
      *
@@ -90,7 +85,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByPhoneNumber($params); // todo  для чего это если у нас при логине остался только телефон?
+        $user = $this->getUserByPhoneNumber($params); // todo  для чего ты это вообще делаешь?
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -114,7 +109,7 @@ trait AuthorizationRepository
         } elseif (
             isset($params['phone_number'])
             && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))
-        ) { // todo 120 символов не больше в одну строку. Вот такую линию можно настроить в phpstorm http://joxi.ru/gmvR63DHxkowQm
+        ) {
             return $user;
         }
 
@@ -202,18 +197,18 @@ trait AuthorizationRepository
         try {
             $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
             if (!$user) {
-                throw new NotFoundHttpException('No such user');
+                throw new NotFoundHttpException('No such user'); // todo User not found
             }
 
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
-                throw new UnauthorizedHttpException('Expired token');
+                throw new UnauthorizedHttpException('Expired token'); // todo Refresh token was expired
             }
-            if ($user->refresh_token != $currentRefreshToken) {
-                throw new UnprocessableEntityHttpException('Wrong refresh_token');
+            if ($user->refresh_token !== $currentRefreshToken) {
+                throw new UnprocessableEntityHttpException('Refresh token is invalid');
             }
 
             // todo не вижу проверки на срок действия refresh_token
-            // Так в bb, и решил ,что такая логика работы стокенами
+            // Так в bb, и решил ,что такая логика работы стокенами // todo нужно переделывать как в статье и протестить этот момент внимательно
             // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
             $newAccessToken = $user->getJWT();
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
@@ -237,8 +232,6 @@ trait AuthorizationRepository
                     'status' => $user->status
                 ]
             ];
-            // а почему?
-            // todo все эти  catch тут лишние
         } catch (UnauthorizedHttpException $e) {
             throw new UnauthorizedHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {

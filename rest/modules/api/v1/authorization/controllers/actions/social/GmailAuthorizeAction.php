@@ -45,7 +45,7 @@ class GmailAuthorizeAction extends Action
      */
     protected function beforeRun(): bool
     {
-        $this->validationParams(); // todo
+        $this->validationParams();
         return parent::beforeRun();
     }
 
