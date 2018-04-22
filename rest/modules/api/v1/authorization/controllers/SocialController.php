@@ -29,7 +29,6 @@ class SocialController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                // todo удали пока вообще vk
                 'gmail-authorize'   => ['POST'],
                 'fb-authorization'  => ['POST'],
             ]

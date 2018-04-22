@@ -11,7 +11,6 @@ use yii\web\UnprocessableEntityHttpException;
  */
 class ValidationExceptionFirstMessage extends Behavior
 {
-    // todo данное поведение перенести в папку common
     /**
      * Method of validation post data
      * @param $modelErrors

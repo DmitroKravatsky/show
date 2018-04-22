@@ -52,7 +52,7 @@ class PasswordRecoveryAction extends Action
      */
     protected function beforeRun()
     {
-        $this->validationParams(); // todo
+        $this->validationParams();
 
         return parent::beforeRun();
     }
@@ -133,12 +133,11 @@ class PasswordRecoveryAction extends Action
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
         $user = new RestUserEntity();
-        // todo данный кейс не возможен у тебя подключен ValidatePostParameters
         $user = $user->getUserByPhoneNumber($phoneNumber);
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
-            if ($user->recoveryCode(Yii::$app->request->post())) {
+            if ($user->recoveryCode(Yii::$app->request->post())) { // todo почему метод не подсвечивается
 
                 $response = \Yii::$app->getResponse()->setStatusCode(200, 'Password recovery has been ended successfully');
                 return $response->content = [
@@ -147,7 +146,7 @@ class PasswordRecoveryAction extends Action
                 ];
             }
         } catch (UnprocessableEntityHttpException $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage()); // todo вот с такой реализацией у тебя не будет никогда 500 статуса, 400 как описано это в документации
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException($e->getMessage());
         }

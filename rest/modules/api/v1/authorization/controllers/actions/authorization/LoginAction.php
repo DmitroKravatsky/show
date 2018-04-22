@@ -5,7 +5,6 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
- // todo убрать. Таких моментов не должно быть
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
@@ -100,7 +99,7 @@ class LoginAction extends Action
 
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
                     $user->created_refresh_token = time();
-                    $user->refresh_token = $user->getRefreshToken(['id' => $user->id]); // todo refresh_token должен в себя включать user_id также как access_token
+                    $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
 
                     if (!$user->save(false)) {
                         throw new ServerErrorHttpException('Server internal error');

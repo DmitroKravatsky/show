@@ -46,7 +46,6 @@ class GenerateNewAccessTokenAction extends Action
      */
     public function beforeRun()
     {
-        // todo данный метод должен подсвечиваться. Пример как это сделать http://joxi.ru/KAxedVDc4yKG6r
         $this->validationParams();
 
         return parent::beforeRun();
