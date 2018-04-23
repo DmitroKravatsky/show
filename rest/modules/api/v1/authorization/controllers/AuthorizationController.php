@@ -3,8 +3,8 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\authorization\{
-    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction, SendRecoveryCodeAction,
-    VerificationProfileAction, GenerateNewAccessTokenAction
+    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction,
+    SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
 };
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
