@@ -189,47 +189,37 @@ trait AuthorizationRepository
      */
     public function generateNewAccessToken()
     {
-        // todo все эти три сточки можно заменить на \Yii::$app->user->getId() но они вообще не нужны
-
-        // todo у нас в refresh_token тоже должен быть зашит userID. Получив этот userID из refresh_token мы ищем пользователя в БД
-        // todo после того как я получил пользователя из БД я сравниваю refresh_token полученный и тот что в БД
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
         try {
             $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
             if (!$user) {
                 throw new NotFoundHttpException('User not found'); // todo User not found
             }
-
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
                 throw new UnauthorizedHttpException('Refresh token was expired'); // todo Refresh token was expired
             }
             if ($user->refresh_token !== $currentRefreshToken) {
                 throw new UnprocessableEntityHttpException('Refresh token is invalid');
             }
-            // теперь в 203й строке
-            // todo не вижу проверки на срок действия refresh_token
-            // Так в bb, и решил ,что такая логика работы стокенами // todo нужно переделывать как в статье и протестить этот момент внимательно
-            // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
+
             $newAccessToken = $user->getJWT();
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
             $user->created_refresh_token = time();
 
             if (!$user->save()) {
-                return $this->throwModelException($user->errors);
+                return $this->throwModelException($user->errors); // todo метод не подсвечивается
             }
 
             return [
-                'access_token' => $newAccessToken,
+                'access_token'  => $newAccessToken,
                 'refresh_token' => $user->refresh_token,
-                // а разве не в любом случает он должен обновиться?
-                //todo если срок действия у refresh_token истек тоже, но нужно новый генерить
-                'exp' => RestUserEntity::getPayload($newAccessToken, 'exp'),
-                'user' => [
-                    'id' => $user->getId(),
+                'exp'           => RestUserEntity::getPayload($newAccessToken, 'exp'),
+                'user'          => [
+                    'id'           => $user->getId(),
                     'phone_number' => $user->phone_number,
-                    'role' => $user->getUserRole($user->id),
-                    'created_at' => $user->created_at,
-                    'status' => $user->status
+                    'role'         => $user->getUserRole($user->id),
+                    'created_at'   => $user->created_at,
+                    'status'       => $user->status
                 ]
             ];
         } catch (UnauthorizedHttpException $e) {
