@@ -45,7 +45,7 @@ class ListAction extends Action
      *        description = "field fo time sort",
      *        required = false,
      *        type = "string",
-     *        enum = {"week", "month"},
+     *        enum = {"week", "month", "archive"},
      *      ),
      *      @SWG\Response(
      *         response = 200,
