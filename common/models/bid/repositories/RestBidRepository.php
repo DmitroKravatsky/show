@@ -34,6 +34,8 @@ trait RestBidRepository
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
             } elseif (isset($params['sort']) && $params['sort'] === 'month') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
+            } elseif (isset($params['sort']) && $params['sort'] === 'archive') {
+                $query->andWhere(['IN', 'status', ['paid', 'done', 'rejected']]);
             }
 
             $pageSize = intval($params['per-page'] ?? \Yii::$app->params['posts-per-page']);
