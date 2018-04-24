@@ -117,6 +117,7 @@ trait AuthorizationRepository
     }
 
     /**
+     * Find user by phone number
      * @param string $phoneNumber
      *
      * @return RestUserEntity
@@ -129,7 +130,7 @@ trait AuthorizationRepository
         if ($user) {
             return $user;
         }
-        throw new NotFoundHttpException('No such user');
+        throw new NotFoundHttpException('User not found');
     }
 
     /**
@@ -193,20 +194,19 @@ trait AuthorizationRepository
         // todo у нас в refresh_token тоже должен быть зашит userID. Получив этот userID из refresh_token мы ищем пользователя в БД
         // todo после того как я получил пользователя из БД я сравниваю refresh_token полученный и тот что в БД
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
-
         try {
             $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
             if (!$user) {
-                throw new NotFoundHttpException('No such user'); // todo User not found
+                throw new NotFoundHttpException('User not found'); // todo User not found
             }
 
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
-                throw new UnauthorizedHttpException('Expired token'); // todo Refresh token was expired
+                throw new UnauthorizedHttpException('Refresh token was expired'); // todo Refresh token was expired
             }
             if ($user->refresh_token !== $currentRefreshToken) {
                 throw new UnprocessableEntityHttpException('Refresh token is invalid');
             }
-
+            // теперь в 203й строке
             // todo не вижу проверки на срок действия refresh_token
             // Так в bb, и решил ,что такая логика работы стокенами // todo нужно переделывать как в статье и протестить этот момент внимательно
             // todo для чего вот это я не пойму.токен и так expired зачем еще его в БД записывать
@@ -286,6 +286,7 @@ trait AuthorizationRepository
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
             }
+            // исправил, незаметил коменты
             return $user; // todo не смущает такое http://joxi.ru/krDp18Wt0pjVpr ?
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());

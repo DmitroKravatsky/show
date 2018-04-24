@@ -290,23 +290,6 @@ class RestUserEntity extends User
     }
 
     /**
-     * Check user by phone_number and get his data
-     *
-     * @param $phoneNumber
-     * @return RestUserEntity
-     * @throws ServerErrorHttpException
-     */
-    public function getUserByPhoneNumber($phoneNumber)
-    {
-        if (empty($restUser = RestUserEntity::findOne(['phone_number' => $phoneNumber]))) {
-            throw new ServerErrorHttpException('Пользователя с таким номером телефона не существует, 
-            пройдите процедуру регистрации.');
-        }
-
-        return $restUser;
-    }
-
-    /**
      * Recovery user`s password
      *
      * @param $postData
@@ -320,7 +303,9 @@ class RestUserEntity extends User
         $createdRecoveryCode = $this->created_recovery_code;
         try{
             $this->setAttributes($postData);
-            if ($this->validate() && $this->checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData['recovery_code'])) { // todo 120 символов
+            if ($this->validate()
+                && $this->checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData['recovery_code'])
+            ) { // todo 120 символов
                 return $this->save();
             }
             $this->validationExceptionFirstMessage($this->errors);

@@ -237,13 +237,14 @@ trait AuthorizationJwt
      * @param array $payload
      * @return string
      */
-    public function getRefreshToken(array $payload): string
+    public function getRefreshToken($payload = []): string
     {
+        $secret = self::getSecretKey();
         // todo а где secret как для access_token?
         if (!isset($payload['exp'])) {
             $payload['exp'] = time() + self::getRefreshTokenExpire();
         }
-        return base64_encode(json_encode($payload));
+        return JWT::encode($payload, $secret, static::getAlgorithm());
     }
 
     /**
@@ -255,10 +256,18 @@ trait AuthorizationJwt
      */
     public static function getRefreshTokenId($refreshToken): int
     {
-        $token = json_decode(base64_decode($refreshToken));
-        if (isset($token->id)) {
-            return ($token->id);
+        try {
+            $payloads = JWT::decode($refreshToken, self::getSecretKey(), [static::getAlgorithm()]);
+
+            if (isset($payloads->id)) {
+                return ($payloads->id);
+            }
+            throw new UnprocessableEntityHttpException('Invalid refresh token');
+
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException('Invalid refresh token');
+
         }
-        throw new UnprocessableEntityHttpException('Invalid refresh token');
+
     }
 }
