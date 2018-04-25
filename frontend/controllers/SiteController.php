@@ -78,11 +78,7 @@ class SiteController extends Controller
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social'),
                     // Bid module
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/CreateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/UpdateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DeleteAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/ListAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DetailAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions'),
                     // Reserve module
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/CreateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/UpdateAction.php'),
