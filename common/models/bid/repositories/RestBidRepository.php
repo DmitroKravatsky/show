@@ -29,8 +29,8 @@ trait RestBidRepository
         try {
             /** @var ActiveQuery $query */
             $query = self::find()
-                ->select(['status', 'from_payment_system', 'to_payment_system', 'from_wallet',
-                    'to_wallet', 'from_currency', 'to_currency', 'from_sum', 'to_sum'])
+                ->select(['status', 'from_payment_system', 'to_payment_system',
+                    'from_currency', 'to_currency', 'from_sum', 'to_sum'])
                 ->where(['created_by' => \Yii::$app->user->id]);
 
             if (isset($params['sort']) && $params['sort'] === 'week') {

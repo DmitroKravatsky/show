@@ -56,8 +56,6 @@ class ListAction extends Action
      *                   @SWG\Property(property="status", type="string", description="Bid status"),
      *                   @SWG\Property(property="from_payment_system", type="string", description="from payment system"),
      *                   @SWG\Property(property="to_payment_system", type="string", description="to payment system"),
-     *                   @SWG\Property(property="from wallet", type="string", description="from wallet"),
-     *                   @SWG\Property(property="to wallet", type="string", description="to wallet"),
      *                   @SWG\Property(property="from_currency", type="string", description="from currency"),
      *                   @SWG\Property(property="to_currency", type="string", description="to currency"),
      *                   @SWG\Property(property="from_sum", type="integer", description="from sum"),
@@ -94,9 +92,7 @@ class ListAction extends Action
      *                  {
      *                      "status": "accepted",
      *                      "from_payment_system": "web_money",
-     *                      "to_payment_system": "privat24",
-     *                      "from_wallet": "153162262",
-     *                      "to_wallet": "5649264646",
+     *                      "to_payment_system": "privat24"
      *                      "from_currency": "uah",
      *                      "to_currency": "eur",
      *                      "from_sum": 150,
@@ -106,8 +102,6 @@ class ListAction extends Action
      *                      "status": "accepted",
      *                      "from_payment_system": "privat24",
      *                      "to_payment_system": "yandex_money",
-     *                      "from_wallet": "2wqas212ewqaf2f221rq",
-     *                      "to_wallet": "wqdwqwqr34124251wqfdg4",
      *                      "from_currency": "usd",
      *                      "to_currency": "usd",
      *                      "from_sum": 2142,
