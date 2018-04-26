@@ -53,25 +53,25 @@ class RegisterAction extends Action
      *          enum = {0, 1}
      *      ),
      *      @SWG\Response(
-     *         response = 200,
+     *         response = 201,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token"),
-     *                  @SWG\Property(property="refresh_token", type="string", description="refresh token")
+     *                  @SWG\Property(property="id", type="integer", description="user id"),
+     *                  @SWG\Property(property="phone_number", type="string", description="phone number"),
+     *                  @SWG\Property(property="status", type="string", description="profile status"),
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "Registration was successfully ended",
      *              "data": {
      *                  "id" : 21,
      *                  "phone_number": "+380939353498",
      *                   "status": "UNVERIFIED"
-
      *              }
      *         }
      *     ),

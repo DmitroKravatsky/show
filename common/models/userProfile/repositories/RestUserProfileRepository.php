@@ -58,7 +58,7 @@ trait RestUserProfileRepository
     public function updateProfile(array $params): UserProfileEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        
+
         try {
             $user = RestUserEntity::findOne(\Yii::$app->user->id);
             $user->setAttributes($params);
