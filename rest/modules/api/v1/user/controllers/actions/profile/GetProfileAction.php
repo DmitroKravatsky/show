@@ -40,6 +40,7 @@ class GetProfileAction extends Action
      *                  @SWG\Property(property="avatar", type="string", description="User avatar"),
      *                  @SWG\Property(property="email", type="string", description="User email"),
      *                  @SWG\Property(property="phone_number", type="string", description="User phone number")
+     *                  @SWG\Property(property="source", type="string", description="User social network")
      *              ),
      *         ),
      *         examples = {
@@ -52,6 +53,7 @@ class GetProfileAction extends Action
      *                  "avatar": null,
      *                  "email": "smith@gmail.com",
      *                  "phone_number": null
+     *                  "source": fb
      *              }
      *         }
      *     ),
