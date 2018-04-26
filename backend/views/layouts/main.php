@@ -11,7 +11,7 @@ if (Yii::$app->controller->action->id === 'login') {
  * Instead, use the code  $this->layout = '//main-login'; in your controller.
  */
     echo $this->render(
-        'main-login',
+        'mainold',
         ['content' => $content]
     );
 } else {
