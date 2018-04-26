@@ -53,12 +53,6 @@ class ListAction extends Action
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
-     *                   @SWG\Property(property="id", type="integer", description="User id"),
-     *                   @SWG\Property(property="created_by", type="integer", description="Author id"),
-     *                   @SWG\Property(property="name", type="string", description="User name"),
-     *                   @SWG\Property(property="last_name", type="string", description="User last name"),
-     *                   @SWG\Property(property="phone_number", type="string", description="User phone number"),
-     *                   @SWG\Property(property="email", type="string", description="User email"),
      *                   @SWG\Property(property="status", type="string", description="Bid status"),
      *                   @SWG\Property(property="from_payment_system", type="string", description="from payment system"),
      *                   @SWG\Property(property="to_payment_system", type="string", description="to payment system"),
@@ -68,8 +62,6 @@ class ListAction extends Action
      *                   @SWG\Property(property="to_currency", type="string", description="to currency"),
      *                   @SWG\Property(property="from_sum", type="integer", description="from sum"),
      *                   @SWG\Property(property="to_sum", type="integer", description="to sum"),
-     *                   @SWG\Property(property="created_at", type="integer", description="created at"),
-     *                   @SWG\Property(property="updated_at", type="integer", description="updated at")
      *              ),
      *              @SWG\Property(property="_links", type="object",
      *                  @SWG\Property(property="self", type="object",
@@ -100,12 +92,6 @@ class ListAction extends Action
      *         examples = {
      *              "items": {
      *                  {
-     *                      "id": 4,
-     *                      "created_by": 22,
-     *                      "name": "Ivan",
-     *                      "last_name": "Petrov",
-     *                      "phone_number": "0939757501",
-     *                      "email": "krarwa@gmail.com",
      *                      "status": "accepted",
      *                      "from_payment_system": "web_money",
      *                      "to_payment_system": "privat24",
@@ -115,16 +101,8 @@ class ListAction extends Action
      *                      "to_currency": "eur",
      *                      "from_sum": 150,
      *                      "to_sum": 1.5,
-     *                      "created_at": 1231232321,
-     *                      "updated_at": 1312323121
      *                  },
      *                  {
-     *                      "id": 3,
-     *                      "created_by": 22,
-     *                      "name": "Ivan",
-     *                      "last_name": "Petrov",
-     *                      "phone_number": "0939757501",
-     *                      "email": "krarwa@gmail.com",
      *                      "status": "accepted",
      *                      "from_payment_system": "privat24",
      *                      "to_payment_system": "yandex_money",
@@ -134,8 +112,6 @@ class ListAction extends Action
      *                      "to_currency": "usd",
      *                      "from_sum": 2142,
      *                      "to_sum": 123124,
-     *                      "created_at": 12242556,
-     *                      "updated_at": 12425326
      *                  }
      *              },
      *              "_links": {
