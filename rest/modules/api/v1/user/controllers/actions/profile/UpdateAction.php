@@ -19,7 +19,7 @@ class UpdateAction extends Action
     /**
      * Updates an existing model
      *
-     * @SWG\Put(path="/user/user-profile",
+     * @SWG\Put(path="/user/profile",
      *      tags={"User module"},
      *      summary="Updates user profile",
      *      description="Updates user profile",
@@ -45,20 +45,6 @@ class UpdateAction extends Action
      *          required = false,
      *          type = "string"
      *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
-     *          name = "phone_number",
-     *          description = "User phone number",
-     *          required = false,
-     *          type = "string"
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
-     *          name = "email",
-     *          description = "User email",
-     *          required = false,
-     *          type = "string"
-     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -75,7 +61,7 @@ class UpdateAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Профиль успешно изменён.",
+     *              "message": "'Profile was successfully edited'",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
@@ -108,8 +94,12 @@ class UpdateAction extends Action
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;
         $userProfile = $model->updateProfile(\Yii::$app->request->bodyParams);
-        
-        return $this->controller->setResponse(
-            200, \Yii::t('app', 'Профиль успешно изменён.'), $userProfile->getAttributes(['id', 'name', 'last_name', 'avatar']));
+
+        $response = \Yii::$app->response->setStatusCode(200);
+        return [
+            'status'  => $response->statusCode,
+            'message' => 'Profile was successfully edited',
+            'data'    => $userProfile->getAttributes((['id', 'name', 'last_name', 'avatar']))
+        ];
     }
 }

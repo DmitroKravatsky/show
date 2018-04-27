@@ -58,22 +58,20 @@ trait RestUserProfileRepository
     public function updateProfile(array $params): UserProfileEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        
         try {
-            $user = RestUserEntity::findOne(\Yii::$app->user->id);
-            $user->setAttributes($params);
-            if (!$user->validate()) {
-                $this->throwModelException($user->errors);
-            }
-
-            $userProfile = UserProfileEntity::findOne(['user_id' => $user->id]);
+            $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
-            $userProfile->setAttributes($params);
+            $data = [
+                'name'      => $params['name'],
+                'last_name' => $params['last_name']
+            ];
+
+            $userProfile->setAttributes($data);
             if (!$userProfile->validate()) {
                 $this->throwModelException($userProfile->errors);
             }
 
-            if ($user->save() && $userProfile->save()) {
+            if ($userProfile->save()) {
                 $transaction->commit();
                 return $userProfile;
             }
