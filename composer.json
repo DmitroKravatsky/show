@@ -24,7 +24,8 @@
         "light/yii2-swagger": "^1.0",
         "doctrine/annotations": "1.4",
         "udokmeci/yii2-phone-validator" : "~1.0.1",
-        "borales/yii2-phone-input": "*"
+        "borales/yii2-phone-input": "*",
+        "frostealth/yii2-aws-s3": "~2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

@@ -56,6 +56,7 @@ class RestUserEntity extends User
 
     const STATUS_UNVERIFIED = 'UNVERIFIED';
     const STATUS_VERIFIED   = 'VERIFIED';
+    const STATUS_BANNED     = 'BANNED';
 
     const FB     = 'fb';
     const VK     = 'vk';

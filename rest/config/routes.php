@@ -27,6 +27,7 @@ return [
             'PUT'                 => 'update',
             'GET'                 => 'get-profile',
             'PUT update-password' => 'update-password',
+            'PUT update-avatar'   => 'update-avatar',
         ],
     ],
     [

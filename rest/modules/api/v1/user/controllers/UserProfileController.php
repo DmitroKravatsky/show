@@ -6,7 +6,7 @@ use common\models\userProfile\UserProfileEntity;
 use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    GetProfileAction, UpdateAction, UpdatePasswordAction
+    GetProfileAction, UpdateAction, UpdateAvatarAction, UpdatePasswordAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -41,6 +41,7 @@ class UserProfileController extends Controller
                 'update'          => ['PUT'],
                 'get-profile'     => ['GET'],
                 'update-password' => ['PUT'],
+                'update-avatar'   => ['PUT'],
             ]
         ];
         
@@ -79,6 +80,11 @@ class UserProfileController extends Controller
         $actions['update-password'] = [
             'class'      => UpdatePasswordAction::class,
             'modelClass' => RestUserEntity::class
+        ];
+
+        $actions['update-avatar'] = [
+            'class'      => UpdateAvatarAction::class,
+            'modelClass' => $this->modelClass
         ];
         
         return $actions;
