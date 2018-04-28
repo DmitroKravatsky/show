@@ -18,10 +18,10 @@ class UpdatePasswordAction extends Action
     /**
      * Updates User password
      *
-     * @SWG\Put(path="/user/user-profile/update-password",
+     * @SWG\Put(path="/user/profile/update-password",
      *      tags={"User module"},
-     *      summary="Updates user profile",
-     *      description="Updates user profile",
+     *      summary="Updates user password",
+     *      description="Updates user password",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *        in = "header",
@@ -53,7 +53,16 @@ class UpdatePasswordAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success"
+     *         description = "success",
+     *          @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *         ),
+     *         examples = {
+     *              "status": 200,
+     *              "message": "Password was successfully changed",
+     *         }
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -71,7 +80,11 @@ class UpdatePasswordAction extends Action
     {
         $userModel = new RestUserEntity();
         $userModel->updatePassword(\Yii::$app->request->bodyParams);
-        
-        return $this->controller->setResponse(200, 'Пароль успешно изменён.');
+
+        \Yii::$app->response->setStatusCode(200, 'Password was successfully changed');
+        return [
+            'status' => \Yii::$app->response->getStatusCode(),
+            'message' => 'Password was successfully changed'
+        ];
     }
 }

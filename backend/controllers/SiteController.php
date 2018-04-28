@@ -22,7 +22,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'error'],
+                        'actions' => ['login', 'index', 'create-roles', 'error'],
                         'allow' => true,
                     ],
                     [
@@ -94,5 +94,18 @@ class SiteController extends Controller
         Yii::$app->user->logout();
 
         return $this->goHome();
+    }
+
+    public function actionCreateRoles()
+    {
+        /*$admin = Yii::$app->authManager->createRole('admin');
+        $admin->description = 'Administrator Role';
+        Yii::$app->authManager->add($admin);*/
+
+        $userRole = Yii::$app->authManager->getRole('admin');
+        Yii::$app->authManager->assign($userRole);
+
+
+        return 123124352;
     }
 }
