@@ -104,9 +104,15 @@ trait RestUserProfileRepository
         throw new NotFoundHttpException('Пользователь не найден.');
     }
 
-
+    /**
+     * Updates user avatar
+     * @param array $params
+     * @return null|static
+     * @throws ServerErrorHttpException
+     */
     public function updateAvatar(array $params)
     {
+        /** @var \frostealth\yii2\aws\s3\Service $s3 */
         $s3 = \Yii::$app->get('s3');
         $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
         $userProfile->scenario = UserProfileEntity::SCENARIO_UPDATE;

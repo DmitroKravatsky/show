@@ -4,6 +4,7 @@ namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\behaviors\AccessUserStatusBehavior;
 use common\behaviors\ValidatePostParameters;
+use common\models\userProfile\UserProfileEntity;
 use yii\rest\Action;
 
 /**
@@ -50,6 +51,7 @@ class UpdateAvatarAction extends Action
 
     public function run()
     {
+        /** @var  $userProfileModel UserProfileEntity */
         $userProfileModel = new $this->modelClass();
         $user = $userProfileModel->updateAvatar(\Yii::$app->request->bodyParams);
 
