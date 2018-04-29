@@ -163,4 +163,9 @@ trait RestBidRepository
 
         return $bidModel;
     }
+
+    public function updateBidStatus()
+    {
+
+    }
 }

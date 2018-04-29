@@ -99,7 +99,7 @@ trait RestUserProfileRepository
      */
     public static function getFullName(int $userId)
     {
-        if (!empty($userProfile = self::findOne($userId))) {
+        if (!empty($userProfile = self::findOne(['user_id' => $userId]))) {
             return $userProfile->name . ' ' . $userProfile->last_name;
         }
 

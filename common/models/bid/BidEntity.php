@@ -39,6 +39,7 @@ class BidEntity extends ActiveRecord
 
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
+    const SCENARIO_UPDATE_BID_STATUS = 'update-bid-status';
 
     const YANDEX_MONEY = 'yandex_money';
     const WEB_MONEY    = 'web_money';
@@ -111,6 +112,7 @@ class BidEntity extends ActiveRecord
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
             'email', 'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
         ];
+        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status'];
 
         return $scenarios;
     }
