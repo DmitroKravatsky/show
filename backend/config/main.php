@@ -53,7 +53,13 @@ return [
                 'index'  => 'admin/admin/index',
             ],
         ],
-
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@backend/views'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
