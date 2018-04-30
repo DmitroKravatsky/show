@@ -19,7 +19,7 @@ return [
             'class' => 'backend\modules\authorization\Module',
         ]
     ],
-    'defaultRoute' => '/authorization/authorization/login',
+    'defaultRoute' => 'authorization/authorization/login',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
