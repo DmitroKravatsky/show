@@ -11,6 +11,7 @@ class IndexAction extends Action
 
     public function run()
     {
+//        var_dump(12); exit;
         return $this->controller->render($this->view);
     }
 }
