@@ -21,8 +21,8 @@ class BidController extends Controller
     {
         return [
             'verbs' => [
-                'class' => VerbFilter::className(),
-                'actions' => [
+                'class'      => VerbFilter::class,
+                'actions'    => [
                     'delete' => ['POST'],
                 ],
             ],
@@ -40,7 +40,7 @@ class BidController extends Controller
     public function actions()
     {
         return [
-            'index' => [
+            'index'  => [
                 'class' => IndexAction::class
             ],
             'detail' => [

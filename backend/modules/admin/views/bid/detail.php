@@ -6,9 +6,12 @@ use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+$this->params['breadcrumbs'][] = [
+    'label' => 'Bid Entities',
+    'url' => ['bid/index']
+];
+$this->params['breadcrumbs'][] = ['label' => 'Bid Details'];
 
-$this->title = 'Bid Details';
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <section class="product">
     <div class="container">
@@ -16,7 +19,8 @@ $this->params['breadcrumbs'][] = $this->title;
             <div class="nav-wrapper">
                 <?php $form = ActiveForm::begin(); ?>
 
-                <?= $form->field($modelBid, 'created_by')->textInput() ?>
+                <?php /** @var BidEntity $modelBid */?>
+                <?=$form->field($modelBid, 'created_by')->textInput() ?>
                 <?= $form->field($modelBid, 'name')->textInput() ?>
                 <?= $form->field($modelBid, 'last_name')->textInput() ?>
                 <?= $form->field($modelBid, 'email')->textInput() ?>

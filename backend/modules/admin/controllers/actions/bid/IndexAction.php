@@ -8,10 +8,19 @@ use yii\base\Action;
 use yii\data\ArrayDataProvider;
 use yii\data\Pagination;
 
+/**
+ * Class IndexAction
+ * @package backend\modules\admin\controllers\actions\bid
+ */
 class IndexAction extends Action
 {
     /** @var  BidController */
     public $controller;
+
+    /**
+     * View a list of all bids
+     * @return string
+     */
     public function run()
     {
         $model = BidEntity::find();
@@ -20,14 +29,10 @@ class IndexAction extends Action
         $bids = $model->offset($pages->offset)
             ->limit($pages->limit)
             ->all();
-//        echo '<pre>';var_dump($models); exit;
 
         return $this->controller->render('index', [
-            'bids' => $bids,
+            'bids'  => $bids,
             'pages' => $pages,
-        ]);
-        return $this->controller->render('index', [
-            'bids' => $dataProvider
         ]);
     }
 }

@@ -2,13 +2,21 @@
 
 namespace backend\modules\admin\controllers\actions\bid;
 
-
 use common\models\bid\BidEntity;
 use common\models\user\User;
 use yii\base\Action;
 
+/**
+ * Class UpdateBidStatusAction
+ * @package backend\modules\admin\controllers\actions\bid
+ */
 class UpdateBidStatusAction extends Action
 {
+    /**
+     * Updates a status of the bid
+     * @param $id integer the id of the bid
+     * @return \yii\web\Response
+     */
     public function run($id)
     {
         $bid = BidEntity::findOne(['id' => $id]);
