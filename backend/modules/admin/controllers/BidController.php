@@ -29,6 +29,14 @@ class BidController extends Controller
         ];
     }
 
+    public function beforeAction($action)
+    {
+        if (!\Yii::$app->user->can('admin')) {
+            return $this->redirect(\Yii::$app->homeUrl);
+        }
+        return parent::beforeAction($action);
+    }
+
     public function actions()
     {
         return [
