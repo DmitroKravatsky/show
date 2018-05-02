@@ -50,7 +50,8 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'index'  => 'admin/admin/index',
+                'admin/index'  => 'admin/admin/index',
+                'bid/index'    => 'admin/bid/index'
             ],
         ],
         'view' => [
