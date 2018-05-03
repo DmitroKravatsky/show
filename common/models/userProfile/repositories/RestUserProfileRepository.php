@@ -61,12 +61,11 @@ trait RestUserProfileRepository
         try {
             $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
-            $data = [
-                'name'      => $params['name'],
-                'last_name' => $params['last_name']
-            ];
-
-            $userProfile->setAttributes($data);
+            if (isset($params['base64_image'])) {
+                $params['avatar'] = $this->updateAvatar($params);
+                unset($params['base64_image']);
+            }
+            $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
                 $this->throwModelException($userProfile->errors);
             }
@@ -114,8 +113,6 @@ trait RestUserProfileRepository
     {
         /** @var \frostealth\yii2\aws\s3\Service $s3 */
         $s3 = \Yii::$app->get('s3');
-        $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
-        $userProfile->scenario = UserProfileEntity::SCENARIO_UPDATE;
 
         $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
             . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
@@ -123,13 +120,7 @@ trait RestUserProfileRepository
 
         $result = $s3->commands()->put($fileName, base64_decode($params['base64_image']))
             ->withContentType("image/jpeg")->execute();
-        $avatar = $result->get('ObjectURL');
-
-        $userProfile->setAttribute('avatar', $avatar );
-        if ($userProfile->save()) {
-            return $userProfile;
-        }
-        throw new ServerErrorHttpException('Internal server error');
+        return $result->get('ObjectURL');
 
     }
 }
