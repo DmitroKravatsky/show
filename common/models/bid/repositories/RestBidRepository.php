@@ -29,7 +29,7 @@ trait RestBidRepository
         try {
             /** @var ActiveQuery $query */
             $query = self::find()
-                ->select(['status', 'from_payment_system', 'to_payment_system',
+                ->select(['id', 'status', 'from_payment_system', 'to_payment_system',
                     'from_currency', 'to_currency', 'from_sum', 'to_sum'])
                 ->where(['created_by' => \Yii::$app->user->id]);
 

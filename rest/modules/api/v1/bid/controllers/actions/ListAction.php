@@ -53,6 +53,7 @@ class ListAction extends Action
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
+     *                   @SWG\Property(property="id", type="integer", description="Bid id"),
      *                   @SWG\Property(property="status", type="string", description="Bid status"),
      *                   @SWG\Property(property="from_payment_system", type="string", description="from payment system"),
      *                   @SWG\Property(property="to_payment_system", type="string", description="to payment system"),
@@ -90,15 +91,17 @@ class ListAction extends Action
      *         examples = {
      *              "items": {
      *                  {
+     *                      "id": 12,
      *                      "status": "accepted",
      *                      "from_payment_system": "web_money",
-     *                      "to_payment_system": "privat24"
+     *                      "to_payment_system": "privat24",
      *                      "from_currency": "uah",
      *                      "to_currency": "eur",
      *                      "from_sum": 150,
      *                      "to_sum": 1.5,
      *                  },
      *                  {
+     *                      "id": 12,
      *                      "status": "accepted",
      *                      "from_payment_system": "privat24",
      *                      "to_payment_system": "yandex_money",
