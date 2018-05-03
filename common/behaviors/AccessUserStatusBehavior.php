@@ -26,8 +26,7 @@ class AccessUserStatusBehavior extends Behavior
     {
         $user = RestUserEntity::findOne(['id' => Yii::$app->user->identity->getId()]);
         if (!$user
-            || in_array($user->status, [RestUserEntity::ROLE_USER, RestUserEntity::STATUS_UNVERIFIED,
-                RestUserEntity::STATUS_BANNED])) {
+            || in_array($user->status, [RestUserEntity::STATUS_UNVERIFIED, RestUserEntity::STATUS_BANNED])) {
             throw new HttpException(403, $this->message);
         }
     }
