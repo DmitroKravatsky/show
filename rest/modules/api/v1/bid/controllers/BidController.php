@@ -40,7 +40,6 @@ class BidController extends Controller
             'class'   => VerbFilter::class,
             'actions' => [
                 'create' => ['POST'],
-                'update' => ['PUT'],
                 'delete' => ['DELETE'],
                 'list'   => ['GET'],
                 'detail' => ['GET'],
@@ -62,17 +61,12 @@ class BidController extends Controller
             'modelClass' => $this->modelClass
         ];
 
-        $actions['update'] = [
-            'class'      => UpdateAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
         $actions['delete'] = [
             'class'      => DeleteAction::class,
             'modelClass' => $this->modelClass
         ];
 
-        $actions['list'] = [
+        $actions['list'] =   [
             'class'      => ListAction::class,
             'modelClass' => $this->modelClass
         ];

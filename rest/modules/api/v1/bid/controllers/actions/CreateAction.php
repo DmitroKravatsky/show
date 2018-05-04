@@ -129,7 +129,7 @@ class CreateAction extends Action
      *          type = "string"
      *      ),
      *      @SWG\Response(
-     *         response = 201,
+     *         response = 200,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",

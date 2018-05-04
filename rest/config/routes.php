@@ -9,8 +9,7 @@ return [
             'bid' => 'api/v1/bid/bid',
         ],
         'patterns'   => [
-            'POST '       => 'create',
-            'PUT {id}'    => 'update',
+            'POST'        => 'create',
             'DELETE {id}' => 'delete',
             'GET list'    => 'list',
             'GET detail'  => 'detail',

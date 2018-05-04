@@ -26,7 +26,8 @@ trait RestUserProfileRepository
     {
         try {
             $userProfile =  self::find()
-                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar', 'user.email', 'user.phone_number'])
+                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar',
+                    'user.email', 'user.phone_number', 'user.source'])
                 ->joinWith('user', false)
                 ->where(['user_profile.user_id' => \Yii::$app->user->id])
                 ->asArray()
@@ -35,7 +36,8 @@ trait RestUserProfileRepository
             if (!$userProfile) {
                 throw new NotFoundHttpException();
             }
-            return $userProfile;
+
+            return $this->getSocialService($userProfile);
 
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException('User profile is not found');
@@ -99,10 +101,37 @@ trait RestUserProfileRepository
      */
     public static function getFullName(int $userId)
     {
-        if (!empty($userProfile = self::findOne($userId))) {
+        if (!empty($userProfile = self::findOne(['user_id' => $userId]))) {
             return $userProfile->name . ' ' . $userProfile->last_name;
         }
 
         throw new NotFoundHttpException('Пользователь не найден.');
+    }
+
+    /**
+     * Adds a field that marks a social network binded with a user
+     *
+     * @param array $userModel
+     * @return array|bool
+     */
+    public function getSocialService(array $userModel)
+    {
+        if (!$userModel['source'] || $userModel['source'] === 'native') {
+            return false;
+        }
+
+        if ($userModel['source'] === RestUserEntity::FB) {
+            $userModel['is_fb_auth'] = true;
+            unset($userModel['source']);
+            return $userModel;
+        }
+
+        if ($userModel['source'] === RestUserEntity::GMAIL) {
+            $userModel['is_gmail_auth'] = true;
+            unset($userModel['source']);
+            return $userModel;
+        }
+
+        return $userModel;
     }
 }

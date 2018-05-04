@@ -10,7 +10,6 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php //echo Yii::$app->session->has('Enter_failed'); exit;?>
 
 <div class="site-login">
     <h1><?= Html::encode($this->title) ?></h1>

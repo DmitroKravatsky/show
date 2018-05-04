@@ -39,6 +39,7 @@ class BidEntity extends ActiveRecord
 
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
+    const SCENARIO_UPDATE_BID_STATUS = 'update-bid-status';
 
     const YANDEX_MONEY = 'yandex_money';
     const WEB_MONEY    = 'web_money';
@@ -53,7 +54,6 @@ class BidEntity extends ActiveRecord
     const EUR = 'eur';
 
     const STATUS_ACCEPTED = 'accepted';
-    const STATUS_PAID     = 'paid';
     const STATUS_DONE     = 'done';
     const STATUS_REJECTED = 'rejected';
 
@@ -111,6 +111,7 @@ class BidEntity extends ActiveRecord
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
             'email', 'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
         ];
+        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status'];
 
         return $scenarios;
     }
@@ -130,7 +131,7 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_PAID, self::STATUS_DONE]],
+            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE]],
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',

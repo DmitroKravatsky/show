@@ -19,7 +19,7 @@ return [
             'class' => 'backend\modules\authorization\Module',
         ]
     ],
-    'defaultRoute' => '/authorization/authorization/login',
+    'defaultRoute' => 'authorization/authorization/login',
     'components' => [
         'request' => [
             'csrfParam' => '_csrf-backend',
@@ -50,10 +50,17 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'index'  => 'admin/admin/index',
+                'admin/index'  => 'admin/admin/index',
+                'bid/index'    => 'admin/bid/index'
             ],
         ],
-
+        'view' => [
+            'theme' => [
+                'pathMap' => [
+                    '@app/views' => '@backend/views'
+                ],
+            ],
+        ],
     ],
     'params' => $params,
 ];
