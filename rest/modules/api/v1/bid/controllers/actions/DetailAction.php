@@ -84,6 +84,7 @@ class DetailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
+     *              "message": "Detail info",
      *              "data": {
      *                  "id" : "1",
      *                  "status": "accepted",

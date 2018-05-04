@@ -2,7 +2,7 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\IndexAction;
+use backend\modules\admin\controllers\actions\admin\IndexAction;
 use yii\web\Controller;
 
 class AdminController extends Controller

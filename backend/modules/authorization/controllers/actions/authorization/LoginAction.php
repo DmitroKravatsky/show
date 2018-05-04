@@ -8,11 +8,12 @@ use yii\base\Action;
 class LoginAction extends Action
 {
     public $view = '@backend/modules/authorization/views/authorization/login';
+    public $layout = false;
 
     public function run()
     {
         if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('admin')) {
-            return $this->controller->redirect('@backend/modules/admin/admin/index');
+            return $this->controller->redirect('/admin/index');
         }
         $modelLogin = new LoginForm();
         if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {

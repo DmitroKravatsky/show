@@ -10,7 +10,6 @@ return [
         ],
         'patterns'   => [
             'POST'        => 'create',
-            'PUT {id}'    => 'update',
             'DELETE {id}' => 'delete',
             'GET list'    => 'list',
             'GET detail'  => 'detail',
