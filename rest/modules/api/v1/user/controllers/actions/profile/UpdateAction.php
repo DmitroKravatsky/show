@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\profile;
 
+use common\behaviors\AccessUserStatusBehavior;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
@@ -10,12 +11,34 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class UpdateAction
  * @package rest\modules\api\v1\user\controllers\actions\profile
+ * @mixin AccessUserStatusBehavior
  */
 class UpdateAction extends Action
 {
     /** @var  UserProfileController */
     public $controller;
 
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
     /**
      * Updates an existing model
      *
