@@ -3,6 +3,7 @@
 namespace backend\modules\authorization\controllers\actions\authorization;
 
 use backend\modules\authorization\models\LoginForm;
+use backend\modules\authorization\models\RegistrationForm;
 use yii\base\Action;
 
 class LoginAction extends Action
@@ -16,6 +17,7 @@ class LoginAction extends Action
             return $this->controller->redirect('/admin/index');
         }
         $modelLogin = new LoginForm();
+        $modelRegistration = new RegistrationForm();
         if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {
             if (\Yii::$app->user->can('admin')) {
                 return $this->controller->redirect(['/index']);
@@ -26,7 +28,8 @@ class LoginAction extends Action
         }
 
         return $this->controller->render($this->view, [
-            'modelLogin' => $modelLogin
+            'modelLogin'        => $modelLogin,
+            'modelRegistration' => $modelRegistration,
         ]);
     }
 }
