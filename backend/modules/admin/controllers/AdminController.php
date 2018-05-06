@@ -3,6 +3,7 @@
 namespace backend\modules\admin\controllers;
 
 use backend\modules\admin\controllers\actions\admin\IndexAction;
+use backend\modules\admin\controllers\actions\admin\InviteManagerAction;
 use yii\web\Controller;
 
 class AdminController extends Controller
@@ -18,8 +19,11 @@ class AdminController extends Controller
     public function actions()
     {
         return [
-            'index' => [
+            'index'         => [
                 'class' => IndexAction::class
+            ],
+            'invite-manager' => [
+                'class' => InviteManagerAction::class
             ],
         ];
     }

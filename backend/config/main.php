@@ -50,10 +50,10 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'admin/index'  => 'admin/admin/index',
-                'bid/index'    => 'admin/bid/index',
-                'login'        => 'admin/authorization/authorization/login',
-                'registration'        => 'admin/authorization/authorization/registration'
+                'index'          => 'admin/admin/index',
+                'bid/index'      => 'admin/bid/index',
+                'login'          => 'admin/authorization/authorization/login',
+                'invite-manager' => 'admin/admin/invite-manager'
             ],
         ],
         'view' => [
