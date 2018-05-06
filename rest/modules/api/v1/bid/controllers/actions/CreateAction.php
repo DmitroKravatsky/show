@@ -128,7 +128,7 @@ class CreateAction extends Action
      *          required = true,
      *          type = "string"
      *      ),
-     *     @SWG\Response (
+     *      @SWG\Response(
      *         response = 200,
      *         description = "success",
      *         @SWG\Schema(
@@ -179,10 +179,6 @@ class CreateAction extends Action
      *              }
      *         }
      *     ),
-     *      @SWG\Response(
-     *         response = 201,
-     *         description = "Bid was successfully added",
-     *     ),
      *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
@@ -208,7 +204,12 @@ class CreateAction extends Action
             $bid = new $this->modelClass;
             $bid = $bid->createBid(\Yii::$app->request->bodyParams);
 
-            return $this->controller->setResponse(201, \Yii::t('app', 'Bid was successfully added'), $bid->getAttributes());
+            \Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
+            return [
+                'status'  => \Yii::$app->response->statusCode,
+                'message' => "Your bid was successfully granted",
+                'data'    => $bid->getAttributes()
+            ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {

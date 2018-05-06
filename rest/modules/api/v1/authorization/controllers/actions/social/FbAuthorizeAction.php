@@ -6,6 +6,12 @@ use rest\modules\api\v1\authorization\controllers\SocialController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
+/**
+ * Class FbAuthorizeAction
+ * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
+ * @mixin ValidatePostParameters
+ */
 class FbAuthorizeAction extends Action
 {
     /** @var  $controller SocialController */

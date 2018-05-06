@@ -8,8 +8,6 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-
-use rest\behaviors\ResponseBehavior;
 use yii\rest\Action;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -73,8 +71,12 @@ class LogoutAction extends Action
         /** @var RestUserEntity $user */
         $user = new $this->modelClass();
 
-        $user = $user->logout();
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(200, 'You have been successfully logout');
+        $user->logout();
+
+        $response = \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        return $response->content = [
+            'status' => $response->statusCode,
+            'message' => 'You have been successfully logout'
+        ];
     }
 }

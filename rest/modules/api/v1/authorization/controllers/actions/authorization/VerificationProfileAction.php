@@ -8,11 +8,9 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use rest\behaviors\IsTokenLegal;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -88,11 +86,12 @@ class VerificationProfileAction extends Action
         $model = new $this->modelClass;
         $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(201, 'Your profile has been verified', [
+        \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        return [
+            /** @var RestUserEntity $user */
             'id'            => $user->id,
             'access_token'  => $user->getJWT(),
             'refresh_token' => $user->refresh_token,
-        ]);
+        ];
     }
 }

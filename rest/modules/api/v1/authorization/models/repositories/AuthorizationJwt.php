@@ -7,6 +7,7 @@ use Yii;
 use Firebase\JWT\JWT;
 use yii\filters\auth\HttpBearerAuth;
 use yii\web\UnauthorizedHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class AuthorizationJwt
@@ -210,12 +211,63 @@ trait AuthorizationJwt
      * @param int $createdRefreshToken  date of token creation
      * @return bool
      */
-    public static function isRefreshTokenExpired($createdRefreshToken) :bool
+    public static function isRefreshTokenExpired($createdRefreshToken): bool
     {
-        if (($createdRefreshToken + Yii::$app->params['tokenExpireDays'] * 3600 * 24) < time()) {
+        if (($createdRefreshToken + Yii::$app->params['refreshTokenExpireDays'] * 3600 * 24) < time()) {
            return true;
         }
 
         return false;
+    }
+
+
+    /**
+     * Returns token expire period
+     *
+     * @return int
+     */
+    protected static function getRefreshTokenExpire()
+    {
+        return 3600 * 24 * Yii::$app->params['refreshTokenExpireDays'];
+    }
+
+    /**
+     * Method creates refresh_token
+     *
+     * @param array $payload
+     * @return string
+     */
+    public function getRefreshToken($payload = []): string
+    {
+        $secret = self::getSecretKey();
+        // todo а где secret как для access_token?
+        if (!isset($payload['exp'])) {
+            $payload['exp'] = time() + self::getRefreshTokenExpire();
+        }
+        return JWT::encode($payload, $secret, static::getAlgorithm());
+    }
+
+    /**
+     * Method returns user id
+     *
+     * @param $refreshToken
+     * @return mixed
+     * @throws UnprocessableEntityHttpException
+     */
+    public static function getRefreshTokenId($refreshToken): int
+    {
+        try {
+            $payloads = JWT::decode($refreshToken, self::getSecretKey(), [static::getAlgorithm()]);
+
+            if (isset($payloads->id)) {
+                return ($payloads->id);
+            }
+            throw new UnprocessableEntityHttpException('Invalid refresh token');
+
+        } catch (\Exception $e) {
+            throw new UnprocessableEntityHttpException('Invalid refresh token');
+
+        }
+
     }
 }
