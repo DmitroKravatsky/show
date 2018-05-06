@@ -85,7 +85,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByPhoneNumber($params); // todo  для чего ты это вообще делаешь?
+        $user = $this->getUserByPhoneNumber($params['phone_number']); // todo  для чего ты это вообще делаешь?
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -126,7 +126,7 @@ trait AuthorizationRepository
      */
     protected function getUserByPhoneNumber(string $phoneNumber): RestUserEntity
     {
-        $user = self::findOne(['phoneNumber' => $phoneNumber]);
+        $user = self::findOne(['phone_number' => $phoneNumber]);
         if ($user) {
             return $user;
         }
