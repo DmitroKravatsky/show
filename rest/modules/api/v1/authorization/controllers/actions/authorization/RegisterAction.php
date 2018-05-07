@@ -98,11 +98,15 @@ class RegisterAction extends Action
         /** @var RestUserEntity $user */
         $user = $model->register(\Yii::$app->request->bodyParams);
 
-        \Yii::$app->getResponse()->setStatusCode(200, 'Registration was successfully ended');
+        $response = \Yii::$app->getResponse()->setStatusCode(201, 'Registration was successfully ended');
         return [
-            'id'            => $user->id,
-            'phone_number'  => $user->phone_number,
-            'status'        => $user->status,
+            'status'  => $response->statusCode,
+            'message' => 'Registration was successfully ended',
+            'data'    => [
+                'id'            => $user->id,
+                'phone_number'  => $user->phone_number,
+                'status'        => $user->status,],
+
         ];
     }
 }
