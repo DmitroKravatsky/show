@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
     GetProfileAction, UpdateAction, UpdatePasswordAction
@@ -16,8 +15,7 @@ use yii\filters\AccessControl;
 /**
  * Class UserProfileController
  * @package rest\modules\api\v1\user\controllers
- * 
- * @mixin ResponseBehavior;
+ *
  */
 class UserProfileController extends Controller
 {
@@ -43,8 +41,6 @@ class UserProfileController extends Controller
                 'update-password' => ['PUT'],
             ]
         ];
-        
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         $behaviors['accessControl'] = [
             'class' => AccessControl::class,
