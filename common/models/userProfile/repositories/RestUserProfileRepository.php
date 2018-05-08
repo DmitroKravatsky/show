@@ -114,7 +114,7 @@ trait RestUserProfileRepository
     public function getSocialService(array $userModel)
     {
         if (!$userModel['source'] || $userModel['source'] === 'native') {
-            return false;
+            return $userModel;
         }
 
         if ($userModel['source'] === RestUserEntity::FB) {
