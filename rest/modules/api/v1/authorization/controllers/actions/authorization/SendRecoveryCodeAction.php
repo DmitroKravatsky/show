@@ -8,7 +8,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use rest\behaviors\ResponseBehavior;
+use common\behaviors\ValidatePostParameters;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
@@ -19,11 +19,41 @@ use yii\{
 /**
  * Class SendRecoveryCode
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class SendRecoveryCodeAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
+
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'       => ValidatePostParameters::class,
+                'inputParams' => ['phone_number']
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->validationParams();
+
+        return parent::beforeRun();
+    }
 
     /**
      * Send recovery code action
@@ -37,7 +67,7 @@ class SendRecoveryCodeAction extends Action
      *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Response(
@@ -58,7 +88,7 @@ class SendRecoveryCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Validation Error"
+     *         description = "Bad request"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -77,27 +107,28 @@ class SendRecoveryCodeAction extends Action
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
 
-        $recoveryCode = rand(1000,9999);
+        $recoveryCode = rand(1000, 9999);
+        /** @var $user RestUserEntity */
         $user = new RestUserEntity();
-        if (!empty($phoneNumber)) {
-            $user = $user->getUserByPhoneNumber($phoneNumber);
-        } else {
-            throw new BadRequestHttpException('Укажите номер телефона.');
-        }
+        $user = $user->getUserByPhoneNumber($phoneNumber);
+
         $user->recovery_code = $recoveryCode;
         $user->created_recovery_code = time();
 
-        Yii::$app->sendSms->run('Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
-            $phoneNumber);
+        Yii::$app->sendSms->run(
+            'Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
+            $phoneNumber
+        );
 
         if ($user->save(false)) {
-            /** @var ResponseBehavior */
-            return $this->controller->setResponse(
-                200, 'Recovery code was successfully sent'
-            );
+            $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
+            return $response->content = [
+                'status' => $response->statusCode,
+                'message' => 'Recovery code was successfully sent'
+            ];
+
         }
 
         throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');
     }
-
 }

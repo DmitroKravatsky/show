@@ -28,12 +28,17 @@ trait RestBidRepository
     {
         try {
             /** @var ActiveQuery $query */
-            $query = self::find()->where(['created_by' => \Yii::$app->user->id]);
+            $query = self::find()
+                ->select(['id', 'status', 'from_payment_system', 'to_payment_system',
+                    'from_currency', 'to_currency', 'from_sum', 'to_sum'])
+                ->where(['created_by' => \Yii::$app->user->id]);
 
-            if (isset($params['created_at']) && $params['created_at'] === 'week') {
+            if (isset($params['sort']) && $params['sort'] === 'week') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
-            } elseif (isset($params['created_at']) && $params['created_at'] === 'month') {
+            } elseif (isset($params['sort']) && $params['sort'] === 'month') {
                 $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
+            } elseif (isset($params['sort']) && $params['sort'] === 'archive') {
+                $query->andWhere(['IN', 'status', ['paid', 'done', 'rejected']]);
             }
 
             $pageSize = intval($params['per-page'] ?? \Yii::$app->params['posts-per-page']);
@@ -162,5 +167,10 @@ trait RestBidRepository
         }
 
         return $bidModel;
+    }
+
+    public function updateBidStatus()
+    {
+
     }
 }

@@ -1,5 +1,4 @@
 <?php
-
 namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
 use common\behaviors\ValidatePostParameters;
@@ -8,15 +7,16 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
 
 /**
- * Class GmailRegisterAction
+ * Class FbAuthorizeAction
  * @package rest\modules\api\v1\authorization\controllers\actions\social
+ *
  * @mixin ValidatePostParameters
  */
-class GmailRegisterAction extends Action
+class FbAuthorizeAction extends Action
 {
-    /** @var  SocialController */
+    /** @var  $controller SocialController */
     public $controller;
-    
+
     /**
      * @var array
      */
@@ -29,37 +29,36 @@ class GmailRegisterAction extends Action
     {
         return [
             'reportParams' => [
-                'class'       => ValidatePostParameters::className(),
+                'class'       => ValidatePostParameters::class,
                 'inputParams' => [
-                    'token', 'terms_condition'
+                    'access_token', 'terms_condition'
                 ]
             ],
         ];
     }
 
     /**
-     * @return bool
-     *
-     * @throws \yii\web\BadRequestHttpException
+     * @inheritdoc
      */
-    protected function beforeRun(): bool
+    public function beforeRun()
     {
         $this->validationParams();
+
         return parent::beforeRun();
     }
 
     /**
-     * Gmail register action
+     * Facebook authorization action
      *
-     * @SWG\Post(path="/social/gmail-register",
+     * @SWG\Post(path="/social/fb-authorize",
      *      tags={"Authorization module"},
-     *      summary="User gmail registration",
-     *      description="User registration via gmail",
+     *      summary="User facebook authorization",
+     *      description="User authorization via facebook",
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "token",
-     *          description = "user's token on gmail",
+     *          name = "access_token",
+     *          description = "user's token on facebook",
      *          required = true,
      *          type = "string"
      *      ),
@@ -79,18 +78,26 @@ class GmailRegisterAction extends Action
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token")
+     *                  @SWG\Property(property="user_id", type="integer", description="user id"),
+     *                  @SWG\Property(property="access_token", type="string", description="access token"),
+     *                  @SWG\Property(property="refresh_token", type="string", description="refresh token")
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "You have been successfully authorized",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "user_id": "124",
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "refresh_token": "b_pZ4P3Z10BbEwe0A6GE2Aij8cfDDAEc"
      *              }
      *         }
      *     ),
      *      @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
+     *     ),
+     *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),
@@ -100,19 +107,22 @@ class GmailRegisterAction extends Action
      *     )
      * )
      *
-     * @return array|bool
-     * 
+     /**
+     *
+     * @return array
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
     public function run()
     {
-        /** @var RestUserEntity $model */
-        $model = new $this->modelClass;
-        $user = $model->gmailRegister(\Yii::$app->request->bodyParams);
+        /** @var RestUserEntity $userModel */
+        $userModel = new $this->modelClass;
+        $user = $userModel->fbAuthorization(\Yii::$app->request->bodyParams);
 
-        return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]
-        );
+        return $this->controller->setResponse(200, 'You have been successfully authorized', [
+            'user_id'       => $user->id,
+            'access_token'  => $user->getJWT(),
+            'refresh_token' => $user->refresh_token
+        ]);
     }
 }

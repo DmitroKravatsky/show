@@ -53,24 +53,25 @@ class RegisterAction extends Action
      *          enum = {0, 1}
      *      ),
      *      @SWG\Response(
-     *         response = 200,
+     *         response = 201,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="access_token", type="string", description="access token"),
-     *                  @SWG\Property(property="refresh_token", type="string", description="refresh token")
+     *                  @SWG\Property(property="id", type="integer", description="user id"),
+     *                  @SWG\Property(property="phone_number", type="string", description="phone number"),
+     *                  @SWG\Property(property="status", type="string", description="profile status"),
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "Registration was successfully ended",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "OiJKV1QiLCyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJh",
-     *                  "id" : 21
+     *                  "id" : 21,
+     *                  "phone_number": "+380939353498",
+     *                   "status": "UNVERIFIED"
      *              }
      *         }
      *     ),
@@ -97,12 +98,15 @@ class RegisterAction extends Action
         /** @var RestUserEntity $user */
         $user = $model->register(\Yii::$app->request->bodyParams);
 
-        return $this->controller->setResponse(
-            201, 'Регистрация прошла успешно.', [
-                'access_token'  => $user->getJWT(['user_id' => $user->id]),
-                'refresh_token' => $user->refresh_token,
-                'id'            => $user->id
-            ]
-        );
+        $response = \Yii::$app->getResponse()->setStatusCode(201, 'Registration was successfully ended');
+        return [
+            'status'  => $response->statusCode,
+            'message' => 'Registration was successfully ended',
+            'data'    => [
+                'id'            => $user->id,
+                'phone_number'  => $user->phone_number,
+                'status'        => $user->status,],
+
+        ];
     }
 }

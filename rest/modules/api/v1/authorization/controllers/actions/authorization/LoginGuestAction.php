@@ -6,10 +6,8 @@ use common\models\userNotifications\UserNotificationsEntity;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
-use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class LoginGuestAction
@@ -42,7 +40,7 @@ class LoginGuestAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Авторизация прошла успешно.",
+     *              "message": "Authorization was successful",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
      *              }
@@ -63,8 +61,15 @@ class LoginGuestAction extends Action
         try {
             $this->modelClass = new RestUserEntity();
             if ($user = $this->modelClass->loginGuest()) {
-                return $this->controller->setResponse(
-                    200, 'Авторизация прошла успешно.', ['access_token' => $user->getJWT(['user_id' => $user->id])]);
+
+                \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
+                return [
+                    'status'  => \Yii::$app->response->statusCode,
+                    'message' => "Authorization was successful",
+                    'data'    => [
+                        'access_token' => $user->getJWT(['user_id' => $user->id])
+                    ]
+                ];
             }
 
         } catch (ServerErrorHttpException $e) {

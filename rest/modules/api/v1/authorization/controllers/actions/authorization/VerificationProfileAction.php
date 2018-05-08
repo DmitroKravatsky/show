@@ -11,7 +11,6 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -30,9 +29,9 @@ class VerificationProfileAction extends Action
      *      description="User verification-profile",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *        in = "header",
-     *        name = "Authorization",
-     *        description = "Authorization: Bearer &lt;token&gt;",
+     *        in = "formData",
+     *        name = "Phone number",
+     *        description = "User phone number",
      *        required = true,
      *        type = "string"
      *      ),
@@ -44,7 +43,7 @@ class VerificationProfileAction extends Action
      *          type = "string"
      *      ),
      *      @SWG\Response(
-     *         response = 200,
+     *         response = 201,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
@@ -54,14 +53,10 @@ class VerificationProfileAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Ваш профиль подтвержден",
+     *              "message": "Your profile has been verified",
      *              "data": {
      *              }
      *         }
-     *     ),
-     *      @SWG\Response(
-     *         response = 401,
-     *         description = "Invalid credentials"
      *     ),
      *     @SWG\Response(
      *         response = 404,
@@ -89,9 +84,14 @@ class VerificationProfileAction extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        $model->verifyUser(\Yii::$app->request->bodyParams);
+        $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(201, 'Your profile has been verified');
+        \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        return [
+            /** @var RestUserEntity $user */
+            'id'            => $user->id,
+            'access_token'  => $user->getJWT(),
+            'refresh_token' => $user->refresh_token,
+        ];
     }
 }

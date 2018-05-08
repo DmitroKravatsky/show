@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use common\behaviors\ValidatePostParameters;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -14,6 +13,8 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class GenerateNewAccessTokenAction
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class GenerateNewAccessTokenAction extends Action
 {
@@ -84,25 +85,27 @@ class GenerateNewAccessTokenAction extends Action
      *                  @SWG\Property(property="refresh_token", type="string",  description="refresh token"),
      *                  @SWG\Property(property="exp",           type="int",     description="time of token expiration"),
      *                  @SWG\Property(property="data", type="object",
-     *                      @SWG\Property(property="id",            type="integer", description="id"),
-     *                      @SWG\Property(property="email",         type="string",  description="user's email"),
+     *                      @SWG\Property(property="id",            type="integer", description="user id"),
+     *                      @SWG\Property(property="phone_number",  type="string",  description="user's phone number"),
      *                      @SWG\Property(property="role",          type="string",  description="user's role"),
-     *                      @SWG\Property(property="created_at",    type="string",  description="creation time")
+     *                      @SWG\Property(property="created_at",    type="string",  description="creation time"),
+     *                      @SWG\Property(property="status",        type="string",  description="user profile status")
      *                  ),
      *              ),
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Новый токен сгенерирован",
+     *              "message": "New access token has been generated",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c",
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *                  "exp": "1520070475",
      *                  "user": {
      *                      "id": "531",
-     *                      "email": "guest@gmail.com",
+     *                      "phone_number": "+380959751856",
      *                      "role": "guest",
-     *                      "created_at": "1520070475"
+     *                      "created_at": "1520070475",
+     *                      "status": "VERIFIED"
      *                  }
      *              }
      *         }
@@ -139,8 +142,8 @@ class GenerateNewAccessTokenAction extends Action
         $restUser = new $this->modelClass();
         $responseData = $restUser->generateNewAccessToken();
 
-        /** @var $this ResponseBehavior */
-        return $this->controller->setResponse(201, 'New token is created', $responseData);
+        \Yii::$app->getResponse()->setStatusCode(201, 'New token is created');
+        return $responseData;
     }
 
 }

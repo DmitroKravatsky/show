@@ -14,7 +14,7 @@ class GetProfileAction extends Action
     /**
      * Returns a user profile
      * 
-     * @SWG\Get(path="/user/user-profile",
+     * @SWG\Get(path="/user/profile",
      *      tags={"User module"},
      *      summary="Get user profile",
      *      description="Get user profile",
@@ -39,19 +39,22 @@ class GetProfileAction extends Action
      *                  @SWG\Property(property="last_name", type="string", description="User last name"),
      *                  @SWG\Property(property="avatar", type="string", description="User avatar"),
      *                  @SWG\Property(property="email", type="string", description="User email"),
-     *                  @SWG\Property(property="phone_number", type="string", description="User phone number")
+     *                  @SWG\Property(property="phone_number", type="string", description="User phone number"),
+     *                  @SWG\Property(property="source", type="string", description="User social network"),
+     *                  @SWG\Property(property="is_fb_auth", type="boolean", description="Marks if user is social auth")
      *              ),
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "",
+     *              "message": "User profile information",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
      *                  "last_name": "Smith",
      *                  "avatar": null,
      *                  "email": "smith@gmail.com",
-     *                  "phone_number": null
+     *                  "phone_number": null,
+     *                  "is_fb_auth": true
      *              }
      *         }
      *     ),

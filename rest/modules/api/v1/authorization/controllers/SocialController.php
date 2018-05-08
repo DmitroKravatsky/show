@@ -3,18 +3,16 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-    FbLoginAction, FbRegisterAction, GmailLoginAction, GmailRegisterAction, VkLoginAction, VkRegisterAction
+    FbAuthorizeAction, GmailAuthorizeAction
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
-use rest\behaviors\ResponseBehavior;
 use yii\rest\Controller;
 
 /**
  * Class SocialController
  * @package rest\modules\api\v1\authorization\controllers
  *
- * @mixin ResponseBehavior
  */
 class SocialController extends Controller
 {
@@ -31,16 +29,10 @@ class SocialController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'vk-register'    => ['POST'],
-                'vk-login'       => ['POST'],
-                'gmail-register' => ['POST'],
-                'gmail-login'    => ['POST'],
-                'fb-register'    => ['POST'],
-                'fb-login'       => ['POST'],
+                'gmail-authorize'   => ['POST'],
+                'fb-authorization'  => ['POST'],
             ]
         ];
-
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -52,33 +44,13 @@ class SocialController extends Controller
     {
         $actions = parent::actions();
 
-        $actions['vk-register'] = [
-            'class'      => VkRegisterAction::class,
+        $actions['gmail-authorize'] =  [
+            'class'      => GmailAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];
 
-        $actions['vk-login'] = [
-            'class'      => VkLoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['gmail-register'] = [
-            'class'      => GmailRegisterAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['gmail-login'] = [
-            'class'      => GmailLoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['fb-register'] = [
-            'class'      => FbRegisterAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['fb-login'] = [
-            'class'      => FbLoginAction::class,
+        $actions['fb-authorize']    =  [
+            'class'      => FbAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];
 

@@ -1,6 +1,7 @@
 <?php
 namespace frontend\controllers;
 
+use GuzzleHttp\Client;
 use Yii;
 use yii\base\InvalidParamException;
 use yii\web\BadRequestHttpException;
@@ -75,18 +76,9 @@ class SiteController extends Controller
                     Yii::getAlias('@docs'),
                     // Authorization module
                     Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/FbLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/GmailLoginAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkRegisterAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social/VkLoginAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social'),
                     // Bid module
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/CreateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/UpdateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DeleteAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/ListAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions/DetailAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions'),
                     // Reserve module
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/CreateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/UpdateAction.php'),
@@ -262,4 +254,47 @@ class SiteController extends Controller
             'model' => $model,
         ]);
     }
+
+    /**
+     * Method provides access_token for GmailAuthorize action testing
+     */
+    public function actionGmail()
+    {
+        $client = new Client(['headers' => ['Content-Type' => 'application/x-www-form-urlencoded']]);
+        $result = $client->request(
+            'POST',
+            'https://accounts.google.com/o/oauth2/token',
+            [
+                'form_params' => [
+                    'client_id' =>  Yii::$app->params['gmail_secret_id'],
+                    'client_secret' => Yii::$app->params['gmail_client_secret'],
+                    'redirect_uri' => 'http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/gmail',
+                    'code' => \Yii::$app->request->get('code'),
+                    'grant_type'  => 'authorization_code',
+                ]
+            ]
+        );
+        if ($result->getStatusCode() == 200) {
+            $userData = json_decode($result->getBody()->getContents());
+            var_dump($userData); exit;
+        }
+    }
+
+
+    /**
+     * Method provides access_token for FbAuthorize action testing
+     */
+    public function actionFace()
+    {
+        if (\Yii::$app->request->get('access_token')) {
+            var_dump(\Yii::$app->request->get('access_token')); exit;
+        }
+            $code = \Yii::$app->request->get('code');
+
+            $ch = curl_init();
+            curl_setopt($ch, CURLOPT_URL, 'https://graph.facebook.com/v2.12/oauth/access_token?client_id=' . Yii::$app->params['fb_secret_id'] . '&client_secret='  . Yii::$app->params['fb_client_secret'] . '&redirect_uri=http://' . $_SERVER['HTTP_HOST'] . '/frontend/web/site/face&code='.$code);
+            curl_exec($ch);
+
+    }
+
 }

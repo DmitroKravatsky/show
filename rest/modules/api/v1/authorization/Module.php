@@ -14,5 +14,4 @@ class Module extends \yii\base\Module
      * @var string
      */
     public $apiVersion = '1';
-
 }

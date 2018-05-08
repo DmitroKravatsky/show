@@ -2,15 +2,10 @@
 
 namespace rest\modules\api\v1\authorization\controllers;
 
-use rest\modules\api\v1\authorization\controllers\actions\authorization\GenerateNewAccessTokenAction;
-use rest\behaviors\ResponseBehavior;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LoginGuestAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\LogoutAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\PasswordRecoveryAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\RegisterAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\SendRecoveryCodeAction;
-use rest\modules\api\v1\authorization\controllers\actions\authorization\VerificationProfileAction;
+use rest\modules\api\v1\authorization\controllers\actions\authorization\{
+    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction,
+    SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
+};
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -20,7 +15,6 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
  * Class AuthorizationController
  * @package rest\modules\api\v1\authorization\controllers
  *
- * @mixin ResponseBehavior
  */
 class AuthorizationController extends Controller
 {
@@ -48,11 +42,9 @@ class AuthorizationController extends Controller
             ]
         ];
 
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
-
         $behaviors['bearerAuth'] = [
             'class' => HttpBearerAuth::class,
-            'only'  => ['verification-profile', 'logout']
+            'only'  => ['logout']
         ];
 
         return $behaviors;
@@ -64,15 +56,15 @@ class AuthorizationController extends Controller
     public function actions(): array
     {
         return [
-            'register' => [
+            'register'                  => [
                 'class'      => RegisterAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'login' => [
+            'login'                     => [
                 'class'      => LoginAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'login-guest' => [
+            'login-guest'               => [
                 'class'      => LoginGuestAction::class,
                 'modelClass' => $this->modelClass
             ],
@@ -80,20 +72,20 @@ class AuthorizationController extends Controller
                 'class'      => GenerateNewAccessTokenAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'send-recovery-code' => [
-                'class' => SendRecoveryCodeAction::class,
+            'send-recovery-code'        => [
+                'class'      => SendRecoveryCodeAction::class,
                 'modelClass' => $this->modelClass,
             ],
-            'password-recovery' => [
-                'class' => PasswordRecoveryAction::class,
+            'password-recovery'         => [
+                'class'      => PasswordRecoveryAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'verification-profile' => [
-                'class' => VerificationProfileAction::class,
+            'verification-profile'      => [
+                'class'      => VerificationProfileAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'logout' => [
-                'class' => LogoutAction::class,
+            'logout'                    => [
+                'class'      => LogoutAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

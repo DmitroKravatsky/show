@@ -84,6 +84,7 @@ class DetailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
+     *              "message": "Detail info",
      *              "data": {
      *                  "id" : "1",
      *                  "status": "accepted",
@@ -122,11 +123,16 @@ class DetailAction extends Action
      */
     public function run()
     {
+        var_dump(1); exit;
         /** @var \common\models\bid\BidEntity $bid */
         $bid = new $this->modelClass;
         $bid = $bid->getBidDetails(\Yii::$app->request->get('id'));
 
-        /** ResponseBehavior */
-        return $this->controller->setResponse('200', 'Detail info', $bid);
+        \Yii::$app->getResponse()->setStatusCode(200, 'Detail info');
+        return [
+            'status'  => \Yii::$app->response->statusCode,
+            'message' => "Detail info",
+            'data'    => $bid
+        ];
     }
 }

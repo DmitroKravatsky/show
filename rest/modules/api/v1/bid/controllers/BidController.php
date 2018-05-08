@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\bid\controllers;
 
 use common\models\bid\BidEntity;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\bid\controllers\actions\{
     ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
 };
@@ -15,7 +14,6 @@ use yii\filters\VerbFilter;
  * Class BidController
  * @package rest\modules\api\v1\bid\controllers
  *
- * @mixin ResponseBehavior
  */
 class BidController extends Controller
 {
@@ -42,14 +40,11 @@ class BidController extends Controller
             'class'   => VerbFilter::class,
             'actions' => [
                 'create' => ['POST'],
-                'update' => ['PUT'],
                 'delete' => ['DELETE'],
                 'list'   => ['GET'],
                 'detail' => ['GET'],
             ]
         ];
-
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -66,17 +61,12 @@ class BidController extends Controller
             'modelClass' => $this->modelClass
         ];
 
-        $actions['update'] = [
-            'class'      => UpdateAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
         $actions['delete'] = [
             'class'      => DeleteAction::class,
             'modelClass' => $this->modelClass
         ];
 
-        $actions['list'] = [
+        $actions['list'] =   [
             'class'      => ListAction::class,
             'modelClass' => $this->modelClass
         ];

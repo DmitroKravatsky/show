@@ -26,7 +26,8 @@ trait RestUserProfileRepository
     {
         try {
             $userProfile =  self::find()
-                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar', 'user.email', 'user.phone_number'])
+                ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar',
+                    'user.email', 'user.phone_number', 'user.source'])
                 ->joinWith('user', false)
                 ->where(['user_profile.user_id' => \Yii::$app->user->id])
                 ->asArray()
@@ -35,7 +36,8 @@ trait RestUserProfileRepository
             if (!$userProfile) {
                 throw new NotFoundHttpException();
             }
-            return $userProfile;
+
+            return $this->getSocialService($userProfile);
 
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException('User profile is not found');
@@ -58,22 +60,19 @@ trait RestUserProfileRepository
     public function updateProfile(array $params): UserProfileEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        
         try {
-            $user = RestUserEntity::findOne(\Yii::$app->user->id);
-            $user->setAttributes($params);
-            if (!$user->validate()) {
-                $this->throwModelException($user->errors);
-            }
-
-            $userProfile = UserProfileEntity::findOne(['user_id' => $user->id]);
+            $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
+            if (isset($params['base64_image'])) {
+                $params['avatar'] = $this->updateAvatar($params);
+                unset($params['base64_image']);
+            }
             $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
                 $this->throwModelException($userProfile->errors);
             }
 
-            if ($user->save() && $userProfile->save()) {
+            if ($userProfile->save()) {
                 $transaction->commit();
                 return $userProfile;
             }
@@ -99,10 +98,58 @@ trait RestUserProfileRepository
      */
     public static function getFullName(int $userId)
     {
-        if (!empty($userProfile = self::findOne($userId))) {
+        if (!empty($userProfile = self::findOne(['user_id' => $userId]))) {
             return $userProfile->name . ' ' . $userProfile->last_name;
         }
 
         throw new NotFoundHttpException('Пользователь не найден.');
+    }
+
+    /**
+     * Adds a field that marks a social network binded with a user
+     *
+     * @param array $userModel
+     * @return array|bool
+     */
+    public function getSocialService(array $userModel)
+    {
+        if (!$userModel['source'] || $userModel['source'] === 'native') {
+            return false;
+        }
+
+        if ($userModel['source'] === RestUserEntity::FB) {
+            $userModel['is_fb_auth'] = true;
+            unset($userModel['source']);
+            return $userModel;
+        }
+
+        if ($userModel['source'] === RestUserEntity::GMAIL) {
+            $userModel['is_gmail_auth'] = true;
+            unset($userModel['source']);
+            return $userModel;
+        }
+
+        return $userModel;
+    }
+
+    /**
+     * Updates user avatar
+     * @param array $params
+     * @return null|static
+     * @throws ServerErrorHttpException
+     */
+    public function updateAvatar(array $params)
+    {
+        /** @var \frostealth\yii2\aws\s3\Service $s3 */
+        $s3 = \Yii::$app->get('s3');
+
+        $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
+            . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
+        $params['user_id'] = \Yii::$app->user->identity->getId();
+
+        $result = $s3->commands()->put($fileName, base64_decode($params['base64_image']))
+            ->withContentType("image/jpeg")->execute();
+        return $result->get('ObjectURL');
+
     }
 }
