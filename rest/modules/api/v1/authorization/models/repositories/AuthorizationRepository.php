@@ -124,7 +124,7 @@ trait AuthorizationRepository
      *
      * @throws NotFoundHttpException
      */
-    protected function getUserByPhoneNumber(string $phoneNumber): RestUserEntity
+    public function getUserByPhoneNumber($phoneNumber): RestUserEntity
     {
         $user = self::findOne(['phone_number' => $phoneNumber]);
         if ($user) {
