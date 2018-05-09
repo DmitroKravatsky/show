@@ -30,7 +30,7 @@ class VerificationProfileAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *        in = "formData",
-     *        name = "Phone number",
+     *        name = "phone_number",
      *        description = "User phone number",
      *        required = true,
      *        type = "string"
