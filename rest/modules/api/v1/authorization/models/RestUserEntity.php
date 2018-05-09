@@ -60,7 +60,6 @@ class RestUserEntity extends User
     const STATUS_BANNED     = 'BANNED';
 
     const FB     = 'fb';
-    const VK     = 'vk';
     const GMAIL  = 'gmail';
     const NATIVE = 'native';
 
