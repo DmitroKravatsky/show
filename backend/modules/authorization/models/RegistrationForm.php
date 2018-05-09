@@ -7,6 +7,7 @@ use yii\base\Model;
 
 class RegistrationForm extends Model
 {
+    public $authorizationModel = User::class;
     public $email;
     public $name;
     public $last_name;
@@ -22,8 +23,8 @@ class RegistrationForm extends Model
         return [
 
             [['email', 'name', 'last_name', 'role', 'password', 'confirm_password'], 'required'],
-            [['phone_number'], PhoneInputValidator::class],
-            ['email', 'email'],
+//            [['phone_number'], PhoneInputValidator::class],
+            ['email', 'validateEmail'],
             [['name', 'last_name',], 'string', 'max' => 20],
             [
                 'confirm_password',
@@ -62,6 +63,34 @@ class RegistrationForm extends Model
             return false;
         }
     }
+
+    /**
+     * Check email on the unique value
+     *
+     * @param $attribute
+     */
+    public function validateEmail($attribute)
+    {
+        if (!$this->hasErrors()) {
+            $email = $this->getEmail();
+            if ($email) {
+                $this->addError($attribute, 'Данный E-mail уже зарегистрирован');
+            }
+        }
+    }
+
+    /**
+     * Getting email for validate
+     *
+     * @return User
+     */
+    public function getEmail()
+    {
+        return User::findOne(['email' => $this->email]);
+    }
+
+
+
 
 
 }

@@ -22,37 +22,45 @@ class InviteManagerAction extends Action
     public function run()
     {
         $modelRegistration = new RegistrationForm();
-        $postData = \Yii::$app->request->post();
+        if (\Yii::$app->request->post()) {
+//            echo "<pre>";var_dump(\Yii::$app->request->post("RegistrationForm")); exit;
+            $modelRegistration->load(\Yii::$app->request->post());
+            if ($modelRegistration->validate()) {
+                var_dump(1); exit;
+                $userModel   = new User();
+                $userProfile = new UserProfileEntity();
+                $userModel->setAttributes([
+                    'email'       => $modelRegistration->email,
+                    'password'    => $modelRegistration->password,
+                    'invite_code' => \Yii::$app->security->generateRandomString(32),
+                ]);
+                var_dump($_SERVER['HTTP_HOST'] . 'admin/index?invite_code='.$userModel->invite_code); exit;
+                $userProfile->setAttributes([
+                    'name'      => $modelRegistration->name,
+                    'last_name' => $modelRegistration->name,
+                ]);
+                $userRole = \Yii::$app->authManager->getRole($this->role);
 
-        if ($modelRegistration->load($postData) && $postData->validate) {
-            $userModel   = new User();
-            $userProfile = new UserProfileEntity();
-            $userModel->setAttributes([
-                'email'    => $modelRegistration->email,
-                'password' => $modelRegistration->password,
-            ]);
+                $transaction = \Yii::$app->db->beginTransaction();
+                if ($userModel->save()
+                    && $userProfile->save()
+                    && \Yii::$app->authManager->assign($userRole, $userModel->getId())
+                ) {
+                    $transaction->commit();
+                    \Yii::$app->sendMail->run(
+                        'sendLoginLink-html.php',
+                        ['email' => $modelRegistration->email, 'loginLink' => $_SERVER['HTTP_HOST'] . 'admin/'.$userModel->invite_code],
+                        \Yii::$app->params['supportEmail'], $modelRegistration->email, 'ConfirmRegistration'
+                    );
+                    return $this->controller->redirect('managers-list');
+                }
 
-            $userProfile->setAttributes([
-                'name'      => $modelRegistration->name,
-                'last_name' => $modelRegistration->name,
-            ]);
-            $userRole = \Yii::$app->authManager->getRole($this->role);
-
-            $transaction = \Yii::$app->db->beginTransaction();
-            if ($userModel->save()
-                && $userProfile->save()
-                && \Yii::$app->authManager->assign($userRole, $userModel->getId())
-            ) {
-                $transaction->commit();
-                \Yii::$app->sendMail->run(
-                    'sendLoginLink-html.php',
-                    ['email' => $modelRegistration->email, 'loginLink' => $this->verification_code],
-                    \Yii::$app->params['supportEmail'], $modelRegistration->email, 'ConfirmRegistration'
-                );
-                return $this->controller->redirect('managers-lits');
             }
-
+            return $this->controller->render($this->view, [
+                'modelRegistration' => $modelRegistration
+            ]);
         }
+
         return $this->controller->render($this->view, [
             'modelRegistration' => $modelRegistration
         ]);

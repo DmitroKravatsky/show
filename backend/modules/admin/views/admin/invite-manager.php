@@ -12,7 +12,7 @@ $this->title = 'My Yii Application';
     <div class="col s12 m10 offset-m1 l6 offset-l3 z-depth-5 forms-box">
 
     <div id="registration" class="col s12">
-    <?php $formRegistration = ActiveForm::begin(['action' => ['registration'],
+    <?php $formRegistration = ActiveForm::begin(['action' => ['/invite-manager'],
         'class' => 'col s12 regForm', 'method' => 'post']); ?>
     <div class="row">
         <div class="input-field col s12">
@@ -33,7 +33,7 @@ $this->title = 'My Yii Application';
             <?= $formRegistration->field($modelRegistration, 'last_name',
                 ['template' => "{label}\n<i class=\"fa fa-user fa-fw prefix\" 
                                     aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
-                ->textInput(['placeholder' => 'Имя пользователя'])
+                ->textInput(['placeholder' => 'Фамилия пользователя'])
                 ->label(false); ?>
         </div>
         <div class="input-field col s12">
@@ -58,7 +58,7 @@ $this->title = 'My Yii Application';
                 ->label(false) ?>
         </div>
 
-        <?= Html::submitButton('Зарегистрироваться', [
+        <?= Html::submitButton('Зарегистрировать', [
             'class' => 'btn waves-effect waves-light green reg-btn',
             'name'  => 'registration-button'
         ]); ?>
