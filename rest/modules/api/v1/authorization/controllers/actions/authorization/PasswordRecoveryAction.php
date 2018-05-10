@@ -108,11 +108,15 @@ class PasswordRecoveryAction extends Action
      *              }
      *         }
      *     ),
-     *      @SWG\Response (
+     *     @SWG\Response (
      *         response = 400,
      *         description = "Not enough income params"
      *     ),
-     *      @SWG\Response (
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "User not found"
+     *     ),
+     *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),

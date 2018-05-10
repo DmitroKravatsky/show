@@ -50,7 +50,7 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
+            \Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
 
             $transaction->commit();
 

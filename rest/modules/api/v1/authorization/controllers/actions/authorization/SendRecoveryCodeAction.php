@@ -90,6 +90,10 @@ class SendRecoveryCodeAction extends Action
      *         response = 400,
      *         description = "Bad request"
      *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "User not found"
+     *     ),
      *     @SWG\Response(
      *         response = 500,
      *         description = "Internal Server Error"
@@ -116,7 +120,7 @@ class SendRecoveryCodeAction extends Action
         $user->created_recovery_code = time();
 
         Yii::$app->sendSms->run(
-            'Ваш код востановления пароля ,' .$user->recovery_code. ' он будет активен в течении часа',
+            'Ваш код востановления пароля, ' .$user->recovery_code. ' он будет активен в течении часа',
             $phoneNumber
         );
 
