@@ -170,7 +170,7 @@ trait RestBidRepository
      * @return bool
      * @throws ServerErrorHttpException
      */
-    public static function sendEmailToManagers(BidEntity $params):bool
+    public function sendEmailToManagers(BidEntity $params):bool
     {
         $query = new \yii\db\Query();
 
@@ -180,9 +180,6 @@ trait RestBidRepository
             ->where(['auth_assignment.item_name' => ['admin', 'manager']])
             ->all();
 
-        if (!$managers) {
-            throw new ServerErrorHttpException('Internal server ');
-        }
         foreach ($managers as $manager) {
             if ($manager['email']) {
                 $recipients[] = $manager['email'];
@@ -208,9 +205,7 @@ trait RestBidRepository
                 ],
                 \Yii::$app->params['supportEmail'], $recipients, 'New Bid'
             );
-
             return true;
         }
-        throw new ServerErrorHttpException('Internal error');
     }
 }
