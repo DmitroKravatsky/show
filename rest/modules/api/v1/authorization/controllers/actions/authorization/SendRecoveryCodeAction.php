@@ -123,7 +123,7 @@ class SendRecoveryCodeAction extends Action
         if ($user->save(false)) {
             $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
             return $response->content = [
-                'status' => $response->statusCode,
+                'status'  => $response->statusCode,
                 'message' => 'Recovery code was successfully sent'
             ];
 

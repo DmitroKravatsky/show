@@ -85,7 +85,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByPhoneNumber($params['phone_number']); // todo  для чего ты это вообще делаешь?
+        $user = $this->getUserByPhoneNumber($params['phone_number']);
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -193,11 +193,12 @@ trait AuthorizationRepository
         try {
             $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
             if (!$user) {
-                throw new NotFoundHttpException('User not found'); // todo User not found
+                throw new NotFoundHttpException('User not found');
             }
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
-                throw new UnauthorizedHttpException('Refresh token was expired'); // todo Refresh token was expired
+                throw new UnauthorizedHttpException('Refresh token was expired');
             }
+            // todo мне кажеться это лишняя проверка? Что скажешь?
             if ($user->refresh_token !== $currentRefreshToken) {
                 throw new UnprocessableEntityHttpException('Refresh token is invalid');
             }
@@ -207,7 +208,7 @@ trait AuthorizationRepository
             $user->created_refresh_token = time();
 
             if (!$user->save()) {
-                return $this->throwModelException($user->errors); // todo метод не подсвечивается
+                return $this->throwModelException($user->errors);
             }
 
             return [
@@ -276,8 +277,7 @@ trait AuthorizationRepository
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
             }
-            // исправил, незаметил коменты
-            return $user; // todo не смущает такое http://joxi.ru/krDp18Wt0pjVpr ?
+            return $user;
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
@@ -296,7 +296,6 @@ trait AuthorizationRepository
     public function logout()
     {
         $restUser = RestUserEntity::findOne(\Yii::$app->user->id);
-
         try {
             $restUser->addBlackListToken($restUser->getAuthKey());
             return true;

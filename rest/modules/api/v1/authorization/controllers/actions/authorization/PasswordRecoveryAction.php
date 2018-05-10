@@ -137,8 +137,7 @@ class PasswordRecoveryAction extends Action
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
-            if ($user->recoveryCode(Yii::$app->request->post())) { // todo почему метод не подсвечивается
-
+            if ($user->recoveryCode(Yii::$app->request->post())) {
                 $response = \Yii::$app->getResponse()->setStatusCode(200, 'Password recovery has been ended successfully');
                 return $response->content = [
                     'status' => $response->statusCode,

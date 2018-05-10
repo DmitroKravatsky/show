@@ -305,7 +305,7 @@ class RestUserEntity extends User
             $this->setAttributes($postData);
             if ($this->validate()
                 && $this->checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData['recovery_code'])
-            ) { // todo 120 символов
+            ) {
                 return $this->save();
             }
             $this->validationExceptionFirstMessage($this->errors);

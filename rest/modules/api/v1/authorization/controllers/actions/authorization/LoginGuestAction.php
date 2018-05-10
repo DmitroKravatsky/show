@@ -61,7 +61,6 @@ class LoginGuestAction extends Action
         try {
             $this->modelClass = new RestUserEntity();
             if ($user = $this->modelClass->loginGuest()) {
-
                 \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
                 return [
                     'status'  => \Yii::$app->response->statusCode,
@@ -71,7 +70,6 @@ class LoginGuestAction extends Action
                     ]
                 ];
             }
-
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }

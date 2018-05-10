@@ -98,12 +98,12 @@ class LoginAction extends Action
             $userModel = new $this->modelClass;
 
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
-                    $user->created_refresh_token = time();
-                    $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+                $user->created_refresh_token = time();
+                $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
 
-                    if (!$user->save(false)) {
-                        throw new ServerErrorHttpException('Server internal error');
-                    }
+                if (!$user->save(false)) {
+                    throw new ServerErrorHttpException();
+                }
                 $response = \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
 
                 return [
@@ -116,7 +116,6 @@ class LoginAction extends Action
                     ]
                 ];
             }
-
             throw new UnauthorizedHttpException();
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
