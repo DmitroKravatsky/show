@@ -12,14 +12,24 @@ use yii\web\IdentityInterface;
  *
  * @property integer $id
  * @property string $password
+ * @property string $confirm_password
  * @property string $password_reset_token
  * @property string $email
  * @property string $auth_key
  * @property string $source
  * @property string $source_id
  * @property string $phone_number
+ * @property integer $terms_condition
+ * @property string $refresh_token
+ * @property integer $created_refresh_token
  * @property integer $created_at
  * @property integer $updated_at
+ * @property integer $recovery_code
+ * @property integer $created_recovery_code
+ * @property integer $status
+ * @property integer $verification_code
+ * @property string  $invite_code
+ * @property integer $invite_code_status
  */
 class User extends ActiveRecord implements IdentityInterface
 {

@@ -43,5 +43,21 @@ class LoginForm extends Model
         }
     }
 
+    /**
+     * @param string $invite_code
+     * @return bool
+     */
+    public function loginByInvite($invite_code):bool
+    {
+        if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => 'ACTIVE'])) {
+            $user->invite_code_status = 'INACTIVE';
+            if ($user->save(false)) {
+                \Yii::$app->user->login($user, 3600*24);
+                return true;
+            }
+        }
+        return false;
+    }
+
 
 }

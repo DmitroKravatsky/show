@@ -26,7 +26,6 @@ class InviteManagerAction extends Action
 //            echo "<pre>";var_dump(\Yii::$app->request->post("RegistrationForm")); exit;
             $modelRegistration->load(\Yii::$app->request->post());
             if ($modelRegistration->validate()) {
-                var_dump(1); exit;
                 $userModel   = new User();
                 $userProfile = new UserProfileEntity();
                 $userModel->setAttributes([
@@ -34,7 +33,7 @@ class InviteManagerAction extends Action
                     'password'    => $modelRegistration->password,
                     'invite_code' => \Yii::$app->security->generateRandomString(32),
                 ]);
-                var_dump($_SERVER['HTTP_HOST'] . 'admin/index?invite_code='.$userModel->invite_code); exit;
+                var_dump($_SERVER['HTTP_HOST'] . '/admin/login?invite_code='.$userModel->invite_code); exit;
                 $userProfile->setAttributes([
                     'name'      => $modelRegistration->name,
                     'last_name' => $modelRegistration->name,

@@ -17,7 +17,12 @@ class LoginAction extends Action
             return $this->controller->redirect('/admin/index');
         }
         $modelLogin = new LoginForm();
-        $modelRegistration = new RegistrationForm();
+        if (\Yii::$app->request->get('invite_code')) {
+            $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));
+            return $this->controller->render($this->view, [
+                'modelLogin'        => $modelLogin,
+            ]);
+        }
         if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {
             if (\Yii::$app->user->can('admin')) {
                 return $this->controller->redirect(['/index']);
@@ -29,7 +34,6 @@ class LoginAction extends Action
 
         return $this->controller->render($this->view, [
             'modelLogin'        => $modelLogin,
-            'modelRegistration' => $modelRegistration,
         ]);
     }
 }
