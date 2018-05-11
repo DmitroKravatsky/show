@@ -10,7 +10,8 @@ class AdminController extends Controller
 {
     public function beforeAction($action)
     {
-        if (!\Yii::$app->user->can('admin')) {
+        if (!\Yii::$app->user->can('admin') && !\Yii::$app->user->can('manager')) {
+            var_dump(\Yii::$app->user->can('manager')) ;exit;
             return $this->redirect(\Yii::$app->homeUrl);
         }
         return parent::beforeAction($action);

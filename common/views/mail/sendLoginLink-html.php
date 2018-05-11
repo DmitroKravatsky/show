@@ -6,8 +6,6 @@ use yii\helpers\Html;
     /* @var $user common\models\user\UserEntity */
 ?>
 <div class="recovery-password">
-    <?php $user = RestUserEntity::findOne(['email' => Yii::$app->getRequest()->getBodyParams()['email']]); ?>
-
     <p>Уважаемый клиент <?= Html::encode($user->email) ?>,</p>
 
     <p>Чтобы закончить процедуру восстановления пароля Вам необходимо ввести данный код

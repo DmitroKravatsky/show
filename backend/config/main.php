@@ -52,7 +52,7 @@ return [
             'rules' => [
                 'index'          => 'admin/admin/index',
                 'bid/index'      => 'admin/bid/index',
-                'login'          => 'admin/authorization/authorization/login',
+                'login'          => 'authorization/authorization/login',
                 'invite-manager' => 'admin/admin/invite-manager'
             ],
         ],
