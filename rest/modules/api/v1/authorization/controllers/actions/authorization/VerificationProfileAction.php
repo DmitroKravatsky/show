@@ -55,6 +55,9 @@ class VerificationProfileAction extends Action
      *              "status": 201,
      *              "message": "Your profile has been verified",
      *              "data": {
+     *                  "id" : 21,
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *              }
      *         }
      *     ),
@@ -86,12 +89,16 @@ class VerificationProfileAction extends Action
         $model = new $this->modelClass;
         $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        $response = \Yii::$app->getResponse()->setStatusCode(200, 'Your profile has been verified');
         return [
-            /** @var RestUserEntity $user */
-            'id'            => $user->id,
-            'access_token'  => $user->getJWT(),
-            'refresh_token' => $user->refresh_token,
+            'status'  => $response->statusCode,
+            'message' => 'Your profile has been verified',
+            'data'    => [
+                /** @var RestUserEntity $user */
+                'id'            => $user->id,
+                'access_token'  => $user->getJWT(),
+                'refresh_token' => $user->refresh_token,
+            ]
         ];
     }
 }

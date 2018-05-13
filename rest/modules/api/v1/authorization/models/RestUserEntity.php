@@ -193,7 +193,7 @@ class RestUserEntity extends User
                 'on'               => [self::SCENARIO_REGISTER, self::SCENARIO_RECOVERY_PWD]
             ],
             [['source', 'source_id', 'phone_number'], 'string'],
-            ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
+            ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],

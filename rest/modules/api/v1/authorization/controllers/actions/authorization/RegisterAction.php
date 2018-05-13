@@ -2,6 +2,7 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
+use common\behaviors\ValidatePostParameters;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -9,11 +10,40 @@ use yii\rest\Action;
 /**
  * Class RegisterAction
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ * @mixin ValidatePostParameters
  */
 class RegisterAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
+
+    /**
+     * @var array
+     */
+    public $params = [];
+
+    /**
+     * @inheritdoc
+     */
+    public function behaviors()
+    {
+        return [
+            'reportParams' => [
+                'class'       => ValidatePostParameters::class,
+                'inputParams' => ['phone_number', 'password', 'terms_condition', 'confirm_password']
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->validationParams();
+
+        return parent::beforeRun();
+    }
 
     /**
      * Register action
