@@ -67,7 +67,7 @@ class VerificationProfileAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Wrong verification_code"
      *     ),
      *     @SWG\Response(
      *         response = 500,

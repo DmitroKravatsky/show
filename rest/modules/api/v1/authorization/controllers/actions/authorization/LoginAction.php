@@ -122,7 +122,7 @@ class LoginAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (UnauthorizedHttpException $e) {
-            throw new UnauthorizedHttpException('Check your credentials');
+            throw new UnauthorizedHttpException('Wrong credentials');
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Server internal error');
         }
