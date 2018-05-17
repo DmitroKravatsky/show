@@ -15,15 +15,25 @@ class RegistrationForm extends Model
     public $password;
     public $confirm_password;
 
+    const SCENARIO_PASSWORD_CREATE = 'password_create';
     const ROLE_ADMIN   = 'ADMIN';
     const ROLE_MANAGER = 'MANAGER';
+
+    public function scenarios()
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_PASSWORD_CREATE] = [
+            'password', 'confirm_password'
+        ];
+        return $scenarios;
+    }
 
     public function rules()
     {
         return [
 
             [['email', 'name', 'last_name', 'role', 'password', 'confirm_password'], 'required'],
-//            [['phone_number'], PhoneInputValidator::class],
             ['email', 'validateEmail'],
             [['name', 'last_name',], 'string', 'max' => 20],
             [
@@ -47,7 +57,7 @@ class RegistrationForm extends Model
             'updated_at'            => 'Дата изменения',
             'name'                  => 'Имя пользователя',
             'last_name'             => 'Код востановления',
-            'role'                  => 'Токен обновления',
+            'role'                  => 'Должность',
         ];
     }
 

@@ -1,9 +1,52 @@
 <?php
+use backend\modules\authorization\models\RegistrationForm;
+use yii\bootstrap\Modal;
+use yii\helpers\Html;
+use yii\widgets\ActiveForm;
 
 /* @var $this yii\web\View */
 
 $this->title = 'My Yii Application';
 ?>
+<div class="modal" tabindex="-1"  id="password-reset" role="dialog">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title">Creation password </h5>
+            </div>
+            <div class="modal-body">
+                <div class="col-xs-12">
+                <?php $formRegistration = ActiveForm::begin(['action' => ['/invite-manager'],
+                    'class' => 'col s12 regForm', 'method' => 'post']); ?>
+                    <p>Hello <?= $passwordUpdateModel->last_name . '' . $passwordUpdateModel->name . '.' ?></p>
+                    <p>You have been registred as a <?= $passwordUpdateModel->role . ''?> and get specific rights</p>
+                    <p>In a terms of high security we advise you to change your password for <strong><?= $passwordUpdateModel->email . ''?> </strong>
+                        account <?php ?></p>
+                    <div class="input-field col s12">
+                        <?= $formRegistration->field($passwordUpdateModel, 'password',
+                            ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
+                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
+                            ->passwordInput(['placeholder' => 'Пароль'])
+                            ->label(false) ?>
+                    </div>
+                    <div class="input-field col s12">
+                        <?= $formRegistration->field($passwordUpdateModel, 'confirm_password',
+                            ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
+                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
+                            ->passwordInput(['placeholder' => 'Повторите пароль'])
+                            ->label(false) ?>
+                    </div>
+                </div>
+                <?php ActiveForm::end(); ?>
+            </div>
+            <div class="modal-footer">
+                <button type="button" class="btn btn-primary">Save changes</button>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+            </div>
+        </div>
+    </div>
+</div>
+
 <div class="site-index">
 
     <div class="jumbotron">
