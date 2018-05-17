@@ -191,8 +191,9 @@ trait RestBidRepository
                 '@common/views/mail/sendBidInfo-html.php',
                 [
                     'id' => $params->id,
-                    'email' => $params->email,
+                    'email' => $params->email ?? 'не установлено',
                     'name' => $params->name,
+                    'phone_number' => $params->phone_number,
                     'last_name' => $params->last_name,
                     'from_sum' => $params->from_sum,
                     'to_sum' => $params->to_sum,
