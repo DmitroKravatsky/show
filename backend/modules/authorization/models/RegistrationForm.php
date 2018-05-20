@@ -47,7 +47,6 @@ class RegistrationForm extends Model
             ],
             [['created_at', 'updated_at'], 'safe'],
             ['role', 'in', 'range' => [self::ROLE_ADMIN, self::ROLE_MANAGER]],
-
         ];
     }
 
@@ -94,7 +93,7 @@ class RegistrationForm extends Model
     }
 
     /**
-     * Getting email for validate
+     * Get user by email
      *
      * @return User
      */

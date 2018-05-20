@@ -13,9 +13,6 @@ class LoginAction extends Action
 
     public function run()
     {
-       /* if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('admin')) {
-            return $this->controller->redirect('/admin/index');
-        }*/
         $modelLogin = new LoginForm();
         if ($invitedCode = \Yii::$app->request->get('invite_code')) {
             $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));

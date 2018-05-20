@@ -169,8 +169,49 @@ trait RestBidRepository
         return $bidModel;
     }
 
-    public function updateBidStatus()
+    /**
+     * Sends letters to managers
+     * @param BidEntity $params
+     * @return bool
+     * @throws ServerErrorHttpException
+     */
+    public function sendEmailToManagers(BidEntity $params):bool
     {
+        $query = new \yii\db\Query();
 
+        $managers = $query->select(['auth_assignment.user_id', 'user.id', 'user.email'])
+            ->from('auth_assignment')
+            ->leftJoin('user', 'user.id=auth_assignment.user_id')
+            ->where(['auth_assignment.item_name' => ['admin', 'manager']])
+            ->all();
+
+        foreach ($managers as $manager) {
+            if ($manager['email']) {
+                $recipients[] = $manager['email'];
+            }
+        }
+
+        if ($recipients) {
+            \Yii::$app->sendMail->run(
+                '@common/views/mail/sendBidInfo-html.php',
+                [
+                    'id' => $params->id,
+                    'email' => $params->email ?? 'не установлено',
+                    'name' => $params->name,
+                    'phone_number' => $params->phone_number,
+                    'last_name' => $params->last_name,
+                    'from_sum' => $params->from_sum,
+                    'to_sum' => $params->to_sum,
+                    'from_wallet' => $params->from_wallet,
+                    'to_wallet' => $params->to_wallet,
+                    'from_payment_system' => $params->from_payment_system,
+                    'to_payment_system' => $params->to_payment_system,
+                    'from_currency' => $params->from_currency,
+                    'to_currency' => $params->to_currency,
+                ],
+                \Yii::$app->params['supportEmail'], $recipients, 'New Bid'
+            );
+            return true;
+        }
     }
 }

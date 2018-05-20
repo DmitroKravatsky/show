@@ -21,12 +21,11 @@ class ManagersListAction extends Action
     {
         $managers = (new \yii\db\Query())
             ->select(['user.email', 'user.phone_number', 'auth_assignment.item_name',
-            'auth_assignment.user_id', 'user_profile.name', 'user_profile.last_name'])
+                'auth_assignment.user_id', 'user_profile.name', 'user_profile.last_name'])
             ->from('auth_assignment')
             ->where(['auth_assignment.item_name' => 'manager'])
             ->leftJoin('user', 'auth_assignment.user_id = user.id ')
             ->leftJoin('user_profile', 'user_profile.user_id = user.id ');
-//        echo '<pre>' ;var_dump($managers); exit;
         $dataProvider = new ActiveDataProvider([
             'query' => $managers,
         ]);

@@ -203,4 +203,10 @@ class BidEntity extends ActiveRecord
 
         return parent::beforeSave($insert);
     }
+
+    public function afterSave($insert, $changedAttributes)
+    {
+        $this->sendEmailToManagers($this);
+        return parent::afterSave($insert, $changedAttributes);
+    }
 }
