@@ -8,11 +8,9 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use rest\behaviors\IsTokenLegal;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use rest\behaviors\ResponseBehavior;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -32,7 +30,7 @@ class VerificationProfileAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *        in = "formData",
-     *        name = "Phone number",
+     *        name = "phone_number",
      *        description = "User phone number",
      *        required = true,
      *        type = "string"
@@ -57,6 +55,9 @@ class VerificationProfileAction extends Action
      *              "status": 201,
      *              "message": "Your profile has been verified",
      *              "data": {
+     *                  "id" : 21,
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *              }
      *         }
      *     ),
@@ -66,7 +67,7 @@ class VerificationProfileAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Wrong verification_code"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -88,11 +89,16 @@ class VerificationProfileAction extends Action
         $model = new $this->modelClass;
         $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        /** @var ResponseBehavior */
-        return $this->controller->setResponse(201, 'Your profile has been verified', [
-            'id'            => $user->id,
-            'access_token'  => $user->getJWT(),
-            'refresh_token' => $user->refresh_token,
-        ]);
+        $response = \Yii::$app->getResponse()->setStatusCode(200, 'Your profile has been verified');
+        return [
+            'status'  => $response->statusCode,
+            'message' => 'Your profile has been verified',
+            'data'    => [
+                /** @var RestUserEntity $user */
+                'id'            => $user->id,
+                'access_token'  => $user->getJWT(),
+                'refresh_token' => $user->refresh_token,
+            ]
+        ];
     }
 }

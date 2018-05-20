@@ -34,7 +34,7 @@
                     ['label' => 'Gii', 'icon' => 'file-code-o', 'url' => ['/gii']],
                     ['label' => 'Debug', 'icon' => 'dashboard', 'url' => ['/debug']],
                     ['label' => 'Bids', 'icon' => 'dashboard', 'url' => ['/bid/index'],],
-                    ['label' => 'InviteManagers', 'icon' => 'dashboard', 'url' => ['/invite-manager'],],
+                    ['label' => 'Mangers', 'icon' => 'dashboard', 'url' => ['/managers-list'],],
                     ['label' => 'Login', 'url' => ['site/login'], 'visible' => Yii::$app->user->isGuest],
                     [
                         'label' => 'Some tools',

@@ -18,14 +18,23 @@ class UpdateMangerPasswordAction extends Action
      * Renders an admin panel
      * @return string
      */
-    public function run($id)
+    public function run()
     {
-        $user = User::findOne($id);
         $modelRegistration = new RegistrationForm();
 
-
-        return $this->controller->renderAjax($this->view, [
-            'modelRegistration' => $modelRegistration
-        ]);
+        if (\Yii::$app->request->post()) {
+            $modelRegistration->setScenario($modelRegistration::SCENARIO_PASSWORD_CREATE);
+            if ($modelRegistration->load(\Yii::$app->request->post()) && $modelRegistration->validate()) {
+                $user = User::findByEmail(\Yii::$app->user->identity->email);
+                $user->password = \Yii::$app->security->generatePasswordHash($modelRegistration->password);
+                if ($user->save(false)) {
+                    \Yii::$app->user->logout();
+                    return $this->controller->goHome();
+                }
+            }
+            return $this->controller->render($this->view, [
+                'modelRegistration' => $modelRegistration
+            ]);
+        }
     }
 }

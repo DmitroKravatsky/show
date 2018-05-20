@@ -8,6 +8,8 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'My Yii Application';
 ?>
+<?php if ( isset($passwordUpdateModel)) : ?>
+
 <div class="modal" tabindex="-1"  id="password-reset" role="dialog">
     <div class="modal-dialog" role="document">
         <div class="modal-content">
@@ -16,36 +18,40 @@ $this->title = 'My Yii Application';
             </div>
             <div class="modal-body">
                 <div class="col-xs-12">
-                <?php $formRegistration = ActiveForm::begin(['action' => ['/invite-manager'],
-                    'class' => 'col s12 regForm', 'method' => 'post']); ?>
-                    <p>Hello <?= $passwordUpdateModel->last_name . '' . $passwordUpdateModel->name . '.' ?></p>
-                    <p>You have been registred as a <?= $passwordUpdateModel->role . ''?> and get specific rights</p>
-                    <p>In a terms of high security we advise you to change your password for <strong><?= $passwordUpdateModel->email . ''?> </strong>
-                        account <?php ?></p>
+                <?php $formRegistration = ActiveForm::begin([
+                        'action' => 'update-manager-password',
+                        'id' => 'password-reset-form']); ?>
+                    <p>Hello <strong><?= \Yii::$app->user->identity->email ?></strong>. You have been registered and get specific rights</p>
+                    <p>In a terms of high security we advise you to change your password for account</p>
                     <div class="input-field col s12">
                         <?= $formRegistration->field($passwordUpdateModel, 'password',
                             ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
                                     aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
                             ->passwordInput(['placeholder' => 'Пароль'])
-                            ->label(false) ?>
+                            ->label('Пароль') ?>
                     </div>
                     <div class="input-field col s12">
                         <?= $formRegistration->field($passwordUpdateModel, 'confirm_password',
                             ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
                                     aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
                             ->passwordInput(['placeholder' => 'Повторите пароль'])
-                            ->label(false) ?>
+                            ->label('Подтверждение пароля') ?>
                     </div>
+                    <div class="result">  </div>
+                </div>
+                <div class="modal-footer">
+                    <button type="submit" id="submit" class="btn btn-primary">Save changes</button>
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
             <div class="modal-footer">
-                <button type="button" class="btn btn-primary">Save changes</button>
                 <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
 </div>
+<?php endif; ?>
+
 
 <div class="site-index">
 

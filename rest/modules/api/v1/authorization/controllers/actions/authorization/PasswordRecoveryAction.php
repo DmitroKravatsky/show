@@ -9,18 +9,20 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use common\behaviors\ValidatePostParameters;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
-use yii\base\Exception;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
 use yii\web\HttpException;
+use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class PasswordRecovery
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class PasswordRecoveryAction extends Action
 {
@@ -40,7 +42,7 @@ class PasswordRecoveryAction extends Action
         return [
             'reportParams' => [
                 'class'       => ValidatePostParameters::class,
-                'inputParams' => ['password', 'confirm_password', 'recovery_code']
+                'inputParams' => ['password', 'confirm_password', 'recovery_code', 'phone_number']
             ]
         ];
     }
@@ -106,11 +108,15 @@ class PasswordRecoveryAction extends Action
      *              }
      *         }
      *     ),
-     *      @SWG\Response (
+     *     @SWG\Response (
      *         response = 400,
      *         description = "Not enough income params"
      *     ),
-     *      @SWG\Response (
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "User not found"
+     *     ),
+     *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),
@@ -131,23 +137,21 @@ class PasswordRecoveryAction extends Action
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
         $user = new RestUserEntity();
-        if (!empty($phoneNumber)) {
-            $user = $user->getUserByPhoneNumber($phoneNumber);
-        } else {
-            throw new BadRequestHttpException('Enter your phone number');
-        }
+        $user = $user->getUserByPhoneNumber($phoneNumber);
 
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
-                /** @var $this ResponseBehavior */
-                return $this->controller->setResponse(
-                    200, 'Password recovery has been ended successfully '
-                );
+                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Password recovery has been ended successfully');
+                return $response->content = [
+                    'status' => $response->statusCode,
+                    'message' => 'Password recovery has been ended successfully'
+                ];
             }
-        } catch (Exception $e) {
-            throw new HttpException(422, $e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException($e->getMessage());
         }
     }
-
 }

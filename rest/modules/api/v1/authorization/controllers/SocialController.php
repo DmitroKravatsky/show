@@ -3,19 +3,16 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\social\{
-
-    FbAuthorizeAction, GmailAuthorizeAction, VkLoginAction, VkRegisterAction
+    FbAuthorizeAction, GmailAuthorizeAction
 };
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\filters\VerbFilter;
-use rest\behaviors\ResponseBehavior;
 use yii\rest\Controller;
 
 /**
  * Class SocialController
  * @package rest\modules\api\v1\authorization\controllers
  *
- * @mixin ResponseBehavior
  */
 class SocialController extends Controller
 {
@@ -32,14 +29,10 @@ class SocialController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'vk-register'         => ['POST'],
-                'vk-login'            => ['POST'],
-                'gmail-authorize'     => ['POST'],
-                'fb-authorization'    => ['POST'],
+                'gmail-authorize'   => ['POST'],
+                'fb-authorization'  => ['POST'],
             ]
         ];
-
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
@@ -51,22 +44,12 @@ class SocialController extends Controller
     {
         $actions = parent::actions();
 
-        $actions['vk-register'] = [
-            'class'      => VkRegisterAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['vk-login'] = [
-            'class'      => VkLoginAction::class,
-            'modelClass' => $this->modelClass
-        ];
-
-        $actions['gmail-authorize'] = [
+        $actions['gmail-authorize'] =  [
             'class'      => GmailAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];
 
-        $actions['fb-authorize'] = [
+        $actions['fb-authorize']    =  [
             'class'      => FbAuthorizeAction::class,
             'modelClass' => $this->modelClass
         ];

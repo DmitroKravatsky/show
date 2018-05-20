@@ -199,4 +199,14 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return static::findOne(['phone_number' => $phoneNumber]);
     }
+
+    /**
+     * Find user by email
+     * @param $email
+     * @return null|static
+     */
+    public static function findByEmail($email)
+    {
+        return static::findOne(['email' => $email]);
+    }
 }

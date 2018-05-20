@@ -2,8 +2,9 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\admin\IndexAction;
-use backend\modules\admin\controllers\actions\admin\InviteManagerAction;
+use backend\modules\admin\controllers\actions\admin\{
+    DeleteManagerAction, IndexAction, InviteManagerAction, ManagersListAction,
+    ReInviteManagerAction, UpdateMangerPasswordAction};
 use yii\web\Controller;
 
 class AdminController extends Controller
@@ -19,14 +20,23 @@ class AdminController extends Controller
     public function actions()
     {
         return [
-            'index'         => [
+            'index'          => [
                 'class' => IndexAction::class
             ],
             'invite-manager' => [
                 'class' => InviteManagerAction::class
             ],
             'update-manager-password' => [
-                'class' => InviteManagerAction::class
+                'class' => UpdateMangerPasswordAction::class
+            ],
+            'delete-manager' => [
+                'class' => DeleteManagerAction::class
+            ],
+            'managers-list'  => [
+                'class' => ManagersListAction::class
+            ],
+            're-invite'      => [
+                'class' => ReInviteManagerAction::class
             ],
         ];
     }

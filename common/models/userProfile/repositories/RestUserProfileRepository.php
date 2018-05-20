@@ -60,22 +60,19 @@ trait RestUserProfileRepository
     public function updateProfile(array $params): UserProfileEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-
         try {
-            $user = RestUserEntity::findOne(\Yii::$app->user->id);
-            $user->setAttributes($params);
-            if (!$user->validate()) {
-                $this->throwModelException($user->errors);
-            }
-
-            $userProfile = UserProfileEntity::findOne(['user_id' => $user->id]);
+            $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
+            if (isset($params['base64_image'])) {
+                $params['avatar'] = $this->updateAvatar($params);
+                unset($params['base64_image']);
+            }
             $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
                 $this->throwModelException($userProfile->errors);
             }
 
-            if ($user->save() && $userProfile->save()) {
+            if ($userProfile->save()) {
                 $transaction->commit();
                 return $userProfile;
             }
@@ -117,7 +114,7 @@ trait RestUserProfileRepository
     public function getSocialService(array $userModel)
     {
         if (!$userModel['source'] || $userModel['source'] === 'native') {
-            return false;
+            return $userModel;
         }
 
         if ($userModel['source'] === RestUserEntity::FB) {
@@ -133,5 +130,26 @@ trait RestUserProfileRepository
         }
 
         return $userModel;
+    }
+
+    /**
+     * Updates user avatar
+     * @param array $params
+     * @return null|static
+     * @throws ServerErrorHttpException
+     */
+    public function updateAvatar(array $params)
+    {
+        /** @var \frostealth\yii2\aws\s3\Service $s3 */
+        $s3 = \Yii::$app->get('s3');
+
+        $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
+            . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
+        $params['user_id'] = \Yii::$app->user->identity->getId();
+
+        $result = $s3->commands()->put($fileName, base64_decode($params['base64_image']))
+            ->withContentType("image/jpeg")->execute();
+        return $result->get('ObjectURL');
+
     }
 }

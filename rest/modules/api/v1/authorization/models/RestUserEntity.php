@@ -4,7 +4,7 @@ namespace rest\modules\api\v1\authorization\models;
 
 use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\userProfile\UserProfileEntity;
-use rest\behaviors\ValidationExceptionFirstMessage;
+use common\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
 use yii\base\Exception;
@@ -14,6 +14,7 @@ use yii\web\ErrorHandler;
 use yii\web\HttpException;
 use yii\web\ServerErrorHttpException;
 use yii\db\Exception as ExceptionDb;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class RestUserEntity
@@ -56,9 +57,9 @@ class RestUserEntity extends User
 
     const STATUS_UNVERIFIED = 'UNVERIFIED';
     const STATUS_VERIFIED   = 'VERIFIED';
+    const STATUS_BANNED     = 'BANNED';
 
     const FB     = 'fb';
-    const VK     = 'vk';
     const GMAIL  = 'gmail';
     const NATIVE = 'native';
 
@@ -118,7 +119,7 @@ class RestUserEntity extends User
             'email', 'password', 'confirm_password', 'phone_number','recovery_code'
         ];
 
-        $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number',];
+        $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number'];
 
         $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
 
@@ -192,7 +193,7 @@ class RestUserEntity extends User
                 'on'               => [self::SCENARIO_REGISTER, self::SCENARIO_RECOVERY_PWD]
             ],
             [['source', 'source_id', 'phone_number'], 'string'],
-            ['source', 'in', 'range' => [self::FB, self::VK, self::GMAIL, self::NATIVE]],
+            ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
@@ -217,11 +218,7 @@ class RestUserEntity extends User
             $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
             $this->status = self::STATUS_UNVERIFIED;
-            if ($this->source == self::NATIVE) {
-                $this->password = \Yii::$app->security->generatePasswordHash($this->password);
-            } else {
-                $this->password = \Yii::$app->security->generatePasswordHash($this->password);
-            }
+            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
         }
         return true;
     }
@@ -293,24 +290,7 @@ class RestUserEntity extends User
     }
 
     /**
-     * Check user by phone_number and get his data
-     *
-     * @param $phoneNumber
-     * @return RestUserEntity
-     * @throws ServerErrorHttpException
-     */
-    public function getUserByPhoneNumber($phoneNumber)
-    {
-        if (empty($restUser = RestUserEntity::findOne(['phone_number' => $phoneNumber]))) {
-            throw new ServerErrorHttpException('Пользователя с таким номером телефона не существует, 
-            пройдите процедуру регистрации.');
-        }
-
-        return $restUser;
-    }
-
-    /**
-     * Recovery users password
+     * Recovery user`s password
      *
      * @param $postData
      * @return bool
@@ -323,12 +303,14 @@ class RestUserEntity extends User
         $createdRecoveryCode = $this->created_recovery_code;
         try{
             $this->setAttributes($postData);
-            if ($this->validate() && $this->checkRecoveryCode($recoveryCode,$createdRecoveryCode,$postData['recovery_code'])){
+            if ($this->validate()
+                && $this->checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData['recovery_code'])
+            ) {
                 return $this->save();
             }
             $this->validationExceptionFirstMessage($this->errors);
         } catch (ExceptionDb $e) {
-            throw new HttpException(422, $e->getMessage());
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e) {
             \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');

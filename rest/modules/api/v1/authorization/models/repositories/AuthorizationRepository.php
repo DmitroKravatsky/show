@@ -2,17 +2,13 @@
 
 namespace rest\modules\api\v1\authorization\models\repositories;
 
-use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
-use yii\filters\auth\HttpBearerAuth;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\db\Exception as ExceptionDb;
+use yii\web\{
+    NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
+};
 
 /**
  * Class AuthorizationRepository
@@ -33,19 +29,16 @@ trait AuthorizationRepository
     public function register(array $params)
     {
         $transaction = \Yii::$app->db->beginTransaction();
-        $refresh_token = \Yii::$app->security->generateRandomString(100);
 
         try {
             $user = new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
                 'source'                => self::NATIVE,
-                'phone_number'          => $params['phone_number'] ?? null,
-                'terms_condition'       => $params['terms_condition'] ?? 0,
-                'password'              => $params['password'] ?? null,
-                'confirm_password'      => $params['confirm_password'] ?? null,
-                'refresh_token'         => $refresh_token,
-                'created_refresh_token' => time(),
+                'phone_number'          => $params['phone_number'],
+                'terms_condition'       => $params['terms_condition'],
+                'password'              => $params['password'],
+                'confirm_password'      => $params['confirm_password'],
                 'verification_code'     => rand(1000, 9999),
             ]);
 
@@ -57,7 +50,7 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            \Yii::$app->sendSms->run('Ваш код верификации', $user->phone_number);
+            \Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
 
             $transaction->commit();
 
@@ -73,7 +66,7 @@ trait AuthorizationRepository
     }
 
     /**
-     * Request user profile and return user model
+     * Login user in a system
      *
      * @param $params array of the POST data
      *
@@ -92,7 +85,7 @@ trait AuthorizationRepository
         }
 
         /** @var RestUserEntity $user */
-        $user = $this->getUserByParams($params);
+        $user = $this->getUserByPhoneNumber($params['phone_number']);
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
@@ -113,11 +106,31 @@ trait AuthorizationRepository
     {
         if (isset($params['email']) && !empty($user = self::findOne(['email' => $params['email']]))) {
             return $user;
-        } elseif (isset($params['phone_number']) && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))) {
+        } elseif (
+            isset($params['phone_number'])
+            && !empty($user = self::findOne(['phone_number' => $params['phone_number']]))
+        ) {
             return $user;
         }
 
         throw new NotFoundHttpException('Пользователь не найден, пройдите этап регистрации.');
+    }
+
+    /**
+     * Find user by phone number
+     * @param string $phoneNumber
+     *
+     * @return RestUserEntity
+     *
+     * @throws NotFoundHttpException
+     */
+    public function getUserByPhoneNumber($phoneNumber): RestUserEntity
+    {
+        $user = self::findOne(['phone_number' => $phoneNumber]);
+        if ($user) {
+            return $user;
+        }
+        throw new NotFoundHttpException('User not found');
     }
 
     /**
@@ -169,47 +182,54 @@ trait AuthorizationRepository
      *
      * @return array
      *
-     * @throws HttpException
+     * @throws UnauthorizedHttpException
+     * @throws UnprocessableEntityHttpException
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
     public function generateNewAccessToken()
     {
-        $oldAccessToken = $this->getAuthKey();
-        $userModel = RestUserEntity::findIdentityByAccessToken($oldAccessToken, HttpBearerAuth::class);
-        $userId = $userModel->id;
         $currentRefreshToken = \Yii::$app->getRequest()->getBodyParam('refresh_token');
-
-        $user = RestUserEntity::findOne(['refresh_token' => $currentRefreshToken, 'id' => $userId]);
-
-        if (!$user) {
-            throw new NotFoundHttpException('Пользователь с таким токеном не найден.');
-        }
-        $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $user->addBlackListToken($oldAccessToken);
-            $newAccessToken = $user->getJWT();
+            $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
+            if (!$user) {
+                throw new NotFoundHttpException('User not found');
+            }
+            if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
+                throw new UnauthorizedHttpException('Refresh token was expired');
+            }
+            // todo мне кажеться это лишняя проверка? Что скажешь?
+            if ($user->refresh_token !== $currentRefreshToken) {
+                throw new UnprocessableEntityHttpException('Refresh token is invalid');
+            }
 
-            $transaction->commit();
+            $newAccessToken = $user->getJWT();
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->created_refresh_token = time();
+
+            if (!$user->save()) {
+                return $this->throwModelException($user->errors);
+            }
 
             return [
                 'access_token'  => $newAccessToken,
                 'refresh_token' => $user->refresh_token,
-                'exp'  => RestUserEntity::getPayload($newAccessToken, 'exp'),
-                'user' => [
-                    'id'            => $user->getId(),
-                    'phone_number'  => $user->phone_number,
-                    'role'          => $user->getUserRole($user->id),
-                    'created_at'    => $user->created_at,
-                    'status'        => $user->status
+                'exp'           => RestUserEntity::getPayload($newAccessToken, 'exp'),
+                'user'          => [
+                    'id'           => $user->getId(),
+                    'phone_number' => $user->phone_number,
+                    'role'         => $user->getUserRole($user->id),
+                    'created_at'   => $user->created_at,
+                    'status'       => $user->status
                 ]
             ];
-
-        } catch (ExceptionDb $e) {
-            $transaction->rollBack();
-            throw new HttpException(422, $e->getMessage());
+        } catch (UnauthorizedHttpException $e) {
+            throw new UnauthorizedHttpException($e->getMessage());
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e){
-            $transaction->rollBack();
             \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
         }
@@ -220,7 +240,7 @@ trait AuthorizationRepository
      *
      * @param $params array of the POST input data
      *
-     * @return bool
+     * @return RestUserEntity
      *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
@@ -250,8 +270,9 @@ trait AuthorizationRepository
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
-            $user->refresh_token = \Yii::$app->security->generateRandomString(32);
-            $user->created_refresh_token = time();
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);// todo зачем?!!!!
+            $user->created_refresh_token = time();  // todo зачем?!!!!
+
 
             if (!$user->save()) {
                 return $this->throwModelException($user->errors);
@@ -263,7 +284,6 @@ trait AuthorizationRepository
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
-
         }
     }
 
@@ -272,20 +292,16 @@ trait AuthorizationRepository
      *
      * @return bool
      * @throws ServerErrorHttpException
-     * @throws ServerErrorHttpException
      */
     public function logout()
     {
         $restUser = RestUserEntity::findOne(\Yii::$app->user->id);
-
         try {
             $restUser->addBlackListToken($restUser->getAuthKey());
             return true;
-
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException;
+            throw new ServerErrorHttpException();
         }
-
     }
 
     /**

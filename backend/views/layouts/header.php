@@ -232,9 +232,9 @@ use yii\helpers\Html;
                         <img src="<?= $directoryAsset ?>/img/user2-160x160.jpg" class="user-image" alt="User Image"/>
                         <span class="hidden-xs">
                             <?php
-                            if (\Yii::$app->user->identity->phone_number) {
+                            if (isset(\Yii::$app->user->identity->phone_number)) {
                                 echo \Yii::$app->user->identity->phone_number;
-                            } elseif (\Yii::$app->user->identity->email) {
+                            } elseif (isset(\Yii::$app->user->identity->email)) {
                                 echo \Yii::$app->user->identity->email;
                             }
                             ?>

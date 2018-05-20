@@ -13,16 +13,16 @@ class LoginAction extends Action
 
     public function run()
     {
-        if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('admin')) {
+       /* if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('admin')) {
             return $this->controller->redirect('/admin/index');
-        }
+        }*/
         $modelLogin = new LoginForm();
-        if (\Yii::$app->request->get('invite_code')) {
+        if ($invitedCode = \Yii::$app->request->get('invite_code')) {
             $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));
-            return $this->controller->redirect(['/index', 'invitedByLink' => true]);
+            return $this->controller->redirect(['/index', 'inviteCode' => $invitedCode]);
         }
         if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {
-            if (\Yii::$app->user->can('admin')) {
+            if (\Yii::$app->user->can('admin') || \Yii::$app->user->can('manager')) {
                 return $this->controller->redirect(['/index']);
             } else {
                 \Yii::$app->getSession()->setFlash('Enter_failed', "You haven't permission to enter to protected area. Please check your credentials. ");

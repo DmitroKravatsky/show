@@ -8,6 +8,7 @@ use yii\widgets\ActiveForm;
 
 $this->title = 'My Yii Application';
 ?>
+<div class="col-xs-12 col-sm-8 col-md-4 col-sm-offset-2 col-md-offset-4">
 <div class="row">
     <div class="col s12 m10 offset-m1 l6 offset-l3 z-depth-5 forms-box">
 
@@ -44,6 +45,13 @@ $this->title = 'My Yii Application';
                 ->label(false); ?>
         </div>
         <div class="input-field col s12">
+            <?= $formRegistration->field($modelRegistration, 'phone_number',
+                ['template' => "{label}\n<i class=\"fa fa-envelope fa-fw prefix\" 
+                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
+                ->textInput(['class' => 'validate', 'placeholder' => 'Phone number'])
+                ->label(false); ?>
+        </div>
+        <div class="input-field col s12">
             <?= $formRegistration->field($modelRegistration, 'password',
                 ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
                                     aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
@@ -67,3 +75,4 @@ $this->title = 'My Yii Application';
     </div>
     </div>
 </div>
+    </div class="container">

@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use common\behaviors\ValidatePostParameters;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -14,6 +13,8 @@ use yii\web\ServerErrorHttpException;
 /**
  * Class GenerateNewAccessTokenAction
  * @package rest\modules\api\v1\authorization\controllers\actions\authorization
+ *
+ * @mixin ValidatePostParameters
  */
 class GenerateNewAccessTokenAction extends Action
 {
@@ -97,7 +98,7 @@ class GenerateNewAccessTokenAction extends Action
      *              "message": "New access token has been generated",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4c",
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *                  "exp": "1520070475",
      *                  "user": {
      *                      "id": "531",
@@ -141,8 +142,12 @@ class GenerateNewAccessTokenAction extends Action
         $restUser = new $this->modelClass();
         $responseData = $restUser->generateNewAccessToken();
 
-        /** @var $this ResponseBehavior */
-        return $this->controller->setResponse(201, 'New token is created', $responseData);
+        $response = \Yii::$app->getResponse()->setStatusCode(201, 'New token is created');
+        return [
+            'status'  => $response->statusCode,
+            'message' => 'New token is created',
+            'data'    => $responseData
+        ];
     }
 
 }

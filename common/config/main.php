@@ -14,5 +14,15 @@ return [
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
+        's3'          => [
+            'class'         => \frostealth\yii2\aws\s3\Service::class,
+            'credentials'   => [
+                'key'    => 'AKIAJPBLFOYFCW3AFGHA',
+                'secret' => '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',
+            ],
+            'region'        => 'us-east-1',
+            'defaultBucket' => 'bigbizbucket',
+            'defaultAcl'    => 'public-read'
+        ],
     ],
 ];

@@ -5,7 +5,6 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
-use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
@@ -61,7 +60,7 @@ class LoginAction extends Action
      *              "data": {
      *                  "user_id" : "157",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
-     *                  "refresh_token": "7xrWq_jXqZQxSu_PlmjGml0278VHxU5-UStp12cDe2cO2UGs4rL8LYcQQiVMYmp5pqBwJK1hmKvFcUWzsIdRiAQ-o4E5lBm06gmn"
+     *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk"
      *              }
      *         }
      *     ),
@@ -99,31 +98,31 @@ class LoginAction extends Action
             $userModel = new $this->modelClass;
 
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
-                if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
-                    $user->created_refresh_token = time();
-                    $user->refresh_token = \Yii::$app->security->generateRandomString(100);
+                $user->created_refresh_token = time();
+                $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
 
-                    if (!$user->save(false)) {
-                        throw new ServerErrorHttpException(
-                            'Server internal error');
-                    }
+                if (!$user->save(false)) {
+                    throw new ServerErrorHttpException();
                 }
+                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
 
-                return $this->controller->setResponse(
-                    200, 'Authorization was successful', [
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => 'Authorization was successful',
+                    'data'    => [
                         'user_id' => $user->id,
                         'access_token'  => $user->getJWT(['user_id' => $user->id]),
                         'refresh_token' => $user->refresh_token
-                ]);
+                    ]
+                ];
             }
-
             throw new UnauthorizedHttpException();
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (UnauthorizedHttpException $e) {
-            throw new UnauthorizedHttpException('Check your credentials');
+            throw new UnauthorizedHttpException('Wrong credentials');
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Server internal error');
         }

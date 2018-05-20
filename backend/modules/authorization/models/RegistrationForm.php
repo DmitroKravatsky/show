@@ -9,6 +9,7 @@ class RegistrationForm extends Model
 {
     public $authorizationModel = User::class;
     public $email;
+    public $phone_number;
     public $name;
     public $last_name;
     public $role;
@@ -16,6 +17,7 @@ class RegistrationForm extends Model
     public $confirm_password;
 
     const SCENARIO_PASSWORD_CREATE = 'password_create';
+    const SCENARIO_MANAGER_CREATE  = 'manager_create';
     const ROLE_ADMIN   = 'ADMIN';
     const ROLE_MANAGER = 'MANAGER';
 
@@ -32,10 +34,12 @@ class RegistrationForm extends Model
     public function rules()
     {
         return [
-
-            [['email', 'name', 'last_name', 'role', 'password', 'confirm_password'], 'required'],
+            [['email', 'name', 'last_name', 'role', 'password', 'confirm_password', 'phone_number'], 'required' ],
+            ['phone_number', PhoneInputValidator::class],
             ['email', 'validateEmail'],
+            ['phone_number', 'validatePhoneNumber'],
             [['name', 'last_name',], 'string', 'max' => 20],
+            [['password'], 'string', 'min' => 6],
             [
                 'confirm_password',
                 'compare',
@@ -97,6 +101,31 @@ class RegistrationForm extends Model
     public function getEmail()
     {
         return User::findOne(['email' => $this->email]);
+    }
+
+    /**
+     * Check phone_number on the unique value
+     *
+     * @param $attribute
+     */
+    public function validatePhoneNumber($attribute)
+    {
+        if (!$this->hasErrors()) {
+            $email = $this->getPhoneNumber();
+            if ($email) {
+                $this->addError($attribute, 'Данный номер телефона уже зарегистрирован');
+            }
+        }
+    }
+
+    /**
+     * Getting phone_number for validate
+     *
+     * @return User
+     */
+    public function getPhoneNumber()
+    {
+        return User::findOne(['phone_number' => $this->phone_number]);
     }
 
 
