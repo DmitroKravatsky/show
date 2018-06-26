@@ -59,7 +59,7 @@ class GmailAuthorizeAction extends Action
      *      produces={"application/json"},
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "token",
+     *          name = "access_token",
      *          description = "user's token on gmail",
      *          required = true,
      *          type = "string"
@@ -73,7 +73,7 @@ class GmailAuthorizeAction extends Action
      *          enum = {0, 1}
      *      ),
      *      @SWG\Response(
-     *         response = 201,
+     *         response = 200,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
@@ -86,10 +86,10 @@ class GmailAuthorizeAction extends Action
      *              ),
      *         ),
      *         examples = {
-     *              "status": 201,
-     *              "message": "You have been authorized",
+     *              "status": 200,
+     *              "message": "Authorization was successful",
      *              "data": {
-     *                  "id": "93",
+     *                  "user_id": "93",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
@@ -98,6 +98,10 @@ class GmailAuthorizeAction extends Action
      *     @SWG\Response (
      *         response = 400,
      *         description = "Bad request"
+     *     ),
+     *      @SWG\Response (
+     *         response = 401,
+     *         description = "Wrong credentials"
      *     ),
      *      @SWG\Response (
      *         response = 422,
@@ -119,13 +123,16 @@ class GmailAuthorizeAction extends Action
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
         $user = $model->gmailAuthorization(\Yii::$app->request->bodyParams);
+        $response = \Yii::$app->getResponse()->setStatusCode(200);
 
-        return $this->controller->setResponse(
-            201, 'You have been authorized', [
-                'id'            => $user->id,
+        return [
+            'status'  => $response->statusCode,
+            'message' => \Yii::t('app', 'Authorization was successful'),
+            'data'    => [
+                'user_id' => $user->id,
                 'access_token'  => $user->getJWT(['user_id' => $user->id]),
-                'refresh_token' => $user->refresh_token,
+                'refresh_token' => $user->refresh_token
             ]
-        );
+        ];
     }
 }
