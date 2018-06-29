@@ -50,6 +50,7 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
+                'logout'      => 'authorization/authorization/logout',
                 'index'       => 'admin/admin/index',
                 'bid/index'   => 'admin/bid/index'
             ],
