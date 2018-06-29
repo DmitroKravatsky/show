@@ -6,7 +6,7 @@ use common\models\user\User;
 use yii\base\Action;
 
 /**
- * Class DeleteManagerAction
+ * Class ReInviteManagerAction
  * @package backend\modules\admin\controllers\actions\admin
  */
 class ReInviteManagerAction extends Action

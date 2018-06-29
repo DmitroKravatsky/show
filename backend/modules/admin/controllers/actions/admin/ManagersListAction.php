@@ -6,7 +6,7 @@ use yii\base\Action;
 use yii\data\ActiveDataProvider;
 
 /**
- * Class IndexAction
+ * Class ManagersListAction
  * @package backend\modules\admin\controllers\actions\admin
  */
 class ManagersListAction extends Action

@@ -8,7 +8,7 @@ use common\models\userProfile\UserProfileEntity;
 use yii\base\Action;
 
 /**
- * Class IndexAction
+ * Class InviteManagerAction
  * @package backend\modules\admin\controllers\actions\admin
  */
 class InviteManagerAction extends Action
