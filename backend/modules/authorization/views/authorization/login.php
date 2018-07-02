@@ -4,6 +4,7 @@
 /* @var $form yii\bootstrap\ActiveForm */
 /* @var $modelLogin \backend\modules\authorization\models\LoginForm */
 
+use backend\modules\authorization\models\RegistrationForm;
 use yii\helpers\Html;
 use yii\bootstrap\ActiveForm;
 

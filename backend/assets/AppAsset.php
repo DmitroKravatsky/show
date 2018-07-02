@@ -16,6 +16,7 @@ class AppAsset extends AssetBundle
         'css/login.css',
     ];
     public $js = [
+        'js/change-password-modal.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
