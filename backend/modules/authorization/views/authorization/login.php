@@ -2,7 +2,7 @@
 
 /* @var $this yii\web\View */
 /* @var $form yii\bootstrap\ActiveForm */
-/* @var $model \common\models\LoginForm */
+/* @var $modelLogin \backend\modules\authorization\models\LoginForm */
 
 use backend\modules\authorization\models\RegistrationForm;
 use yii\helpers\Html;
@@ -11,46 +11,46 @@ use yii\bootstrap\ActiveForm;
 $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<section class="forms">
-    <div class="container box">
-        <a href="index.html" class="logo z-depth-3"></a>
-        <div class="row">
-            <div class="col s12 m10 offset-m1 l6 offset-l3 z-depth-5 forms-box">
-                <div class="col s12">
-                    <ul class="tabs">
-                        <li class="tab col s6"><a href="#login">Авторизация</a></li>
-                    </ul>
+
+    <?php if(Yii::$app->session->has('Enter_failed')): ?>
+        <div class="alert alert-danger" role="alert"><?php echo Yii::$app->session->getFlash('Enter_failed')?></div>
+    <?php endif;?>
+
+<div class="limiter">
+    <div class="container-login100">
+        <div class="wrap-login100 p-t-190 p-b-30">
+            <?php $form = ActiveForm::begin(['id' => 'login-form',
+                'options' => ['class' => 'login100-form validate-form']
+            ]); ?>
+
+                <div class="wrap-input100 validate-input m-b-10" >
+                    <?= $form->field($modelLogin, 'phone_number')->textInput([
+                            'autofocus' => true , 'class' => 'input100', 'placeholder' => "Enter Your Phone Number"
+                    ])->label(false) ?>
+                    <span class="symbol-input100">
+							<i class="fa fa-user"></i>
+                    </span>
                 </div>
-                <div id="login" class="col s12 ">
-                    <?php $form = ActiveForm::begin(['action' =>['login'], 'method' => 'post']); ?>
-                    <div class="row">
-                        <div class="input-field">
-                            <?= $form->field($modelLogin, 'phone_number',
-                                ['template' => "{label}\n<i class=\"fa fa-envelope fa-fw prefix\" 
-                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
-                                ->textInput(['class' => 'validate', 'placeholder' => 'E-mail'])
-                                ->label(false); ?>
-                        </div>
-                        <div class="input-field col s12">
-                            <?= $form->field($modelLogin, 'password',
-                                ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
-                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
-                                ->passwordInput(['placeholder' => 'Пароль'])->label(false); ?>
-                            <?php if (Yii::$app->session->has('forbiddenIp')) : ?>
-                                <div class="help-block"><?= Yii::$app->session->get('forbiddenIp')?></div>
-                            <?php endif ?>
-                        </div>
-                        <div class="input-field col s12">
-                            <?= Html::submitButton('Войти', [
-                                'class' => 'btn waves-effect waves-light green log-btn',
-                                'name' => 'login-button'
-                            ]); ?>
-                        </div>
-                    </div>
-                    <?php ActiveForm::end(); ?>
+
+                <div class="wrap-input100 validate-input m-b-10">
+                    <?= $form->field($modelLogin, 'password')->passwordInput([
+                            'class' => 'input100', 'placeholder' => "Enter Your Password"
+                    ])->label(false) ?>
+                    <span class="symbol-input100">
+							<i class="fa fa-lock"></i>
+                    </span>
                 </div>
-            </div>
+                <div class="wrap-input100 validate-input m-b-10">
+                    <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label("remember me") ?>
+                    <span class="symbol-input100">
+                                <i class="fa fa-lock"></i>
+                    </span>
+                </div>
+                <div class="container-login100-form-btn p-t-10">
+                    <?= Html::submitButton('Login', ['class' => 'login100-form-btn', 'name' => 'login-button']) ?>
+                </div>
+            <?php ActiveForm::end(); ?>
+
         </div>
     </div>
-</section>
-
+</div>

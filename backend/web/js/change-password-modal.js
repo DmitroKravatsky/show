@@ -3,14 +3,14 @@ $(document).ready(function () {
 });
 
 $(function () {
-    $(document).on('click', '.ajaxDelete', function () {
-        var deleteUrl = $(this).attr('deleteUrl');
+    $(document).on('click', '.ajaxReInviteMessage', function () {
+        var reInviteUrl = $(this).attr('reInviteUrl');
         $.ajax({
-            url: deleteUrl,
+            url: reInviteUrl,
             type : "post",
             dataType : 'json',
             error: function () {
-                alert('Error');
+                alert('Error occurred while processing request');
             },
             success : function () {
                 alert('Message was successfully send');

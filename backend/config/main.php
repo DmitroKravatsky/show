@@ -55,7 +55,8 @@ return [
                 'managers-list'  => 'admin/admin/managers-list',
                 'bid/index'      => 'admin/bid/index',
                 'login'          => 'authorization/authorization/login',
-                'invite-manager' => 'admin/admin/invite-manager'
+                'invite-manager' => 'admin/admin/invite-manager',
+                'logout'         => 'authorization/authorization/logout',
             ],
         ],
         'view' => [

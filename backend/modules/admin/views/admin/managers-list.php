@@ -36,13 +36,14 @@ $this->title = 'My Yii Application';
                                 ]);
                         },
                         'reInvite' => function($url, $model) {
-                            $deleteUrl = \Yii::$app->urlManager->createUrl([
+                            $reInviteUrl = \Yii::$app->urlManager->createUrl([
                                 '/admin/admin/re-invite',
                                 'user_id' => $model['user_id'],
                             ]);
-                            return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, ['deleteUrl' => $deleteUrl,
+                            return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
+                                'reInviteUrl' => $reInviteUrl,
                                 'title' => Yii::t('app', 'reInvite'),
-                                'class' => 'ajaxDelete',
+                                'class' => 'ajaxReInviteMessage',
                                 'method' => 'post'
                             ]);
                         }

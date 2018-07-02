@@ -40,7 +40,7 @@ $this->title = 'My Yii Application';
                     <div class="result">  </div>
                 </div>
                 <div class="modal-footer">
-                    <button type="submit" id="submit" class="btn btn-primary">Save changes</button>
+                    <input type="submit" id="submit" class="btn btn-primary">
                 </div>
                 <?php ActiveForm::end(); ?>
             </div>
