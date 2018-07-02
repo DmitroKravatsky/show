@@ -15,6 +15,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
     ];
     public $js = [
+        'js/editable-table-cell.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

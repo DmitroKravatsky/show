@@ -2,10 +2,11 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\bid\DetailAction;
-use backend\modules\admin\controllers\actions\bid\IndexAction;
-use backend\modules\admin\controllers\actions\bid\UpdateBidStatusAction;
+use backend\modules\admin\controllers\actions\bid\{
+    DetailAction, DeleteAction, IndexAction, UpdateBidStatusAction
+};
 use common\models\bid\BidEntity;
+use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 
@@ -46,9 +47,27 @@ class BidController extends Controller
             'detail' => [
                 'class' => DetailAction::class
             ],
+            'delete' => [
+                'class' => DeleteAction::class
+            ],
             'update-bid-status' => [
                 'class' => UpdateBidStatusAction::class
             ],
         ];
+    }
+
+    /**
+     * @return string
+     */
+    public function actionStatus()
+    {
+        if (\Yii::$app->request->isAjax) {
+            return Json::encode([
+                BidEntity::STATUS_ACCEPTED,
+                BidEntity::STATUS_PAID,
+                BidEntity::STATUS_DONE,
+                BidEntity::STATUS_REJECTED,
+            ]);
+        }
     }
 }
