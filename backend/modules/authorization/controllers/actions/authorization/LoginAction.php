@@ -15,7 +15,7 @@ class LoginAction extends Action
 
     public function run()
     {
-       // $this->controller->layout = $this->layout;
+        $this->controller->layout = $this->layout;
 
         $modelLogin = new LoginForm();
 
@@ -23,7 +23,6 @@ class LoginAction extends Action
             $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));
 
             if (!$result) {
-                $this->controller->layout = 'mainold';
                 throw new NotFoundHttpException('Page not found');
             }
 
