@@ -26,9 +26,7 @@
         "udokmeci/yii2-phone-validator" : "~1.0.1",
         "borales/yii2-phone-input": "*",
         "dmstr/yii2-adminlte-asset": "^2.1",
-        "frostealth/yii2-aws-s3": "~2.0",
-        "kartik-v/yii2-editable": "*",
-        "kartik-v/yii2-grid": "@dev"
+        "frostealth/yii2-aws-s3": "~2.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",
