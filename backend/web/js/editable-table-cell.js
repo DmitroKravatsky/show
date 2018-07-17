@@ -1,36 +1,35 @@
-$(function () {
-    $("td").dblclick(function () {
+
+    $('.status').on('change', function () {
+        var newStatus = this.value;
+        var fieldId = $(this).parent().parent().data('key');
+        alert(newStatus);
+        alert(fieldId);
         $.ajax({
-            url : '/admin/admin/bid/status',
+            url : '/admin/admin/bid/update-bid-status',
             type : "POST",
             async: false,
-            success : function (data) {
-                alert(data);
-                var select = $('<select/>');
+            data: {'status':newStatus, 'id':fieldId},
 
-                for (var val in data){
-                    alert(val);
-                    $('<option/>', {value : val, text: data[val]}).appendTo(select);
-                    select.appendTo('body');
-                }
+            success : function (data) {
+                // return true;
+                console.log(data);
             },
+
             error : function (data) {
-                console.log('failure');
+                console.log(data);
             }
         });
-        console.log('failure');
-        alert('fail');
 
-        var OriginalContent = $(this).text();
 
-        $(this).addClass("cellEditing");
-        $(this).html('' + OriginalContent+ "");
-        alert(OriginalContent);
-        $(this).children().first().focus();
+    });
 
-        $(this).children().first().change(function (e) {
+    $(document).on({
+        ajaxStart: function () {
+            $('#loader').show();
+        },
 
-        });
+        ajaxStop: function () {
+            $('#loader').hide();
+        }
+    });
 
-    })
-});

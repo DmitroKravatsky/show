@@ -59,7 +59,7 @@ class BidController extends Controller
     /**
      * @return string
      */
-    public function actionStatus()
+    public static function actionStatus()
     {
         if (\Yii::$app->request->isAjax) {
             return Json::encode([

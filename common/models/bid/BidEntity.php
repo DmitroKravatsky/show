@@ -210,4 +210,14 @@ class BidEntity extends ActiveRecord
         $this->sendEmailToManagers($this);
         return parent::afterSave($insert, $changedAttributes);
     }
+
+    public static function getAllAvailableStatuses(): array
+    {
+        return [
+            BidEntity::STATUS_ACCEPTED => BidEntity::STATUS_ACCEPTED,
+            BidEntity::STATUS_PAID     => BidEntity::STATUS_PAID,
+            BidEntity::STATUS_DONE     => BidEntity::STATUS_DONE,
+            BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
+        ];
+    }
 }
