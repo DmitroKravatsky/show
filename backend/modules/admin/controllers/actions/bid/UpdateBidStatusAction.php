@@ -6,8 +6,6 @@ use common\models\bid\BidEntity;
 use common\models\user\User;
 use PHPUnit\Framework\Exception;
 use yii\base\Action;
-use yii\web\NotFoundHttpException;
-use yii\web\Response;
 use yii\web\UnprocessableEntityHttpException;
 
 /**
