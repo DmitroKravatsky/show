@@ -24,7 +24,7 @@ class BidController extends Controller
             'verbs' => [
                 'class'      => VerbFilter::class,
                 'actions'    => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -32,7 +32,7 @@ class BidController extends Controller
 
     public function beforeAction($action)
     {
-        if (!\Yii::$app->user->can('admin')) {
+        if (!\Yii::$app->user->can('admin') && !\Yii::$app->user->can('manager')) {
             return $this->redirect(\Yii::$app->homeUrl);
         }
         return parent::beforeAction($action);
@@ -43,9 +43,6 @@ class BidController extends Controller
         return [
             'index'  => [
                 'class' => IndexAction::class
-            ],
-            'detail' => [
-                'class' => DetailAction::class
             ],
             'delete' => [
                 'class' => DeleteAction::class

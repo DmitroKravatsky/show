@@ -10,6 +10,7 @@ use yii\helpers\Html;
 $this->title = 'Bid Entities';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<?php \yii\widgets\Pjax::begin()?>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
@@ -20,7 +21,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
                     [
                         'class' => 'status',
-
                     ]
                     );
             },
@@ -39,11 +39,11 @@ $this->params['breadcrumbs'][] = $this->title;
         'updated_at',
         [
             'class' => \yii\grid\ActionColumn::class,
-            'template' => '{delete} {reInvite}',
+            'template' => '{delete}',
             'buttons' => [
                 'delete' => function($url, $model) {
                     $customUrl = \Yii::$app->urlManager->createUrl([
-                        'admin/admin/delete-manager',
+                        'admin/bid/delete',
                         'id' => $model['id']
                     ]);
                     return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
@@ -56,5 +56,6 @@ $this->params['breadcrumbs'][] = $this->title;
     ]
 
 ])?>
+<?php \yii\widgets\Pjax::end()?>
 <div id="loader">
 </div>

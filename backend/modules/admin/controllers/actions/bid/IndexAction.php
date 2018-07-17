@@ -25,11 +25,9 @@ class IndexAction extends Action
         $bids = BidEntity::find()->select(['id', 'status', 'created_by', 'from_payment_system',
             'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency',
             'from_sum', 'to_sum', 'created_at', 'updated_at']);
-//        $bids = BidEntity::find()->all();
         $dataProvider = new ActiveDataProvider([
             'query' => $bids
         ]);
-//        echo '<pre>' ;var_dump($dataProvider); exit;
 
         return $this->controller->render('index', [
             'dataProvider'  => $dataProvider,

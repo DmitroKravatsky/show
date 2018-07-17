@@ -20,7 +20,7 @@ class DeleteAction extends Action
     {
         $bid = BidEntity::findOne(['id' => $id]);
         if ($bid && $bid->delete()) {
-            return true;
+            return $this->controller->redirect('/admin/bids');
         }
         return false;
     }
