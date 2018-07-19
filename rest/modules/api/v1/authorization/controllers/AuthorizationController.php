@@ -3,8 +3,7 @@
 namespace rest\modules\api\v1\authorization\controllers;
 
 use rest\modules\api\v1\authorization\controllers\actions\authorization\{
-    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction,
-    SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
+    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction, ResendVerificationCodeAction, SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
 };
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
@@ -39,6 +38,7 @@ class AuthorizationController extends Controller
                 'send-recovery-code'        => ['POST'],
                 'password-recovery'         => ['POST'],
                 'verification-profile'      => ['POST'],
+                'resend-verification-code'  => ['POST'],
             ]
         ];
 
@@ -86,6 +86,10 @@ class AuthorizationController extends Controller
             ],
             'logout'                    => [
                 'class'      => LogoutAction::class,
+                'modelClass' => $this->modelClass
+            ],
+            'resend-verification-code'  => [
+                'class'      => ResendVerificationCodeAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];
