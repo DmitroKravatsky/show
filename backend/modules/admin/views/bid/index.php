@@ -1,8 +1,9 @@
 <?php
 
-use common\models\bid\BidEntity;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use common\models\bid\BidEntity;
+use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -10,7 +11,7 @@ use yii\helpers\Html;
 $this->title = 'Bid Entities';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php \yii\widgets\Pjax::begin()?>
+<?php Pjax::begin()?>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'columns' => [
@@ -56,6 +57,8 @@ $this->params['breadcrumbs'][] = $this->title;
     ]
 
 ])?>
-<?php \yii\widgets\Pjax::end()?>
+<?php Pjax::end()?>
 <div id="loader">
 </div>
+
+

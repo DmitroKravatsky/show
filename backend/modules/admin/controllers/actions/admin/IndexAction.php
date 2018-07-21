@@ -2,6 +2,8 @@
 
 namespace backend\modules\admin\controllers\actions\admin;
 
+use backend\modules\authorization\models\RegistrationForm;
+use common\models\user\User;
 use yii\base\Action;
 
 /**
@@ -16,8 +18,15 @@ class IndexAction extends Action
      * Renders an admin panel
      * @return string
      */
-    public function run()
+    public function run($inviteCode = null)
     {
+        if ($inviteCode) {
+            $userData = User::find()->select(['email'])->where(['user.invite_code' => $inviteCode])->one();
+
+            $passwordUpdateModel = new RegistrationForm();
+            $passwordUpdateModel->setAttributes($userData);
+            return $this->controller->render($this->view, ['passwordUpdateModel' => $passwordUpdateModel]);
+        }
         return $this->controller->render($this->view);
     }
 }

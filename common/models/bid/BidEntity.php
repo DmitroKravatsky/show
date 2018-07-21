@@ -54,10 +54,9 @@ class BidEntity extends ActiveRecord
     const EUR = 'eur';
 
     const STATUS_ACCEPTED = 'accepted';
-    const STATUS_PAID     = 'paid';
     const STATUS_DONE     = 'done';
     const STATUS_REJECTED = 'rejected';
-
+    const STATUS_PAID     = 'paid';
     /**
      * @var bool
      */
@@ -132,7 +131,7 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]],
+            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE]],
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',

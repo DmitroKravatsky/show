@@ -7,7 +7,7 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
 use yii\web\{
-    NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
+    HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
 };
 
 /**
@@ -316,5 +316,37 @@ trait AuthorizationRepository
             return true;
         }
         return false;
+    }
+
+    /**
+     * Creates and sends new verification code to user
+     * @param $phoneNumber
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function resendVerificationCode($phoneNumber):bool
+    {
+        try {
+            /** @var RestUserEntity $user */
+            $user = static::findByPhoneNumber($phoneNumber);
+            if (!$user) {
+                throw new NotFoundHttpException('User not found');
+            }
+
+            $user->verification_code = rand(1000, 9999);
+            if ($user->save(false)) {
+                \Yii::$app->sendSms->run(
+                    'Ваш код верификации: ' .$user->verification_code,
+                    $phoneNumber
+                );
+                return true;
+            }
+
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException('User not found');
+        }
+
+        throw new ServerErrorHttpException('Internal server error');
     }
 }

@@ -13,10 +13,12 @@ class AppAsset extends AssetBundle
     public $baseUrl = '@web';
     public $css = [
         'css/site.css',
+        'css/login.css',
         'css/loading-animation.css',
     ];
     public $js = [
-        'js/editable-table-cell.js'
+        'js/editable-table-cell.js',
+        'js/change-password-modal.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',
