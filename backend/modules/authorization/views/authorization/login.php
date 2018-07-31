@@ -48,20 +48,3 @@ $this->params['breadcrumbs'][] = $this->title;
     </div>
 </div>
 
-
-<!--<div class="card card-container">
-        <div style="text-align: center" ><h2>Admin panel</h2></div>
-        <?php /*$form = ActiveForm::begin(['id' => 'login-form',
-                'options' => ['class' => 'form-signin']
-            ]); */?>
-        <span id="reauth-email" class="reauth-email"></span>
-        <?/*= $form->field($modelLogin, 'phone_number')->textInput([
-                            'autofocus' => true , 'class' => 'form-control', 'id'=>"inputEmail",  'placeholder' => "Enter Your Phone Number"
-                    ])->label(false) */?>
-        <?/*= $form->field($modelLogin, 'password')->passwordInput([
-                            'class' => 'form-control', 'id'=>"inputPassword", 'placeholder' => "Enter Your Password"
-                    ])->label(false) */?><div id="remember" class="checkbox">
-        <?/*= $form->field($modelLogin, 'rememberMe')->checkbox(['class' => "checkbox" ])->label("Remember me") */?>
-        <?/*= Html::submitButton('Login', ['class' => 'btn btn-lg btn-primary btn-block btn-signin', 'name' => 'login-button']) */?>
-        <?php /*ActiveForm::end(); */?>
-</div><!-- /card-container -->
