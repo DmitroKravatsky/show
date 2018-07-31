@@ -3,10 +3,10 @@
 /* @var $this \yii\web\View */
 /* @var $content string */
 
-use backend\assets\AppAsset;
+use yiister\gentelella\assets\Asset;
 use yii\helpers\Html;
 
-AppAsset::register($this);
+Asset::register($this);
 ?>
 <?php $this->beginPage() ?>
 <!DOCTYPE html>
@@ -19,12 +19,11 @@ AppAsset::register($this);
     <title><?= Html::encode($this->title) ?></title>
     <?php $this->head() ?>
 </head>
-<body>
+<body class="login">
 <?php $this->beginBody() ?>
     <div class="container">
         <?= $content ?>
     </div>
-</div>
 
 <?php $this->endBody() ?>
 </body>
