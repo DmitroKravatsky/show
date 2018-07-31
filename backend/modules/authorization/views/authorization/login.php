@@ -25,18 +25,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     <h1>Admin Panel</h1>
                     <div>
                         <?= $form->field($modelLogin, 'phone_number')->textInput([
-                            'autofocus' => true , 'class' => 'form-control', 'id'=>"inputEmail",  'placeholder' => "Enter Your Phone Number"
+                            'autofocus' => true,
+                            'class' => 'form-control',
+                            'id'=>"inputEmail",
+                            'placeholder' => "Enter Your Phone Number"
                             ])->label(false) ?>
                     </div>
                     <div>
                         <?= $form->field($modelLogin, 'password')->passwordInput([
-                            'class' => 'form-control', 'id'=>"inputPassword", 'placeholder' => "Enter Your Password"
+                            'class' => 'form-control',
+                            'id'=>"inputPassword",
+                            'placeholder' => "Enter Your Password"
                             ])->label(false) ?>
                     </div>
                     <div>
-                        <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label("Remember me", ['class' => "checkbox-inline", "style"=>"padding-left: 0px;"]) ?>
+                        <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label("Remember me", [
+                                'class' => "checkbox-inline", "style"=>"padding-left: 0px;"
+                        ]) ?>
                         <div class="clearfix"></div>
-                        <?= Html::submitButton('Login', ['class' => 'btn btn-default submit', 'name' => 'login-button']) ?>
+                        <?= Html::submitButton('Login', [
+                            'class' => 'btn btn-default submit',
+                            'name' => 'login-button'
+                        ]) ?>
                     </div>
 
                     <div class="clearfix"></div>
