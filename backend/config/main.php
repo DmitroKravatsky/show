@@ -51,13 +51,13 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'index'          => 'admin/admin/index',
-                'update-manager-password' => 'admin/admin/update-manager-password',
                 'managers-list'  => 'admin/admin/managers-list',
                 'bid/index'      => 'admin/bid/index',
                 'login'          => 'authorization/authorization/login',
                 'invite-manager' => 'admin/admin/invite-manager',
                 'logout'         => 'authorization/authorization/logout',
-                'bids'   => 'admin/bid/index'
+                'bids'           => 'admin/bid/index',
+                'update-manager-password' => 'admin/admin/update-manager-password',
             ],
         ],
         'view' => [

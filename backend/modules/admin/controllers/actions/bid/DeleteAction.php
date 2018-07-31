@@ -20,6 +20,7 @@ class DeleteAction extends Action
     {
         $bid = BidEntity::findOne(['id' => $id]);
         if ($bid && $bid->delete()) {
+            \Yii::$app->session->setFlash('delete-success', 'bid was successfully deleted');
             return $this->controller->redirect('/admin/bids');
         }
         return false;
