@@ -11,12 +11,12 @@ use yii\widgets\Pjax;
 $this->title = 'Bid Entities';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
-<?php foreach (Yii::$app->session->getFlash(''));
-if (Yii::$app->session->getFlash('delete-success')): ?>
-    <div class="alert alert-<">
-
+<?php if ($message = Yii::$app->session->getFlash('delete-success')): ?>
+    <div class="alert alert-success">
+        <?= $message ?>
+        <?php
+        ?>
     </div>
-    echo Yii::$app->session->getFlash('delete-success');
 <?php endif;?>
 <?php Pjax::begin()?>
 <?= GridView::widget([
@@ -30,7 +30,7 @@ if (Yii::$app->session->getFlash('delete-success')): ?>
                     [
                         'class' => 'status',
                     ]
-                    );
+                );
             },
             'format' => 'raw'
         ],

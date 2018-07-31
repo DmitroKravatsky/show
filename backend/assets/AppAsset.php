@@ -18,7 +18,8 @@ class AppAsset extends AssetBundle
     ];
     public $js = [
         'js/editable-table-cell.js',
-        'js/change-password-modal.js'
+        'js/change-password-modal.js',
+        'js/main.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

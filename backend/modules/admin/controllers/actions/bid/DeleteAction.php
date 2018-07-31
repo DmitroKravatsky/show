@@ -23,6 +23,7 @@ class DeleteAction extends Action
             \Yii::$app->session->setFlash('delete-success', 'bid was successfully deleted');
             return $this->controller->redirect('/admin/bids');
         }
+        \Yii::$app->session->setFlash('delete-fail', 'Something wrong, please try again later');
         return false;
     }
 
