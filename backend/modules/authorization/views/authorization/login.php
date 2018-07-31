@@ -21,7 +21,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <section class="login_content">
                 <?php $form = ActiveForm::begin(['id' => 'login-form',
                     'options' => ['class' => 'form-signin']
-                    ]); ?>
+                ]); ?>
                     <h1>Admin Panel</h1>
                     <div>
                         <?= $form->field($modelLogin, 'phone_number')->textInput([
