@@ -28,14 +28,8 @@ class UpdateBidStatusAction extends Action
         $newStatus = $bodyParams['status'];
 
         try {
-            $bid = BidEntity::findOne(['id' => $id]);
+            $bid = $this->controller->findBid($id);
 
-            if (!$bid) {
-                \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-                \Yii::$app->getResponse()->setStatusCode(404);
-
-                return ['status' => 404, 'message' => 'Bid not found'];
-            }
             $bid->setScenario($bid::SCENARIO_UPDATE_BID_STATUS);
             $bid->setAttribute('status', $newStatus);
 
@@ -50,7 +44,7 @@ class UpdateBidStatusAction extends Action
                     if ($user->email) {
                         \Yii::$app->sendMail->run(
                             '@common/views/mail/sendBidStatus-html.php',
-                            ['email' => $user->email, 'status' => $bid->status],
+                            ['email' => $user->email, 'status' => $bid->status, 'id' => $bid->id],
                             \Yii::$app->params['supportEmail'], $user->email, 'status is change'
                         );
                         $transaction->commit();

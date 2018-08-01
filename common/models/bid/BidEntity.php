@@ -131,7 +131,9 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE]],
+            ['status', 'in', 'range' => [
+                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]
+            ],
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
@@ -206,7 +208,9 @@ class BidEntity extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->sendEmailToManagers($this);
+        if($insert) {
+            $this->sendEmailToManagers($this);
+        }
         return parent::afterSave($insert, $changedAttributes);
     }
 

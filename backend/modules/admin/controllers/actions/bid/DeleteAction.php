@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\bid;
 
+use backend\modules\admin\controllers\BidController;
 use common\models\bid\BidEntity;
 use yii\base\Action;
 
@@ -11,6 +12,8 @@ use yii\base\Action;
  */
 class DeleteAction extends Action
 {
+    /** @var  BidController */
+    public $controller;
     /**
      * Delete's a bid
      * @param $id integer the id of a bid
@@ -18,8 +21,7 @@ class DeleteAction extends Action
      */
     public function run($id)
     {
-        $bid = BidEntity::findOne(['id' => $id]);
-        if ($bid && $bid->delete()) {
+        if ($this->controller->findBid($id)->delete()) {
             \Yii::$app->session->setFlash('delete-success', 'bid was successfully deleted');
             return $this->controller->redirect('/admin/bids');
         }

@@ -3,6 +3,7 @@
 use yii\grid\GridView;
 use yii\helpers\Html;
 use common\models\bid\BidEntity;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
@@ -21,6 +22,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php Pjax::begin()?>
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
+    'filterModel' => $searchModel,
     'columns' => [
         'id',
         [
@@ -35,12 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'format' => 'raw'
         ],
         'created_by',
-       /* 'from_payment_system',
-        'to_payment_system',
-        'from_wallet',
-        'to_wallet',
-        'from_currency',
-        'to_currency',*/
         'from_sum',
         'to_sum',
         'created_at',
@@ -50,13 +46,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'template' => '{delete}',
             'buttons' => [
                 'delete' => function($url, $model) {
-                    $customUrl = \Yii::$app->urlManager->createUrl([
-                        'admin/bid/delete',
+                    $customUrl = Url::to([
+                        'bid/delete',
                         'id' => $model['id']
                     ]);
                     return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
                         'title' => \Yii::t('app', 'lead-delete'),
-                        'data-confirm' => \Yii::t('yii', 'Are you sure?'),
+                        'data-confirm' => \Yii::t('app', 'Are you sure?'),
                     ]);
                 },
             ]

@@ -9,6 +9,7 @@ use common\models\bid\BidEntity;
 use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
 
 /**
  * BidController implements the CRUD actions for BidEntity model.
@@ -66,5 +67,13 @@ class BidController extends Controller
                 BidEntity::STATUS_REJECTED,
             ]);
         }
+    }
+
+    public function findBid($id)
+    {
+        if (($bid = BidEntity::findOne($id)) !== null) {
+            return $bid;
+        }
+        throw new NotFoundHttpException('Bid not found');
     }
 }
