@@ -8,6 +8,7 @@ use common\models\{
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use Yii;
 
 /**
  * Class BidEntity
@@ -68,6 +69,18 @@ class BidEntity extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%bid}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function statusLabels(): array
+    {
+        return [
+            self::STATUS_ACCEPTED => Yii::t('app', 'Accepted'),
+            self::STATUS_DONE     => Yii::t('app', 'Done'),
+            self::STATUS_REJECTED => Yii::t('app', 'Rejected'),
+        ];
     }
 
     /**
@@ -208,5 +221,15 @@ class BidEntity extends ActiveRecord
     {
         $this->sendEmailToManagers($this);
         return parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public static function getStatusValue($status): string
+    {
+        $statuses = static::statusLabels();
+        return $statuses[$status];
     }
 }
