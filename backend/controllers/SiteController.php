@@ -49,7 +49,7 @@ class SiteController extends Controller
         return [
             'error' => [
                 'class' => 'yii\web\ErrorAction',
-                'layout' => 'error',
+                'view' => '@yiister/gentelella/views/error',
             ],
         ];
     }
