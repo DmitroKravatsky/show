@@ -88,16 +88,18 @@ $this->title = Yii::t('app', 'My Yii Application');
                     ) ?>
                 </div>
 
-                <div class="col-xs-12 col-md-3">
-                    <?= StatsTile::widget(
-                        [
-                            'icon'   => 'user',
-                            'header' => Yii::t('app', 'Managers'),
-                            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['managers-list']), ['title' => Yii::t('app', 'Managers')]),
-                            'number' => $countManagers,
-                        ]
-                    ) ?>
-                </div>
+                <?php if (Yii::$app->user->can('admin')): ?>
+                    <div class="col-xs-12 col-md-3">
+                        <?= StatsTile::widget(
+                            [
+                                'icon'   => 'user',
+                                'header' => Yii::t('app', 'Managers'),
+                                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['managers-list']), ['title' => Yii::t('app', 'Managers')]),
+                                'number' => $countManagers,
+                            ]
+                        ) ?>
+                    </div>
+                <?php endif; ?>
 
                 <div class="col-xs-12 col-md-3">
                     <?= StatsTile::widget(
@@ -184,40 +186,42 @@ $this->title = Yii::t('app', 'My Yii Application');
 
                 <div class="clearfix"></div>
 
-                <div class="col-md-6">
-                    <?php Panel::begin([
-                        'header' => Yii::t('app', 'Managers'),
-                        'collapsable' => true,
-                        'removable' => true,
-                    ]) ?>
-                        <?php Pjax::begin() ?>
-                        <?= GridView::widget([
-                            'dataProvider' => $userProvider,
-                            'filterModel' => $userSearch,
-                            'hover' => true,
-                            'summary' => '',
-                            'columns' => [
-                                'id',
-                                [
-                                    'attribute' => 'fullName',
-                                    'value' => function (User $user) {
-                                        return $user->fullName;
-                                    }
-                                ],
-                                [
-                                    'attribute' => 'created_at',
-                                    'filter' => false,
-                                    'value' => function (User $user) {
-                                        return $user->created_at
-                                            ? Yii::$app->formatter->asDate($user->created_at, 'd/m/Y')
-                                            : null;
-                                    }
-                                ],
-                            ],
+                <?php if (Yii::$app->user->can('admin')): ?>
+                    <div class="col-md-6">
+                        <?php Panel::begin([
+                            'header' => Yii::t('app', 'Managers'),
+                            'collapsable' => true,
+                            'removable' => true,
                         ]) ?>
-                        <?php Pjax::end() ?>
-                    <?php Panel::end() ?>
-                </div>
+                            <?php Pjax::begin() ?>
+                            <?= GridView::widget([
+                                'dataProvider' => $userProvider,
+                                'filterModel' => $userSearch,
+                                'hover' => true,
+                                'summary' => '',
+                                'columns' => [
+                                    'id',
+                                    [
+                                        'attribute' => 'fullName',
+                                        'value' => function (User $user) {
+                                            return $user->fullName;
+                                        }
+                                    ],
+                                    [
+                                        'attribute' => 'created_at',
+                                        'filter' => false,
+                                        'value' => function (User $user) {
+                                            return $user->created_at
+                                                ? Yii::$app->formatter->asDate($user->created_at, 'd/m/Y')
+                                                : null;
+                                        }
+                                    ],
+                                ],
+                            ]) ?>
+                            <?php Pjax::end() ?>
+                        <?php Panel::end() ?>
+                    </div>
+                <?php endif; ?>
             </div>
         </div>
     </div>
