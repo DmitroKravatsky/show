@@ -1,102 +1,229 @@
 <?php
-use backend\modules\authorization\models\RegistrationForm;
-use yii\bootstrap\Modal;
-use yii\helpers\Html;
+
 use yii\widgets\ActiveForm;
+use yii\helpers\Html;
+use yii\helpers\Url;
+use yiister\gentelella\widgets\StatsTile;
+use yii\widgets\Pjax;
+use yiister\gentelella\widgets\grid\GridView;
+use yii\data\ActiveDataProvider;
+use yiister\gentelella\widgets\Panel;
+use common\models\user\User;
+use common\models\bid\BidEntity;
+use common\models\review\ReviewEntity;
 
 /* @var $this yii\web\View */
+/* @var $passwordUpdateModel \backend\modules\authorization\models\RegistrationForm */
+/* @var $bidSearch \common\models\bid\BidSearch */
+/* @var $bidProvider ActiveDataProvider */
+/* @var $reviewSearch \common\models\review\ReviewSearch */
+/* @var $reviewProvider ActiveDataProvider */
+/* @var $userSearch \common\models\user\UserSearch */
+/* @var $userProvider ActiveDataProvider */
+/* @var $countBids integer */
+/* @var $countManagers integer */
+/* @var $countReviews integer */
 
-$this->title = 'My Yii Application';
+$this->title = Yii::t('app', 'My Yii Application');
 ?>
-<?php if ( isset($passwordUpdateModel)) : ?>
 
-<div class="modal" tabindex="-1"  id="password-reset" role="dialog">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title">Creation password </h5>
-            </div>
-            <div class="modal-body">
-                <div class="col-xs-12">
-                <?php $formRegistration = ActiveForm::begin([
+<?php if (isset($passwordUpdateModel)) : ?>
+    <div class="modal" tabindex="-1"  id="password-reset" role="dialog">
+        <div class="modal-dialog" role="document">
+            <div class="modal-content">
+                <div class="modal-header">
+                    <h5 class="modal-title">Creation password </h5>
+                </div>
+                <div class="modal-body">
+                    <div class="col-xs-12">
+                    <?php $formRegistration = ActiveForm::begin([
                         'action' => 'update-manager-password',
-                        'id' => 'password-reset-form']); ?>
-                    <p>Hello <strong><?= \Yii::$app->user->identity->email ?></strong>. You have been registered and get specific rights</p>
-                    <p>In a terms of high security we advise you to change your password for account</p>
-                    <div class="input-field col s12">
-                        <?= $formRegistration->field($passwordUpdateModel, 'password',
-                            ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
-                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
-                            ->passwordInput(['placeholder' => 'Пароль'])
-                            ->label('Пароль') ?>
+                        'id' => 'password-reset-form'
+                    ]); ?>
+                        <p>Hello <strong><?= \Yii::$app->user->identity->email ?></strong>. You have been registered and get specific rights</p>
+                        <p>In a terms of high security we advise you to change your password for account</p>
+                        <div class="input-field col s12">
+                            <?= $formRegistration->field($passwordUpdateModel, 'password', [
+                                'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
+                            ])
+                                ->passwordInput(['placeholder' => 'Пароль'])
+                                ->label('Пароль') ?>
+                        </div>
+
+                        <div class="input-field col s12">
+                            <?= $formRegistration->field($passwordUpdateModel, 'confirm_password', [
+                                'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
+                            ])
+                                ->passwordInput(['placeholder' => 'Повторите пароль'])
+                                ->label('Подтверждение пароля') ?>
+                        </div>
+
+                        <div class="result"></div>
                     </div>
-                    <div class="input-field col s12">
-                        <?= $formRegistration->field($passwordUpdateModel, 'confirm_password',
-                            ['template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" 
-                                    aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"])
-                            ->passwordInput(['placeholder' => 'Повторите пароль'])
-                            ->label('Подтверждение пароля') ?>
+
+                    <div class="modal-footer">
+                        <input type="submit" id="submit" class="btn btn-primary">
                     </div>
-                    <div class="result">  </div>
+                    <?php ActiveForm::end(); ?>
                 </div>
+
                 <div class="modal-footer">
-                    <input type="submit" id="submit" class="btn btn-primary">
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
                 </div>
-                <?php ActiveForm::end(); ?>
-            </div>
-            <div class="modal-footer">
-                <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
             </div>
         </div>
     </div>
-</div>
+<?php else: ?>
+    <div class="site-index">
+        <div class="body-content">
+            <div class="row">
+                <div class="col-xs-12 col-md-3">
+                    <?= StatsTile::widget(
+                        [
+                            'icon'   => 'list-alt',
+                            'header' => Yii::t('app', 'Bids'),
+                            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['bid/index']), ['title' => Yii::t('app', 'Bids')]),
+                            'number' => $countBids,
+                        ]
+                    ) ?>
+                </div>
+
+                <?php if (Yii::$app->user->can('admin')): ?>
+                    <div class="col-xs-12 col-md-3">
+                        <?= StatsTile::widget(
+                            [
+                                'icon'   => 'user',
+                                'header' => Yii::t('app', 'Managers'),
+                                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['managers-list']), ['title' => Yii::t('app', 'Managers')]),
+                                'number' => $countManagers,
+                            ]
+                        ) ?>
+                    </div>
+                <?php endif; ?>
+
+                <div class="col-xs-12 col-md-3">
+                    <?= StatsTile::widget(
+                        [
+                            'icon'   => 'comments-o',
+                            'header' => Yii::t('app', 'Reviews'),
+                            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['']), ['title' => Yii::t('app', 'Reviews')]),
+                            'number' => $countReviews,
+                        ]
+                    ) ?>
+                </div>
+            </div>
+
+            <div class="row">
+                <div class="col-md-6">
+                    <?php Panel::begin([
+                        'header' => Yii::t('app', 'Bids'),
+                        'collapsable' => true,
+                        'expandable' => true,
+                        'removable' => true,
+                    ]) ?>
+                        <?php Pjax::begin() ?>
+                            <?= GridView::widget([
+                                'dataProvider' => $bidProvider,
+                                'filterModel' => $bidSearch,
+                                'hover' => true,
+                                'summary' => '',
+                                'columns' => [
+                                    'id',
+                                    'email:email',
+                                    [
+                                        'attribute' => 'status',
+                                        'filter' => BidEntity::statusLabels(),
+                                        'value' => function (BidEntity $bid) {
+                                            return BidEntity::getStatusValue($bid->status);
+                                        }
+                                    ],
+                                    [
+                                        'attribute' => 'created_at',
+                                        'filter' => false,
+                                        'value' => function (BidEntity $bid) {
+                                            return $bid->created_at
+                                                ? Yii::$app->formatter->asDate($bid->created_at, 'd/m/Y')
+                                                : null;
+                                        }
+                                    ],
+                                ],
+                            ]) ?>
+                        <?php Pjax::end() ?>
+                    <?php Panel::end() ?>
+                </div>
+
+                <div class="col-md-6">
+                    <?php Panel::begin([
+                        'header' => Yii::t('app', 'Reviews'),
+                        'collapsable' => true,
+                        'expandable' => true,
+                        'removable' => true,
+                    ]) ?>
+                        <?php Pjax::begin() ?>
+                            <?= GridView::widget([
+                                'dataProvider' => $reviewProvider,
+                                'filterModel' => $reviewSearch,
+                                'hover' => true,
+                                'summary' => '',
+                                'columns' => [
+                                    'id',
+                                    'created_by',
+                                    'text:ntext',
+                                    [
+                                        'attribute' => 'created_at',
+                                        'filter' => false,
+                                        'value' => function (ReviewEntity $review) {
+                                            return $review->created_at
+                                                ? Yii::$app->formatter->asDate($review->created_at, 'd/m/Y')
+                                                : null;
+                                        }
+                                    ],
+                                ],
+                            ]) ?>
+                        <?php Pjax::end() ?>
+                    <?php Panel::end() ?>
+                </div>
+
+                <div class="clearfix"></div>
+
+                <?php if (Yii::$app->user->can('admin')): ?>
+                    <div class="col-md-6">
+                        <?php Panel::begin([
+                            'header' => Yii::t('app', 'Managers'),
+                            'collapsable' => true,
+                            'removable' => true,
+                        ]) ?>
+                            <?php Pjax::begin() ?>
+                            <?= GridView::widget([
+                                'dataProvider' => $userProvider,
+                                'filterModel' => $userSearch,
+                                'hover' => true,
+                                'summary' => '',
+                                'columns' => [
+                                    'id',
+                                    [
+                                        'attribute' => 'fullName',
+                                        'value' => function (User $user) {
+                                            return $user->fullName;
+                                        }
+                                    ],
+                                    [
+                                        'attribute' => 'created_at',
+                                        'filter' => false,
+                                        'value' => function (User $user) {
+                                            return $user->created_at
+                                                ? Yii::$app->formatter->asDate($user->created_at, 'd/m/Y')
+                                                : null;
+                                        }
+                                    ],
+                                ],
+                            ]) ?>
+                            <?php Pjax::end() ?>
+                        <?php Panel::end() ?>
+                    </div>
+                <?php endif; ?>
+            </div>
+        </div>
+    </div>
 <?php endif; ?>
 
-
-<div class="site-index">
-
-    <div class="jumbotron">
-        <h1>ITS AN ADMIN PANEL</h1>
-
-        <p class="lead">You have successfully created your Yii-powered application.</p>
-
-        <p><a class="btn btn-lg btn-success" href="http://www.yiiframework.com">Get started with Yii</a></p>
-    </div>
-
-    <div class="body-content">
-
-        <div class="row">
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/doc/">Yii Documentation &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/forum/">Yii Forum &raquo;</a></p>
-            </div>
-            <div class="col-lg-4">
-                <h2>Heading</h2>
-
-                <p>Lorem ipsum dolor sit amet, consectetur adipisicing elit, sed do eiusmod tempor incididunt ut labore et
-                    dolore magna aliqua. Ut enim ad minim veniam, quis nostrud exercitation ullamco laboris nisi ut aliquip
-                    ex ea commodo consequat. Duis aute irure dolor in reprehenderit in voluptate velit esse cillum dolore eu
-                    fugiat nulla pariatur.</p>
-
-                <p><a class="btn btn-default" href="http://www.yiiframework.com/extensions/">Yii Extensions &raquo;</a></p>
-            </div>
-        </div>
-
-    </div>
-</div>

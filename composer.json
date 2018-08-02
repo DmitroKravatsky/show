@@ -26,7 +26,8 @@
         "udokmeci/yii2-phone-validator" : "~1.0.1",
         "borales/yii2-phone-input": "*",
         "dmstr/yii2-adminlte-asset": "^2.1",
-        "frostealth/yii2-aws-s3": "~2.0"
+        "frostealth/yii2-aws-s3": "~2.0",
+        "yiister/yii2-gentelella": "~1.0"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

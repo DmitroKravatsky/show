@@ -2,8 +2,10 @@
 
 namespace common\models\user;
 
+use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 
@@ -33,6 +35,14 @@ use yii\web\IdentityInterface;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    const ROLE_ADMIN   = 'admin';
+    const ROLE_GUEST   = 'guest';
+    const ROLE_MANAGER = 'manager';
+    const ROLE_USER    = 'user';
+
+    const DEFAULT_GUEST_ID = 1;
+    const DEFAULT_ADMIN_ID = 2;
+
     /**
      * @inheritdoc
      */
@@ -174,6 +184,24 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return string
+     */
+    public function getFullName(): string
+    {
+        /** @var UserProfileEntity $profile */
+        $profile = $this->profile;
+        return $profile->name . ' ' . $profile->last_name;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProfile(): ActiveQuery
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'id']);
+    }
+
+    /**
      * Removes password reset token
      */
     public function removePasswordResetToken()
@@ -185,7 +213,7 @@ class User extends ActiveRecord implements IdentityInterface
      * @param $roleName
      * @return array
      */
-    public function findByRole($roleName):array
+    public static function findByRole($roleName): array
     {
         return \Yii::$app->authManager->getUserIdsByRole($roleName);
     }
@@ -208,5 +236,14 @@ class User extends ActiveRecord implements IdentityInterface
     public static function findByEmail($email)
     {
         return static::findOne(['email' => $email]);
+    }
+
+    /**
+     * Returns the number of managers
+     * @return int
+     */
+    public static function getCountManagers(): int
+    {
+        return count(static::findByRole(self::ROLE_MANAGER));
     }
 }
