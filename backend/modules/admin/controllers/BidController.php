@@ -55,20 +55,11 @@ class BidController extends Controller
     }
 
     /**
-     * @return string
+     * Find bid by it id
+     * @param $id
+     * @return null|BidEntity
+     * @throws NotFoundHttpException
      */
-    public static function actionStatus()
-    {
-        if (\Yii::$app->request->isAjax) {
-            return Json::encode([
-                BidEntity::STATUS_ACCEPTED,
-                BidEntity::STATUS_PAID,
-                BidEntity::STATUS_DONE,
-                BidEntity::STATUS_REJECTED,
-            ]);
-        }
-    }
-
     public function findBid($id)
     {
         if (($bid = BidEntity::findOne($id)) !== null) {

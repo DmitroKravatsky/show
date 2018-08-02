@@ -208,12 +208,16 @@ class BidEntity extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        if($insert) {
+        if ($insert) {
             $this->sendEmailToManagers($this);
         }
         return parent::afterSave($insert, $changedAttributes);
     }
 
+    /**
+     * Returns all available values of bid status
+     * @return array
+     */
     public static function getAllAvailableStatuses(): array
     {
         return [

@@ -39,9 +39,7 @@ class BidEntitySearch extends BidEntity
      */
     public function search($params)
     {
-        $query = BidEntity::find()->select(['id', 'status', 'created_by', 'from_payment_system',
-            'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency',
-            'from_sum', 'to_sum', 'created_at', 'updated_at']);
+        $query = BidEntity::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -55,14 +53,6 @@ class BidEntitySearch extends BidEntity
 
         $query->andFilterWhere([
             'created_by' => $this->created_by,
-            /*'from_payment_system' => $this->from_payment_system,
-            'to_payment_system' => $this->to_payment_system,
-            'from_wallet' => $this->from_wallet,
-            'to_wallet' => $this->to_payment_system,
-            'from_currency' => $this->from_currency,
-            'to_currency' => $this->to_currency,
-            'from_sum' => $this->from_sum,
-            'to_sum' => $this->to_sum,*/
         ]);
 
         $query->andFilterWhere(['like', 'id', $this->id]);

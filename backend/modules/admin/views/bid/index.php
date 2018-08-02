@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'id',
         [
             'attribute' => 'status',
-            'value' => function($model, $key, $index, $column){
+            'value' => function($model, $key, $index, $column) {
                 return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
                     [
                         'class' => 'status',
