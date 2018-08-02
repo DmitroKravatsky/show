@@ -53,9 +53,9 @@ class BidEntitySearch extends BidEntity
 
         $query->andFilterWhere([
             'created_by' => $this->created_by,
+            'id' => $this->id,
         ]);
 
-        $query->andFilterWhere(['like', 'id', $this->id]);
         $query->andFilterWhere(['like', 'status', $this->status]);
 
         return $dataProvider;

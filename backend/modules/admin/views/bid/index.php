@@ -15,8 +15,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php if ($message = Yii::$app->session->getFlash('delete-success')): ?>
     <div class="alert alert-success">
         <?= $message ?>
-        <?php
-        ?>
     </div>
 <?php endif;?>
 <?php Pjax::begin()?>
