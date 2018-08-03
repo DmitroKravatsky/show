@@ -5,6 +5,7 @@
  * @var \yii\web\View $this
  */
 
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
@@ -12,6 +13,7 @@ use yii\helpers\Url;
 use dmstr\widgets\Alert;
 
 $bundle = yiister\gentelella\assets\Asset::register($this);
+AppAsset::register($this);
 $items = [
     "items" => [
         ["label" => "Home", "url" => "/", "icon" => "home"],
