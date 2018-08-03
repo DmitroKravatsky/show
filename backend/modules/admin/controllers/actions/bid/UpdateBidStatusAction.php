@@ -4,7 +4,9 @@ namespace backend\modules\admin\controllers\actions\bid;
 
 use common\models\bid\BidEntity;
 use common\models\user\User;
+use PHPUnit\Framework\Exception;
 use yii\base\Action;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class UpdateBidStatusAction
@@ -14,34 +16,54 @@ class UpdateBidStatusAction extends Action
 {
     /**
      * Updates a status of the bid
-     * @param $id integer the id of the bid
-     * @return \yii\web\Response
+     * @return array
+     * @throws UnprocessableEntityHttpException
      */
-    public function run($id)
+    public function run()
     {
-        $bid = BidEntity::findOne(['id' => $id]);
-        $bid->setScenario($bid::SCENARIO_UPDATE_BID_STATUS);
-        $bid->load(\Yii::$app->request->post());
+        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
 
-        if ($bid->getDirtyAttributes() && $bid->validate()) {
-            $user = User::findOne(['id' => $bid->created_by]);
-            $transaction = \Yii::$app->db->beginTransaction();
-            if ($bid->save()) {
-                if ($user->email) {
-                    \Yii::$app->sendMail->run(
-                        '@common/views/mail/sendBidStatus-html.php',
-                        ['email' => $user->email, 'status' => $bid->status],
-                        \Yii::$app->params['supportEmail'], $user->email, 'status is change'
-                    );
-                    $transaction->commit();
-                    return $this->controller->redirect(['bid/detail', 'id' => $id]);
-                } elseif ($user->phone_number) {
-                    \Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
-                    $transaction->commit();
-                    return $this->controller->redirect(['bid/detail', 'id' => $id]);
+        $bodyParams = \Yii::$app->request->getBodyParams();
+        $id = $bodyParams['id'];
+        $newStatus = $bodyParams['status'];
+
+        try {
+            $bid = $this->controller->findBid($id);
+
+            $bid->setScenario($bid::SCENARIO_UPDATE_BID_STATUS);
+            $bid->setAttribute('status', $newStatus);
+
+            if ($bid->getDirtyAttributes()) {
+                if (!$bid->validate()) {
+                    \Yii::$app->response->setStatusCode(422);
+                    throw new UnprocessableEntityHttpException();
+                }
+                $user = User::findOne(['id' => $bid->created_by]);
+                $transaction = \Yii::$app->db->beginTransaction();
+                if ($bid->save()) {
+                    if ($user->email) {
+                        \Yii::$app->sendMail->run(
+                            '@common/views/mail/sendBidStatus-html.php',
+                            ['email' => $user->email, 'status' => $bid->status, 'id' => $bid->id],
+                            \Yii::$app->params['supportEmail'], $user->email, 'status is change'
+                        );
+                        $transaction->commit();
+                        return ['status' => 200, 'message' => 'Status was updated'];
+
+                    } elseif ($user->phone_number) {
+                        \Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
+                        $transaction->commit();
+                        return ['status' => 200, 'message' => 'Status was updated'];
+
+                    }
                 }
             }
+
+        } catch (Exception $e) {
+            $transaction->rollBack();
+            \Yii::$app->response->setStatusCode($e->getCode());
+            \Yii::error($e->getMessage());
         }
-        return $this->controller->redirect(['bid/detail', 'id' => $id]);
+
     }
 }

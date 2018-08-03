@@ -55,4 +55,6 @@ $this->title = 'My Yii Application';
         ])
     ?>
 <?php Pjax::end(); ?>
+    <div id="loader">
+    </div>
 </div>

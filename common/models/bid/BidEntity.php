@@ -57,7 +57,7 @@ class BidEntity extends ActiveRecord
     const STATUS_ACCEPTED = 'accepted';
     const STATUS_DONE     = 'done';
     const STATUS_REJECTED = 'rejected';
-
+    const STATUS_PAID     = 'paid';
     /**
      * @var bool
      */
@@ -80,6 +80,7 @@ class BidEntity extends ActiveRecord
             self::STATUS_ACCEPTED => Yii::t('app', 'Accepted'),
             self::STATUS_DONE     => Yii::t('app', 'Done'),
             self::STATUS_REJECTED => Yii::t('app', 'Rejected'),
+            self::STATUS_PAID     => Yii::t('app', 'Paid'),
         ];
     }
 
@@ -144,7 +145,9 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE]],
+            ['status', 'in', 'range' => [
+                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]
+            ],
             [
                 [
                     'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
@@ -219,7 +222,9 @@ class BidEntity extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
-        $this->sendEmailToManagers($this);
+        if ($insert) {
+            $this->sendEmailToManagers($this);
+        }
         return parent::afterSave($insert, $changedAttributes);
     }
 
@@ -231,5 +236,20 @@ class BidEntity extends ActiveRecord
     {
         $statuses = static::statusLabels();
         return $statuses[$status];
+    }
+
+
+    /**
+     * Returns all available values of bid status
+     * @return array
+     */
+    public static function getAllAvailableStatuses(): array
+    {
+        return [
+            BidEntity::STATUS_ACCEPTED => BidEntity::STATUS_ACCEPTED,
+            BidEntity::STATUS_PAID     => BidEntity::STATUS_PAID,
+            BidEntity::STATUS_DONE     => BidEntity::STATUS_DONE,
+            BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
+        ];
     }
 }
