@@ -5,11 +5,14 @@ use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yii\helpers\Url;
 use yii\bootstrap\Tabs;
+use kartik\file\FileInput;
 
 /** @var $this \yii\web\View */
 /** @var \backend\models\BackendUser $user */
 /** @var \common\models\userProfile\UserProfileEntity $profile */
 /** @var string $activeTab */
+
+$filePreviewClass = 'file-preview-image kv-preview-data';
 ?>
 
 <div class="profile-index">
@@ -23,19 +26,22 @@ use yii\bootstrap\Tabs;
         'removable' => true,
     ]) ?>
         <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
-            <div class="profile_img">
-                <?= Html::img(Yii::getAlias('@image.default.user.avatar'), ['style' => 'height:200px']) ?>
-            </div>
-
-            <h3><?= Html::encode($user->fullName) ?></h3>
-
-            <?php $form = ActiveForm::begin([]) ?>
-                <label class="btn btn-info" style="height: 34px">
-                    <?= Yii::t('app', 'Upload') ?>
-                    <?= $form->field($profile, 'avatar')->fileInput(['style' => 'display:none'])->label(false) ?>
-                </label>
-
-                <?= Html::submitButton(Yii::t('app', 'Update'), ['class' => 'btn btn-success']) ?>
+            <?php $form = ActiveForm::begin([
+                'action' => Url::to(['profile/update-avatar']),
+                'options' => [
+                    'enctype' => 'multipart/form-data',
+                ],
+            ]) ?>
+                <?= $form->field($profile, 'image')->widget(FileInput::class, [
+                    'pluginOptions' => [
+                        'initialPreview' => [
+                            $profile->avatar !== null
+                                ? Html::img($profile->getImagePath(), ['class' => $filePreviewClass])
+                                : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => $filePreviewClass])
+                        ],
+                        'showRemove' => false,
+                    ]
+                ])->label(false) ?>
             <?php ActiveForm::end() ?>
         </div>
 
