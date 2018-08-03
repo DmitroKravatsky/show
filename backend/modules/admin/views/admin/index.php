@@ -201,12 +201,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                 'summary' => '',
                                 'columns' => [
                                     'id',
-                                    [
-                                        'attribute' => 'fullName',
-                                        'value' => function (User $user) {
-//                                            return $user->fullName;
-                                        }
-                                    ],
+                                    'email:email',
                                     [
                                         'attribute' => 'created_at',
                                         'filter' => false,
