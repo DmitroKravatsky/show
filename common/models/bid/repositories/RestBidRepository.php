@@ -195,7 +195,7 @@ trait RestBidRepository
             \Yii::$app->sendMail->run(
                 '@common/views/mail/sendBidInfo-html.php',
                 [
-                    'id' => $params->id,
+                    'id' => $params->created_by,
                     'email' => $params->email ?? 'не установлено',
                     'name' => $params->name,
                     'phone_number' => $params->phone_number,
