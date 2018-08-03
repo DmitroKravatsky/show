@@ -7,6 +7,9 @@ use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use yii\helpers\FileHelper;
+use yii\web\UploadedFile;
+use Yii;
 
 /**
  * Class UserProfileEntity
@@ -28,6 +31,11 @@ class UserProfileEntity extends ActiveRecord
     
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
+
+    /**
+     * @var UploadedFile
+     */
+    public $image;
 
     /**
      * @return string
@@ -65,6 +73,7 @@ class UserProfileEntity extends ActiveRecord
             [['name', 'last_name',], 'required'],
             ['avatar', 'string'],
             [['created_at', 'updated_at'], 'safe'],
+            [['image'], 'file', 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -98,5 +107,45 @@ class UserProfileEntity extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(RestUserEntity::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * @throws \yii\base\ErrorException
+     * @throws \yii\base\Exception
+     * @return bool
+     */
+    public function upload(): bool
+    {
+        $dirPath = $this->getDirPath();
+        $imageName = time() . '.' . $this->image->extension;
+        $imagePath = $dirPath . $imageName;
+
+        FileHelper::removeDirectory(dirname($imagePath));
+        FileHelper::createDirectory(dirname($imagePath));
+
+        if ($this->validate()) {
+            $this->image->saveAs($imagePath);
+            $this->avatar = $imageName;
+
+            return $this->save(false);
+        }
+
+        return false;
+    }
+
+    /**
+     * @return string
+     */
+    protected function getDirPath(): string
+    {
+        return Yii::getAlias('@image') . DIRECTORY_SEPARATOR . 'profile' . DIRECTORY_SEPARATOR . $this->id . DIRECTORY_SEPARATOR;
+    }
+
+    /**
+     * @return string
+     */
+    public function getImagePath(): string
+    {
+        return Yii::getAlias('/frontend/web/image') . DIRECTORY_SEPARATOR . 'profile' . DIRECTORY_SEPARATOR. $this->id . DIRECTORY_SEPARATOR . $this->avatar;
     }
 }
