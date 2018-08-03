@@ -27,7 +27,8 @@
         "borales/yii2-phone-input": "*",
         "dmstr/yii2-adminlte-asset": "^2.1",
         "frostealth/yii2-aws-s3": "~2.0",
-        "yiister/yii2-gentelella": "~1.0"
+        "yiister/yii2-gentelella": "~1.0",
+        "kartik-v/yii2-widget-fileinput": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

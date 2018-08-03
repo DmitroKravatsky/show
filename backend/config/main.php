@@ -57,6 +57,8 @@ return [
                 'login'          => 'authorization/authorization/login',
                 'invite-manager' => 'admin/admin/invite-manager',
                 'logout'         => 'authorization/authorization/logout',
+                'profile/index'  => 'admin/profile/index',
+                'profile/update' => 'admin/profile/update',
             ],
         ],
         'view' => [
