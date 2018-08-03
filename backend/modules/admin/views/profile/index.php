@@ -39,7 +39,9 @@ $filePreviewClass = 'file-preview-image kv-preview-data';
                                 ? Html::img($profile->getImagePath(), ['class' => $filePreviewClass])
                                 : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => $filePreviewClass])
                         ],
-                        'showRemove' => false,
+                        'fileActionSettings' => [
+                            'showRemove' => false,
+                        ],
                     ]
                 ])->label(false) ?>
             <?php ActiveForm::end() ?>
