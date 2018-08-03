@@ -204,7 +204,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                     [
                                         'attribute' => 'fullName',
                                         'value' => function (User $user) {
-                                            return $user->fullName;
+//                                            return $user->fullName;
                                         }
                                     ],
                                     [
