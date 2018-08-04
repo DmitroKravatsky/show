@@ -5,11 +5,15 @@
  * @var \yii\web\View $this
  */
 
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
+use yii\helpers\Url;
+use dmstr\widgets\Alert;
 
 $bundle = yiister\gentelella\assets\Asset::register($this);
+AppAsset::register($this);
 $items = [
     "items" => [
         ["label" => "Home", "url" => "/", "icon" => "home"],
@@ -169,8 +173,7 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                                     <span class=" fa fa-angle-down"></span>
                                 </a>
                                 <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                    <li><a href="javascript:;">  Profile</a>
-                                    </li>
+                                    <li><?= Html::a(Yii::t('app', 'Profile'), Url::to('/admin/profile/index')) ?></li>
                                     <li>
                                         <a href="javascript:;">
                                             <span class="badge bg-red pull-right">50%</span>
@@ -180,7 +183,7 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                                     <li>
                                         <a href="javascript:;">Help</a>
                                     </li>
-                                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                    <li><a href="<?= Url::to('/admin/logout') ?>"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                     </li>
                                 </ul>
                             </li>
@@ -285,6 +288,8 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                     </div>
                 <?php endif; ?>
                 <div class="clearfix"></div>
+
+                <?= Alert::widget() ?>
 
                 <?= $content ?>
             </div>
