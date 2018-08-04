@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'updated_at',
         [
             'class' => \yii\grid\ActionColumn::class,
-            'template' => '{delete}',
+            'template' => '{view} {delete}',
             'buttons' => [
                 'delete' => function($url, $model) {
                     $customUrl = Url::to([
