@@ -13,9 +13,9 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 <div class="bid-entity-view">
 
-    <h1><?= Html::encode($this->title) ?></h1>
-
     <div class="row">
+        <label class="control-label col-md-3 col-sm-3 col-xs-12">
+        </label>
         <div class="col-md-6">
             <?php Panel::begin([
                 'header' => Yii::t('app', 'Bids'),
