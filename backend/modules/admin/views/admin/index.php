@@ -142,7 +142,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                         'filter' => false,
                                         'value' => function (BidEntity $bid) {
                                             return $bid->created_at
-                                                ? Yii::$app->formatter->asDate($bid->created_at, 'd/m/Y')
+                                                ? Yii::$app->formatter->asDate($bid->created_at)
                                                 : null;
                                         }
                                     ],
@@ -174,7 +174,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                         'filter' => false,
                                         'value' => function (ReviewEntity $review) {
                                             return $review->created_at
-                                                ? Yii::$app->formatter->asDate($review->created_at, 'd/m/Y')
+                                                ? Yii::$app->formatter->asDate($review->created_at)
                                                 : null;
                                         }
                                     ],
@@ -207,7 +207,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                         'filter' => false,
                                         'value' => function (User $user) {
                                             return $user->created_at
-                                                ? Yii::$app->formatter->asDate($user->created_at, 'd/m/Y')
+                                                ? Yii::$app->formatter->asDate($user->created_at)
                                                 : null;
                                         }
                                     ],
