@@ -23,7 +23,6 @@ class ViewAction extends Action
     public function run($id)
     {
         $model = $this->controller->findBid($id);
-//        var_dump(1); exit;
 
         return $this->controller->render('view', [
             'model'  => $model,
