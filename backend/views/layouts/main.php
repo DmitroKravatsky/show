@@ -16,7 +16,7 @@ $bundle = yiister\gentelella\assets\Asset::register($this);
 AppAsset::register($this);
 $items = [
     "items" => [
-        ["label" => "Home", "url" => "/", "icon" => "home"],
+        ["label" => "Home", "url" => Url::to('/admin'), "icon" => "home"],
         ["label" => "Layout", "url" => ["site/layout"], "icon" => "files-o"],
         ["label" => "Error page", "url" => ["site/error-page"], "icon" => "close"],
         [
@@ -80,7 +80,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][3]['items'], ['label' => 'Managers', 'url' => ['managers-list']]);
+    array_unshift($items['items'][3]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
 }
 
 ?>
