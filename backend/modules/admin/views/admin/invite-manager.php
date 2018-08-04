@@ -12,7 +12,7 @@ $this->title = 'My Yii Application';
 <div class="row">
     <div class="col-md-12 col-sm-12 col-xs-12">
         <?php Panel::begin([
-            'header' => Yii::t('app', 'Bids'),
+            'header' => Yii::t('app', 'New manager creation form'),
             'collapsable' => true,
         ]) ?>
             <div class="x_content">
