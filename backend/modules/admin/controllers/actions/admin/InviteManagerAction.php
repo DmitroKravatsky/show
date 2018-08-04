@@ -35,7 +35,7 @@ class InviteManagerAction extends Action
                     'password'      => \Yii::$app->security->generatePasswordHash($modelRegistration->password)
                 ], false);
 
-                $userRole = \Yii::$app->authManager->getRole($modelRegistration['role']);
+                $userRole = \Yii::$app->authManager->getRole(User::ROLE_MANAGER);
 
                 $transaction = \Yii::$app->db->beginTransaction();
 

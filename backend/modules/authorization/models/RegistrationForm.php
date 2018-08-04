@@ -34,7 +34,7 @@ class RegistrationForm extends Model
     public function rules()
     {
         return [
-            [['email', 'name', 'last_name', 'role', 'password', 'confirm_password', 'phone_number'], 'required' ],
+            [['email', 'name', 'last_name', 'password', 'confirm_password', 'phone_number'], 'required' ],
             ['phone_number', PhoneInputValidator::class],
             ['email', 'validateEmail'],
             ['phone_number', 'validatePhoneNumber'],
@@ -46,7 +46,6 @@ class RegistrationForm extends Model
                 'compareAttribute' => 'password',
             ],
             [['created_at', 'updated_at'], 'safe'],
-            ['role', 'in', 'range' => [self::ROLE_ADMIN, self::ROLE_MANAGER]],
         ];
     }
 

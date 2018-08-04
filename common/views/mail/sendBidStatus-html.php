@@ -9,6 +9,6 @@ use yii\helpers\Html;
 <div class="recovery-password">
     <p>Уважаемый клиент <?= Html::encode($email) ?>,</p>
 
-    <p>Ваша заявка теперь в статусе
+    <p>Ваша заявка номер <?= $id ?> теперь в статусе
         <?= $status ?> </p>
 </div>

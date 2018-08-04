@@ -5,6 +5,7 @@
  * @var \yii\web\View $this
  */
 
+use backend\assets\AppAsset;
 use yii\helpers\Html;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
@@ -12,9 +13,10 @@ use yii\helpers\Url;
 use dmstr\widgets\Alert;
 
 $bundle = yiister\gentelella\assets\Asset::register($this);
+AppAsset::register($this);
 $items = [
     "items" => [
-        ["label" => "Home", "url" => "/", "icon" => "home"],
+        ["label" => "Home", "url" => Url::to('/admin'), "icon" => "home"],
         ["label" => "Layout", "url" => ["site/layout"], "icon" => "files-o"],
         ["label" => "Error page", "url" => ["site/error-page"], "icon" => "close"],
         [
@@ -78,7 +80,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][3]['items'], ['label' => 'Managers', 'url' => ['managers-list']]);
+    array_unshift($items['items'][3]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
 }
 
 ?>
@@ -181,7 +183,7 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                                     <li>
                                         <a href="javascript:;">Help</a>
                                     </li>
-                                    <li><a href="login.html"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                    <li><a href="<?= Url::to('/admin/logout') ?>"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
                                     </li>
                                 </ul>
                             </li>
