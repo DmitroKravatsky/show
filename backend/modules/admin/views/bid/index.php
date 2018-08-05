@@ -22,23 +22,52 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-        'id',
+        [
+            'attribute' => 'id',
+            'contentOptions' => ['style' => 'width:7%;'],
+
+        ],
         [
             'attribute' => 'status',
-            'value' => function($model, $key, $index, $column) {
+            'value' => function($model) {
                 return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
                     [
                         'class' => 'status',
                     ]
                 );
             },
+            'contentOptions' => ['style' => 'width:11%;'],
             'format' => 'raw'
         ],
-        'created_by',
-        'from_sum',
-        'to_sum',
-        'created_at',
-        'updated_at',
+        [
+            'attribute' => 'created_by',
+            'value' => function($model) {
+                return $model->created_by;
+            },
+            'contentOptions' => ['style' => 'width:7%;'],
+        ],
+        [
+            'attribute' => 'name',
+            'contentOptions' => ['style' => 'width:10%;'],
+        ],
+        [
+            'attribute' => 'last_name',
+            'contentOptions' => ['style' => 'width:10%;'],
+        ],
+        [
+            'attribute' => 'email',
+        ],
+        [
+            'attribute' => 'phone_number',
+        ],
+        [
+            'attribute' => 'updated_at',
+            'value' => function($model) {
+                return date('d.m.H', $model->updated_at);
+
+            },
+            'contentOptions' => ['style' => 'width:7%;'],
+        ],
         [
             'class' => \yii\grid\ActionColumn::class,
             'template' => '{delete}',

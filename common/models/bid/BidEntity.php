@@ -252,4 +252,13 @@ class BidEntity extends ActiveRecord
             BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
         ];
     }
+
+    /**
+     * Returns bid's author
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthor()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
+    }
 }

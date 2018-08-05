@@ -21,11 +21,17 @@ class BidEntitySearch extends BidEntity
             [
                 [
                     'id', 'from_currency', 'to_currency',
-                    'from_sum', 'to_sum'
+                    'from_sum', 'to_sum', 'created_at', 'updated_at'
                 ],
                 'integer'
             ],
-            [['created_by', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet'], 'string'],
+            [
+                [
+                    'created_by', 'status', 'name', 'from_payment_system', 'to_payment_system',
+                    'from_wallet', 'to_wallet', 'last_name', 'email', 'phone_number'
+                ],
+                'string'
+            ],
         ];
     }
 
@@ -57,6 +63,11 @@ class BidEntitySearch extends BidEntity
         ]);
 
         $query->andFilterWhere(['like', 'status', $this->status]);
+        $query->andFilterWhere(['like', 'phone_number', $this->phone_number]);
+        $query->andFilterWhere(['like', 'email', $this->email]);
+        $query->andFilterWhere(['like', 'last_name', $this->last_name]);
+        $query->andFilterWhere(['like', 'name', $this->name]);
+        $query->andFilterWhere(['like', 'updated_at', $this->updated_at]);
 
         return $dataProvider;
     }
