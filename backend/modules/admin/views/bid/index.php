@@ -1,5 +1,6 @@
 <?php
 
+use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use common\models\bid\BidEntity;
@@ -8,6 +9,7 @@ use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel \backend\modules\admin\models\BidEntitySearch */
 
 $this->title = 'Bid Entities';
 $this->params['breadcrumbs'][] = $this->title;
@@ -22,6 +24,7 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
+        ['class' => \yii\grid\SerialColumn::class],
         [
             'attribute' => 'id',
             'contentOptions' => ['style' => 'width:7%;'],
@@ -37,7 +40,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 );
             },
             'contentOptions' => ['style' => 'width:11%;'],
-            'format' => 'raw'
+            'format' => 'raw',
+            'filter' => BidEntity::getAllAvailableStatuses()
         ],
         [
             'attribute' => 'created_by',
@@ -47,26 +51,29 @@ $this->params['breadcrumbs'][] = $this->title;
             'contentOptions' => ['style' => 'width:7%;'],
         ],
         [
-            'attribute' => 'name',
-            'contentOptions' => ['style' => 'width:10%;'],
+            'attribute' => 'full_name',
+            'format' => 'raw',
+            'value' => function($model) {
+                return $model->last_name . ' ' . $model->name;
+            }
         ],
-        [
-            'attribute' => 'last_name',
-            'contentOptions' => ['style' => 'width:10%;'],
-        ],
-        [
-            'attribute' => 'email',
-        ],
-        [
-            'attribute' => 'phone_number',
-        ],
+        'email:email',
+        'phone_number',
         [
             'attribute' => 'updated_at',
-            'value' => function($model) {
-                return date('d.m.H', $model->updated_at);
-
-            },
-            'contentOptions' => ['style' => 'width:7%;'],
+            'format' => 'date',
+            'value' => 'updated_at',
+            'filter'    => DateRangePicker::widget([
+                'model'          => $searchModel,
+                'attribute'      => 'updated_at',
+                'convertFormat'  => true,
+                'pluginOptions'  => [
+                    'timePicker' => true,
+                    'locale' => [
+                        'format' => 'Y-m-d',
+                    ]
+                ]
+            ]),
         ],
         [
             'class' => \yii\grid\ActionColumn::class,

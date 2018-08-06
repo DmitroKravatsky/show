@@ -63,6 +63,8 @@ class BidEntity extends ActiveRecord
      */
     public $terms_confirm = false;
 
+    public $full_name;
+
     /**
      * @return string
      */
