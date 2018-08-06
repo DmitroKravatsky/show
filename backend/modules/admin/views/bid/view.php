@@ -30,7 +30,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'last_name',
                         'phone_number',
                         'email:email',
-                        'status',
+                        [
+                            'attribute' => 'status',
+                            'value' => function($model) {
+                            /** @var $model \common\models\bid\BidEntity */
+                                return $model::getStatusValue($model->status);
+                            }
+                        ],
                         'from_payment_system',
                         'to_payment_system',
                         'from_wallet',

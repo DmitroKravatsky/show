@@ -6,10 +6,12 @@ use backend\modules\admin\controllers\BidController;
 use backend\modules\admin\models\BidEntitySearch;
 use common\models\bid\BidEntity;
 use yii\base\Action;
+use yii\web\NotFoundHttpException;
 
 /**
  * Class ViewAction
  * @package backend\modules\admin\controllers\actions\bid
+ * @throws NotFoundHttpException
  */
 class ViewAction extends Action
 {
