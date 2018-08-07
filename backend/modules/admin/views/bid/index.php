@@ -1,5 +1,6 @@
 <?php
 
+use kartik\daterange\DateRangePicker;
 use yii\grid\GridView;
 use yii\helpers\Html;
 use common\models\bid\BidEntity;
@@ -8,6 +9,7 @@ use yii\widgets\Pjax;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
+/* @var $searchModel \backend\modules\admin\models\BidEntitySearch */
 
 $this->title = 'Bid Entities';
 $this->params['breadcrumbs'][] = $this->title;
@@ -22,26 +24,53 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-        'id',
+        ['class' => \yii\grid\SerialColumn::class],
+        [
+            'attribute' => 'id',
+            'contentOptions' => ['style' => 'width:7%;'],
+
+        ],
         [
             'attribute' => 'status',
-            'value' => function($model, $key, $index, $column) {
+            'value' => function($model) {
                 return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
                     [
                         'class' => 'status',
                     ]
                 );
             },
-            'format' => 'raw'
+            'contentOptions' => ['style' => 'width:11%;'],
+            'format' => 'raw',
+            'filter' => BidEntity::getAllAvailableStatuses()
         ],
-        'created_by',
-        'from_sum',
-        'to_sum',
-        'created_at',
-        'updated_at',
+        [
+            'attribute' => 'full_name',
+            'format' => 'raw',
+            'value' => function($model) {
+                return $model->last_name . ' ' . $model->name;
+            }
+        ],
+        'email:email',
+        'phone_number',
+        [
+            'attribute' => 'updated_at',
+            'format' => 'date',
+            'value' => 'updated_at',
+            'filter'    => DateRangePicker::widget([
+                'model'          => $searchModel,
+                'attribute'      => 'updated_at',
+                'convertFormat'  => true,
+                'pluginOptions'  => [
+                    'timePicker' => true,
+                    'locale' => [
+                        'format' => 'Y-m-d',
+                    ]
+                ]
+            ]),
+        ],
         [
             'class' => \yii\grid\ActionColumn::class,
-            'template' => '{delete}',
+            'template' => '{view} {delete}',
             'buttons' => [
                 'delete' => function($url, $model) {
                     $customUrl = Url::to([

@@ -7,6 +7,7 @@
 
 use backend\assets\AppAsset;
 use yii\helpers\Html;
+use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
 use yii\helpers\Url;
@@ -289,6 +290,9 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                 <?php endif; ?>
                 <div class="clearfix"></div>
 
+                <?= Breadcrumbs::widget([
+                    'links' => $this->params['breadcrumbs'] ?? [],
+                ]) ?>
                 <?= Alert::widget() ?>
 
                 <?= $content ?>

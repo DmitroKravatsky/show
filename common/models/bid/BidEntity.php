@@ -64,6 +64,8 @@ class BidEntity extends ActiveRecord
      */
     public $terms_confirm = false;
 
+    public $full_name;
+
     /**
      * @return string
      */
@@ -253,5 +255,14 @@ class BidEntity extends ActiveRecord
             BidEntity::STATUS_DONE     => BidEntity::STATUS_DONE,
             BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
         ];
+    }
+
+    /**
+     * Returns bid's author
+     * @return \yii\db\ActiveQuery
+     */
+    public function getAuthor()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
     }
 }

@@ -3,7 +3,7 @@
 namespace backend\modules\admin\controllers;
 
 use backend\modules\admin\controllers\actions\bid\{
-    DetailAction, DeleteAction, IndexAction, UpdateBidStatusAction
+    DetailAction, DeleteAction, IndexAction, UpdateBidStatusAction, ViewAction
 };
 use common\models\bid\BidEntity;
 use yii\helpers\Json;
@@ -50,6 +50,9 @@ class BidController extends Controller
             ],
             'update-bid-status' => [
                 'class' => UpdateBidStatusAction::class
+            ],
+            'view'   => [
+                'class' => ViewAction::class
             ],
         ];
     }
