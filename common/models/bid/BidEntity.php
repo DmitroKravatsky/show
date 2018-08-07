@@ -225,6 +225,18 @@ class BidEntity extends ActiveRecord
         if ($insert) {
             $this->sendEmailToManagers($this);
         }
+
+        if ($insert && $this->created_by === Yii::$app->user->id) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::getMessageForNewBid([
+                    'created_by'  => $this->created_by,
+                    'to_sum'      => $this->to_sum,
+                    'to_currency' => $this->to_currency,
+                    'to_wallet'   => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        }
         return parent::afterSave($insert, $changedAttributes);
     }
 
