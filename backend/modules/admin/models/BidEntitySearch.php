@@ -13,6 +13,12 @@ use yii\data\ActiveDataProvider;
 class BidEntitySearch extends BidEntity
 {
     /**
+     * String  of $name and $last_name
+     * @var $full_name
+     */
+    public $full_name;
+
+    /**
      * @return array
      */
     public function rules(): array
@@ -21,11 +27,21 @@ class BidEntitySearch extends BidEntity
             [
                 [
                     'id', 'from_currency', 'to_currency',
-                    'from_sum', 'to_sum'
+                    'from_sum', 'to_sum', 'created_at'
                 ],
                 'integer'
             ],
-            [['created_by', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet'], 'string'],
+            [
+                [
+                    'created_by', 'status', 'full_name', 'from_payment_system', 'to_payment_system',
+                    'from_wallet', 'to_wallet', 'email', 'phone_number'
+                ],
+                'string'
+            ],
+            ['status', 'in', 'range' => [
+                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]
+            ],
+            ['updated_at', 'safe']
         ];
     }
 
@@ -40,7 +56,6 @@ class BidEntitySearch extends BidEntity
     public function search($params)
     {
         $query = BidEntity::find();
-
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
         ]);
@@ -54,9 +69,17 @@ class BidEntitySearch extends BidEntity
         $query->andFilterWhere([
             'created_by' => $this->created_by,
             'id' => $this->id,
+            'status' => $this->status,
         ]);
 
-        $query->andFilterWhere(['like', 'status', $this->status]);
+        if ($this->updated_at && strpos($this->updated_at, '-') !== false) {
+            list($fromDate, $toDate) = explode(' - ', $this->updated_at);
+            $query->andFilterWhere(['between', 'updated_at', strtotime($fromDate), strtotime($toDate)]);
+        }
+
+        $query->andFilterWhere(['like', 'phone_number', $this->phone_number]);
+        $query->andFilterWhere(['like', 'email', $this->email]);
+        $query->andFilterWhere(['or',['like', 'name', $this->full_name],['like', 'last_name', $this->full_name]]);
 
         return $dataProvider;
     }
