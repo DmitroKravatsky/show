@@ -3,7 +3,10 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity
+    bid\repositories\RestBidRepository,
+    bidHistory\BidHistory,
+    user\User,
+    userNotifications\UserNotificationsEntity
 };
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
@@ -229,6 +232,13 @@ class BidEntity extends ActiveRecord
         if ($insert) {
             $this->sendEmailToManagers($this);
         }
+
+        $bidHistory = new BidHistory();
+        $bidHistory->bid_id = $this->id;
+        $bidHistory->status = $this->status;
+
+        $bidHistory->save(false);
+
         return parent::afterSave($insert, $changedAttributes);
     }
 
