@@ -291,7 +291,7 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
                 <div class="clearfix"></div>
 
                 <?= Breadcrumbs::widget([
-                    'links' => isset($this->params['breadcrumbs']) ? $this->params['breadcrumbs'] : [],
+                    'links' => $this->params['breadcrumbs'] ?? [],
                 ]) ?>
                 <?= Alert::widget() ?>
 
