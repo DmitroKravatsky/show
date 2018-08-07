@@ -44,13 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter' => BidEntity::getAllAvailableStatuses()
         ],
         [
-            'attribute' => 'created_by',
-            'value' => function($model) {
-                return $model->created_by;
-            },
-            'contentOptions' => ['style' => 'width:7%;'],
-        ],
-        [
             'attribute' => 'full_name',
             'format' => 'raw',
             'value' => function($model) {
