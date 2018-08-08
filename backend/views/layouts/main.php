@@ -25,7 +25,17 @@ $items = [
             "icon" => "th",
             "url" => "#",
             "items" => [
-                ["label" => "Bids", "url" => ["/bid/index"]],
+                [
+                    'label' => Yii::t('app', 'Bids'), 'url' => '#',
+                    'items' => [
+                        [
+                            'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
+                        ],
+                        [
+                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history']
+                        ],
+                    ],
+                ],
             ],
         ],
         [

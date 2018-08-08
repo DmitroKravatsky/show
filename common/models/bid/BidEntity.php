@@ -3,7 +3,10 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository, user\User, userNotifications\UserNotificationsEntity
+    bid\repositories\RestBidRepository,
+    bidHistory\BidHistory,
+    user\User,
+    userNotifications\UserNotificationsEntity
 };
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
@@ -54,10 +57,11 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
-    const STATUS_ACCEPTED = 'accepted';
-    const STATUS_DONE     = 'done';
-    const STATUS_REJECTED = 'rejected';
-    const STATUS_PAID     = 'paid';
+    const STATUS_ACCEPTED    = 'accepted';
+    const STATUS_IN_PROGRESS = 'in_progress';
+    const STATUS_DONE        = 'done';
+    const STATUS_REJECTED    = 'rejected';
+    const STATUS_PAID        = 'paid';
     /**
      * @var bool
      */
@@ -80,6 +84,7 @@ class BidEntity extends ActiveRecord
     {
         return [
             self::STATUS_ACCEPTED => Yii::t('app', 'Accepted'),
+            self::STATUS_IN_PROGRESS => Yii::t('app', 'In progress'),
             self::STATUS_DONE     => Yii::t('app', 'Done'),
             self::STATUS_REJECTED => Yii::t('app', 'Rejected'),
             self::STATUS_PAID     => Yii::t('app', 'Paid'),
@@ -148,7 +153,7 @@ class BidEntity extends ActiveRecord
                 'targetAttribute' => ['created_by' => 'id'],
             ],
             ['status', 'in', 'range' => [
-                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]
+                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID, self::STATUS_IN_PROGRESS,]
             ],
             [
                 [
@@ -227,6 +232,13 @@ class BidEntity extends ActiveRecord
         if ($insert) {
             $this->sendEmailToManagers($this);
         }
+
+        $bidHistory = new BidHistory();
+        $bidHistory->bid_id = $this->id;
+        $bidHistory->status = $this->status;
+
+        $bidHistory->save(false);
+
         return parent::afterSave($insert, $changedAttributes);
     }
 
