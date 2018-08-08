@@ -10,6 +10,8 @@ use yii\data\ActiveDataProvider;
  */
 class BidHistorySearch extends BidHistory
 {
+    public $time_range;
+
     /**
      * @return array
      */
@@ -17,7 +19,7 @@ class BidHistorySearch extends BidHistory
     {
         return [
             [['id', 'bid_id', 'time'], 'integer'],
-            [['status'], 'safe'],
+            [['status', 'time_range',], 'safe'],
         ];
     }
 
@@ -57,6 +59,11 @@ class BidHistorySearch extends BidHistory
         ]);
 
         $query->andFilterWhere(['like', 'status', $this->status]);
+
+        if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
+            list($fromDate, $toDate) = explode(' - ', $this->time_range);
+            $query->andFilterWhere(['between', 'time', strtotime($fromDate), strtotime($toDate)]);
+        }
 
         return $dataProvider;
     }

@@ -45,7 +45,7 @@ use kartik\daterange\DateRangePicker;
                         'format' => 'datetime',
                         'filter' => DateRangePicker::widget([
                             'model' => $searchModel,
-                            'name' => 'time',
+                            'attribute' => 'time_range',
                             'convertFormat' => true,
                             'pluginOptions' => [
                                 'timePicker' => true,
