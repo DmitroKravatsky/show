@@ -57,4 +57,12 @@ class BackendUser extends User
             $this->addError($attribute, Yii::t('app', 'Invalid old password.'));
         }
     }
+
+    /**
+     * @return array
+     */
+    public static function getUsernames(): array
+    {
+        return static::find()->leftJoin('user_profile', 'user_id = user.id')->select(['name', 'user.id'])->indexBy('id')->column();
+    }
 }

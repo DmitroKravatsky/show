@@ -32,6 +32,8 @@ use yii\web\IdentityInterface;
  * @property integer $verification_code
  * @property string  $invite_code
  * @property integer $invite_code_status
+ *
+ * @property UserProfileEntity $profile
  */
 class User extends ActiveRecord implements IdentityInterface
 {
