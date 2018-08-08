@@ -3,13 +3,13 @@
 namespace backend\modules\admin\controllers;
 
 use backend\modules\admin\controllers\actions\bid\{
-    DetailAction, DeleteAction, IndexAction, UpdateBidStatusAction, ViewAction
+    DeleteAction, IndexAction, UpdateBidStatusAction, ViewAction, ToggleProcessedAction
 };
 use common\models\bid\BidEntity;
-use yii\helpers\Json;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 
 /**
  * BidController implements the CRUD actions for BidEntity model.
@@ -22,6 +22,16 @@ class BidController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['index', 'delete', 'update-bid-status', 'view', 'toggle-processed',],
+                        'roles'   => ['admin', 'manager',]
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class'      => VerbFilter::class,
                 'actions'    => [
@@ -53,6 +63,9 @@ class BidController extends Controller
             ],
             'view'   => [
                 'class' => ViewAction::class
+            ],
+            'toggle-processed'   => [
+                'class' => ToggleProcessedAction::class,
             ],
         ];
     }

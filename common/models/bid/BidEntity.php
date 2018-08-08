@@ -34,8 +34,14 @@ use Yii;
  * @property string $to_currency
  * @property float $from_sum
  * @property float $to_sum
+ * @property int $processed
+ * @property int $processed_by
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property User $author
+ * @property User $processedBy
+ * @property BidHistory[] $bidHistories
  */
 class BidEntity extends ActiveRecord
 {
@@ -62,6 +68,10 @@ class BidEntity extends ActiveRecord
     const STATUS_DONE        = 'done';
     const STATUS_REJECTED    = 'rejected';
     const STATUS_PAID        = 'paid';
+
+    const PROCESSED_YES = 1;
+    const PROCESSED_NO  = 0;
+
     /**
      * @var bool
      */
@@ -75,6 +85,27 @@ class BidEntity extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%bid}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getProcessedStatuses(): array
+    {
+        return [
+            self::PROCESSED_NO => Yii::t('app', 'No'),
+            self::PROCESSED_YES => Yii::t('app', 'Yes'),
+        ];
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public static function getProcessedStatusValue($status): string
+    {
+        $statuses = static::getProcessedStatuses();
+        return $statuses[$status];
     }
 
     /**
@@ -111,6 +142,8 @@ class BidEntity extends ActiveRecord
             'phone_number'        => 'Номер телефона',
             'status'              => 'Статус',
             'terms_confirm'       => 'Пользовательское соглашение',
+            'processed'           => 'Обработана',
+            'processed_by'        => 'Кем обработана',
             'created_at'          => 'Дата создания',
             'updated_at'          => 'Дата изменения',
         ];
@@ -143,7 +176,7 @@ class BidEntity extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['id', 'created_by'], 'integer'],
+            [['id', 'created_by', 'processed', 'processedBy',], 'integer'],
             ['created_by', 'default', 'value' => \Yii::$app->user->id],
             [
                 'created_by',
@@ -162,6 +195,7 @@ class BidEntity extends ActiveRecord
                 ],
                 'required'
             ],
+            [['email'], 'string', 'max' => 255],
             [['from_wallet', 'to_wallet'], 'string', 'max' => 32],
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
             [
@@ -181,6 +215,10 @@ class BidEntity extends ActiveRecord
                 'requiredValue' => 1,
                 'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
             ],
+            [['processed_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['processed_by' => 'id']],
+            [['processed_by'], 'required', 'when' => function (self $bid) {
+                return $bid->processed;
+            }],
 
         ];
     }
@@ -252,6 +290,14 @@ class BidEntity extends ActiveRecord
         return $statuses[$status];
     }
 
+    /**
+     * @return bool
+     */
+    public function toggleProcessed(): bool
+    {
+        $this->processed = !$this->processed;
+        return $this->save(false);
+    }
 
     /**
      * Returns all available values of bid status
@@ -274,5 +320,21 @@ class BidEntity extends ActiveRecord
     public function getAuthor()
     {
         return $this->hasOne(User::class, ['id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProcessedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'processed_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBidHistories()
+    {
+        return $this->hasMany(BidHistory::class, ['bid_id' => 'id']);
     }
 }

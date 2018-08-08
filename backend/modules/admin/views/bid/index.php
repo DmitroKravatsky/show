@@ -6,6 +6,7 @@ use yii\helpers\Html;
 use common\models\bid\BidEntity;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
+use backend\models\BackendUser;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -44,6 +45,24 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter' => BidEntity::getAllAvailableStatuses()
         ],
         [
+            'attribute' => 'processed',
+            'filter' => BidEntity::getProcessedStatuses(),
+            'format' => 'html',
+            'value' => function (BidEntity $bid) {
+                if ($bid->processed) {
+                    return Html::tag('span', BidEntity::getProcessedStatusValue($bid->processed), ['class' => 'label label-success']);
+                }
+                return Html::tag('span', BidEntity::getProcessedStatusValue($bid->processed), ['class' => 'label label-danger']);
+            }
+        ],
+        [
+            'attribute' => 'processed_by',
+            'filter' => BackendUser::getUsernames(),
+            'value' => function (BidEntity $bid) {
+                return $bid->processedBy->profile->name ?? null;
+            }
+        ],
+        [
             'attribute' => 'full_name',
             'format' => 'raw',
             'value' => function($model) {
@@ -70,7 +89,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => \yii\grid\ActionColumn::class,
-            'template' => '{view} {delete}',
+            'template' => '{view} {toggle-processed} {delete}',
             'buttons' => [
                 'delete' => function($url, $model) {
                     $customUrl = Url::to([
@@ -82,6 +101,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-confirm' => \Yii::t('app', 'Are you sure?'),
                     ]);
                 },
+                'toggle-processed' => function ($url, BidEntity $bid) {
+                    if ($bid->processed) {
+                        $options = ['title' => Yii::t('app', 'Unprocessed')];
+                        $iconClass = 'glyphicon-check';
+                    } else {
+                        $options = ['title' => Yii::t('app', 'Processed')];
+                        $iconClass = 'glyphicon-unchecked';
+                    }
+                    return Html::a('<span class="glyphicon ' . $iconClass . '"></span>', $url, $options);
+                }
             ]
         ]
     ]
