@@ -26,7 +26,7 @@ class BidEntitySearch extends BidEntity
         return [
             [
                 [
-                    'id', 'from_currency', 'to_currency',
+                    'id', 'from_currency', 'to_currency', 'processed', 'processed_by',
                     'from_sum', 'to_sum', 'created_at'
                 ],
                 'integer'
@@ -39,7 +39,7 @@ class BidEntitySearch extends BidEntity
                 'string'
             ],
             ['status', 'in', 'range' => [
-                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID]
+                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID, self::STATUS_IN_PROGRESS,]
             ],
             ['updated_at', 'safe']
         ];
@@ -70,6 +70,8 @@ class BidEntitySearch extends BidEntity
             'created_by' => $this->created_by,
             'id' => $this->id,
             'status' => $this->status,
+            'processed' => $this->processed,
+            'processed_by' => $this->processed_by,
         ]);
 
         if ($this->updated_at && strpos($this->updated_at, '-') !== false) {

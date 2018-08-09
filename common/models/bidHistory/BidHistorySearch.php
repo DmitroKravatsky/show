@@ -1,27 +1,25 @@
 <?php
 
-namespace common\models\user;
+namespace common\models\bidHistory;
 
-use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\user\User;
 
 /**
- * UserSearch represents the model behind the search form of `common\models\user\User`.
+ * BidHistorySearch represents the model behind the search form of `common\models\bidHistory\BidHistory`.
  */
-class UserSearch extends User
+class BidHistorySearch extends BidHistory
 {
-    public $dateRange;
+    public $time_range;
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'status', 'dateRange',], 'safe'],
+            [['id', 'bid_id', 'time'], 'integer'],
+            [['status', 'time_range',], 'safe'],
         ];
     }
 
@@ -42,7 +40,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = BidHistory::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -56,20 +54,15 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
-            'created_at' => $this->created_at,
+            'bid_id' => $this->bid_id,
+            'time' => $this->time,
         ]);
 
-        $query->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number]);
+        $query->andFilterWhere(['like', 'status', $this->status]);
 
         if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->time_range);
             $query->andFilterWhere(['between', 'time', strtotime($fromDate), strtotime($toDate)]);
-        }
-
-        if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
-            list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;

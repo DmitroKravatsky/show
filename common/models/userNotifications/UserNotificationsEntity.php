@@ -9,6 +9,8 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use yii\web\NotFoundHttpException;
+use Yii;
+use common\models\user\User;
 
 /**
  * Class UserNotificationsEntity
@@ -22,6 +24,8 @@ use yii\web\NotFoundHttpException;
  * @property string $status
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property User $recipient
  */
 class UserNotificationsEntity extends ActiveRecord
 {
@@ -36,6 +40,27 @@ class UserNotificationsEntity extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%user_notifications}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_READ => Yii::t('app', 'Read'),
+            self::STATUS_UNREAD => Yii::t('app', 'Unread'),
+        ];
+    }
+
+    /**
+     * @param string $status
+     * @return string
+     */
+    public static function getStatusValue($status): string
+    {
+        $statuses = static::getStatusLabels();
+        return $statuses[$status];
     }
 
     /**
@@ -84,6 +109,22 @@ class UserNotificationsEntity extends ActiveRecord
     }
 
     /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRecipient()
+    {
+        return $this->hasOne(User::class, ['id' => 'recipient_id']);
+    }
+
+    /**
+     * @return int
+     */
+    public static function getCountUnreadNotificationsByRecipient(): int
+    {
+       return (int) static::find()->where(['status' => self::STATUS_UNREAD, 'recipient_id' => Yii::$app->user->id])->count();
+    }
+
+    /**
      * Generates a message for a new user notification
      *
      * @param $params array
@@ -95,7 +136,6 @@ class UserNotificationsEntity extends ActiveRecord
     public static function getMessageForNewUser(array $params)
     {
         $phone_number = $params['phone_number'];
-        $email = $params['email'] ?? 'not set';
 
         $message = <<<EOT
 Новый пользователь был зарегистрирован. Регистрация была провердена с номером телефона {$phone_number} 
@@ -114,7 +154,6 @@ EOT;
      */
     public static function getMessageForNewBid(array $params)
     {
-//        $fullName = UserProfileEntity::getFullName($params['created_by']);
         $sum = $params['to_sum'];
         $currency = $params['to_currency'];
         $to_wallet = $params['to_wallet'];

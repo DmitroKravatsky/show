@@ -11,6 +11,8 @@ use yii\data\ActiveDataProvider;
  */
 class BidSearch extends BidEntity
 {
+    public $dateRange;
+
     /**
      * @return array
      */
@@ -18,7 +20,13 @@ class BidSearch extends BidEntity
     {
         return [
             [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
-            [['name', 'last_name', 'phone_number', 'email', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency'], 'safe'],
+            [
+                [
+                    'name', 'last_name', 'phone_number', 'email', 'status', 'from_payment_system', 'to_payment_system',
+                    'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'dateRange',
+                ],
+                'safe'
+            ],
             [['from_sum', 'to_sum'], 'number'],
         ];
     }
@@ -75,6 +83,11 @@ class BidSearch extends BidEntity
             ->andFilterWhere(['like', 'to_wallet', $this->to_wallet])
             ->andFilterWhere(['like', 'from_currency', $this->from_currency])
             ->andFilterWhere(['like', 'to_currency', $this->to_currency]);
+
+        if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
+            list($fromDate, $toDate) = explode(' - ', $this->dateRange);
+            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+        }
 
         return $dataProvider;
     }

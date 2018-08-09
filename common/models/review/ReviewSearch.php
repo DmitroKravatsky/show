@@ -12,6 +12,8 @@ use common\models\review\ReviewEntity;
  */
 class ReviewSearch extends ReviewEntity
 {
+    public $dateRange;
+
     /**
      * @return array
      */
@@ -19,7 +21,7 @@ class ReviewSearch extends ReviewEntity
     {
         return [
             [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
-            [['text'], 'safe'],
+            [['text', 'dateRange',], 'safe'],
         ];
     }
 
@@ -63,6 +65,11 @@ class ReviewSearch extends ReviewEntity
         ]);
 
         $query->andFilterWhere(['like', 'text', $this->text]);
+
+        if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
+            list($fromDate, $toDate) = explode(' - ', $this->dateRange);
+            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+        }
 
         return $dataProvider;
     }
