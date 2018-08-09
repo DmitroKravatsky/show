@@ -7,7 +7,6 @@ use common\models\userProfile\UserProfileEntity;
 use yii\base\Action;
 use Yii;
 use yii\web\ErrorHandler;
-use yii\web\UploadedFile;
 
 class UpdateAvatarAction extends Action
 {
@@ -22,11 +21,8 @@ class UpdateAvatarAction extends Action
         $profile = $user->profile;
 
         try {
-            if (Yii::$app->request->isPost) {
-                $profile->image = UploadedFile::getInstance($profile, 'image');
-                if ($profile->upload()) {
-                    Yii::$app->session->setFlash('success', Yii::t('app', 'Image successfully uploaded.'));
-                }
+            if ($profile->save()) {
+                Yii::$app->session->setFlash('success', Yii::t('app', 'Image successfully uploaded.'));
             }
         } catch (\Exception $e) {
             Yii::$app->session->setFlash('error', Yii::t('app', 'An error occurred while loading the image.'));

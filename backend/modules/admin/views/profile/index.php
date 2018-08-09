@@ -32,11 +32,11 @@ $filePreviewClass = 'file-preview-image kv-preview-data';
                     'enctype' => 'multipart/form-data',
                 ],
             ]) ?>
-                <?= $form->field($profile, 'image')->widget(FileInput::class, [
+                <?= $form->field($profile, 'avatar')->widget(FileInput::class, [
                     'pluginOptions' => [
                         'initialPreview' => [
                             $profile->avatar !== null
-                                ? Html::img($profile->getImagePath(), ['class' => $filePreviewClass])
+                                ? Html::img($profile->getImageUrl(), ['class' => $filePreviewClass])
                                 : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => $filePreviewClass])
                         ],
                         'fileActionSettings' => [
