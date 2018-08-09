@@ -69,8 +69,14 @@ class ImageBehavior extends Behavior
 
     protected function setFile()
     {
+        /** @var ActiveRecord $model */
         $model = $this->owner;
-        $this->file = UploadedFile::getInstance($this->owner, $this->attributeName);
+        $this->file = UploadedFile::getInstance($model, $this->attributeName);
+
+        if (!($this->file instanceof UploadedFile)) {
+            return;
+        }
+
         $model->setAttribute($this->attributeName, $this->generateImageName());
     }
 
@@ -80,6 +86,9 @@ class ImageBehavior extends Behavior
      */
     public function afterSave()
     {
+        if (!($this->file instanceof UploadedFile)) {
+            return;
+        }
         $this->loadImage();
     }
 
@@ -96,10 +105,10 @@ class ImageBehavior extends Behavior
      */
     public function getFilePath(): string
     {
-        return $this->savePath
-            . $this->owner->getPrimaryKey()
-            . DIRECTORY_SEPARATOR
-            . $this->owner->getAttribute($this->attributeName);
+        /** @var ActiveRecord $model */
+        $model = $this->owner;
+
+        return $this->savePath . $model->getPrimaryKey() . DIRECTORY_SEPARATOR . $model->getAttribute($this->attributeName);
     }
 
     /**
