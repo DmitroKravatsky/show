@@ -51,7 +51,7 @@ use yii\helpers\Url;
         [
             'icon'   => 'bell',
             'header' => Yii::t('app', 'Notifications'),
-            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['bid/index']), ['title' => Yii::t('app', 'Bids')]),
+            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['notifications/index']), ['title' => Yii::t('app', 'Bids')]),
             'number' => $countNotifications,
         ]
     ) ?>

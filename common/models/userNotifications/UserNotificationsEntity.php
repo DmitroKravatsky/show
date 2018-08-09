@@ -8,6 +8,7 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use Yii;
+use common\models\user\User;
 
 /**
  * Class UserNotificationsEntity
@@ -21,6 +22,8 @@ use Yii;
  * @property string $status
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property User $recipient
  */
 class UserNotificationsEntity extends ActiveRecord
 {
@@ -101,6 +104,14 @@ class UserNotificationsEntity extends ActiveRecord
             'TimestampBehavior'               => TimestampBehavior::class,
             'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::class,
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRecipient()
+    {
+        return $this->hasOne(User::class, ['id' => 'recipient_id']);
     }
 
     /**
