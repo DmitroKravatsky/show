@@ -61,6 +61,7 @@ return [
                 'profile/update'            => 'admin/profile/update',
                 'bids'                      => 'admin/bid/index',
                 'bid-history'               => 'admin/bid-history/index',
+                'notifications/index'       => 'admin/notifications/index',
 
             ],
         ],
