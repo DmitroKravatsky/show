@@ -7,6 +7,7 @@ use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use Yii;
 
 /**
  * Class UserNotificationsEntity
@@ -34,6 +35,27 @@ class UserNotificationsEntity extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%user_notifications}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_READ => Yii::t('app', 'Read'),
+            self::STATUS_UNREAD => Yii::t('app', 'Unread'),
+        ];
+    }
+
+    /**
+     * @param string $status
+     * @return string
+     */
+    public static function getStatusValue($status): string
+    {
+        $statuses = static::getStatusLabels();
+        return $statuses[$status];
     }
 
     /**
@@ -79,5 +101,13 @@ class UserNotificationsEntity extends ActiveRecord
             'TimestampBehavior'               => TimestampBehavior::class,
             'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::class,
         ];
+    }
+
+    /**
+     * @return int
+     */
+    public static function getCountUnreadNotificationsByRecipient(): int
+    {
+       return (int) static::find()->where(['status' => self::STATUS_UNREAD, 'recipient_id' => Yii::$app->user->id])->count();
     }
 }

@@ -1,16 +1,8 @@
 <?php
 
 use yii\widgets\ActiveForm;
-use yii\helpers\Html;
-use yii\helpers\Url;
-use yiister\gentelella\widgets\StatsTile;
-use yii\widgets\Pjax;
-use yiister\gentelella\widgets\grid\GridView;
 use yii\data\ActiveDataProvider;
-use yiister\gentelella\widgets\Panel;
-use common\models\user\User;
-use common\models\bid\BidEntity;
-use common\models\review\ReviewEntity;
+use common\models\userNotifications\UserNotificationsEntity;
 
 /* @var $this yii\web\View */
 /* @var $passwordUpdateModel \backend\modules\authorization\models\RegistrationForm */
@@ -20,9 +12,12 @@ use common\models\review\ReviewEntity;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
+/* @var $notificationsSearch UserNotificationsEntity */
+/* @var $notificationsProvider ActiveDataProvider */
 /* @var $countBids integer */
 /* @var $countManagers integer */
 /* @var $countReviews integer */
+/* @var $countNotifications integer */
 
 $this->title = Yii::t('app', 'My Yii Application');
 ?>
@@ -77,148 +72,26 @@ $this->title = Yii::t('app', 'My Yii Application');
     <div class="site-index">
         <div class="body-content">
             <div class="row">
-                <div class="col-xs-12 col-md-3">
-                    <?= StatsTile::widget(
-                        [
-                            'icon'   => 'list-alt',
-                            'header' => Yii::t('app', 'Bids'),
-                            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['bid/index']), ['title' => Yii::t('app', 'Bids')]),
-                            'number' => $countBids,
-                        ]
-                    ) ?>
-                </div>
-
-                <?php if (Yii::$app->user->can('admin')): ?>
-                    <div class="col-xs-12 col-md-3">
-                        <?= StatsTile::widget(
-                            [
-                                'icon'   => 'user',
-                                'header' => Yii::t('app', 'Managers'),
-                                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['managers-list']), ['title' => Yii::t('app', 'Managers')]),
-                                'number' => $countManagers,
-                            ]
-                        ) ?>
-                    </div>
-                <?php endif; ?>
-
-                <div class="col-xs-12 col-md-3">
-                    <?= StatsTile::widget(
-                        [
-                            'icon'   => 'comments-o',
-                            'header' => Yii::t('app', 'Reviews'),
-                            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['']), ['title' => Yii::t('app', 'Reviews')]),
-                            'number' => $countReviews,
-                        ]
-                    ) ?>
-                </div>
+                <?= $this->render('_stats-tile', [
+                    'countBids'          => $countBids,
+                    'countManagers'      => $countManagers,
+                    'countReviews'       => $countReviews,
+                    'countNotifications' => $countNotifications,
+                ]) ?>
             </div>
 
             <div class="row">
-                <div class="col-md-6">
-                    <?php Panel::begin([
-                        'header' => Yii::t('app', 'Bids'),
-                        'collapsable' => true,
-                        'expandable' => true,
-                        'removable' => true,
-                    ]) ?>
-                        <?php Pjax::begin() ?>
-                            <?= GridView::widget([
-                                'dataProvider' => $bidProvider,
-                                'filterModel' => $bidSearch,
-                                'hover' => true,
-                                'summary' => '',
-                                'columns' => [
-                                    'id',
-                                    'email:email',
-                                    [
-                                        'attribute' => 'status',
-                                        'filter' => BidEntity::statusLabels(),
-                                        'value' => function (BidEntity $bid) {
-                                            return BidEntity::getStatusValue($bid->status);
-                                        }
-                                    ],
-                                    [
-                                        'attribute' => 'created_at',
-                                        'filter' => false,
-                                        'value' => function (BidEntity $bid) {
-                                            return $bid->created_at
-                                                ? Yii::$app->formatter->asDate($bid->created_at)
-                                                : null;
-                                        }
-                                    ],
-                                ],
-                            ]) ?>
-                        <?php Pjax::end() ?>
-                    <?php Panel::end() ?>
-                </div>
-
-                <div class="col-md-6">
-                    <?php Panel::begin([
-                        'header' => Yii::t('app', 'Reviews'),
-                        'collapsable' => true,
-                        'expandable' => true,
-                        'removable' => true,
-                    ]) ?>
-                        <?php Pjax::begin() ?>
-                            <?= GridView::widget([
-                                'dataProvider' => $reviewProvider,
-                                'filterModel' => $reviewSearch,
-                                'hover' => true,
-                                'summary' => '',
-                                'columns' => [
-                                    'id',
-                                    'created_by',
-                                    'text:ntext',
-                                    [
-                                        'attribute' => 'created_at',
-                                        'filter' => false,
-                                        'value' => function (ReviewEntity $review) {
-                                            return $review->created_at
-                                                ? Yii::$app->formatter->asDate($review->created_at)
-                                                : null;
-                                        }
-                                    ],
-                                ],
-                            ]) ?>
-                        <?php Pjax::end() ?>
-                    <?php Panel::end() ?>
-                </div>
-
-                <div class="clearfix"></div>
-
-                <?php if (Yii::$app->user->can('admin')): ?>
-                    <div class="col-md-6">
-                        <?php Panel::begin([
-                            'header' => Yii::t('app', 'Managers'),
-                            'collapsable' => true,
-                            'removable' => true,
-                        ]) ?>
-                            <?php Pjax::begin() ?>
-                            <?= GridView::widget([
-                                'dataProvider' => $userProvider,
-                                'filterModel' => $userSearch,
-                                'hover' => true,
-                                'summary' => '',
-                                'columns' => [
-                                    'id',
-                                    'email:email',
-                                    [
-                                        'attribute' => 'created_at',
-                                        'filter' => false,
-                                        'value' => function (User $user) {
-                                            return $user->created_at
-                                                ? Yii::$app->formatter->asDate($user->created_at)
-                                                : null;
-                                        }
-                                    ],
-                                ],
-                            ]) ?>
-                            <?php Pjax::end() ?>
-                        <?php Panel::end() ?>
-                    </div>
-                <?php endif; ?>
+                <?= $this->render('_panel', [
+                    'bidSearch'             => $bidSearch,
+                    'bidProvider'           => $bidProvider,
+                    'reviewSearch'          => $reviewSearch,
+                    'reviewProvider'        => $reviewProvider,
+                    'userSearch'            => $userSearch,
+                    'userProvider'          => $userProvider,
+                    'notificationsSearch'   => $notificationsSearch,
+                    'notificationsProvider' => $notificationsProvider,
+                ]) ?>
             </div>
         </div>
     </div>
 <?php endif; ?>
-

@@ -9,6 +9,8 @@ use common\models\review\ReviewEntity;
 use common\models\review\ReviewSearch;
 use common\models\user\User;
 use common\models\user\UserSearch;
+use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotificationsSearch;
 use yii\base\Action;
 
 /**
@@ -41,21 +43,26 @@ class IndexAction extends Action
         $bidSearch = new BidSearch();
         $reviewSearch = new ReviewSearch();
         $userSearch = new UserSearch();
+        $notificationsSearch = new UserNotificationsSearch();
 
         $bidProvider = $bidSearch->search($params);
         $reviewProvider = $reviewSearch->search($params);
         $userProvider = $userSearch->search($params);
+        $notificationsProvider = $notificationsSearch->search($params);
 
         return $this->controller->render($this->view, [
-            'countBids'      => BidEntity::find()->count(),
-            'countManagers'  => User::getCountManagers(),
-            'countReviews'   => ReviewEntity::find()->count(),
-            'bidSearch'      => $bidSearch,
-            'bidProvider'    => $bidProvider,
-            'reviewSearch'   => $reviewSearch,
-            'reviewProvider' => $reviewProvider,
-            'userSearch'     => $userSearch,
-            'userProvider'   => $userProvider,
+            'countBids'             => BidEntity::find()->count(),
+            'countManagers'         => User::getCountManagers(),
+            'countReviews'          => ReviewEntity::find()->count(),
+            'countNotifications'    => UserNotificationsEntity::getCountUnreadNotificationsByRecipient(),
+            'bidSearch'             => $bidSearch,
+            'bidProvider'           => $bidProvider,
+            'reviewSearch'          => $reviewSearch,
+            'reviewProvider'        => $reviewProvider,
+            'userSearch'            => $userSearch,
+            'userProvider'          => $userProvider,
+            'notificationsSearch'   => $notificationsSearch,
+            'notificationsProvider' => $notificationsProvider,
         ]);
     }
 }

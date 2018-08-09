@@ -1,27 +1,27 @@
 <?php
 
-namespace common\models\user;
+namespace common\models\userNotifications;
 
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\user\User;
+use common\models\userNotifications\UserNotificationsEntity;
 
 /**
- * UserSearch represents the model behind the search form of `common\models\user\User`.
+ * UserNotificationsSearch represents the model behind the search form of `common\models\userNotifications\UserNotificationsEntity`.
  */
-class UserSearch extends User
+class UserNotificationsSearch extends UserNotificationsEntity
 {
     public $dateRange;
 
     /**
-     * {@inheritdoc}
+     * @return array
      */
-    public function rules()
+    public function rules(): array
     {
         return [
-            [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'status', 'dateRange',], 'safe'],
+            [['id', 'recipient_id', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'text', 'dateRange',], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = UserNotificationsEntity::find();
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -56,16 +56,13 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'recipient_id' => $this->recipient_id,
             'created_at' => $this->created_at,
+            'updated_at' => $this->updated_at,
         ]);
 
-        $query->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number]);
-
-        if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
-            list($fromDate, $toDate) = explode(' - ', $this->time_range);
-            $query->andFilterWhere(['between', 'time', strtotime($fromDate), strtotime($toDate)]);
-        }
+        $query->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'text', $this->text]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
