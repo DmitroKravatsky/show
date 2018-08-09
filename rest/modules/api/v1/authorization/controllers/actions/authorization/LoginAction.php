@@ -5,6 +5,7 @@ namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnauthorizedHttpException;
@@ -89,6 +90,7 @@ class LoginAction extends Action
      * @throws NotFoundHttpException
      * @throws UnauthorizedHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws ForbiddenHttpException
      * @throws ServerErrorHttpException
      */
     public function run()
@@ -119,6 +121,8 @@ class LoginAction extends Action
             throw new UnauthorizedHttpException();
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (ForbiddenHttpException $e) {
+            throw new ForbiddenHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (UnauthorizedHttpException $e) {

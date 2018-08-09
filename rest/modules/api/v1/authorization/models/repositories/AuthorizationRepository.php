@@ -2,12 +2,13 @@
 
 namespace rest\modules\api\v1\authorization\models\repositories;
 
+use common\models\user\User;
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
 use yii\base\Exception;
 use yii\web\{
-    HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
+    ForbiddenHttpException, HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, UnprocessableEntityHttpException
 };
 
 /**
@@ -74,6 +75,7 @@ trait AuthorizationRepository
      *
      * @throws NotFoundHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws ForbiddenHttpException
      */
     public function login(array $params)
     {
@@ -86,6 +88,9 @@ trait AuthorizationRepository
 
         /** @var RestUserEntity $user */
         $user = $this->getUserByPhoneNumber($params['phone_number']);
+        if ($user->status === self::STATUS_UNVERIFIED) {
+            throw new ForbiddenHttpException('You must be verified to login');
+        }
         if ($user->validatePassword($params['password'])) {
             return $user;
         }
