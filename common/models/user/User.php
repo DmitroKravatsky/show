@@ -2,6 +2,7 @@
 
 namespace common\models\user;
 
+use common\models\userNotifications\UserNotificationsEntity;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -247,5 +248,25 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getCountManagers(): int
     {
         return count(static::findByRole(self::ROLE_MANAGER));
+    }
+
+    /**
+     * @param bool $insert
+     * @param array $changedAttributes
+     */
+    public function afterSave($insert, $changedAttributes)
+    {
+        if ($insert) {
+            (new UserNotificationsEntity)->addNotify(
+                UserNotificationsEntity::getMessageForNewUser(
+                    [
+                        'phone_number'  => $this->phone_number,
+                        'email'      => $this->email,
+                    ]
+                ),
+                $this->id
+            );
+        }
+        return parent::afterSave($insert, $changedAttributes);
     }
 }
