@@ -37,7 +37,10 @@ class LoginForm extends Model
     public function login()
     {
         if ($this->validate()) {
-            return \Yii::$app->user->login(User::findByPhoneNumber($this->phone_number), $this->rememberMe ? 3600 * 24 * 30 : 0);
+            $user = User::findByPhoneNumber($this->phone_number);
+            if ($user && $this->validatePassword($this->password, $user->password)) {
+                return \Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+            }
         } else {
             return false;
         }
@@ -59,5 +62,20 @@ class LoginForm extends Model
         return false;
     }
 
+    /**
+     * Compares password from form with password from db
+     * @param $inputPassword
+     * @param $currentPassword
+     * @return bool
+     */
+    public function validatePassword($inputPassword, $currentPassword): bool
+    {
+        if (\Yii::$app->security->validatePassword($inputPassword, $currentPassword)) {
+            return true;
+        } else {
+            $this->addError('password', \Yii::t('app', 'Password is incorrect'));
+            return false;
+        }
+    }
 
 }
