@@ -47,7 +47,7 @@ class ReviewSearch extends ReviewEntity
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => $params['pageSize'],
+                'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
         ]);
 

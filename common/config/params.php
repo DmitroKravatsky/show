@@ -7,4 +7,5 @@ return [
     's3_folders'     => [
         'user_profile' => 'user_profile',
     ],
+    'pageSize' => 10,
 ];

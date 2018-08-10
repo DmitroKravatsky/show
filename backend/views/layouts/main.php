@@ -76,16 +76,23 @@ $user = User::findOne(Yii::$app->user->id);
             <div class="main_container">
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
-                        <div class="navbar nav_title" style="border: 0;">
-                            <a href="<?= Url::to('/admin') ?>" class="site_title"><i class="fa fa-paw"></i> <span>Gentellela Alela!</span></a>
+                        <div class="navbar nav_title">
+                            <a href="<?= Url::to('/admin') ?>" class="site_title">
+                                <span><?= Yii::t('app', 'Admin Panel') ?></span>
+                            </a>
                         </div>
+
                         <div class="clearfix"></div>
 
                         <!-- menu prile quick info -->
                         <div class="profile">
                             <div class="profile_pic">
-                                <img src="http://placehold.it/128x128" alt="..." class="img-circle profile_img">
+                                <?= isset($user->profile) && $user->profile->avatar !== null
+                                    ? Html::img($user->profile->getImageUrl(), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
+                                    : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
+                                ?>
                             </div>
+
                             <div class="profile_info">
                                 <span>Welcome,</span>
                                 <h2><?= Html::encode($user->fullname ?? null) ?></h2>
@@ -136,7 +143,12 @@ $user = User::findOne(Yii::$app->user->id);
                             <ul class="nav navbar-nav navbar-right">
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <img src="http://placehold.it/128x128" alt=""><?= Html::encode($user->fullname ?? null) ?>
+                                        <?= isset($user->profile) && $user->profile->avatar !== null
+                                            ? Html::img($user->profile->getImageUrl())
+                                            : Html::img(Yii::getAlias('@image.default.user.avatar'))
+                                        ?>
+
+                                        <?= Html::encode($user->fullname ?? null) ?>
                                         <span class=" fa fa-angle-down"></span>
                                     </a>
 
@@ -149,13 +161,14 @@ $user = User::findOne(Yii::$app->user->id);
                                     </ul>
                                 </li>
 
-                                <?php $notifications = UserNotificationsEntity::getUnreadUserNotifications(3);
-                                ?>
+                                <?php $notifications = UserNotificationsEntity::getUnreadUserNotifications(3) ?>
+
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
-                                        <i class="fa fa-envelope-o"></i>
+                                        <i class="fa fa-bell-o"></i>
                                         <span class="badge bg-green"><?= UserNotificationsEntity::getCountUnreadNotificationsByRecipient() ?></span>
                                     </a>
+
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
                                         <?php if (empty($notifications)): ?>
                                             <li>

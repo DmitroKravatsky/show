@@ -53,7 +53,7 @@ class BidSearch extends BidEntity
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
-                'pageSize' => $params['pageSize'],
+                'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
         ]);
 
