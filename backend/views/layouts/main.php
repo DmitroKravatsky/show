@@ -6,6 +6,8 @@
  */
 
 use backend\assets\AppAsset;
+use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userProfile\UserProfileEntity;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
@@ -147,71 +149,45 @@ $user = User::findOne(Yii::$app->user->id);
                                     </ul>
                                 </li>
 
+                                <?php $notifications = UserNotificationsEntity::getUnreadUserNotifications(3);
+                                ?>
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-envelope-o"></i>
-                                        <span class="badge bg-green">6</span>
+                                        <span class="badge bg-green"><?= UserNotificationsEntity::getCountUnreadNotificationsByRecipient() ?></span>
                                     </a>
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                        <li>
-                                            <a>
-                              <span class="image">
-                                                <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                            </span>
-                              <span>
-                                                <span>John Smith</span>
-                              <span class="time">3 mins ago</span>
-                              </span>
-                              <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                              <span class="image">
-                                                <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                            </span>
-                              <span>
-                                                <span>John Smith</span>
-                              <span class="time">3 mins ago</span>
-                              </span>
-                              <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                              <span class="image">
-                                                <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                            </span>
-                              <span>
-                                                <span>John Smith</span>
-                              <span class="time">3 mins ago</span>
-                              </span>
-                              <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                            </a>
-                                        </li>
-                                        <li>
-                                            <a>
-                              <span class="image">
-                                                <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                            </span>
-                              <span>
-                                                <span>John Smith</span>
-                              <span class="time">3 mins ago</span>
-                              </span>
-                              <span class="message">
-                                                Film festivals used to be do-or-die moments for movie makers. They were where...
-                                            </span>
-                                            </a>
-                                        </li>
+                                        <?php if (empty($notifications)): ?>
+                                            <li>
+                                                <a>
+                                                <span class="message">
+                                                    <?= Yii::t('app', 'There are new notifications') ?>
+                                                </span>
+                                                </a>
+                                            </li>
+                                        <?php else:?>
+                                            <?php foreach ($notifications as $notification): ?>
+                                                <li>
+                                                    <a href="<?= Url::to(["/notification/{$notification->id}"])?>">
+                                                    <span class="image">
+                                                        <img src="http://placehold.it/128x128" alt="Profile Image" />
+                                                    </span>
+                                                    <span>
+                                                        <span class="name">
+                                                            <?= $notification->userProfile->getUserFullName(); ?>
+                                                        </span>
+                                                        <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
+                                                    </span>
+                                                    <span class="message">
+                                                        <?= $notification->text ?>
+                                                    </span>
+                                                    </a>
+                                                </li>
+                                            <?php endforeach;?>
+                                        <?php endif;?>
                                         <li>
                                             <div class="text-center">
-                                                <a href="/">
+                                                <a href="<?= Url::to(['/notifications/index']) ?>">
                                                     <strong>See All Alerts</strong>
                                                     <i class="fa fa-angle-right"></i>
                                                 </a>

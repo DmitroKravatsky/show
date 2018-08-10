@@ -165,4 +165,28 @@ EOT;
 
         return $message;
     }
+
+    /**
+     * Returns a list of users unread notifications
+     * @return static[]
+     */
+    public static function getUnreadUserNotifications($limit)
+    {
+        return self::find()
+            ->where(['status' => self::STATUS_UNREAD, 'recipient_id' => Yii::$app->user->id])
+            ->with('userProfile')
+            ->limit($limit)
+            ->orderBy(['created_at' => SORT_DESC])
+            ->all();
+    }
+
+    /**
+     * Relates UserNotificationsEntity model with UserProfile model
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'recipient_id']);
+    }
+
 }
