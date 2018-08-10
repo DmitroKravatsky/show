@@ -36,9 +36,10 @@ class RegistrationForm extends Model
         return [
             [['email', 'name', 'last_name', 'password', 'confirm_password', 'phone_number'], 'required' ],
             ['phone_number', PhoneInputValidator::class],
-            ['email', 'validateEmail'],
+            [['email'], 'email'],
+            ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
             ['phone_number', 'validatePhoneNumber'],
-            [['name', 'last_name',], 'string', 'max' => 20],
+            [['name', 'last_name', 'phone_number',], 'string', 'max' => 20],
             [['password'], 'string', 'min' => 6],
             [
                 'confirm_password',
@@ -58,7 +59,7 @@ class RegistrationForm extends Model
             'created_at'            => 'Дата создания',
             'updated_at'            => 'Дата изменения',
             'name'                  => 'Имя пользователя',
-            'last_name'             => 'Код востановления',
+            'last_name'             => 'Фамилия пользователя',
             'role'                  => 'Должность',
         ];
     }
@@ -74,31 +75,6 @@ class RegistrationForm extends Model
         } else {
             return false;
         }
-    }
-
-    /**
-     * Check email on the unique value
-     *
-     * @param $attribute
-     */
-    public function validateEmail($attribute)
-    {
-        if (!$this->hasErrors()) {
-            $email = $this->getEmail();
-            if ($email) {
-                $this->addError($attribute, 'Данный E-mail уже зарегистрирован');
-            }
-        }
-    }
-
-    /**
-     * Get user by email
-     *
-     * @return User
-     */
-    public function getEmail()
-    {
-        return User::findOne(['email' => $this->email]);
     }
 
     /**
@@ -125,9 +101,4 @@ class RegistrationForm extends Model
     {
         return User::findOne(['phone_number' => $this->phone_number]);
     }
-
-
-
-
-
 }
