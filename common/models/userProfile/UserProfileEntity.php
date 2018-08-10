@@ -106,4 +106,13 @@ class UserProfileEntity extends ActiveRecord
     {
         return $this->hasOne(RestUserEntity::class, ['id' => 'user_id']);
     }
+
+    /**
+     * Returns users name and last_name
+     * @return string
+     */
+    public function getUserFullName()
+    {
+        return $this->name . ' ' . $this->last_name;
+    }
 }

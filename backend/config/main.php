@@ -62,6 +62,7 @@ return [
                 'bids'                      => 'admin/bid/index',
                 'bid-history'               => 'admin/bid-history/index',
                 'notifications/index'       => 'admin/notifications/index',
+                'notification/<id:\d+>'     => 'admin/notifications/view',
 
             ],
         ],
