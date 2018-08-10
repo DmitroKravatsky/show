@@ -173,7 +173,7 @@ EOT;
     public static function getUnreadUserNotifications($limit)
     {
         return self::find()
-            ->where(['status' => self::STATUS_UNREAD, 'recipient_id' => 125])
+            ->where(['status' => self::STATUS_UNREAD, 'recipient_id' => Yii::$app->user->id])
             ->with('userProfile')
             ->limit($limit)
             ->orderBy(['created_at' => SORT_DESC])
