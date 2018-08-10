@@ -39,7 +39,7 @@ class LoginForm extends Model
         if ($this->validate()) {
             $user = User::findByPhoneNumber($this->phone_number);
             if ($user && $this->validatePassword($this->password, $user->password)) {
-                return \Yii::$app->user->login($user, $this->rememberMe ? 3600 * 24 * 30 : 0);
+                return \Yii::$app->user->login($user, $this->rememberMe ? \Yii::$app->params['LoginDuration'] : 0);
             }
         } else {
             return false;
@@ -55,7 +55,7 @@ class LoginForm extends Model
         if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => 'ACTIVE'])) {
             $user->invite_code_status = 'INACTIVE';
             if ($user->save(false)) {
-                \Yii::$app->user->login($user, 3600*24);
+                \Yii::$app->user->login($user, \Yii::$app->params['LoginDuration']);
                 return true;
             }
         }
