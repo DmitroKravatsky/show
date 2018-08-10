@@ -19,7 +19,7 @@ $this->title = Yii::t('app', 'Invite Manager');
             <?php $formRegistration = ActiveForm::begin([
                 'action' => ['/invite-manager'],
                 'options' => ['class' => 'form-horizontal form-label-left'],
-                'method' => 'post'
+                'method' => 'post',
             ]) ?>
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">
@@ -65,7 +65,7 @@ $this->title = Yii::t('app', 'Invite Manager');
                     </label>
 
                     <div class="col-md-6 col-sm-6 col-xs-12">
-                        <?= $formRegistration->field($modelRegistration, Yii::t('app', 'phone_number'))
+                        <?= $formRegistration->field($modelRegistration, 'phone_number', ['enableAjaxValidation' => true, 'enableClientValidation' => false])
                             ->textInput(['placeholder' => Yii::t('app', '+79788765123')])
                             ->label(false)
                         ?>

@@ -4,6 +4,7 @@ namespace backend\modules\authorization\models;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\user\User;
 use yii\base\Model;
+use Yii;
 
 class RegistrationForm extends Model
 {
@@ -37,8 +38,8 @@ class RegistrationForm extends Model
             [['email', 'name', 'last_name', 'password', 'confirm_password', 'phone_number'], 'required' ],
             ['phone_number', PhoneInputValidator::class],
             [['email'], 'email'],
-            ['email', 'unique', 'targetClass' => User::class, 'message' => 'This email address has already been taken.'],
-            ['phone_number', 'validatePhoneNumber'],
+            ['email', 'unique', 'targetClass' => User::class, 'message' => Yii::t('app', 'This email address has already been taken.')],
+            ['phone_number', 'unique', 'targetClass' => User::class, 'message' => Yii::t('app', 'This phone number has already been taken.')],
             [['name', 'last_name', 'phone_number',], 'string', 'max' => 20],
             [['password'], 'string', 'min' => 6],
             [
@@ -75,30 +76,5 @@ class RegistrationForm extends Model
         } else {
             return false;
         }
-    }
-
-    /**
-     * Check phone_number on the unique value
-     *
-     * @param $attribute
-     */
-    public function validatePhoneNumber($attribute)
-    {
-        if (!$this->hasErrors()) {
-            $email = $this->getPhoneNumber();
-            if ($email) {
-                $this->addError($attribute, 'Данный номер телефона уже зарегистрирован');
-            }
-        }
-    }
-
-    /**
-     * Getting phone_number for validate
-     *
-     * @return User
-     */
-    public function getPhoneNumber()
-    {
-        return User::findOne(['phone_number' => $this->phone_number]);
     }
 }
