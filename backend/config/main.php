@@ -61,6 +61,7 @@ return [
                 'profile/index'              => 'admin/profile/index',
                 'profile/update'             => 'admin/profile/update',
                 'bids'                       => 'admin/bid/index',
+                'bid/view/<id:\d+>'          => 'admin/bid/view',
                 'bid-history'                => 'admin/bid-history/index',
                 'notifications/index'        => 'admin/notifications/index',
                 'notification/view/<id:\d+>' => 'admin/notifications/view',

@@ -17,7 +17,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Notification'),
+                'header' => Yii::t('app', 'Review'),
                 'collapsable' => true,
                 'removable' => true,
             ]) ?>

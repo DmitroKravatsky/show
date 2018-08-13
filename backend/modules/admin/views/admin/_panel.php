@@ -73,7 +73,7 @@ use yii\helpers\Url;
                             'view' => function($url, $model) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/bid/view', 'id' => $model->id]),
+                                    Url::to(['/bid/view/' . $model->id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             }

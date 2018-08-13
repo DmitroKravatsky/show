@@ -6,6 +6,9 @@ use common\models\userNotifications\UserNotificationsEntity;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\userNotifications\UserNotificationsEntity $notification */
+
+$this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
+$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <div class="notification-view">
