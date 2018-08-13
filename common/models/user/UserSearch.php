@@ -5,7 +5,6 @@ namespace common\models\user;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\user\User;
 
 /**
  * UserSearch represents the model behind the search form of `common\models\user\User`.
@@ -13,6 +12,7 @@ use common\models\user\User;
 class UserSearch extends User
 {
     public $dateRange;
+    public $role;
 
     /**
      * {@inheritdoc}
@@ -42,7 +42,7 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find();
+        $query = User::find()->leftJoin('auth_assignment', 'auth_assignment.user_id = user.id');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -61,6 +61,10 @@ class UserSearch extends User
             'id' => $this->id,
             'created_at' => $this->created_at,
         ]);
+
+        if ($this->role) {
+            $query->andFilterWhere(['item_name' => $this->role]);
+        }
 
         $query->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone_number', $this->phone_number]);

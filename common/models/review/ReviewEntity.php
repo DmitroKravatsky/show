@@ -6,6 +6,7 @@ use common\models\review\repositories\RestReviewRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use common\models\user\User;
 
 /**
  * Class ReviewEntity
@@ -18,6 +19,8 @@ use yii\db\ActiveRecord;
  * @property string $text
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property User $createdBy
  */
 class ReviewEntity extends ActiveRecord
 {
@@ -66,5 +69,13 @@ class ReviewEntity extends ActiveRecord
             TimestampBehavior::class,
             ValidationExceptionFirstMessage::class,
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
     }
 }

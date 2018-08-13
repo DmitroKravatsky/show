@@ -52,6 +52,7 @@ class IndexAction extends Action
         $bidSearch = new BidSearch();
         $reviewSearch = new ReviewSearch();
         $userSearch = new UserSearch();
+        $userSearch->role = User::ROLE_MANAGER;
         $notificationsSearch = new UserNotificationsSearch();
 
         $bidProvider = $bidSearch->search($params);
