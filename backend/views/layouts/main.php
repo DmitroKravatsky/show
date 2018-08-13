@@ -51,6 +51,7 @@ if (Yii::$app->user->can(User::ROLE_ADMIN)) {
 }
 
 $user = User::findOne(Yii::$app->user->id);
+$this->title = Yii::t('app', 'Dashboard');
 ?>
 <?php $this->beginPage(); ?>
 <!DOCTYPE html>
@@ -78,7 +79,7 @@ $user = User::findOne(Yii::$app->user->id);
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title">
                             <a href="<?= Url::to('/admin') ?>" class="site_title">
-                                <span><?= Yii::t('app', 'Admin Panel') ?></span>
+                                <span><?= Yii::t('app', 'Dashboard') ?></span>
                             </a>
                         </div>
 
