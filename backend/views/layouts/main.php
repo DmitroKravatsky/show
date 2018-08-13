@@ -41,6 +41,10 @@ $items = [
                     'label' => Yii::t('app', 'Notifications'),
                     'url' => ['/notifications/index'],
                 ],
+                [
+                    'label' => Yii::t('app', 'Reviews'),
+                    'url' => ['/review/index'],
+                ],
             ],
         ],
     ],

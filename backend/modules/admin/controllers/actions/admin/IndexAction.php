@@ -12,6 +12,7 @@ use common\models\user\UserSearch;
 use common\models\userNotifications\UserNotificationsEntity;
 use common\models\userNotifications\UserNotificationsSearch;
 use yii\base\Action;
+use yii\helpers\VarDumper;
 
 /**
  * Class IndexAction
@@ -43,6 +44,7 @@ class IndexAction extends Action
         $bidSearch = new BidSearch();
         $reviewSearch = new ReviewSearch();
         $userSearch = new UserSearch();
+        $userSearch->role = User::ROLE_MANAGER;
         $notificationsSearch = new UserNotificationsSearch();
 
         $bidProvider = $bidSearch->search($params);
