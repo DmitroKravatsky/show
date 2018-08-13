@@ -42,7 +42,7 @@ class LoginAction extends Action
         }
 
         return $this->controller->render($this->view, [
-            'modelLogin'        => $modelLogin,
+            'modelLogin' => $modelLogin,
         ]);
     }
 }

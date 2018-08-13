@@ -6,6 +6,9 @@ use backend\modules\authorization\models\RegistrationForm;
 use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\Action;
+use Yii;
+use yii\widgets\ActiveForm;
+use yii\web\Response;
 
 /**
  * Class InviteManagerAction
@@ -17,11 +20,20 @@ class InviteManagerAction extends Action
 
     /**
      * Renders an admin panel
-     * @return string
+     *
+     * @return array|string|Response
+     * @throws \yii\base\Exception
+     * @throws \yii\db\Exception
      */
     public function run()
     {
         $modelRegistration = new RegistrationForm();
+
+        if (Yii::$app->request->isAjax && $modelRegistration->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($modelRegistration);
+        }
+
         if (\Yii::$app->request->post()) {
             $modelRegistration->load(\Yii::$app->request->post());
             if ($modelRegistration->validate()) {
@@ -35,7 +47,7 @@ class InviteManagerAction extends Action
                     'password'      => \Yii::$app->security->generatePasswordHash($modelRegistration->password)
                 ], false);
 
-                $userRole = \Yii::$app->authManager->getRole($modelRegistration['role']);
+                $userRole = \Yii::$app->authManager->getRole(User::ROLE_MANAGER);
 
                 $transaction = \Yii::$app->db->beginTransaction();
 

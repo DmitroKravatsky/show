@@ -2,12 +2,14 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\bid\DetailAction;
-use backend\modules\admin\controllers\actions\bid\IndexAction;
-use backend\modules\admin\controllers\actions\bid\UpdateBidStatusAction;
+use backend\modules\admin\controllers\actions\bid\{
+    DeleteAction, IndexAction, UpdateBidStatusAction, ViewAction, ToggleProcessedAction
+};
 use common\models\bid\BidEntity;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
+use yii\web\NotFoundHttpException;
+use yii\filters\AccessControl;
 
 /**
  * BidController implements the CRUD actions for BidEntity model.
@@ -20,10 +22,20 @@ class BidController extends Controller
     public function behaviors()
     {
         return [
+            'access' => [
+                'class' => AccessControl::class,
+                'rules' => [
+                    [
+                        'allow'   => true,
+                        'actions' => ['index', 'delete', 'update-bid-status', 'view', 'toggle-processed',],
+                        'roles'   => ['admin', 'manager',]
+                    ],
+                ],
+            ],
             'verbs' => [
                 'class'      => VerbFilter::class,
                 'actions'    => [
-                    'delete' => ['POST'],
+                    'delete' => ['GET'],
                 ],
             ],
         ];
@@ -31,7 +43,7 @@ class BidController extends Controller
 
     public function beforeAction($action)
     {
-        if (!\Yii::$app->user->can('admin')) {
+        if (!\Yii::$app->user->can('admin') && !\Yii::$app->user->can('manager')) {
             return $this->redirect(\Yii::$app->homeUrl);
         }
         return parent::beforeAction($action);
@@ -43,12 +55,32 @@ class BidController extends Controller
             'index'  => [
                 'class' => IndexAction::class
             ],
-            'detail' => [
-                'class' => DetailAction::class
+            'delete' => [
+                'class' => DeleteAction::class
             ],
             'update-bid-status' => [
                 'class' => UpdateBidStatusAction::class
             ],
+            'view'   => [
+                'class' => ViewAction::class
+            ],
+            'toggle-processed'   => [
+                'class' => ToggleProcessedAction::class,
+            ],
         ];
+    }
+
+    /**
+     * Find bid by it id
+     * @param $id
+     * @return null|BidEntity
+     * @throws NotFoundHttpException
+     */
+    public function findBid($id)
+    {
+        if (($bid = BidEntity::findOne($id)) !== null) {
+            return $bid;
+        }
+        throw new NotFoundHttpException('Bid not found');
     }
 }

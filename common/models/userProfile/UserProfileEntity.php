@@ -2,6 +2,7 @@
 
 namespace common\models\userProfile;
 
+use common\behaviors\ImageBehavior;
 use common\models\userProfile\repositories\RestUserProfileRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
@@ -65,6 +66,7 @@ class UserProfileEntity extends ActiveRecord
             [['name', 'last_name',], 'required'],
             ['avatar', 'string'],
             [['created_at', 'updated_at'], 'safe'],
+            [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -76,6 +78,11 @@ class UserProfileEntity extends ActiveRecord
         return [
             TimestampBehavior::class,
             ValidationExceptionFirstMessage::class,
+            [
+                'class' => ImageBehavior::class,
+                'savePath' => 'images/profile',
+                'attributeName' => 'avatar',
+            ],
         ];
     }
 
@@ -98,5 +105,14 @@ class UserProfileEntity extends ActiveRecord
     public function getUser()
     {
         return $this->hasOne(RestUserEntity::class, ['id' => 'user_id']);
+    }
+
+    /**
+     * Returns users name and last_name
+     * @return string
+     */
+    public function getUserFullName()
+    {
+        return $this->name . ' ' . $this->last_name;
     }
 }
