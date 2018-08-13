@@ -123,6 +123,33 @@ class BidEntity extends ActiveRecord
     }
 
     /**
+     * Returns the name of payment systems
+     * @return array
+     */
+    public static function paymentSystemLabels(): array
+    {
+        return [
+            self::YANDEX_MONEY => Yii::t('app', 'Yandex Money'),
+            self::WEB_MONEY => Yii::t('app', 'Web Money'),
+            self::TINCOFF => Yii::t('app', 'Tincoff'),
+            self::PRIVAT24 => Yii::t('app', 'Privat24'),
+            self::SBERBANK => Yii::t('app', 'Sberbank'),
+            self::QIWI => Yii::t('app', 'Qiwi'),
+        ];
+    }
+
+    /**
+     * Returns the name of the payment system by system value
+     * @param string $system
+     * @return string
+     */
+    public static function getPaymentSystemValue($system): string
+    {
+        $systems = static::paymentSystemLabels();
+        return $systems[$system];
+    }
+
+    /**
      * @return array
      */
     public function attributeLabels(): array

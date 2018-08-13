@@ -12,7 +12,7 @@ use common\models\user\UserSearch;
 use common\models\userNotifications\UserNotificationsEntity;
 use common\models\userNotifications\UserNotificationsSearch;
 use yii\base\Action;
-use yii\helpers\VarDumper;
+use yii\web\ForbiddenHttpException;
 
 /**
  * Class IndexAction
@@ -31,7 +31,15 @@ class IndexAction extends Action
     public function run($inviteCode = null)
     {
         if ($inviteCode) {
+
+            if (!\Yii::$app->user->isGuest) {
+                \Yii::$app->user->logout();
+            }
+
             $userData = User::find()->select(['email'])->where(['user.invite_code' => $inviteCode])->one();
+            if (!$userData) {
+                return $this->controller->redirect(\Yii::$app->homeUrl);
+            }
             $passwordUpdateModel = new RegistrationForm();
             $passwordUpdateModel->setAttributes($userData);
 

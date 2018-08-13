@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'status',
             'value' => function($model) {
-                return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
+                return Html::activeDropDownList($model, 'status', BidEntity::statusLabels(),
                     [
                         'class' => 'status',
                     ]
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             },
             'contentOptions' => ['style' => 'width:11%;'],
             'format' => 'raw',
-            'filter' => BidEntity::getAllAvailableStatuses()
+            'filter' => BidEntity::statusLabels()
         ],
         [
             'attribute' => 'processed',
