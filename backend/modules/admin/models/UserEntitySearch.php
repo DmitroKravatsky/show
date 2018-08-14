@@ -25,7 +25,7 @@ class UserEntitySearch extends User
     {
         return [
             [['status', 'full_name', 'email', 'phone_number'], 'string'],
-            ['status', 'in', 'range' => [self::STATUS_VERIFIED, self::STATUS_UNVERIFIED]],
+            ['status', 'in', 'range' => [self::STATUS_VERIFIED, self::STATUS_UNVERIFIED, self::STATUS_BANNED]],
         ];
     }
 

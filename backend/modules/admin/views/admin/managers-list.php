@@ -1,5 +1,7 @@
 <?php
+use backend\models\BackendUser;
 use backend\modules\authorization\models\RegistrationForm;
+use common\models\user\User;
 use yii\bootstrap\Modal;
 use yii\grid\GridView;
 use yii\helpers\Html;
@@ -23,11 +25,14 @@ $this->title = 'My Yii Application';
                     'format' => 'raw',
                     'value' => function($model) {
                         return $model['last_name'] . ' ' . $model['name'];
-                    }
+                    },
                 ],
                 'email',
                 'phone_number',
-                'status',
+                [
+                    'attribute' => 'status',
+                    'filter'    => BackendUser::getStatusLabels(),
+                ],
                 [
                     'class' => \yii\grid\ActionColumn::class,
                     'template' => '{delete} {reInvite}',
