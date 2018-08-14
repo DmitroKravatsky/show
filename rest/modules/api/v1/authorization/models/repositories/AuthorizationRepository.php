@@ -40,7 +40,7 @@ trait AuthorizationRepository
                 'terms_condition'       => $params['terms_condition'],
                 'password'              => $params['password'],
                 'confirm_password'      => $params['confirm_password'],
-                'verification_code'     => rand(1000, 9999),
+                'verification_code'     => 0000//rand(1000, 9999),
             ]);
 
             if (!$user->validate()) {
@@ -51,7 +51,7 @@ trait AuthorizationRepository
                 return $this->throwModelException($user->errors);
             }
 
-            \Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
+            //\Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
 
             $transaction->commit();
 
