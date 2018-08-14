@@ -2,12 +2,12 @@
 
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\review\ReviewEntity;
 
 /** @var \yii\web\View $this */
-/** @var \common\models\userNotifications\UserNotificationsEntity $notification */
+/** @var ReviewEntity $review */
 
-$this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
+$this->title = Yii::t('app', 'Review') . ': ' . $review->id;
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
@@ -17,22 +17,22 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Notification'),
+                'header' => Yii::t('app', 'Review'),
                 'collapsable' => true,
                 'removable' => true,
             ]) ?>
             <?= DetailView::widget([
-                'model' => $notification,
+                'model' => $review,
                 'attributes' => [
-                    'id',
                     [
-                        'attribute' => 'recipient_id',
-                        'value' => function (UserNotificationsEntity $userNotification) {
-                            return $userNotification->recipient->profile->name ?? null;
+                        'attribute' => 'created_by',
+                        'value' => function (ReviewEntity $review) {
+                            return $review->createdBy->profile->getUserFullName() ?? null;
                         }
                     ],
                     'text:ntext',
                     'created_at:date',
+                    'updated_at:date',
                 ],
             ]) ?>
             <?php Panel::end() ?>

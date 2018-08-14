@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
         [
             'attribute' => 'status',
             'value' => function($model) {
-                return Html::activeDropDownList($model, 'status', BidEntity::getAllAvailableStatuses(),
+                return Html::activeDropDownList($model, 'status', BidEntity::statusLabels(),
                     [
                         'class' => 'status',
                     ]
@@ -42,7 +42,7 @@ $this->params['breadcrumbs'][] = $this->title;
             },
             'contentOptions' => ['style' => 'width:11%;'],
             'format' => 'raw',
-            'filter' => BidEntity::getAllAvailableStatuses()
+            'filter' => BidEntity::statusLabels()
         ],
         [
             'attribute' => 'processed',
@@ -91,6 +91,13 @@ $this->params['breadcrumbs'][] = $this->title;
             'class' => \yii\grid\ActionColumn::class,
             'template' => '{view} {toggle-processed} {delete}',
             'buttons' => [
+                'view' => function($url, $model) {
+                    return Html::a(
+                        '<span class="glyphicon glyphicon-eye-open"></span>',
+                        Url::to(['/bid/view/' . $model->id]),
+                        ['title' => Yii::t('app', 'View')]
+                    );
+                },
                 'delete' => function($url, $model) {
                     $customUrl = Url::to([
                         'bid/delete',

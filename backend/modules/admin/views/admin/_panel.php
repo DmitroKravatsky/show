@@ -9,6 +9,8 @@ use yii\helpers\StringHelper;
 use yii\helpers\Html;
 use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
+use yii\grid\ActionColumn;
+use yii\helpers\Url;
 
 /** @var \yii\web\View $this */
 /* @var $bidSearch \common\models\bid\BidSearch */
@@ -35,8 +37,13 @@ use kartik\daterange\DateRangePicker;
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
-                    'id',
                     'email:email',
+                    [
+                        'attribute' => 'from_sum',
+                        'value' => function (BidEntity $bid) {
+                            return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
+                        }
+                    ],
                     [
                         'attribute' => 'status',
                         'filter' => BidEntity::statusLabels(),
@@ -58,6 +65,19 @@ use kartik\daterange\DateRangePicker;
                                 ]
                             ]
                         ]),
+                    ],
+                    [
+                        'class' => ActionColumn::class,
+                        'template' => '{view}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/bid/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            }
+                        ],
                     ],
                 ],
             ]) ?>
@@ -97,6 +117,19 @@ use kartik\daterange\DateRangePicker;
                             ]
                         ]),
                     ],
+                    [
+                        'class' => ActionColumn::class,
+                        'template' => '{view}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/review/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            }
+                        ],
+                    ],
                 ],
             ]) ?>
         <?php Pjax::end() ?>
@@ -135,6 +168,19 @@ use kartik\daterange\DateRangePicker;
                                     ]
                                 ]
                             ]),
+                        ],
+                        [
+                            'class' => ActionColumn::class,
+                            'template' => '{view}',
+                            'buttons' => [
+                                'view' => function($url, $model) {
+                                    return Html::a(
+                                        '<span class="glyphicon glyphicon-eye-open"></span>',
+                                        Url::to(['/manager/view/' . $model->id]),
+                                        ['title' => Yii::t('app', 'View')]
+                                    );
+                                }
+                            ],
                         ],
                     ],
                 ]) ?>
@@ -184,6 +230,19 @@ use kartik\daterange\DateRangePicker;
                                 ]
                             ]
                         ]),
+                    ],
+                    [
+                        'class' => ActionColumn::class,
+                        'template' => '{view}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/notification/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            }
+                        ],
                     ],
                 ],
             ]) ?>
