@@ -11,7 +11,6 @@ class LoginAction extends Action
 {
     public $view = '@backend/modules/authorization/views/authorization/login';
     public $layout = '@backend/views/layouts/login';
-    public $errorLayout = '@backend/views/layouts/error';
 
     public function run()
     {
