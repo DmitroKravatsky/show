@@ -16,9 +16,15 @@ $this->title = 'My Yii Application';
 <?php Pjax::begin(); ?>
     <?= GridView::widget([
             'dataProvider' => $dataProvider,
+            'filterModel'  => $searchModel,
             'columns' => [
-                'name',
-                'last_name',
+                [
+                    'attribute' => 'full_name',
+                    'format' => 'raw',
+                    'value' => function($model) {
+                        return $model['last_name'] . ' ' . $model['name'];
+                    }
+                ],
                 'email',
                 'phone_number',
                 'status',
