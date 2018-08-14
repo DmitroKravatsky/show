@@ -27,6 +27,7 @@ class UpdateMangerPasswordAction extends Action
             if ($modelRegistration->load(\Yii::$app->request->post()) && $modelRegistration->validate()) {
                 $user = User::findByEmail(\Yii::$app->user->identity->email);
                 $user->password = \Yii::$app->security->generatePasswordHash($modelRegistration->password);
+                $user->status = User::STATUS_VERIFIED;
                 if ($user->save(false)) {
                     \Yii::$app->user->logout();
                     return $this->controller->goHome();

@@ -21,6 +21,7 @@ $this->title = 'My Yii Application';
                 'last_name',
                 'email',
                 'phone_number',
+                'status',
                 [
                     'class' => \yii\grid\ActionColumn::class,
                     'template' => '{delete} {reInvite}',

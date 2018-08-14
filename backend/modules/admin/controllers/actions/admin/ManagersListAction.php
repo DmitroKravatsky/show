@@ -20,7 +20,7 @@ class ManagersListAction extends Action
     public function run()
     {
         $managers = (new \yii\db\Query())
-            ->select(['user.email', 'user.phone_number', 'auth_assignment.item_name',
+            ->select(['user.email', 'user.phone_number', 'auth_assignment.item_name', 'user.status',
                 'auth_assignment.user_id', 'user_profile.name', 'user_profile.last_name'])
             ->from('auth_assignment')
             ->where(['auth_assignment.item_name' => 'manager'])

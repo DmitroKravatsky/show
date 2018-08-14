@@ -11,6 +11,7 @@ class LoginAction extends Action
 {
     public $view = '@backend/modules/authorization/views/authorization/login';
     public $layout = '@backend/views/layouts/login';
+    public $errorLayout = '@backend/views/layouts/error';
 
     public function run()
     {
@@ -22,7 +23,7 @@ class LoginAction extends Action
             $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));
 
             if (!$result) {
-                throw new NotFoundHttpException('Page not found');
+                return $this->controller->redirect(\Yii::$app->homeUrl);
             }
 
             return $this->controller->redirect(['/index', 'inviteCode' => $invitedCode]);
