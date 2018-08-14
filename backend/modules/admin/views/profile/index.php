@@ -13,11 +13,13 @@ use kartik\file\FileInput;
 /** @var string $activeTab */
 
 $filePreviewClass = 'file-preview-image kv-preview-data';
+$this->title = Yii::t('app', 'User Profile');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="profile-index">
     <div class="title">
-        <h3><?= Yii::t('app', 'User Profile') ?></h3>
+        <h3><?= $profile->getUserFullName() ?></h3>
     </div>
 
     <?php Panel::begin([
@@ -55,7 +57,7 @@ $filePreviewClass = 'file-preview-image kv-preview-data';
                         'label' => Yii::t('app', 'General'),
                         'active' => $activeTab == 'general',
                         'options' => ['id' => 'general'],
-                        'content' => $this->render('_general', ['profile' => $profile]),
+                        'content' => $this->render('_general', ['user' => $user, 'profile' => $profile]),
                     ],
                     [
                         'label' => Yii::t('app', 'Password'),

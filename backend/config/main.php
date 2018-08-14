@@ -60,6 +60,7 @@ return [
                 'logout'                     => 'authorization/authorization/logout',
                 'profile/index'              => 'admin/profile/index',
                 'profile/update'             => 'admin/profile/update',
+                'profile/verify'             => 'admin/profile/verify',
                 'bids'                       => 'admin/bid/index',
                 'bid/view/<id:\d+>'          => 'admin/bid/view',
                 'bid-history'                => 'admin/bid-history/index',

@@ -33,6 +33,8 @@ use yii\web\IdentityInterface;
  * @property integer $verification_code
  * @property string  $invite_code
  * @property integer $invite_code_status
+ * @property integer $verification_token
+ * @property integer $new_email
  *
  * @property UserProfileEntity $profile
  */
