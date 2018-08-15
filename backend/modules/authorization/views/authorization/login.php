@@ -11,9 +11,9 @@ $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-    <?php if(Yii::$app->session->has('Enter_failed')): ?>
-        <div class="alert alert-danger" role="alert"><?php echo Yii::$app->session->getFlash('Enter_failed')?></div>
-    <?php endif;?>
+<?php if(Yii::$app->session->has('Enter_failed')): ?>
+    <div class="alert alert-danger" role="alert"><?php echo Yii::$app->session->getFlash('Enter_failed')?></div>
+<?php endif;?>
 
 <div>
     <div class="login_wrapper">
@@ -22,28 +22,32 @@ $this->params['breadcrumbs'][] = $this->title;
                 <?php $form = ActiveForm::begin(['id' => 'login-form',
                     'options' => ['class' => 'form-signin']
                 ]); ?>
-                    <h1>Admin Panel</h1>
+                    <h1><?= Yii::t('app', 'Admin Panel') ?></h1>
+
                     <div>
-                        <?= $form->field($modelLogin, 'phone_number')->textInput([
+                        <?= $form->field($modelLogin, 'email')->textInput([
                             'autofocus' => true,
                             'class' => 'form-control',
-                            'id'=>"inputEmail",
-                            'placeholder' => "Enter Your Phone Number"
-                            ])->label(false) ?>
+                            'id' => 'inputEmail',
+                            'placeholder' => Yii::t('app', 'Enter Your E-mail Address')
+                        ])->label(false) ?>
                     </div>
+
                     <div>
+
                         <?= $form->field($modelLogin, 'password')->passwordInput([
                             'class' => 'form-control',
-                            'id'=>"inputPassword",
-                            'placeholder' => "Enter Your Password"
-                            ])->label(false) ?>
+                            'id' => 'inputPassword',
+                            'placeholder' => Yii::t('app', 'Enter Your Password')
+                        ])->label(false) ?>
                     </div>
+
                     <div>
                         <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label("Remember me", [
                                 'class' => "checkbox-inline", "style"=>"padding-left: 0px;"
                         ]) ?>
                         <div class="clearfix"></div>
-                        <?= Html::submitButton('Login', [
+                        <?= Html::submitButton(Yii::t('app', 'Login'), [
                             'class' => 'btn btn-default submit',
                             'name' => 'login-button'
                         ]) ?>
@@ -56,4 +60,3 @@ $this->params['breadcrumbs'][] = $this->title;
         </div>
     </div>
 </div>
-

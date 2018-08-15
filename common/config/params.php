@@ -1,6 +1,6 @@
 <?php
 return [
-    'adminEmail'     => 'admin@example.com',
+    'adminEmail'     => 'admin@exchanger.com',
     'supportEmail'   => 'support@example.com',
     'user.passwordResetTokenExpire' => 3600,
     'picture_format' => 'jpeg',
