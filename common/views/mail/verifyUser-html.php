@@ -14,6 +14,4 @@ $link = Yii::$app->urlManager->createAbsoluteUrl(['profile/verify', 'token' => $
     <p><?= Yii::t('app', 'Follow the link below to confirm your E-mail') ?>:</p>
 
     <p><?= Html::a(Html::encode($link), $link) ?></p>
-
-    <p><?= Yii::t('app', 'With respect') ?>, RatkusSoft.</p>
 </div>

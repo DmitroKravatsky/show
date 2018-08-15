@@ -1,5 +1,4 @@
 <?php
-use yii\helpers\Html;
 
 /* @var $this \yii\web\View view component instance */
 /* @var $message \yii\mail\MessageInterface the message being composed */
@@ -20,7 +19,7 @@ use yii\helpers\Html;
     <body>
     <?php $this->beginBody() ?>
     <?= $content ?>
-    <div class="footer">С уважением, BigBiz Team</div>
+    <div class="footer">С уважением, RatkusSoft</div>
     <?php $this->endBody() ?>
     </body>
     </html>

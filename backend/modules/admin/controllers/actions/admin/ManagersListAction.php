@@ -26,6 +26,7 @@ class ManagersListAction extends Action
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->controller->render($this->view, [
+            'searchModel' => $searchModel,
             'dataProvider' => $dataProvider
         ]);
     }

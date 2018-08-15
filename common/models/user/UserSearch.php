@@ -21,7 +21,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'status', 'dateRange',], 'safe'],
+            [['email', 'phone_number', 'status', 'dateRange', 'invite_code_status',], 'safe'],
         ];
     }
 
@@ -59,6 +59,7 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'invite_code_status' => $this->invite_code_status,
             'created_at' => $this->created_at,
         ]);
 
