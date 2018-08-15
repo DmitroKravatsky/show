@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\admin;
 
+use common\models\user\User;
 use common\models\user\UserSearch;
 use yii\base\Action;
 use Yii;
@@ -21,6 +22,7 @@ class ManagersListAction extends Action
     public function run()
     {
         $searchModel = new UserSearch();
+        $searchModel->role = User::ROLE_MANAGER;
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->controller->render($this->view, [
