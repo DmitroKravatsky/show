@@ -24,7 +24,7 @@ $this->title = 'My Yii Application';
                     'attribute' => 'full_name',
                     'format' => 'raw',
                     'value' => function($model) {
-                        return $model['last_name'] . ' ' . $model['name'];
+                        return $model->profile->last_name . ' ' . $model->profile->name;
                     },
                 ],
                 'email',
@@ -38,9 +38,11 @@ $this->title = 'My Yii Application';
                     'template' => '{delete} {reInvite}',
                     'buttons' => [
                         'delete' => function($url, $model) {
+//                            echo '<pre>'; var_dump($model); exit;
+
                             $customUrl = \Yii::$app->urlManager->createUrl([
                                 'admin/admin/delete-manager',
-                                'user_id' => $model['user_id']
+                                'user_id' => $model['id']
                             ]);
                             return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
                                 'title' => Yii::t('app', 'lead-delete'),
@@ -50,7 +52,7 @@ $this->title = 'My Yii Application';
                         'reInvite' => function($url, $model) {
                             $reInviteUrl = \Yii::$app->urlManager->createUrl([
                                 '/admin/admin/re-invite',
-                                'user_id' => $model['user_id'],
+                                'user_id' => $model['id'],
                             ]);
                             return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
                                 'reInviteUrl' => $reInviteUrl,

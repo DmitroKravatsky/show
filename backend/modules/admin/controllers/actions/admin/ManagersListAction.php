@@ -3,6 +3,7 @@
 namespace backend\modules\admin\controllers\actions\admin;
 
 use backend\modules\admin\models\UserEntitySearch;
+use common\models\user\UserSearch;
 use yii\base\Action;
 use yii\data\ActiveDataProvider;
 
@@ -20,7 +21,7 @@ class ManagersListAction extends Action
      */
     public function run()
     {
-        $searchModel = new UserEntitySearch();
+        $searchModel = new UserSearch();
 
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 

@@ -15,13 +15,20 @@ class UserSearch extends User
     public $role;
 
     /**
+     * String  of $name and $last_name
+     * @var $full_name
+     */
+    public $full_name;
+
+    /**
      * {@inheritdoc}
      */
     public function rules()
     {
         return [
             [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'status', 'dateRange',], 'safe'],
+            [['email', 'phone_number', 'status', 'full_name', 'dateRange',], 'safe'],
+            ['status', 'in', 'range' => [self::STATUS_VERIFIED, self::STATUS_UNVERIFIED, self::STATUS_BANNED]],
         ];
     }
 
@@ -42,7 +49,10 @@ class UserSearch extends User
      */
     public function search($params)
     {
-        $query = User::find()->leftJoin('auth_assignment', 'auth_assignment.user_id = user.id');
+        $query = User::find()
+            ->leftJoin('auth_assignment', 'auth_assignment.user_id = user.id')
+            ->where(['auth_assignment.item_name' => 'manager'])
+            ->leftJoin('user_profile', 'user_profile.user_id = user.id ');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -59,6 +69,7 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'status' => $this->status,
             'created_at' => $this->created_at,
         ]);
 
@@ -67,7 +78,8 @@ class UserSearch extends User
         }
 
         $query->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number]);
+            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
+            ->andFilterWhere(['or',['like', 'user_profile.name', $this->full_name],['like', 'user_profile.last_name', $this->full_name]]);
 
         if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->time_range);
