@@ -3,9 +3,8 @@
 namespace backend\modules\authorization\controllers\actions\authorization;
 
 use backend\modules\authorization\models\LoginForm;
-use backend\modules\authorization\models\RegistrationForm;
 use yii\base\Action;
-use yii\web\NotFoundHttpException;
+use Yii;
 
 class LoginAction extends Action
 {
@@ -15,30 +14,29 @@ class LoginAction extends Action
 
     public function run()
     {
+        if (!Yii::$app->user->isGuest) {
+            return $this->controller->redirect('/admin/index');
+        }
+
         $this->controller->layout = $this->layout;
 
         $modelLogin = new LoginForm();
 
-        if ($invitedCode = \Yii::$app->request->get('invite_code')) {
-            $result = $modelLogin->loginByInvite(\Yii::$app->request->get('invite_code'));
-
-            if (!$result) {
-                throw new NotFoundHttpException('Page not found');
+        if ($invitedCode = Yii::$app->request->get('invite_code')) {
+            $isLogin = $modelLogin->loginByInvite(Yii::$app->request->get('invite_code'));
+            if (!$isLogin) {
+                Yii::$app->user->logout();
+                return $this->controller->goHome();
             }
-
             return $this->controller->redirect(['/index', 'inviteCode' => $invitedCode]);
         }
 
-        if (!\Yii::$app->user->isGuest && \Yii::$app->user->can('admin')) {
-            return $this->controller->redirect('/admin/index');
-        }
-
         if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {
-            if (\Yii::$app->user->can('admin') || \Yii::$app->user->can('manager')) {
+            if (Yii::$app->user->can('admin') || Yii::$app->user->can('manager')) {
                 return $this->controller->redirect(['/index']);
             } else {
-                \Yii::$app->getSession()->setFlash('Enter_failed', "You haven't permission to enter to protected area. Please check your credentials. ");
-                return $this->controller->redirect(\Yii::$app->homeUrl);
+                Yii::$app->getSession()->setFlash('Enter_failed', "You haven't permission to enter to protected area. Please check your credentials. ");
+                return $this->controller->redirect(Yii::$app->homeUrl);
             }
         }
 

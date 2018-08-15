@@ -9,6 +9,7 @@ use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
+use Yii;
 
 /**
  * User model
@@ -48,12 +49,27 @@ class User extends ActiveRecord implements IdentityInterface
     const DEFAULT_GUEST_ID = 1;
     const DEFAULT_ADMIN_ID = 2;
 
+    const STATUS_INVITE_ACTIVE = 'ACTIVE';
+    const STATUS_INVITE_INACTIVE = 'INACTIVE';
+
     /**
      * @inheritdoc
      */
     public static function tableName()
     {
         return '{{%user}}';
+    }
+
+    /**
+     * Returns Invite statuses
+     * @return array
+     */
+    public static function getInviteStatuses(): array
+    {
+        return [
+            self::STATUS_INVITE_ACTIVE => Yii::t('app', 'Active'),
+            self::STATUS_INVITE_INACTIVE => Yii::t('app', 'Inactive'),
+        ];
     }
 
     /**
@@ -270,5 +286,15 @@ class User extends ActiveRecord implements IdentityInterface
             );
         }
         return parent::afterSave($insert, $changedAttributes);
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public static function getInviteStatusValue($status): string
+    {
+        $statuses = static::getInviteStatuses();
+        return $statuses[$status];
     }
 }
