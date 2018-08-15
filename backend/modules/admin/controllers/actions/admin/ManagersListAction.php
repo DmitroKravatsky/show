@@ -2,8 +2,9 @@
 
 namespace backend\modules\admin\controllers\actions\admin;
 
+use common\models\user\UserSearch;
 use yii\base\Action;
-use yii\data\ActiveDataProvider;
+use Yii;
 
 /**
  * Class ManagersListAction
@@ -19,16 +20,9 @@ class ManagersListAction extends Action
      */
     public function run()
     {
-        $managers = (new \yii\db\Query())
-            ->select(['user.email', 'user.phone_number', 'auth_assignment.item_name',
-                'auth_assignment.user_id', 'user_profile.name', 'user_profile.last_name'])
-            ->from('auth_assignment')
-            ->where(['auth_assignment.item_name' => 'manager'])
-            ->leftJoin('user', 'auth_assignment.user_id = user.id ')
-            ->leftJoin('user_profile', 'user_profile.user_id = user.id ');
-        $dataProvider = new ActiveDataProvider([
-            'query' => $managers,
-        ]);
+        $searchModel = new UserSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
         return $this->controller->render($this->view, [
             'dataProvider' => $dataProvider
         ]);

@@ -1,6 +1,7 @@
 <?php
 namespace backend\modules\authorization\models;
 
+use backend\models\BackendUser;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\user\User;
 use yii\base\Model;
@@ -52,9 +53,9 @@ class LoginForm extends Model
      */
     public function loginByInvite($invite_code):bool
     {
-        if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => 'ACTIVE'])) {
-            $user->invite_code_status = 'INACTIVE';
-            if ($user->save(false)) {
+        if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => BackendUser::STATUS_INVITE_ACTIVE])) {
+            $user->invite_code_status = BackendUser::STATUS_INVITE_INACTIVE;
+            if ($user->save(false, ['invite_code_status'])) {
                 \Yii::$app->user->login($user, \Yii::$app->params['LoginDuration']);
                 return true;
             }
