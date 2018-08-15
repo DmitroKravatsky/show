@@ -19,14 +19,17 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password',], 'required'],
-            ['email', 'email'],
+            [['password', 'email',], 'required'],
+            [['email', 'new_email',], 'email'],
+            [['email'], 'checkEmailExistence'],
+            [['verification_token'], 'string', 'max' => 255],
             [['password', 'repeatPassword'], 'string', 'min' => 6],
             [['repeatPassword'], 'compare', 'compareAttribute' => 'password'],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
+            [['verification_code'], 'integer'],
         ];
     }
 
@@ -48,6 +51,19 @@ class BackendUser extends User
     }
 
     /**
+     * Finds user by token
+     * @param string $token
+     * @return BackendUser|null
+     */
+    public static function findByVerificationToken($token)
+    {
+        if (($user = static::findOne(['verification_token' => $token])) !== null) {
+            return $user;
+        }
+        return null;
+    }
+
+    /**
      * @param $attribute
      * @param $params
      */
@@ -55,6 +71,14 @@ class BackendUser extends User
     {
         if (!Yii::$app->security->validatePassword($this->{$attribute}, self::findOne(Yii::$app->user->id)->password)) {
             $this->addError($attribute, Yii::t('app', 'Invalid old password.'));
+        }
+    }
+
+    public function checkEmailExistence($attribute, $params)
+    {
+        $user = static::find()->where(['email' => $this->email])->andWhere(['!=', 'id', Yii::$app->user->id])->one();
+        if ($user !== null) {
+            $this->addError($attribute, Yii::t('app', 'This email address has already been taken.'));
         }
     }
 

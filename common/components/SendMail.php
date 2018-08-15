@@ -2,6 +2,7 @@
 
 namespace common\components;
 
+use backend\models\BackendUser;
 use yii\base\Component;
 use Yii;
 
@@ -27,5 +28,21 @@ class SendMail extends Component
             ->setTo($to)
             ->setSubject($subject)
             ->send();
+    }
+
+    /**
+     * Sends letter to user
+     * @param BackendUser $user
+     * @return bool
+     */
+    public function sendMailToUser(BackendUser $user)
+    {
+        return $this->run(
+            'verifyUser',
+            ['user' => $user],
+            Yii::$app->params['adminEmail'],
+            $user->email,
+            Yii::t('app', 'Verification')
+        );
     }
 }
