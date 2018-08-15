@@ -38,7 +38,7 @@ class SendMail extends Component
     public function sendMailToUser(BackendUser $user)
     {
         return $this->run(
-            'verifyUser',
+            'verifyUser-html',
             ['user' => $user],
             Yii::$app->params['adminEmail'],
             $user->email,
