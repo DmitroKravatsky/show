@@ -69,7 +69,7 @@ class InviteManagerAction extends Action
                                 'email' => $modelRegistration->email,
                                 'loginLink' =>  Yii::$app->urlManager->createAbsoluteUrl(
                                     [
-                                        '/admin/login',
+                                        'login',
                                         'invite_code' => $userModel->invite_code
                                     ]
                                 ),
