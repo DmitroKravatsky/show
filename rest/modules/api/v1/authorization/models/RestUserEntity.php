@@ -397,7 +397,7 @@ class RestUserEntity extends User
 
     /**
      * Check if User is already exist by his phone_number.
-     * If user exists and unverified return true, else false
+     * If user exists and unverified return model
      * @param $phoneNumber
      * @return mixed
      */
