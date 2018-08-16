@@ -11,9 +11,7 @@ $this->title = 'Login';
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?php if(Yii::$app->session->has('Enter_failed')): ?>
-    <div class="alert alert-danger" role="alert"><?php echo Yii::$app->session->getFlash('Enter_failed')?></div>
-<?php endif;?>
+<?= \dmstr\widgets\Alert::widget() ?>
 
 <div>
     <div class="login_wrapper">

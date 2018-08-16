@@ -89,4 +89,13 @@ class BackendUser extends User
     {
         return static::find()->leftJoin('user_profile', 'user_id = user.id')->select(['name', 'user.id'])->indexBy('id')->column();
     }
+
+    /**
+     * @param $inviteCode
+     * @return BackendUser|null
+     */
+    public static function findByInviteCode($inviteCode)
+    {
+        return static::findOne(['invite_code' => $inviteCode]);
+    }
 }

@@ -38,7 +38,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                     <div class="modal-body">
                         <div class="col-xs-12">
                             <p>In a terms of high security we advise you to change your password for account</p>
-                            <div class="input-field col s12">
+                            <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'password', [
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
@@ -46,7 +46,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                     ->label('Пароль') ?>
                             </div>
 
-                            <div class="input-field col s12">
+                            <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'confirm_password', [
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
