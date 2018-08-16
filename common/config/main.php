@@ -24,5 +24,14 @@ return [
             'defaultBucket' => 'bigbizbucket',
             'defaultAcl'    => 'public-read'
         ],
+        'i18n' => [
+            'translations' => [
+                'app*' => [
+                    'class' => 'yii\i18n\DbMessageSource',
+                    'sourceMessageTable' => '{{%source_message}}',
+                    'messageTable' => '{{%message}}',
+                ],
+            ],
+        ],
     ],
 ];
