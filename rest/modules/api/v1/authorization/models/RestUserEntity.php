@@ -149,7 +149,6 @@ class RestUserEntity extends User
             ['email', 'email'],
             [['verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
-            ['phone_number', 'unique', 'on' => self::SCENARIO_REGISTER],
             ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD, self::SCENARIO_VERIFY_PROFILE]],
             [
                 'terms_condition',
@@ -246,7 +245,7 @@ class RestUserEntity extends User
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->scenario == self::SCENARIO_REGISTER) {
+        if ($this->scenario == self::SCENARIO_REGISTER && $insert) {
             $this->role = self::ROLE_USER;
             $userRole = \Yii::$app->authManager->getRole($this->role);
             \Yii::$app->authManager->assign($userRole, $this->getId());
@@ -394,5 +393,21 @@ class RestUserEntity extends User
     public function getUserProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'id']);
+    }
+
+    /**
+     * Check if User is already exist by his phone_number.
+     * If user exists and unverified return true, else false
+     * @param $phoneNumber
+     * @return mixed
+     */
+    public function isUserExist($phoneNumber)
+    {
+        if ($user = self::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_VERIFIED])) {
+            $this->addError('phone_number', \Yii::t('app', 'Phone number is already taken'));
+            return $this->throwModelException($this->errors);
+        } else if ($user = self::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
+            return $user;
+        }
     }
 }
