@@ -21,7 +21,7 @@ class AdminController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'update-manager-password',],
+                        'actions' => ['index', 'update-manager-password'],
                         'roles'   => ['admin', 'manager',]
                     ],
                     [

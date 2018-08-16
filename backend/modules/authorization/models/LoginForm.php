@@ -74,7 +74,7 @@ class LoginForm extends Model
         if (\Yii::$app->security->validatePassword($inputPassword, $currentPassword)) {
             return true;
         } else {
-            $this->addError('password', \Yii::t('app', 'Incorrect email ot password'));
+            $this->addError('password', \Yii::t('app', 'Incorrect email or password'));
             return false;
         }
     }

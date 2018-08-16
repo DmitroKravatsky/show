@@ -87,7 +87,11 @@ class BackendUser extends User
      */
     public static function getUsernames(): array
     {
-        return static::find()->leftJoin('user_profile', 'user_id = user.id')->select(['name', 'user.id'])->indexBy('id')->column();
+        return static::find()
+            ->leftJoin('user_profile', 'user_id = user.id')
+            ->select(['name', 'user.id'])
+            ->indexBy('id')
+            ->column();
     }
 
     /**
@@ -98,4 +102,19 @@ class BackendUser extends User
     {
         return static::findOne(['invite_code' => $inviteCode]);
     }
+
+    /**
+     * Returns all available user statuses
+     * @return array
+     */
+    public static function getStatusLabels(): array
+    {
+        return [
+            self::STATUS_BANNED     => Yii::t('app', 'Banned'),
+            self::STATUS_UNVERIFIED => Yii::t('app', 'Unverified'),
+            self::STATUS_VERIFIED   => Yii::t('app', 'Verified'),
+
+        ];
+    }
+
 }

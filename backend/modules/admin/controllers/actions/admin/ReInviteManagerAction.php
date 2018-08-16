@@ -31,7 +31,12 @@ class ReInviteManagerAction extends Action
                     [
                         'email' => $userModel->email,
                         'phone_number' => $userModel->phone_number,
-                        'loginLink' => $_SERVER['HTTP_HOST'] . '/admin/login?invite_code=' . $userModel->invite_code,
+                        'loginLink' =>  \Yii::$app->urlManager->createAbsoluteUrl(
+                            [
+                                'login',
+                                'invite_code' => $userModel->invite_code
+                            ]
+                        ),
                         'password' => $newPassword
                     ],
                     \Yii::$app->params['supportEmail'], $userModel->email, 'ConfirmRegistration'
