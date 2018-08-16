@@ -5,6 +5,7 @@ namespace backend\modules\admin\controllers\actions\admin;
 use backend\modules\authorization\models\RegistrationForm;
 use common\models\user\User;
 use yii\base\Action;
+use Yii;
 
 /**
  * Class UpdateMangerPasswordAction
@@ -16,7 +17,8 @@ class UpdateMangerPasswordAction extends Action
 
     /**
      * Renders an admin panel
-     * @return string
+     * @return string|\yii\web\Response
+     * @throws \yii\base\Exception
      */
     public function run()
     {
@@ -29,7 +31,8 @@ class UpdateMangerPasswordAction extends Action
                 $user->password = \Yii::$app->security->generatePasswordHash($modelRegistration->password);
                 $user->status = User::STATUS_VERIFIED;
                 if ($user->save(false)) {
-                    \Yii::$app->user->logout();
+                    Yii::$app->user->logout();
+                    Yii::$app->session->setFlash('success', Yii::t('app', 'Password updated successfully.'));
                     return $this->controller->goHome();
                 }
             }

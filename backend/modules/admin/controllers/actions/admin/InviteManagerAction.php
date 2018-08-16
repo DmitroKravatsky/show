@@ -67,9 +67,12 @@ class InviteManagerAction extends Action
                             'sendLoginLink-html.php',
                             [
                                 'email' => $modelRegistration->email,
-                                'phone_number' => $modelRegistration->phone_number,
-                                'loginLink' => $_SERVER['HTTP_HOST'] . '/admin/login?invite_code=' . $userModel->invite_code,
-                                'password' => $modelRegistration->password
+                                'loginLink' =>  Yii::$app->urlManager->createAbsoluteUrl(
+                                    [
+                                        '/admin/login',
+                                        'invite_code' => $userModel->invite_code
+                                    ]
+                                ),
                             ],
                             \Yii::$app->params['supportEmail'], $modelRegistration->email, 'ConfirmRegistration'
                         );

@@ -192,7 +192,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                                     </span>
                                                     <span>
                                                         <span class="name">
-                                                            <?= $notification->userProfile->getUserFullName(); ?>
+                                                            <?= $notification->userProfile->getUserFullName() ?? null; ?>
                                                         </span>
                                                         <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
                                                     </span>

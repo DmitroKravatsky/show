@@ -1,13 +1,15 @@
 <?php
 namespace backend\modules\authorization\models;
 
+use backend\models\BackendUser;
 use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\user\User;
 use yii\base\Model;
+use Yii;
 
 class LoginForm extends Model
 {
-    public $phone_number;
+    public $email;
     public $password;
     public $rememberMe;
 
@@ -15,8 +17,8 @@ class LoginForm extends Model
     {
         return [
 
-            [['phone_number', 'password'], 'required'],
-            [['phone_number'], PhoneInputValidator::class],
+            [['email', 'password'], 'required'],
+            [['email'], 'email',],
 
         ];
     }
@@ -24,9 +26,9 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'phone_number'      => 'Номер телефона',
-            'password'          => 'Пароль',
-            'rememberMe'        => 'Запомнить меня',
+            'email'             => Yii::t('app', 'Email'),
+            'password'          => Yii::t('app', 'Password'),
+            'rememberMe'        => Yii::t('app', 'Remember me'),
         ];
     }
 
@@ -34,16 +36,15 @@ class LoginForm extends Model
      * Login user in a system
      * @return bool
      */
-    public function login()
+    public function login(): bool
     {
         if ($this->validate()) {
-            $user = User::findByPhoneNumber($this->phone_number);
+            $user = User::findByEmail($this->email);
             if ($user && $this->validatePassword($this->password, $user->password)) {
-                return \Yii::$app->user->login($user, $this->rememberMe ? \Yii::$app->params['LoginDuration'] : 0);
+                return Yii::$app->user->login($user, $this->rememberMe ? Yii::$app->params['LoginDuration'] : 0);
             }
-        } else {
-            return false;
         }
+        return false;
     }
 
     /**
@@ -52,9 +53,9 @@ class LoginForm extends Model
      */
     public function loginByInvite($invite_code):bool
     {
-        if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => 'ACTIVE'])) {
-            $user->invite_code_status = 'INACTIVE';
-            if ($user->save(false)) {
+        if ($user = User::findOne(['invite_code' => $invite_code, 'invite_code_status' => BackendUser::STATUS_INVITE_ACTIVE])) {
+            $user->invite_code_status = BackendUser::STATUS_INVITE_INACTIVE;
+            if ($user->save(false, ['invite_code_status'])) {
                 \Yii::$app->user->login($user, \Yii::$app->params['LoginDuration']);
                 return true;
             }
@@ -73,7 +74,7 @@ class LoginForm extends Model
         if (\Yii::$app->security->validatePassword($inputPassword, $currentPassword)) {
             return true;
         } else {
-            $this->addError('password', \Yii::t('app', 'Password is incorrect'));
+            $this->addError('password', \Yii::t('app', 'Incorrect email or password'));
             return false;
         }
     }

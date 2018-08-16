@@ -3,6 +3,7 @@
 use yii\widgets\ActiveForm;
 use yii\data\ActiveDataProvider;
 use common\models\userNotifications\UserNotificationsEntity;
+use yii\helpers\Html;
 
 /* @var $this yii\web\View */
 /* @var $passwordUpdateModel \backend\modules\authorization\models\RegistrationForm */
@@ -27,40 +28,43 @@ $this->title = Yii::t('app', 'My Yii Application');
         <div class="modal-dialog" role="document">
             <div class="modal-content">
                 <div class="modal-header">
-                    <h5 class="modal-title">Creation password </h5>
+                    <h5 class="modal-title"><?= Yii::t('app', 'Creation password') ?></h5>
                 </div>
-                <div class="modal-body">
-                    <div class="col-xs-12">
-                    <?php $formRegistration = ActiveForm::begin([
-                        'action' => 'update-manager-password',
-                        'id' => 'password-reset-form'
-                    ]); ?>
-                        <p>Hello <strong><?= \Yii::$app->user->identity->email ?></strong>. You have been registered and get specific rights</p>
-                        <p>In a terms of high security we advise you to change your password for account</p>
-                        <div class="input-field col s12">
-                            <?= $formRegistration->field($passwordUpdateModel, 'password', [
-                                'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
-                            ])
-                                ->passwordInput(['placeholder' => 'Пароль'])
-                                ->label('Пароль') ?>
+
+                <?php $formRegistration = ActiveForm::begin([
+                    'action' => 'update-manager-password',
+                    'id' => 'password-reset-form'
+                ]); ?>
+                    <div class="modal-body">
+                        <div class="col-xs-12">
+                            <p>In a terms of high security we advise you to change your password for account</p>
+                            <div class="input-field col-md-12">
+                                <?= $formRegistration->field($passwordUpdateModel, 'password', [
+                                    'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
+                                ])
+                                    ->passwordInput(['placeholder' => 'Пароль'])
+                                    ->label('Пароль') ?>
+                            </div>
+
+                            <div class="input-field col-md-12">
+                                <?= $formRegistration->field($passwordUpdateModel, 'confirm_password', [
+                                    'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
+                                ])
+                                    ->passwordInput(['placeholder' => 'Повторите пароль'])
+                                    ->label('Подтверждение пароля') ?>
+                            </div>
+
+                            <div class="result"></div>
                         </div>
 
-                        <div class="input-field col s12">
-                            <?= $formRegistration->field($passwordUpdateModel, 'confirm_password', [
-                                'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
-                            ])
-                                ->passwordInput(['placeholder' => 'Повторите пароль'])
-                                ->label('Подтверждение пароля') ?>
+                        <div class="modal-footer">
+                            <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
+                                'id' => 'submit',
+                                'class' => 'btn btn-primary',
+                            ]) ?>
                         </div>
-
-                        <div class="result"></div>
                     </div>
-
-                    <div class="modal-footer">
-                        <input type="submit" id="submit" class="btn btn-primary">
-                    </div>
-                    <?php ActiveForm::end(); ?>
-                </div>
+                <?php ActiveForm::end(); ?>
 
                 <div class="modal-footer">
                     <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>

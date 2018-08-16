@@ -19,14 +19,17 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password',], 'required'],
-            ['email', 'email'],
+            [['password', 'email',], 'required'],
+            [['email', 'new_email',], 'email'],
+            [['email'], 'checkEmailExistence'],
+            [['verification_token'], 'string', 'max' => 255],
             [['password', 'repeatPassword'], 'string', 'min' => 6],
             [['repeatPassword'], 'compare', 'compareAttribute' => 'password'],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
+            [['verification_code'], 'integer'],
         ];
     }
 
@@ -48,6 +51,19 @@ class BackendUser extends User
     }
 
     /**
+     * Finds user by token
+     * @param string $token
+     * @return BackendUser|null
+     */
+    public static function findByVerificationToken($token)
+    {
+        if (($user = static::findOne(['verification_token' => $token])) !== null) {
+            return $user;
+        }
+        return null;
+    }
+
+    /**
      * @param $attribute
      * @param $params
      */
@@ -58,12 +74,33 @@ class BackendUser extends User
         }
     }
 
+    public function checkEmailExistence($attribute, $params)
+    {
+        $user = static::find()->where(['email' => $this->email])->andWhere(['!=', 'id', Yii::$app->user->id])->one();
+        if ($user !== null) {
+            $this->addError($attribute, Yii::t('app', 'This email address has already been taken.'));
+        }
+    }
+
     /**
      * @return array
      */
     public static function getUsernames(): array
     {
-        return static::find()->leftJoin('user_profile', 'user_id = user.id')->select(['name', 'user.id'])->indexBy('id')->column();
+        return static::find()
+            ->leftJoin('user_profile', 'user_id = user.id')
+            ->select(['name', 'user.id'])
+            ->indexBy('id')
+            ->column();
+    }
+
+    /**
+     * @param $inviteCode
+     * @return BackendUser|null
+     */
+    public static function findByInviteCode($inviteCode)
+    {
+        return static::findOne(['invite_code' => $inviteCode]);
     }
 
     /**

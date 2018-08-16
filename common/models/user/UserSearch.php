@@ -27,8 +27,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'status', 'full_name', 'dateRange',], 'safe'],
-            ['status', 'in', 'range' => [self::STATUS_VERIFIED, self::STATUS_UNVERIFIED, self::STATUS_BANNED]],
+            [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status'], 'safe'],
         ];
     }
 
@@ -47,13 +46,13 @@ class UserSearch extends User
      *
      * @return ActiveDataProvider
      */
-    public function search($params, $searchRole)
+    public function search($params)
     {
         $query = User::find()
             ->leftJoin('auth_assignment', 'auth_assignment.user_id = user.id')
             ->leftJoin('user_profile', 'user_profile.user_id = user.id ');
-        if ($searchRole !== null) {
-            $query->andWhere(['auth_assignment.item_name' => $searchRole]);
+        if ($this->role != null) {
+            $query->andWhere(['auth_assignment.item_name' => $this->role]);
         }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -70,6 +69,7 @@ class UserSearch extends User
 
         $query->andFilterWhere([
             'id' => $this->id,
+            'invite_code_status' => $this->invite_code_status,
             'status' => $this->status,
             'created_at' => $this->created_at,
         ]);
