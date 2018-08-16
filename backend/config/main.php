@@ -68,6 +68,7 @@ return [
                 'notification/view/<id:\d+>' => 'admin/notifications/view',
                 'review/index'               => 'admin/review/index',
                 'review/view/<id:\d+>'       => 'admin/review/view',
+                'invite/<action:[\w-]+>'     => 'admin/invite/<action>',
             ],
         ],
         'view' => [

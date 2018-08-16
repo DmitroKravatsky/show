@@ -26,6 +26,7 @@ class LoginAction extends Action
             $isLogin = $modelLogin->loginByInvite(Yii::$app->request->get('invite_code'));
             if (!$isLogin) {
                 Yii::$app->user->logout();
+                Yii::$app->session->setFlash('error', Yii::t('app', 'Invitation link expired.'));
                 return $this->controller->goHome();
             }
             return $this->controller->redirect(['/index', 'inviteCode' => $invitedCode]);
@@ -35,7 +36,7 @@ class LoginAction extends Action
             if (Yii::$app->user->can('admin') || Yii::$app->user->can('manager')) {
                 return $this->controller->redirect(['/index']);
             } else {
-                Yii::$app->getSession()->setFlash('Enter_failed', "You haven't permission to enter to protected area. Please check your credentials. ");
+                Yii::$app->getSession()->setFlash('error', "You haven't permission to enter to protected area. Please check your credentials. ");
                 return $this->controller->redirect(Yii::$app->homeUrl);
             }
         }
