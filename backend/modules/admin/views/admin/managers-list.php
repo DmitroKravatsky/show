@@ -5,6 +5,7 @@ use common\models\user\User;
 use yii\bootstrap\Modal;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\widgets\Pjax;
 
@@ -38,9 +39,7 @@ $this->title = 'My Yii Application';
                     'template' => '{delete} {reInvite}',
                     'buttons' => [
                         'delete' => function($url, $model) {
-//                            echo '<pre>'; var_dump($model); exit;
-
-                            $customUrl = \Yii::$app->urlManager->createUrl([
+                            $customUrl = Url::to([
                                 'admin/admin/delete-manager',
                                 'user_id' => $model['id']
                             ]);
@@ -50,7 +49,7 @@ $this->title = 'My Yii Application';
                                 ]);
                         },
                         'reInvite' => function($url, $model) {
-                            $reInviteUrl = \Yii::$app->urlManager->createUrl([
+                            $reInviteUrl = Url::to([
                                 '/admin/admin/re-invite',
                                 'user_id' => $model['id'],
                             ]);

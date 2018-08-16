@@ -47,13 +47,14 @@ class UserSearch extends User
      *
      * @return ActiveDataProvider
      */
-    public function search($params)
+    public function search($params, $searchRole)
     {
         $query = User::find()
             ->leftJoin('auth_assignment', 'auth_assignment.user_id = user.id')
-            ->where(['auth_assignment.item_name' => 'manager'])
             ->leftJoin('user_profile', 'user_profile.user_id = user.id ');
-
+        if ($searchRole !== null) {
+            $query->andWhere(['auth_assignment.item_name' => $searchRole]);
+        }
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
             'pagination' => [
