@@ -25,12 +25,6 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
-        ['class' => \yii\grid\SerialColumn::class],
-        [
-            'attribute' => 'id',
-            'contentOptions' => ['style' => 'width:7%;'],
-
-        ],
         [
             'attribute' => 'status',
             'value' => function($model) {
@@ -45,24 +39,6 @@ $this->params['breadcrumbs'][] = $this->title;
             'filter' => BidEntity::statusLabels()
         ],
         [
-            'attribute' => 'processed',
-            'filter' => BidEntity::getProcessedStatuses(),
-            'format' => 'html',
-            'value' => function (BidEntity $bid) {
-                if ($bid->processed) {
-                    return Html::tag('span', BidEntity::getProcessedStatusValue($bid->processed), ['class' => 'label label-success']);
-                }
-                return Html::tag('span', BidEntity::getProcessedStatusValue($bid->processed), ['class' => 'label label-danger']);
-            }
-        ],
-        [
-            'attribute' => 'processed_by',
-            'filter' => BackendUser::getUsernames(),
-            'value' => function (BidEntity $bid) {
-                return $bid->processedBy->profile->name ?? null;
-            }
-        ],
-        [
             'attribute' => 'full_name',
             'format' => 'raw',
             'value' => function($model) {
@@ -71,13 +47,16 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'email:email',
         'phone_number',
+        'from_sum',
+        'from_wallet',
+        'to_wallet',
         [
-            'attribute' => 'updated_at',
+            'attribute' => 'created_at',
             'format' => 'date',
-            'value' => 'updated_at',
+            'value' => 'created_at',
             'filter'    => DateRangePicker::widget([
                 'model'          => $searchModel,
-                'attribute'      => 'updated_at',
+                'attribute'      => 'created_at',
                 'convertFormat'  => true,
                 'pluginOptions'  => [
                     'timePicker' => true,
@@ -89,7 +68,7 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'class' => \yii\grid\ActionColumn::class,
-            'template' => '{view} {toggle-processed} {delete}',
+            'template' => '{view} {delete}',
             'buttons' => [
                 'view' => function($url, $model) {
                     return Html::a(
@@ -108,16 +87,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'data-confirm' => \Yii::t('app', 'Are you sure?'),
                     ]);
                 },
-                'toggle-processed' => function ($url, BidEntity $bid) {
-                    if ($bid->processed) {
-                        $options = ['title' => Yii::t('app', 'Unprocessed')];
-                        $iconClass = 'glyphicon-check';
-                    } else {
-                        $options = ['title' => Yii::t('app', 'Processed')];
-                        $iconClass = 'glyphicon-unchecked';
-                    }
-                    return Html::a('<span class="glyphicon ' . $iconClass . '"></span>', $url, $options);
-                }
             ]
         ]
     ]

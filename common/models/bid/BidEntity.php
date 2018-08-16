@@ -63,6 +63,7 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
+    const STATUS_NEW         = 'new';
     const STATUS_ACCEPTED    = 'accepted';
     const STATUS_IN_PROGRESS = 'in_progress';
     const STATUS_DONE        = 'done';
