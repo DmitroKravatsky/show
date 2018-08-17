@@ -403,7 +403,7 @@ class RestUserEntity extends User
      */
     public function isUserExist($phoneNumber)
     {
-        $user = self::find()
+        $user = static::find()
             ->where(['phone_number' => $phoneNumber])
             ->andWhere(['!=', 'status', self::STATUS_UNVERIFIED])
             ->one();
