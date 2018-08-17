@@ -50,7 +50,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][1]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
+    array_unshift($items['items'][0]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
 }
 
 $user = User::findOne(Yii::$app->user->id);
