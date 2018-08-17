@@ -147,7 +147,7 @@ $this->title = Yii::t('app', 'Dashboard');
                             <ul class="nav navbar-nav navbar-right">
                                 <li>
                                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'en') ?>"></div>
+                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'gb') ?>"></div>
                                         &nbsp;
                                         <span class="fa fa-angle-down"></span>
                                     </a>
