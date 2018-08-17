@@ -50,7 +50,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][1]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
+    array_unshift($items['items'][0]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
 }
 
 $user = User::findOne(Yii::$app->user->id);
@@ -147,7 +147,7 @@ $this->title = Yii::t('app', 'Dashboard');
                             <ul class="nav navbar-nav navbar-right">
                                 <li>
                                     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'en') ?>"></div>
+                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'gb') ?>"></div>
                                         &nbsp;
                                         <span class="fa fa-angle-down"></span>
                                     </a>
