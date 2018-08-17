@@ -7,6 +7,7 @@ use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use common\models\user\User;
+use Yii;
 
 /**
  * Class ReviewEntity
@@ -41,10 +42,10 @@ class ReviewEntity extends ActiveRecord
     {
         return [
             'id'         => '#',
-            'created_by' => 'Автор',
-            'text'       => 'Текст отзыва',
-            'created_at' => 'Дата создания',
-            'updated_at' => 'Дата обновления',
+            'created_by' => Yii::t('app', 'Created By'),
+            'text'       => Yii::t('app', 'Text'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
         ];
     }
 

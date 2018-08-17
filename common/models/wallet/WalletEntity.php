@@ -6,6 +6,7 @@ use common\models\wallet\repositories\RestWalletRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
+use Yii;
 
 /**
  * Class WalletEntity
@@ -58,12 +59,12 @@ class WalletEntity extends \yii\db\ActiveRecord
     {
         return [
             'id'             => '#',
-            'name'           => 'Название',
-            'payment_system' => 'Платежная система',
-            'created_by'     => 'Автор',
-            'number'         => 'Номер кошелька',
-            'created_at'     => 'Дата создания',
-            'updated_at'     => 'Дата обновления'
+            'name'           => Yii::t('app', 'Name'),
+            'payment_system' => Yii::t('app', 'Payment System'),
+            'created_by'     => Yii::t('app', 'Created By'),
+            'number'         => Yii::t('app', 'Wallet Number'),
+            'created_at'     => Yii::t('app', 'Created At'),
+            'updated_at'     => Yii::t('app', 'Updated At')
         ];
     }
 

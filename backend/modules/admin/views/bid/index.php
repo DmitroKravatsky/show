@@ -12,7 +12,7 @@ use backend\models\BackendUser;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel \backend\modules\admin\models\BidEntitySearch */
 
-$this->title = 'Bid Entities';
+$this->title = Yii::t('app', 'Bids');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 <?php if ($message = Yii::$app->session->getFlash('delete-success')): ?>

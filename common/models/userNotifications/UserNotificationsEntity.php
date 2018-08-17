@@ -70,11 +70,11 @@ class UserNotificationsEntity extends ActiveRecord
     {
         return [
             'id'           => '#',
-            'recipient_id' => 'Получатель',
-            'text'         => 'Текст',
-            'status'       => 'Статус',
-            'created_at'   => 'Дата создания',
-            'updated_at'   => 'Дата обновления',
+            'recipient_id' => Yii::t('app', 'Recipient'),
+            'text'         => Yii::t('app', 'Text'),
+            'status'       => Yii::t('app', 'Status'),
+            'created_at'   => Yii::t('app', 'Created At'),
+            'updated_at'   => Yii::t('app', 'Updated At'),
         ];
     }
 

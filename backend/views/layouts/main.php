@@ -99,7 +99,7 @@ $this->title = Yii::t('app', 'Dashboard');
                             </div>
 
                             <div class="profile_info">
-                                <span>Welcome,</span>
+                                <span><?= Yii::t('app', 'Welcome') ?>,</span>
                                 <h2><?= Html::encode($user->fullname ?? null) ?></h2>
                             </div>
                         </div>
@@ -111,7 +111,7 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                             <div class="menu_section">
-                                <h3>General</h3>
+                                <h3><?= Yii::t('app', 'General') ?></h3>
                                 <?= Menu::widget($items) ?>
                             </div>
 
