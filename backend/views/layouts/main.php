@@ -7,20 +7,19 @@
 
 use backend\assets\AppAsset;
 use common\models\userNotifications\UserNotificationsEntity;
-use common\models\userProfile\UserProfileEntity;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
 use yii\helpers\Url;
 use dmstr\widgets\Alert;
+use common\models\language\Language;
 
 $bundle = yiister\gentelella\assets\Asset::register($this);
 AppAsset::register($this);
 
 $items = [
     'items' => [
-        ['label' => 'Home', 'url' => Url::to('/admin'), 'icon' => 'home'],
         [
             'label' => 'Management',
             'icon' => 'th',
@@ -99,7 +98,7 @@ $this->title = Yii::t('app', 'Dashboard');
                             </div>
 
                             <div class="profile_info">
-                                <span>Welcome,</span>
+                                <span><?= Yii::t('app', 'Welcome') ?>,</span>
                                 <h2><?= Html::encode($user->fullname ?? null) ?></h2>
                             </div>
                         </div>
@@ -111,7 +110,7 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                             <div class="menu_section">
-                                <h3>General</h3>
+                                <h3><?= Yii::t('app', 'General') ?></h3>
                                 <?= Menu::widget($items) ?>
                             </div>
 
@@ -139,13 +138,31 @@ $this->title = Yii::t('app', 'Dashboard');
 
                 <!-- top navigation -->
                 <div class="top_nav">
-                    <div class="nav_menu">
+                    <ul class="nav_menu">
                         <nav class="" role="navigation">
                             <div class="nav toggle">
                                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                             </div>
 
                             <ul class="nav navbar-nav navbar-right">
+                                <li>
+                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
+                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'en') ?>"></div>
+                                        &nbsp;
+                                        <span class="fa fa-angle-down"></span>
+                                    </a>
+
+                                        <ul class="dropdown-menu">
+                                    <?php foreach (Language::getVisibleList() as $code => $name): ?>
+                                            <li>
+                                                <a href="<?= Url::to(['/site/toggle-language', 'language' => $code]) ?>">
+                                                    <div class="pull-left flag flag-<?= $code ?>"></div>&nbsp;<?= $name ?>
+                                                </a>
+                                            </li>
+                                    <?php endforeach; ?>
+                                        </ul>
+                                </li>
+
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                         <?= isset($user->profile) && $user->profile->avatar !== null
@@ -154,7 +171,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         ?>
 
                                         <?= Html::encode($user->fullname ?? null) ?>
-                                        <span class=" fa fa-angle-down"></span>
+                                        <span class="fa fa-angle-down"></span>
                                     </a>
 
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">

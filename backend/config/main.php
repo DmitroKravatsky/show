@@ -80,5 +80,9 @@ return [
             ],
         ],
     ],
+    'on beforeAction' => function ($event) {
+        $language = Yii::$app->session->get('language', 'en');
+        Yii::$app->language = $language;
+    },
     'params' => $params,
 ];

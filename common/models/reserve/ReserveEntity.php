@@ -6,6 +6,7 @@ use common\models\reserve\repositories\RestReserveRepository;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use Yii;
 
 /**
  * Class ReserveEntity
@@ -51,11 +52,11 @@ class ReserveEntity extends ActiveRecord
     {
         return [
             'id'             => '#',
-            'payment_system' => 'Платежная система',
-            'currency'       => 'Валюта',
-            'sum'            => 'Сумма',
-            'created_at'     => 'Дата создания',
-            'updated_at'     => 'Дата изменения',
+            'payment_system' => Yii::t('app', 'Payment System'),
+            'currency'       => Yii::t('app', 'Currency'),
+            'sum'            => Yii::t('app', 'Sum'),
+            'created_at'     => Yii::t('app', 'Created At'),
+            'updated_at'     => Yii::t('app', 'Updated At'),
         ];
     }
 
