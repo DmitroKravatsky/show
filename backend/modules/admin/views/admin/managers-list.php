@@ -1,9 +1,9 @@
 <?php
-
+use common\models\user\User;
 use yii\grid\GridView;
 use yii\helpers\Html;
+use yii\helpers\Url;
 use yii\widgets\Pjax;
-use common\models\user\User;
 use yiister\gentelella\widgets\Panel;
 
 /* @var $this yii\web\View */
@@ -27,15 +27,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [
-                        'attribute' => 'name',
+                        'attribute' => 'full_name',
                         'value' => function (User $user) {
-                            return $user->profile->name ?? null;
-                        }
-                    ],
-                    [
-                        'attribute' => 'last_name',
-                        'value' => function (User $user) {
-                            return $user->profile->last_name ?? null;
+                            return ($user->profile->name . ' ' . $user->profile->last_name) ?? null;
                         }
                     ],
                     'email',
@@ -52,8 +46,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'template' => '{delete} {reInvite}',
                         'buttons' => [
                             'delete' => function($url, User $model) {
-                                $customUrl = \Yii::$app->urlManager->createUrl([
-                                    'admin/admin/delete-manager',
+                                $customUrl = Url::to([
+                                    '/admin/admin/delete-manager',
                                     'user_id' => $model->id
                                 ]);
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
@@ -62,7 +56,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ]);
                             },
                             'reInvite' => function($url, User $model) {
-                                $reInviteUrl = \Yii::$app->urlManager->createUrl([
+                                $reInviteUrl = Url::to([
                                     '/admin/admin/re-invite',
                                     'user_id' => $model->id,
                                 ]);

@@ -49,6 +49,10 @@ class User extends ActiveRecord implements IdentityInterface
     const DEFAULT_GUEST_ID = 1;
     const DEFAULT_ADMIN_ID = 2;
 
+    const STATUS_UNVERIFIED = 'UNVERIFIED';
+    const STATUS_VERIFIED   = 'VERIFIED';
+    const STATUS_BANNED     = 'BANNED';
+
     const STATUS_INVITE_ACTIVE = 'ACTIVE';
     const STATUS_INVITE_INACTIVE = 'INACTIVE';
 
