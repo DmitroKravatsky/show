@@ -20,7 +20,6 @@ AppAsset::register($this);
 
 $items = [
     'items' => [
-        ['label' => 'Home', 'url' => Url::to('/admin'), 'icon' => 'home'],
         [
             'label' => 'Management',
             'icon' => 'th',
