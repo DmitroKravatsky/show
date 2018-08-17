@@ -403,7 +403,12 @@ class RestUserEntity extends User
      */
     public function isUserExist($phoneNumber)
     {
-        if ($user = self::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_VERIFIED])) {
+        if (
+            $user = self::find()
+            ->where(['phone_number' => $phoneNumber])
+            ->andWhere(['!=', 'status', self::STATUS_UNVERIFIED])
+            ->one()
+        ) {
             $this->addError('phone_number', \Yii::t('app', 'Phone number is already taken'));
             return $this->throwModelException($this->errors);
         } else if ($user = self::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
