@@ -63,12 +63,11 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
-    const STATUS_NEW         = 'new';
-    const STATUS_ACCEPTED    = 'accepted';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_DONE        = 'done';
-    const STATUS_REJECTED    = 'rejected';
-    const STATUS_PAID        = 'paid';
+    const STATUS_NEW            = 'new';
+    const STATUS_PAID_BY_USER   = 'paid_by_user';
+    const STATUS_PAID_BY_US     = 'paid_by_us';
+    const STATUS_DONE           = 'done';
+    const STATUS_REJECTED       = 'rejected';
 
     const PROCESSED_YES = 1;
     const PROCESSED_NO  = 0;
@@ -115,11 +114,11 @@ class BidEntity extends ActiveRecord
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_ACCEPTED => Yii::t('app', 'Accepted'),
-            self::STATUS_IN_PROGRESS => Yii::t('app', 'In progress'),
-            self::STATUS_DONE     => Yii::t('app', 'Done'),
-            self::STATUS_REJECTED => Yii::t('app', 'Rejected'),
-            self::STATUS_PAID     => Yii::t('app', 'Paid'),
+            self::STATUS_NEW           => Yii::t('app', 'New'),
+            self::STATUS_PAID_BY_USER  => Yii::t('app', 'Paid by user'),
+            self::STATUS_PAID_BY_US    => Yii::t('app', 'Paid by us'),
+            self::STATUS_DONE          => Yii::t('app', 'Done'),
+            self::STATUS_REJECTED      => Yii::t('app', 'Rejected'),
         ];
     }
 
@@ -213,8 +212,11 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [
-                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID, self::STATUS_IN_PROGRESS,]
+            ['status', 'in', 'range' =>
+                [
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE,
+                    self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_USER,
+                ]
             ],
             [
                 [
@@ -346,8 +348,9 @@ class BidEntity extends ActiveRecord
     public static function getAllAvailableStatuses(): array
     {
         return [
-            BidEntity::STATUS_ACCEPTED => BidEntity::STATUS_ACCEPTED,
-            BidEntity::STATUS_PAID     => BidEntity::STATUS_PAID,
+            BidEntity::STATUS_NEW      => BidEntity::STATUS_NEW,
+            BidEntity::STATUS_PAID_BY_USER  => BidEntity::STATUS_PAID_BY_USER,
+            BidEntity::STATUS_PAID_BY_US    => BidEntity::STATUS_PAID_BY_US,
             BidEntity::STATUS_DONE     => BidEntity::STATUS_DONE,
             BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
         ];
