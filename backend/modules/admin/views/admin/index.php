@@ -42,16 +42,16 @@ $this->title = Yii::t('app', 'My Yii Application');
                                 <?= $formRegistration->field($passwordUpdateModel, 'password', [
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
-                                    ->passwordInput(['placeholder' => 'Пароль'])
-                                    ->label('Пароль') ?>
+                                    ->passwordInput(['placeholder' => Yii::t('app', 'Password')])
+                                    ->label(Yii::t('app', 'Password')) ?>
                             </div>
 
                             <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'confirm_password', [
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
-                                    ->passwordInput(['placeholder' => 'Повторите пароль'])
-                                    ->label('Подтверждение пароля') ?>
+                                    ->passwordInput(['placeholder' => Yii::t('app', 'Repeat Password')])
+                                    ->label(Yii::t('app', 'Confirm Password')) ?>
                             </div>
 
                             <div class="result"></div>
@@ -67,7 +67,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                 <?php ActiveForm::end(); ?>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal">Close</button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
                 </div>
             </div>
         </div>

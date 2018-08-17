@@ -21,7 +21,7 @@ AppAsset::register($this);
 $items = [
     'items' => [
         [
-            'label' => 'Management',
+            'label' => Yii::t('app', 'Management'),
             'icon' => 'th',
             'url' => '#',
             'items' => [
@@ -50,7 +50,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][0]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
+    array_unshift($items['items'][0]['items'], ['label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/managers-list')]]);
 }
 
 $user = User::findOne(Yii::$app->user->id);
@@ -145,23 +145,10 @@ $this->title = Yii::t('app', 'Dashboard');
                             </div>
 
                             <ul class="nav navbar-nav navbar-right">
-                                <li>
-                                    <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-                                        <div class="pull-left flag flag-<?= Yii::$app->session->get('language', 'gb') ?>"></div>
-                                        &nbsp;
-                                        <span class="fa fa-angle-down"></span>
-                                    </a>
-
-                                        <ul class="dropdown-menu">
-                                    <?php foreach (Language::getVisibleList() as $code => $name): ?>
-                                            <li>
-                                                <a href="<?= Url::to(['/site/toggle-language', 'language' => $code]) ?>">
-                                                    <div class="pull-left flag flag-<?= $code ?>"></div>&nbsp;<?= $name ?>
-                                                </a>
-                                            </li>
-                                    <?php endforeach; ?>
-                                        </ul>
-                                </li>
+                                <?= \common\widgets\LanguageChoice::widget([
+                                    'languages' => Language::getVisibleList(),
+                                    'url' => '/site/toggle-language',
+                                ]) ?>
 
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
@@ -223,7 +210,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <li>
                                             <div class="text-center">
                                                 <a href="<?= Url::to(['/notifications/index']) ?>">
-                                                    <strong>See All Alerts</strong>
+                                                    <strong><?= Yii::t('app', 'See All Alerts') ?></strong>
                                                     <i class="fa fa-angle-right"></i>
                                                 </a>
                                             </div>

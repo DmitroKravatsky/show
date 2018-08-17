@@ -29,7 +29,7 @@ $this->title = Yii::t('app', 'Invite Manager');
                     <div class="col-md-6 col-sm-6 col-xs-12">
 
                     <?= $formRegistration->field($modelRegistration, 'name')
-                        ->textInput(['placeholder' => Yii::t('app', 'Name')])
+                        ->textInput(['placeholder' => Yii::t('app', 'First Name')])
                         ->label(false)
                     ?>
                     </div>
@@ -103,7 +103,7 @@ $this->title = Yii::t('app', 'Invite Manager');
                 <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                         <button id="reset" class="btn btn-primary" type="reset"><?= Yii::t('app', 'Reset') ?></button>
-                        <?= Html::submitButton('Registry', [
+                        <?= Html::submitButton(Yii::t('app', 'Registry'), [
                             'class' => 'btn btn-success',
                             'name'  => 'registration-button'
                         ]); ?>
