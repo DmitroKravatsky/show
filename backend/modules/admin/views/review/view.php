@@ -8,6 +8,7 @@ use common\models\review\ReviewEntity;
 /** @var ReviewEntity $review */
 
 $this->title = Yii::t('app', 'Review') . ': ' . $review->id;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reviews'), 'url' => ['index']];
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 

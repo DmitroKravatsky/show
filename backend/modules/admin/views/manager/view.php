@@ -8,6 +8,7 @@ use yii\helpers\Html;
 /** @var \yii\web\View $this */
 /** @var BackendUser $manager */
 
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Managers'), 'url' => ['index']];
 $this->title = Yii::t('app', 'Manager') . ': ' . $manager->id;
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>

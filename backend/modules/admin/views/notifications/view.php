@@ -8,6 +8,7 @@ use common\models\userNotifications\UserNotificationsEntity;
 /** @var \common\models\userNotifications\UserNotificationsEntity $notification */
 
 $this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Notifications'), 'url' => ['index']];
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 

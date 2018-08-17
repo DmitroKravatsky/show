@@ -41,7 +41,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     </div>
 
                     <div>
-                        <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label("Remember me", [
+                        <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label(Yii::t('app', 'Remember me'), [
                                 'class' => "checkbox-inline", "style"=>"padding-left: 0px;"
                         ]) ?>
                         <div class="clearfix"></div>

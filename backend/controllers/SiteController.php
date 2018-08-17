@@ -22,7 +22,7 @@ class SiteController extends Controller
                 'class' => AccessControl::className(),
                 'rules' => [
                     [
-                        'actions' => ['login', 'index', 'create-roles', 'error'],
+                        'actions' => ['login', 'index', 'create-roles', 'error', 'toggle-language',],
                         'allow' => true,
                     ],
                     [
@@ -83,6 +83,16 @@ class SiteController extends Controller
                 'model' => $model,
             ]);
         }
+    }
+
+    /**
+     * @param $language
+     * @return \yii\web\Response
+     */
+    public function actionToggleLanguage($language)
+    {
+        Yii::$app->session->set('language', $language);
+        return $this->redirect(Yii::$app->request->referrer);
     }
 
     /**

@@ -15,6 +15,7 @@ class AppAsset extends AssetBundle
         'css/site.css',
         'css/login.css',
         'css/loading-animation.css',
+        'css/flags.css',
     ];
     public $js = [
         'js/editable-table-cell.js',
