@@ -189,4 +189,21 @@ EOT;
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'recipient_id']);
     }
 
+    /**
+     * Generates a message for paid bid by client
+     *
+     * @param $params array
+     *
+     * @return string
+     */
+    public static function getMessageForClientPaid(array $params)
+    {
+        $from_currency = $params['from_currency'];
+        $sum = $params['from_sum'];
+        $to_wallet = $params['to_wallet'];
+
+        $message = Yii::t('app', 'Ваш платеж на сумму ' . $sum . $from_currency . ' на счет ' . $to_wallet . ' принят');
+
+        return $message;
+    }
 }
