@@ -201,7 +201,28 @@ EOT;
 
         $message = Yii::t(
             'app',
-            'Your payment of ' . $sum . $from_currency . ' to wallet ' . $to_wallet . ' is accepted'
+            'Your payment of {sum} {from_currency} to wallet {to_wallet} is accepted',
+            ['from_currency' => $from_currency, 'sum' => $sum, 'to_wallet' => $to_wallet]
+        );
+
+        return $message;
+    }
+
+    /**
+     * Generates a message for paid bid by client
+     *
+     * @param $params array
+     *
+     * @return string
+     */
+    public static function getMessageForInProgress(array $params)
+    {
+        $bid_id = $params['bid_id'];
+
+        $message = Yii::t(
+            'app',
+            'Your bid number {bid_id} is now in progress',
+            ['bid_id' => $bid_id]
         );
 
         return $message;

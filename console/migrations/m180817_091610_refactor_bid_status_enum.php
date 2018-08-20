@@ -15,12 +15,12 @@ class m180817_091610_refactor_bid_status_enum extends Migration
         $this->alterColumn(
             $this->bidTable,
             'status',
-            "ENUM('new', 'paid_by_client', 'paid_by_us', 'done', 'rejected') DEFAULT 'new'"
+            "ENUM('new', 'paid_by_client', 'in_progress', 'paid_by_us', 'done', 'rejected') DEFAULT 'new'"
         );
         $this->alterColumn(
             $this->bidHistoryTable,
             'status',
-            "ENUM('new', 'paid_by_client', 'paid_by_us', 'done', 'rejected') DEFAULT 'new'"
+            "ENUM('new', 'paid_by_client', 'in_progress', 'paid_by_us', 'done', 'rejected') DEFAULT 'new'"
         );
 
     }

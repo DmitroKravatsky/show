@@ -65,6 +65,7 @@ class BidEntity extends ActiveRecord
 
     const STATUS_NEW            = 'new';
     const STATUS_PAID_BY_CLIENT = 'paid_by_client';
+    const STATUS_IN_PROGRESS    = 'in_progress';
     const STATUS_PAID_BY_US     = 'paid_by_us';
     const STATUS_DONE           = 'done';
     const STATUS_REJECTED       = 'rejected';
@@ -116,6 +117,7 @@ class BidEntity extends ActiveRecord
         return [
             self::STATUS_NEW            => Yii::t('app', 'New'),
             self::STATUS_PAID_BY_CLIENT => Yii::t('app', 'Paid by client'),
+            self::STATUS_IN_PROGRESS    => Yii::t('app', 'In progress'),
             self::STATUS_PAID_BY_US     => Yii::t('app', 'Paid by us'),
             self::STATUS_DONE           => Yii::t('app', 'Done'),
             self::STATUS_REJECTED       => Yii::t('app', 'Rejected'),
@@ -311,6 +313,14 @@ class BidEntity extends ActiveRecord
                 $this->created_by
             );
         }
+        if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
+            (new UserNotificationsEntity())->addNotify(
+                UserNotificationsEntity::getMessageForInProgress([
+                    'bid_id' => $this->id,
+                ]),
+                $this->created_by
+            );
+        }
 
         if ($insert && $this->created_by === Yii::$app->user->id) {
             (new UserNotificationsEntity)->addNotify(
@@ -361,6 +371,7 @@ class BidEntity extends ActiveRecord
         return [
             BidEntity::STATUS_NEW             => BidEntity::STATUS_NEW,
             BidEntity::STATUS_PAID_BY_CLIENT  => BidEntity::STATUS_PAID_BY_CLIENT,
+            BidEntity::STATUS_IN_PROGRESS     => BidEntity::STATUS_IN_PROGRESS,
             BidEntity::STATUS_PAID_BY_US      => BidEntity::STATUS_PAID_BY_US,
             BidEntity::STATUS_DONE            => BidEntity::STATUS_DONE,
             BidEntity::STATUS_REJECTED        => BidEntity::STATUS_REJECTED,
