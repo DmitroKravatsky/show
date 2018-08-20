@@ -18,7 +18,7 @@ class BidHistorySearch extends BidHistory
     public function rules(): array
     {
         return [
-            [['id', 'bid_id', 'time', 'created_by', 'processed_by',], 'integer'],
+            [['id', 'bid_id', 'time', 'processed_by',], 'integer'],
             [['status', 'time_range',], 'safe'],
         ];
     }
