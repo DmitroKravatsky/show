@@ -202,7 +202,10 @@ EOT;
         $sum = $params['from_sum'];
         $to_wallet = $params['to_wallet'];
 
-        $message = Yii::t('app', 'Ваш платеж на сумму ' . $sum . $from_currency . ' на счет ' . $to_wallet . ' принят');
+        $message = Yii::t(
+            'app',
+            'Your payment of ' . $sum . $from_currency . ' to wallet ' . $to_wallet . ' is accepted'
+        );
 
         return $message;
     }

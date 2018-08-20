@@ -10,7 +10,7 @@ class m180817_091610_refactor_bid_status_enum extends Migration
     private $bidTable = '{{%bid}}';
     private $bidHistoryTable = '{{%bid_history}}';
 
-    public function up()
+    public function safeUp()
     {
         $this->alterColumn(
             $this->bidTable,
@@ -25,7 +25,7 @@ class m180817_091610_refactor_bid_status_enum extends Migration
 
     }
 
-    public function down()
+    public function safeDown()
     {
         $this->alterColumn(
             $this->bidTable,

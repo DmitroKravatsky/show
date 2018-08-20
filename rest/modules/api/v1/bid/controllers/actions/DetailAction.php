@@ -123,7 +123,6 @@ class DetailAction extends Action
      */
     public function run()
     {
-        var_dump(1); exit;
         /** @var \common\models\bid\BidEntity $bid */
         $bid = new $this->modelClass;
         $bid = $bid->getBidDetails(\Yii::$app->request->get('id'));
