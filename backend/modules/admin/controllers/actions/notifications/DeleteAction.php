@@ -12,7 +12,7 @@ class DeleteAction extends Action
     public $controller;
 
     /**
-     * @param $id
+     * @param int $id
      * @return \yii\web\Response
      * @throws \Throwable
      * @throws \yii\db\StaleObjectException
@@ -20,7 +20,7 @@ class DeleteAction extends Action
      */
     public function run($id)
     {
-        $notification = $this->controller->findNotification($id);
+        $notification = $this->controller->findNotification($id, Yii::$app->user->id);
         if ($notification->delete()) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'The notification was successfully deleted.'));
         } else {
