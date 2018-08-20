@@ -7,22 +7,21 @@
 
 use backend\assets\AppAsset;
 use common\models\userNotifications\UserNotificationsEntity;
-use common\models\userProfile\UserProfileEntity;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
 use yii\helpers\Url;
 use dmstr\widgets\Alert;
+use common\models\language\Language;
 
 $bundle = yiister\gentelella\assets\Asset::register($this);
 AppAsset::register($this);
 
 $items = [
     'items' => [
-        ['label' => 'Home', 'url' => Url::to('/admin'), 'icon' => 'home'],
         [
-            'label' => 'Management',
+            'label' => Yii::t('app', 'Management'),
             'icon' => 'th',
             'url' => '#',
             'items' => [
@@ -51,7 +50,7 @@ $items = [
 ];
 
 if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][1]['items'], ['label' => 'Managers', 'url' => [Url::to('/managers-list')]]);
+    array_unshift($items['items'][0]['items'], ['label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/managers-list')]]);
 }
 
 $user = User::findOne(Yii::$app->user->id);
@@ -99,7 +98,7 @@ $this->title = Yii::t('app', 'Dashboard');
                             </div>
 
                             <div class="profile_info">
-                                <span>Welcome,</span>
+                                <span><?= Yii::t('app', 'Welcome') ?>,</span>
                                 <h2><?= Html::encode($user->fullname ?? null) ?></h2>
                             </div>
                         </div>
@@ -111,7 +110,7 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                             <div class="menu_section">
-                                <h3>General</h3>
+                                <h3><?= Yii::t('app', 'General') ?></h3>
                                 <?= Menu::widget($items) ?>
                             </div>
 
@@ -139,13 +138,18 @@ $this->title = Yii::t('app', 'Dashboard');
 
                 <!-- top navigation -->
                 <div class="top_nav">
-                    <div class="nav_menu">
+                    <ul class="nav_menu">
                         <nav class="" role="navigation">
                             <div class="nav toggle">
                                 <a id="menu_toggle"><i class="fa fa-bars"></i></a>
                             </div>
 
                             <ul class="nav navbar-nav navbar-right">
+                                <?= \common\widgets\LanguageChoice::widget([
+                                    'languages' => Language::getVisibleList(),
+                                    'url' => '/site/toggle-language',
+                                ]) ?>
+
                                 <li class="">
                                     <a href="javascript:;" class="user-profile dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
                                         <?= isset($user->profile) && $user->profile->avatar !== null
@@ -154,7 +158,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         ?>
 
                                         <?= Html::encode($user->fullname ?? null) ?>
-                                        <span class=" fa fa-angle-down"></span>
+                                        <span class="fa fa-angle-down"></span>
                                     </a>
 
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
@@ -186,7 +190,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <?php else:?>
                                             <?php foreach ($notifications as $notification): ?>
                                                 <li>
-                                                    <a href="<?= Url::to(["/notification/{$notification->id}"])?>">
+                                                    <a href="<?= Url::to(["/notification/view/{$notification->id}"])?>">
                                                     <span class="image">
                                                         <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                     </span>
@@ -206,7 +210,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <li>
                                             <div class="text-center">
                                                 <a href="<?= Url::to(['/notifications/index']) ?>">
-                                                    <strong>See All Alerts</strong>
+                                                    <strong><?= Yii::t('app', 'See All Alerts') ?></strong>
                                                     <i class="fa fa-angle-right"></i>
                                                 </a>
                                             </div>

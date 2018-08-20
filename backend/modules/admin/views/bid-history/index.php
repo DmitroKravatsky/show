@@ -11,6 +11,9 @@ use kartik\daterange\DateRangePicker;
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
 /** @var \common\models\bidHistory\BidHistorySearch $searchModel */
+
+$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids History'), 'url' => ['index']];
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="bid-history-index">

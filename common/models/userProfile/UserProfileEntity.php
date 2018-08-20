@@ -8,6 +8,7 @@ use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
+use Yii;
 
 /**
  * Class UserProfileEntity
@@ -45,12 +46,12 @@ class UserProfileEntity extends ActiveRecord
     {
         return [
             'id'           => '#',
-            'user_id'      => 'Пользователь',
-            'name'         => 'Имя',
-            'last_name'    => 'Фамилия',
-            'avatar'       => 'Аватар',
-            'created_at'   => 'Дата создания',
-            'updated_at'   => 'Дата обновления',
+            'user_id'      => Yii::t('app', 'User'),
+            'name'         => Yii::t('app', 'First Name'),
+            'last_name'    => Yii::t('app', 'Last Name'),
+            'avatar'       => Yii::t('app', 'Avatar'),
+            'created_at'   => Yii::t('app', 'Created At'),
+            'updated_at'   => Yii::t('app', 'Updated At'),
         ];
     }
 

@@ -32,7 +32,7 @@ trait AuthorizationRepository
         $transaction = \Yii::$app->db->beginTransaction();
 
         try {
-            $user = new RestUserEntity();
+            $user = $this->isUserExist($params) ?? new RestUserEntity();
             $user->setScenario(self::SCENARIO_REGISTER);
             $user->setAttributes([
                 'source'                => self::NATIVE,

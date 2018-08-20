@@ -12,6 +12,9 @@ use backend\models\BackendUser;
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
 /** @var \common\models\userNotifications\UserNotificationsSearch $searchModel */
+
+$this->title = Yii::t('app', 'Notifications');
+$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <div class="notifications-index">

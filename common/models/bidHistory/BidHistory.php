@@ -82,9 +82,9 @@ class BidHistory extends ActiveRecord
     {
         return [
             'id' => 'ID',
-            'bid_id' => 'Bid ID',
-            'status' => 'Status',
-            'time' => 'Time',
+            'bid_id' => Yii::t('app', 'Bid'),
+            'status' => Yii::t('app', 'Status'),
+            'time' => Yii::t('app', 'Time'),
         ];
     }
 
