@@ -2,6 +2,7 @@
 
 namespace common\models\bidHistory;
 
+use common\models\user\User;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -13,10 +14,12 @@ use common\models\bid\BidEntity;
  *
  * @property int $id
  * @property int $bid_id
+ * @property int $processed_by
  * @property int $status
  * @property int $time
  *
  * @property BidEntity $bid
+ * @property User $processedBy
  */
 class BidHistory extends ActiveRecord
 {
@@ -59,6 +62,7 @@ class BidHistory extends ActiveRecord
             [['bid_id', 'status'], 'required'],
             [['bid_id', 'time'], 'integer'],
             [['bid_id'], 'exist', 'skipOnError' => true, 'targetClass' => BidEntity::class, 'targetAttribute' => ['bid_id' => 'id']],
+            [['processed_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['processed_by' => 'id']],
         ];
     }
 
@@ -83,10 +87,11 @@ class BidHistory extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id' => 'ID',
-            'bid_id' => Yii::t('app', 'Bid'),
-            'status' => Yii::t('app', 'Status'),
-            'time' => Yii::t('app', 'Time'),
+            'id'           => 'ID',
+            'bid_id'       => Yii::t('app', 'Bid'),
+            'processed_by' => Yii::t('app', 'Processed By'),
+            'status'       => Yii::t('app', 'Status'),
+            'time'         => Yii::t('app', 'Time'),
         ];
     }
 
@@ -96,6 +101,14 @@ class BidHistory extends ActiveRecord
     public function getBid(): ActiveQuery
     {
         return $this->hasOne(BidEntity::class, ['id' => 'bid_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProcessedBy(): ActiveQuery
+    {
+        return $this->hasOne(User::class, ['id' => 'processed_by']);
     }
 
     /**

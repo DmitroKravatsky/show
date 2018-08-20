@@ -18,7 +18,7 @@ class BidHistorySearch extends BidHistory
     public function rules(): array
     {
         return [
-            [['id', 'bid_id', 'time'], 'integer'],
+            [['id', 'bid_id', 'time', 'created_by', 'processed_by',], 'integer'],
             [['status', 'time_range',], 'safe'],
         ];
     }
@@ -55,6 +55,7 @@ class BidHistorySearch extends BidHistory
         $query->andFilterWhere([
             'id' => $this->id,
             'bid_id' => $this->bid_id,
+            'processed_by' => $this->processed_by,
             'time' => $this->time,
         ]);
 

@@ -7,6 +7,7 @@ use common\models\bidHistory\BidHistory;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\daterange\DateRangePicker;
+use backend\models\BackendUser;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -30,10 +31,14 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     'id',
                     [
-                        'attribute' => 'bid',
+                        'attribute' => 'created_by',
+                        'label' => Yii::t('app', 'Created By'),
                         'format' => 'html',
                         'value' => function (BidHistory $bidHistory) {
-                            return Html::a($bidHistory->bid->id, Url::to(['bid/view', 'id' => $bidHistory->bid_id]));
+                            return Html::a(
+                                $bidHistory->bid->author->getFullName() ?? null,
+                                Url::to(['bid/view', 'id' => $bidHistory->bid_id])
+                            );
                         }
                     ],
                     [
@@ -41,6 +46,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter' => BidHistory::statusLabels(),
                         'value' => function (BidHistory $bidHistory) {
                             return BidHistory::getStatusValue($bidHistory->status);
+                        }
+                    ],
+                    [
+                        'attribute' => 'processed_by',
+                        'filter' => BackendUser::getUsernames(),
+                        'value' => function (BidHistory $bidHistory) {
+                            return $bidHistory->processedBy->getFullName() ?? null;
                         }
                     ],
                     [

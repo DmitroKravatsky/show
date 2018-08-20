@@ -299,9 +299,16 @@ class BidEntity extends ActiveRecord
 
     public function afterSave($insert, $changedAttributes)
     {
+        $bidHistory = new BidHistory();
+        $bidHistory->bid_id = $this->id;
+        $bidHistory->status = $this->status;
+
         if ($insert) {
             $this->sendEmailToManagers($this);
+        } else {
+            $bidHistory->processed_by = Yii::$app->user->id;
         }
+        $bidHistory->save(false);
 
         if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
             (new UserNotificationsEntity())->addNotify(
@@ -333,12 +340,6 @@ class BidEntity extends ActiveRecord
                 $this->created_by
             );
         }
-
-        $bidHistory = new BidHistory();
-        $bidHistory->bid_id = $this->id;
-        $bidHistory->status = $this->status;
-
-        $bidHistory->save(false);
 
         return parent::afterSave($insert, $changedAttributes);
     }
