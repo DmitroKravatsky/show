@@ -190,7 +190,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <?php else:?>
                                             <?php foreach ($notifications as $notification): ?>
                                                 <li>
-                                                    <a href="<?= Url::to(["/notification/{$notification->id}"])?>">
+                                                    <a href="<?= Url::to(["/notification/view/{$notification->id}"])?>">
                                                     <span class="image">
                                                         <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                     </span>
