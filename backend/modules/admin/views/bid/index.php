@@ -7,6 +7,7 @@ use common\models\bid\BidEntity;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use backend\models\BackendUser;
+use common\models\user\User;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -49,11 +50,18 @@ $this->params['breadcrumbs'][] = $this->title;
         'phone_number',
         [
             'attribute' => 'processed',
+            'visible' => false,
             'format' => 'raw',
             'filter' => BidEntity::getProcessedStatusList(),
             'value'  => 'processedStatus'
         ],
-        (\Yii::$app->user->can('admin')) ? 'processed_by' : null,
+        [
+            'attribute' => 'processed_by',
+            'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
+            'value' => function (BidEntity $bid) {
+                return $bid->author->getFullName() ?? null;
+            }
+        ],
         'from_sum',
         'from_wallet',
         'to_wallet',

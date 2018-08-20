@@ -216,7 +216,7 @@ class BidEntity extends ActiveRecord
             ],
             ['status', 'in', 'range' =>
                 [
-                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE,
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_IN_PROGRESS,
                     self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_CLIENT,
                 ]
             ],
@@ -406,7 +406,10 @@ class BidEntity extends ActiveRecord
 
     public static function getProcessedStatusList()
     {
-        return [self::PROCESSED_NO => Yii::t('app', 'no'), self::PROCESSED_YES => Yii::t('app', 'yes')];
+        return [
+            self::PROCESSED_NO => Yii::t('app', 'No'),
+            self::PROCESSED_YES => Yii::t('app', 'Yes')
+        ];
     }
 
     public function getProcessedStatus()
