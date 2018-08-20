@@ -47,6 +47,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         'email:email',
         'phone_number',
+        [
+            'attribute' => 'processed',
+            'format' => 'raw',
+            'filter' => BidEntity::getProcessedStatusList(),
+            'value'  => 'processedStatus'
+        ],
+        (\Yii::$app->user->can('admin')) ? 'processed_by' : null,
         'from_sum',
         'from_wallet',
         'to_wallet',

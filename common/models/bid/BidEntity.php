@@ -402,4 +402,15 @@ class BidEntity extends ActiveRecord
     {
         return $this->hasMany(BidHistory::class, ['bid_id' => 'id']);
     }
+
+    public static function getProcessedStatusList()
+    {
+        return [Yii::t('app', 'no'), Yii::t('app', 'yes')];
+    }
+
+    public function getProcessedStatus()
+    {
+        $statuses = static::getProcessedStatusList();
+        return $statuses[$this->processed];
+    }
 }
