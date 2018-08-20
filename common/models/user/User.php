@@ -286,7 +286,7 @@ class User extends ActiveRecord implements IdentityInterface
                         'email'      => $this->email,
                     ]
                 ),
-                $this->id
+                self::DEFAULT_ADMIN_ID
             );
         }
         return parent::afterSave($insert, $changedAttributes);

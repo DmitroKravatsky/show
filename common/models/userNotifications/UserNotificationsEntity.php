@@ -130,16 +130,13 @@ class UserNotificationsEntity extends ActiveRecord
      * @param $params array
      *
      * @return string
-     *
-     * @throws NotFoundHttpException
      */
     public static function getMessageForNewUser(array $params)
     {
         $phone_number = $params['phone_number'];
+        $message = Yii::t('app', 'A new user has been registered. Registration was conducted with a phone number') . ' ';
+        $message .= $phone_number;
 
-        $message = <<<EOT
-Новый пользователь был зарегистрирован. Регистрация была провердена с номером телефона {$phone_number} 
-EOT;
         return $message;
     }
 

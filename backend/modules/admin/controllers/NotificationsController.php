@@ -53,13 +53,15 @@ class NotificationsController extends Controller
     }
 
     /**
-     * @param $id
+     * @param int $id
+     * @param int $recipientId
      * @return UserNotificationsEntity|null
      * @throws NotFoundHttpException
      */
-    public function findNotification($id)
+    public function findNotification($id, $recipientId)
     {
-        if (($notification = UserNotificationsEntity::findOne($id)) !== null) {
+        $notification = UserNotificationsEntity::findOne(['id' => $id, 'recipient_id' => $recipientId]);
+        if ($notification !== null) {
             return $notification;
         }
         throw new NotFoundHttpException(Yii::t('app', 'Notification not found'));

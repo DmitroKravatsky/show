@@ -42,7 +42,7 @@ class UserNotificationsSearch extends UserNotificationsEntity
      */
     public function search($params)
     {
-        $query = UserNotificationsEntity::find();
+        $query = UserNotificationsEntity::find()->where(['recipient_id' => Yii::$app->user->id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
