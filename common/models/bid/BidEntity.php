@@ -405,7 +405,7 @@ class BidEntity extends ActiveRecord
 
     public static function getProcessedStatusList()
     {
-        return [Yii::t('app', 'no'), Yii::t('app', 'yes')];
+        return [self::PROCESSED_NO => Yii::t('app', 'no'), self::PROCESSED_YES => Yii::t('app', 'yes')];
     }
 
     public function getProcessedStatus()
