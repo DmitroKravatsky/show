@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\bid;
 
+use backend\modules\admin\controllers\BidController;
 use common\models\bid\BidEntity;
 use common\models\user\User;
 use PHPUnit\Framework\Exception;
@@ -14,6 +15,9 @@ use yii\web\UnprocessableEntityHttpException;
  */
 class UpdateBidStatusAction extends Action
 {
+    /**@var $controller BidController */
+    public $controller;
+
     /**
      * Updates a status of the bid
      * @return array

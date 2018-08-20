@@ -38,8 +38,11 @@ class BidEntitySearch extends BidEntity
                 ],
                 'string'
             ],
-            ['status', 'in', 'range' => [
-                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID, self::STATUS_IN_PROGRESS,]
+            ['status', 'in', 'range' =>
+                [
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE,
+                    self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_CLIENT,
+                ],
             ],
             ['updated_at', 'safe']
         ];

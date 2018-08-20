@@ -63,11 +63,12 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
-    const STATUS_ACCEPTED    = 'accepted';
-    const STATUS_IN_PROGRESS = 'in_progress';
-    const STATUS_DONE        = 'done';
-    const STATUS_REJECTED    = 'rejected';
-    const STATUS_PAID        = 'paid';
+    const STATUS_NEW            = 'new';
+    const STATUS_PAID_BY_CLIENT = 'paid_by_client';
+    const STATUS_IN_PROGRESS    = 'in_progress';
+    const STATUS_PAID_BY_US     = 'paid_by_us';
+    const STATUS_DONE           = 'done';
+    const STATUS_REJECTED       = 'rejected';
 
     const PROCESSED_YES = 1;
     const PROCESSED_NO  = 0;
@@ -114,11 +115,12 @@ class BidEntity extends ActiveRecord
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_ACCEPTED => Yii::t('app', 'Accepted'),
-            self::STATUS_IN_PROGRESS => Yii::t('app', 'In progress'),
-            self::STATUS_DONE     => Yii::t('app', 'Done'),
-            self::STATUS_REJECTED => Yii::t('app', 'Rejected'),
-            self::STATUS_PAID     => Yii::t('app', 'Paid'),
+            self::STATUS_NEW            => Yii::t('app', 'New'),
+            self::STATUS_PAID_BY_CLIENT => Yii::t('app', 'Paid by client'),
+            self::STATUS_IN_PROGRESS    => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US     => Yii::t('app', 'Paid by us'),
+            self::STATUS_DONE           => Yii::t('app', 'Done'),
+            self::STATUS_REJECTED       => Yii::t('app', 'Rejected'),
         ];
     }
 
@@ -212,8 +214,11 @@ class BidEntity extends ActiveRecord
                 'targetClass'     => User::class,
                 'targetAttribute' => ['created_by' => 'id'],
             ],
-            ['status', 'in', 'range' => [
-                self::STATUS_ACCEPTED, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_PAID, self::STATUS_IN_PROGRESS,]
+            ['status', 'in', 'range' =>
+                [
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE,
+                    self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_CLIENT,
+                ]
             ],
             [
                 [
@@ -298,6 +303,25 @@ class BidEntity extends ActiveRecord
             $this->sendEmailToManagers($this);
         }
 
+        if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
+            (new UserNotificationsEntity())->addNotify(
+                UserNotificationsEntity::getMessageForClientPaid([
+                    'from_currency' => $this->from_currency,
+                    'from_sum'      => $this->from_sum,
+                    'to_wallet'     => $this->to_wallet
+                ]),
+                $this->created_by
+            );
+        }
+        if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
+            (new UserNotificationsEntity())->addNotify(
+                UserNotificationsEntity::getMessageForInProgress([
+                    'bid_id' => $this->id,
+                ]),
+                $this->created_by
+            );
+        }
+
         if ($insert && $this->created_by === Yii::$app->user->id) {
             (new UserNotificationsEntity)->addNotify(
                 UserNotificationsEntity::getMessageForNewBid([
@@ -345,10 +369,12 @@ class BidEntity extends ActiveRecord
     public static function getAllAvailableStatuses(): array
     {
         return [
-            BidEntity::STATUS_ACCEPTED => BidEntity::STATUS_ACCEPTED,
-            BidEntity::STATUS_PAID     => BidEntity::STATUS_PAID,
-            BidEntity::STATUS_DONE     => BidEntity::STATUS_DONE,
-            BidEntity::STATUS_REJECTED => BidEntity::STATUS_REJECTED,
+            BidEntity::STATUS_NEW             => BidEntity::STATUS_NEW,
+            BidEntity::STATUS_PAID_BY_CLIENT  => BidEntity::STATUS_PAID_BY_CLIENT,
+            BidEntity::STATUS_IN_PROGRESS     => BidEntity::STATUS_IN_PROGRESS,
+            BidEntity::STATUS_PAID_BY_US      => BidEntity::STATUS_PAID_BY_US,
+            BidEntity::STATUS_DONE            => BidEntity::STATUS_DONE,
+            BidEntity::STATUS_REJECTED        => BidEntity::STATUS_REJECTED,
         ];
     }
 
