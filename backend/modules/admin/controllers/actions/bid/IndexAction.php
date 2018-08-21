@@ -3,8 +3,7 @@
 namespace backend\modules\admin\controllers\actions\bid;
 
 use backend\modules\admin\controllers\BidController;
-use common\models\bid\BidEntity;
-use backend\modules\admin\models\BidEntitySearch;
+use common\models\bid\BidSearch;
 use yii\base\Action;
 
 /**
@@ -22,7 +21,7 @@ class IndexAction extends Action
      */
     public function run()
     {
-        $searchModel = new BidEntitySearch();
+        $searchModel = new BidSearch();
 
         $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
 

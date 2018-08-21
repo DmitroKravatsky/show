@@ -3,10 +3,7 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository,
-    bidHistory\BidHistory,
-    user\User,
-    userNotifications\UserNotificationsEntity
+    bid\repositories\RestBidRepository, bidHistory\BidHistory, user\User, userNotifications\UserNotificationsEntity, userProfile\UserProfileEntity
 };
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
@@ -391,9 +388,12 @@ class BidEntity extends ActiveRecord
     /**
      * @return \yii\db\ActiveQuery
      */
-    public function getProcessedBy()
+    public function getPerfomer()
     {
-        return $this->hasOne(User::class, ['id' => 'processed_by']);
+        if ($this->processed_by !== null) {
+            return $this->hasOne(User::class, ['id' => 'processed_by']);
+        }
+        return null;
     }
 
     /**
@@ -416,5 +416,13 @@ class BidEntity extends ActiveRecord
     {
         $statuses = static::getProcessedStatusList();
         return $statuses[$this->processed];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getManagerProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'processed_by']);
     }
 }
