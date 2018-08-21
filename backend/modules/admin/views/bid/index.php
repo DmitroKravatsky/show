@@ -26,6 +26,7 @@ $this->params['breadcrumbs'][] = $this->title;
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
     'columns' => [
+            'id',
         [
             'attribute' => 'status',
             'value' => function($model) {
@@ -50,7 +51,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'phone_number',
         [
             'attribute' => 'processed',
-            'visible' => false,
+            'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
             'format' => 'raw',
             'filter' => BidEntity::getProcessedStatusList(),
             'value'  => 'processedStatus'
@@ -59,7 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
             'attribute' => 'processed_by',
             'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
             'value' => function (BidEntity $bid) {
-                return $bid->author->getFullName() ?? null;
+                return $bid->perfomer->fullName ?? null;
             }
         ],
         'from_sum',

@@ -14,16 +14,24 @@ class BidSearch extends BidEntity
     public $dateRange;
 
     /**
+     * String  of $name and $last_name
+     * @var $full_name
+     */
+    public $full_name;
+
+    /**
      * @return array
      */
     public function rules(): array
     {
         return [
             [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
+            [['processed_by'], 'string'],
             [
                 [
-                    'name', 'last_name', 'phone_number', 'email', 'status', 'from_payment_system', 'to_payment_system',
-                    'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'dateRange',
+                    'full_name', 'phone_number', 'email', 'status', 'from_payment_system',
+                    'to_payment_system', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency',
+                    'dateRange', 'processed_by', 'processed'
                 ],
                 'safe'
             ],
@@ -48,7 +56,7 @@ class BidSearch extends BidEntity
      */
     public function search($params)
     {
-        $query = BidEntity::find();
+        $query = BidEntity::find()->joinWith(['managerProfile']);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -70,6 +78,7 @@ class BidSearch extends BidEntity
             'to_sum' => $this->to_sum,
             'created_at' => $this->created_at,
             'updated_at' => $this->updated_at,
+            'processed' => $this->processed,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
@@ -88,7 +97,8 @@ class BidSearch extends BidEntity
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
             $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
         }
-
+        $query->andFilterWhere(['or',['like', 'user_profile.name', $this->processed_by],['like', 'user_profile.last_name', $this->processed_by]]);
+        $query->andFilterWhere(['or',['like', 'bid.name', $this->full_name],['like', 'bid.last_name', $this->full_name]]);
         return $dataProvider;
     }
 }
