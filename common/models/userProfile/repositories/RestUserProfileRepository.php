@@ -119,12 +119,14 @@ trait RestUserProfileRepository
 
         if ($userModel['source'] === RestUserEntity::FB) {
             $userModel['is_fb_auth'] = true;
+            $userModel['is_gmail_auth'] = false;
             unset($userModel['source']);
             return $userModel;
         }
 
         if ($userModel['source'] === RestUserEntity::GMAIL) {
             $userModel['is_gmail_auth'] = true;
+            $userModel['is_fb_auth'] = false;
             unset($userModel['source']);
             return $userModel;
         }
