@@ -77,6 +77,12 @@ class BidEntity extends ActiveRecord
     const PROCESSED_YES = 1;
     const PROCESSED_NO  = 0;
 
+    const SORT_WEEK    = 'week';
+    const SORT_MONTH   = 'month';
+
+    const SECONDS_IN_WEEK  = 3600 * 24 * 7;
+    const SECONDS_IN_MONTH = 3600 * 24 * 30;
+
     /**
      * @var bool
      */
