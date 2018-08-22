@@ -3,12 +3,19 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository, bidHistory\BidHistory, user\User, userNotifications\UserNotificationsEntity, userProfile\UserProfileEntity
+    bid\repositories\RestBidRepository,
+    bidHistory\BidHistory,
+    user\User,
+    userNotifications\UserNotificationsEntity,
+    userProfile\UserProfileEntity
 };
-use rest\behaviors\ValidationExceptionFirstMessage;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
+use yii\{
+    behaviors\TimestampBehavior,
+    db\ActiveRecord
+};
 use Yii;
+use rest\behaviors\ValidationExceptionFirstMessage;
+use borales\extensions\phoneInput\PhoneInputValidator;
 
 /**
  * Class BidEntity
@@ -225,8 +232,10 @@ class BidEntity extends ActiveRecord
                 'required'
             ],
             [['email'], 'string', 'max' => 255],
-            [['from_wallet', 'to_wallet'], 'string', 'max' => 32],
+            [['from_wallet', 'to_wallet'], 'string', 'max' => 32, 'min' => 12],
+            [['from_wallet', 'to_wallet'], 'integer'],
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
+            [['name', 'last_name'], 'string', 'min' => 2],
             [
                 ['from_payment_system', 'to_payment_system'],
                 'in',
@@ -234,7 +243,7 @@ class BidEntity extends ActiveRecord
             ],
             [['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]],
             ['email', 'email'],
-            [['from_sum', 'to_sum'], 'double'],
+            [['from_sum', 'to_sum'], 'double', 'min' => 10],
             [['created_at', 'updated_at'], 'safe'],
             ['terms_confirm', 'boolean', 'on' => self::SCENARIO_CREATE],
             [
@@ -248,6 +257,7 @@ class BidEntity extends ActiveRecord
             [['processed_by'], 'required', 'when' => function (self $bid) {
                 return $bid->processed;
             }],
+            [['phone_number'], PhoneInputValidator::class],
 
         ];
     }
