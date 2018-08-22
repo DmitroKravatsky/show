@@ -2,10 +2,10 @@
 
 namespace common\models\userNotifications;
 
+use common\models\userProfile\UserProfileEntity;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
-use common\models\userNotifications\UserNotificationsEntity;
 
 /**
  * UserNotificationsSearch represents the model behind the search form of `common\models\userNotifications\UserNotificationsEntity`.
@@ -20,8 +20,8 @@ class UserNotificationsSearch extends UserNotificationsEntity
     public function rules(): array
     {
         return [
-            [['id', 'recipient_id', 'created_at', 'updated_at'], 'integer'],
-            [['status', 'text', 'dateRange',], 'safe'],
+            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['status', 'text', 'dateRange', 'recipient_id',], 'safe'],
         ];
     }
 
@@ -42,7 +42,9 @@ class UserNotificationsSearch extends UserNotificationsEntity
      */
     public function search($params)
     {
-        $query = UserNotificationsEntity::find()->where(['recipient_id' => Yii::$app->user->id]);
+        $query = UserNotificationsEntity::find()
+            ->joinWith('recipientProfile')
+            ->where(['recipient_id' => Yii::$app->user->id]);
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,19 +59,17 @@ class UserNotificationsSearch extends UserNotificationsEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'recipient_id' => $this->recipient_id,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
         $query->andFilterWhere(['like', 'status', $this->status])
-            ->andFilterWhere(['like', 'text', $this->text]);
+            ->andFilterWhere(['like', 'text', $this->text])
+            ->andFilterWhere([
+                'or',
+                ['like', 'name', $this->recipient_id],
+                ['like', 'last_name', $this->recipient_id]
+            ]);;
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', 'user_notifications.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;

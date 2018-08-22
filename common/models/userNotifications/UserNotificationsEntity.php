@@ -26,6 +26,7 @@ use common\models\user\User;
  * @property integer $updated_at
  *
  * @property User $recipient
+ * @property UserProfileEntity $recipientProfile
  */
 class UserNotificationsEntity extends ActiveRecord
 {
@@ -114,6 +115,14 @@ class UserNotificationsEntity extends ActiveRecord
     public function getRecipient()
     {
         return $this->hasOne(User::class, ['id' => 'recipient_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getRecipientProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'recipient_id']);
     }
 
     /**

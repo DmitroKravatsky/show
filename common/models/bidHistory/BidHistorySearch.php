@@ -2,6 +2,7 @@
 
 namespace common\models\bidHistory;
 
+use common\models\userProfile\UserProfileEntity;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
@@ -11,6 +12,7 @@ use yii\data\ActiveDataProvider;
 class BidHistorySearch extends BidHistory
 {
     public $time_range;
+    public $created_by;
 
     /**
      * @return array
@@ -18,8 +20,8 @@ class BidHistorySearch extends BidHistory
     public function rules(): array
     {
         return [
-            [['id', 'bid_id', 'time', 'processed_by',], 'integer'],
-            [['status', 'time_range',], 'safe'],
+            [['id', 'bid_id', 'time',], 'integer'],
+            [['status', 'time_range', 'processed_by', 'created_by',], 'safe'],
         ];
     }
 
@@ -40,7 +42,7 @@ class BidHistorySearch extends BidHistory
      */
     public function search($params)
     {
-        $query = BidHistory::find();
+        $query = BidHistory::find()->leftJoin(UserProfileEntity::tableName(), 'user_id = processed_by');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -52,14 +54,16 @@ class BidHistorySearch extends BidHistory
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'bid_id' => $this->bid_id,
-            'processed_by' => $this->processed_by,
-            'time' => $this->time,
-        ]);
-
-        $query->andFilterWhere(['like', 'status', $this->status]);
+        $query->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->processed_by],
+                ['like', 'user_profile.last_name', $this->processed_by]
+            ])->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->created_by],
+                ['like', 'user_profile.last_name', $this->created_by]
+            ]);
 
         if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->time_range);

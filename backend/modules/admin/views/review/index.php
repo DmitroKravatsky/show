@@ -32,7 +32,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'columns' => [
                     [
                         'attribute' => 'created_by',
-                        'filter' => BackendUser::getUsernames(),
                         'value' => function (ReviewEntity $review) {
                             return $review->createdBy->profile->getUserFullName() ?? null;
                         }

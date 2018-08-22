@@ -3,6 +3,7 @@
 namespace common\models\review;
 
 use common\models\review\repositories\RestReviewRepository;
+use common\models\userProfile\UserProfileEntity;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -22,6 +23,7 @@ use Yii;
  * @property integer $updated_at
  *
  * @property User $createdBy
+ * @property UserProfileEntity $createdByProfile
  */
 class ReviewEntity extends ActiveRecord
 {
@@ -78,5 +80,13 @@ class ReviewEntity extends ActiveRecord
     public function getCreatedBy()
     {
         return $this->hasOne(User::class, ['id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedByProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'created_by']);
     }
 }

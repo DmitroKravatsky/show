@@ -20,8 +20,8 @@ class ReviewSearch extends ReviewEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
-            [['text', 'dateRange',], 'safe'],
+            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['text', 'dateRange', 'created_by',], 'safe'],
         ];
     }
 
@@ -42,7 +42,7 @@ class ReviewSearch extends ReviewEntity
      */
     public function search($params)
     {
-        $query = ReviewEntity::find();
+        $query = ReviewEntity::find()->joinWith('createdByProfile');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,18 +57,16 @@ class ReviewSearch extends ReviewEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere([
-            'id' => $this->id,
-            'created_by' => $this->created_by,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
-        ]);
-
-        $query->andFilterWhere(['like', 'text', $this->text]);
+        $query->andFilterWhere(['like', 'text', $this->text])
+            ->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->created_by],
+                ['like', 'user_profile.last_name', $this->created_by]
+            ]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', 'review.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;

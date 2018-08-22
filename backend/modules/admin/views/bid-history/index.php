@@ -29,7 +29,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'hover' => true,
                 'columns' => [
-                    'id',
                     [
                         'attribute' => 'created_by',
                         'label' => Yii::t('app', 'Created By'),
@@ -50,7 +49,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'processed_by',
-                        'filter' => BackendUser::getUsernames(),
                         'value' => function (BidHistory $bidHistory) {
                             return $bidHistory->processedBy->getFullName() ?? null;
                         }

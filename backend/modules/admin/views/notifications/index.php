@@ -29,10 +29,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'hover' => true,
                 'columns' => [
-                    'id',
                     [
                         'attribute' => 'recipient_id',
-                        'filter' => BackendUser::getUsernames(),
                         'value' => function (UserNotificationsEntity $userNotifications) {
                             return $userNotifications->recipient->profile->name ?? null;
                         }
