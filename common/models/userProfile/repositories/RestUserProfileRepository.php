@@ -145,7 +145,6 @@ trait RestUserProfileRepository
 
         $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
             . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
-        $params['user_id'] = \Yii::$app->user->identity->getId();
 
         $result = $s3->commands()->put($fileName, base64_decode($params['base64_image']))
             ->withContentType("image/jpeg")->execute();
