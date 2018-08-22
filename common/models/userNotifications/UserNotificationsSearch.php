@@ -59,7 +59,7 @@ class UserNotificationsSearch extends UserNotificationsEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'status', $this->status])
+        $query->andFilterWhere(['status' => $this->status])
             ->andFilterWhere(['like', 'text', $this->text])
             ->andFilterWhere([
                 'or',
