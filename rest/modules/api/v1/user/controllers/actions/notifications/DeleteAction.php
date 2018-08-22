@@ -16,7 +16,7 @@ class DeleteAction extends Action
     /**
      * Deletes an existing UserNotificationsEntity
      *
-     * @SWG\Delete(path="/user/user-notifications/{id}",
+     * @SWG\Delete(path="/user/notifications/{id}",
      *      tags={"User module"},
      *      summary="Get user profile",
      *      description="Get user profile",
@@ -79,7 +79,11 @@ class DeleteAction extends Action
             /** @var UserNotificationsEntity $userNotificationsModel */
             $userNotificationsModel = new $this->modelClass;
             if ($userNotificationsModel->deleteNotify($id)) {
-                return $this->controller->setResponse(200, 'Уведомление успешно удалено.');
+                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Notification was successfully deleted');
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => $response->statusText
+                ];
             }
             throw new ServerErrorHttpException;
         } catch (NotFoundHttpException $e) {
