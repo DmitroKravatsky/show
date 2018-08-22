@@ -27,14 +27,14 @@ class ListAction extends Action
      *      @SWG\Parameter(
      *        in = "query",
      *        name = "per-page",
-     *        description = "Amount of posts per page",
+     *        description = "number of items per page",
      *        required = false,
      *        type = "integer"
      *      ),
      *      @SWG\Parameter(
      *        in = "query",
      *        name = "page",
-     *        description = "next page",
+     *        description = "the zero-based current page number",
      *        required = false,
      *        type = "integer"
      *      ),
@@ -44,7 +44,7 @@ class ListAction extends Action
      *        description = "field fo time sort",
      *        required = false,
      *        type = "string",
-     *        enum = {"week", "month", "archive"},
+     *        enum = {"week", "month"},
      *      ),
      *      @SWG\Response(
      *         response = 200,
@@ -112,13 +112,19 @@ class ListAction extends Action
      *              },
      *              "_links": {
      *                   "self": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=2&sort=week"
+     *                      "href": "http://work.local/api/v1/bid/list?per-page=2&page=2&sort=week"
      *                   },
      *                   "first": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
+     *                      "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
      *                   },
      *                   "prev": {
-     *                   "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
+     *                      "href": "http://work.local/api/v1/bid/list?per-page=2&page=1&sort=week"
+     *                   },
+     *                   "next": {
+     *                     "href": "http://ex.local.comwork.local/api/v1/bid/list?per-page=2&page=4"
+     *                   },
+     *                   "last": {
+     *                     "href": "http://work.local/api/v1/bid/list?per-page=2&page=6"
      *                   }
      *               },
      *               "_meta": {
@@ -133,10 +139,6 @@ class ListAction extends Action
      *     @SWG\Response (
      *        response = 401,
      *        description = "Invalid credentials or Expired token"
-     *     ),
-     *     @SWG\Response(
-     *        response = 500,
-     *        description = "Internal Server Error"
      *     )
      * )
      *

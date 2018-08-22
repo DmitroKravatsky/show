@@ -4,7 +4,6 @@ namespace common\models\bid\repositories;
 
 use common\models\bid\BidEntity;
 use yii\data\ArrayDataProvider;
-use yii\db\ActiveQuery;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -17,47 +16,35 @@ use yii\web\UnprocessableEntityHttpException;
 trait RestBidRepository
 {
     /**
-     * Method of getting user's bids by Bid id and User id
+     * Method of getting user's bids by User id
      *
      * @param $params array of the POST data
      *
      * @return ArrayDataProvider
-     *
-     * @throws ServerErrorHttpException
      */
     public function getBids(array $params): ArrayDataProvider
     {
-        try {
-            /** @var ActiveQuery $query */
-            $query = self::find()
-                ->select(['id', 'status', 'from_payment_system', 'to_payment_system',
-                    'from_currency', 'to_currency', 'from_sum', 'to_sum'])
-                ->where(['created_by' => \Yii::$app->user->id]);
+        $query = BidEntity::find()
+            ->select([
+                'id', 'status', 'from_payment_system', 'to_payment_system',
+                'from_currency', 'to_currency', 'from_sum', 'to_sum'
+            ])->where(['created_by' => \Yii::$app->user->id]);
 
-            if (isset($params['sort']) && $params['sort'] === 'week') {
-                $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 7)]);
-            } elseif (isset($params['sort']) && $params['sort'] === 'month') {
-                $query->andWhere(['>=', 'created_at', time() - (3600 * 24 * 30)]);
-            } elseif (isset($params['sort']) && $params['sort'] === 'archive') {
-                $query->andWhere(['IN', 'status', ['paid', 'done', 'rejected']]);
-            }
-
-            $pageSize = intval($params['per-page'] ?? \Yii::$app->params['posts-per-page']);
-            $page = intval(isset($params['page']) ? $params['page'] - 1 : 0);
-
-            $dataProvider = new ArrayDataProvider([
-                'allModels' => $query->orderBy(['created_at' => SORT_DESC])->all(),
-                'pagination' => [
-                    'pageSize' => $pageSize,
-                    'page' => $page
-                ]
-            ]);
-
-            return $dataProvider;
-
-        } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Internal server error');
+        if (isset($params['sort']) && $params['sort'] === self::SORT_WEEK) {
+            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_WEEK)]);
+        } elseif (isset($params['sort']) && $params['sort'] === self::SORT_MONTH) {
+            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_MONTH)]);
         }
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $query->orderBy(['created_at' => SORT_DESC])->all(),
+            'pagination' => [
+                'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
+                'page' => isset($params['page']) ? $params['page'] - 1 : 0,
+            ]
+        ]);
+
+        return $dataProvider;
     }
 
     /**
