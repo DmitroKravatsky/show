@@ -68,6 +68,14 @@ class UpdateAction extends Action
      *          required = false,
      *          type = "string"
      *      ),
+     *      @SWG\Parameter(
+     *          in = "formData",
+     *          name = "base64_image",
+     *          description = "User avatar",
+     *          required = false,
+     *          type = "string",
+     *          format = "byte"
+     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -89,7 +97,7 @@ class UpdateAction extends Action
      *                  "id": 6,
      *                  "name": "John",
      *                  "last_name": "Smith",
-     *                  "avatar": null
+     *                  "avatar": "https://bigbizbucket.s3.amazonaws.com/user_profile/user-125/Vwd4V1c_rAyWUsWjaQUfwu87PaZnb1VF.jpeg"
      *              }
      *         }
      *     ),
