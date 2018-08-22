@@ -99,7 +99,6 @@ use yii\helpers\Url;
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
-                    'id',
                     'created_by',
                     'text:ntext',
                     [
@@ -152,7 +151,6 @@ use yii\helpers\Url;
                     'hover' => true,
                     'summary' => '',
                     'columns' => [
-                        'id',
                         'email:email',
                         [
                             'attribute' => 'created_at',
@@ -202,7 +200,6 @@ use yii\helpers\Url;
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
-                    'id',
                     [
                         'attribute' => 'status',
                         'filter' => UserNotificationsEntity::getStatusLabels(),

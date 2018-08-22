@@ -89,7 +89,7 @@ class UserSearch extends User
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', 'user.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;

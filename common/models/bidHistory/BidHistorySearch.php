@@ -2,6 +2,7 @@
 
 namespace common\models\bidHistory;
 
+use common\models\bid\BidEntity;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -42,7 +43,10 @@ class BidHistorySearch extends BidHistory
      */
     public function search($params)
     {
-        $query = BidHistory::find()->leftJoin(UserProfileEntity::tableName(), 'user_id = processed_by');
+        $query = BidHistory::find()
+            ->leftJoin(BidEntity::tableName(), 'bid.id = bid_id')
+            ->leftJoin(UserProfileEntity::tableName() . 'as profile', 'profile.user_id = created_by')
+            ->leftJoin(UserProfileEntity::tableName() . 'as user_profile', 'user_profile.user_id = bid_history.processed_by');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -54,15 +58,15 @@ class BidHistorySearch extends BidHistory
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'status', $this->status])
+        $query->andFilterWhere(['like', BidHistory::tableName() . '.status', $this->status])
             ->andFilterWhere([
                 'or',
                 ['like', 'user_profile.name', $this->processed_by],
                 ['like', 'user_profile.last_name', $this->processed_by]
             ])->andFilterWhere([
                 'or',
-                ['like', 'user_profile.name', $this->created_by],
-                ['like', 'user_profile.last_name', $this->created_by]
+                ['like', 'profile.name', $this->created_by],
+                ['like', 'profile.last_name', $this->created_by]
             ]);
 
         if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
