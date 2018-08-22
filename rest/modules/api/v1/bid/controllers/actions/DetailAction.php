@@ -2,49 +2,21 @@
 
 namespace rest\modules\api\v1\bid\controllers\actions;
 
-use common\behaviors\ValidateGetParameters;
+use Yii;
 use rest\modules\api\v1\bid\controllers\BidController;
 use yii\rest\Action;
 
 /**
  * Class DetailAction
- * @mixin ValidateGetParameters
  * @package rest\modules\api\v1\bid\controllers\actions
  */
 class DetailAction extends Action
 {
     /** @var  BidController */
     public $controller;
-    /**
-     * @var array
-     */
-    public $params = [];
 
     /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidateGetParameters::class,
-                'inputParams' => ['id']
-            ],
-        ];
-    }
-
-    /**
-     * @return bool
-     * @throws \yii\web\BadRequestHttpException
-     */
-    protected function beforeRun(): bool
-    {
-        $this->validationParams();
-        return parent::beforeRun();
-    }
-
-    /**
-     * @SWG\Get(path="/bid/detail?id={id}",
+     * @SWG\Get(path="/bid/{id}",
      *      tags={"Bid module"},
      *      summary="Bid detail",
      *      description="Get user bid details",
@@ -94,8 +66,8 @@ class DetailAction extends Action
      *                  "to_wallet": "1234123412341234",
      *                  "from_currency": "rub",
      *                  "to_currency": "usd",
-     *                  "from_sum": "123",
-     *                  "to_sum": "123.5"
+     *                  "from_sum": 123,
+     *                  "to_sum": 123.5
      *              }
      *         }
      *     ),
@@ -117,20 +89,21 @@ class DetailAction extends Action
      *     )
      * )
      *
+     * @param integer $id
      * @return array
      * @throws \yii\web\NotFoundHttpException
      * @throws \yii\web\ServerErrorHttpException
      */
-    public function run()
+    public function run($id)
     {
         /** @var \common\models\bid\BidEntity $bid */
         $bid = new $this->modelClass;
-        $bid = $bid->getBidDetails(\Yii::$app->request->get('id'));
+        $bid = $bid->getBidDetails($id);
 
-        \Yii::$app->getResponse()->setStatusCode(200, 'Detail info');
+        Yii::$app->getResponse()->setStatusCode(200, Yii::t('app', 'Detail info.'));
         return [
-            'status'  => \Yii::$app->response->statusCode,
-            'message' => "Detail info",
+            'status'  => Yii::$app->response->statusCode,
+            'message' => Yii::t('app', 'Detail info.'),
             'data'    => $bid
         ];
     }
