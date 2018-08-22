@@ -79,7 +79,8 @@ class DeleteAction extends Action
             /** @var UserNotificationsEntity $userNotificationsModel */
             $userNotificationsModel = new $this->modelClass;
             if ($userNotificationsModel->deleteNotify($id)) {
-                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Notification was successfully deleted');
+                $response = \Yii::$app->getResponse()
+                    ->setStatusCode(200, \Yii::t('app', 'Notification was successfully deleted'));
                 return [
                     'status'  => $response->statusCode,
                     'message' => $response->statusText
@@ -90,7 +91,10 @@ class DeleteAction extends Action
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException('Произошла ошибка при удалении уведомления.');
+            throw new ServerErrorHttpException(\Yii::t(
+                'app',
+                'Internal server error appeared while processing request')
+            );
         }
     }
 }
