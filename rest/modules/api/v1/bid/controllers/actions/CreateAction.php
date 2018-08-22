@@ -4,9 +4,11 @@ namespace rest\modules\api\v1\bid\controllers\actions;
 
 use common\models\bid\BidEntity;
 use rest\modules\api\v1\bid\controllers\BidController;
+use yii\base\ErrorHandler;
 use yii\rest\Action;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
+use Yii;
 
 /**
  * Class CreateAction
@@ -119,14 +121,14 @@ class CreateAction extends Action
      *          name = "from_wallet",
      *          description = "from wallet",
      *          required = true,
-     *          type = "string"
+     *          type = "integer"
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
      *          name = "to_wallet",
      *          description = "to wallet",
      *          required = true,
-     *          type = "string"
+     *          type = "integer"
      *      ),
      *      @SWG\Response(
      *         response = 200,
@@ -202,19 +204,19 @@ class CreateAction extends Action
         try {
             /** @var BidEntity $bid */
             $bid = new $this->modelClass;
-            $bid = $bid->createBid(\Yii::$app->request->bodyParams);
+            $bid = $bid->createBid(Yii::$app->request->bodyParams);
 
-            \Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
+            Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
             return [
-                'status'  => \Yii::$app->response->statusCode,
-                'message' => "Your bid was successfully granted",
+                'status'  => Yii::$app->response->statusCode,
+                'message' => Yii::t('app', 'Your bid was successfully granted'),
                 'data'    => $bid->getAttributes()
             ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при создании заявки.'));
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при создании заявки.'));
         }
     }
 }

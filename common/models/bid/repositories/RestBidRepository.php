@@ -8,6 +8,7 @@ use yii\db\ActiveQuery;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class RestBidRepository
@@ -136,16 +137,21 @@ trait RestBidRepository
      *
      * @return BidEntity whether the attributes are valid and the record is inserted successfully
      *
-     * @throws \yii\web\UnprocessableEntityHttpException
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
      */
     public function createBid(array $postData): BidEntity
     {
-        $bid = new self;
+        $bid = new BidEntity();
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
         $bid->setAttributes($postData);
 
-        if (!$bid->save()) {
+        if (!$bid->validate()) {
             $this->throwModelException($bid->errors);
+        }
+
+        if (!$bid->save(false)) {
+            throw new ServerErrorHttpException();
         }
 
         return $bid;
