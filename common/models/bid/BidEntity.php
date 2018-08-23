@@ -164,6 +164,30 @@ class BidEntity extends ActiveRecord
     /**
      * @return array
      */
+    public static function currencyLabels(): array
+    {
+        return [
+            self::USD => Yii::t('app', 'USD'),
+            self::UAH => Yii::t('app', 'UAH'),
+            self::RUB => Yii::t('app', 'RUB'),
+            self::EUR => Yii::t('app', 'EUR'),
+        ];
+    }
+
+    /**
+     * Returns currency label
+     * @param $currency
+     * @return string
+     */
+    public static function getCurrencyValue($currency): string
+    {
+        $currencies = static::currencyLabels();
+        return $currencies[$currency];
+    }
+
+    /**
+     * @return array
+     */
     public function attributeLabels(): array
     {
         return [
