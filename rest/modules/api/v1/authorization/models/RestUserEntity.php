@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models;
 
 use borales\extensions\phoneInput\PhoneInputValidator;
+use common\models\bid\BidEntity;
 use common\models\userProfile\UserProfileEntity;
 use common\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
@@ -414,5 +415,14 @@ class RestUserEntity extends User
         } else if ($user = static::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
             return $user;
         }
+    }
+
+    /**
+     * Checks if user have at least one bid
+     * @return bool
+     */
+    public function haveBids():bool
+    {
+        return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
     }
 }
