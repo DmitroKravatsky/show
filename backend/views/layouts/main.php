@@ -106,6 +106,10 @@ $this->title = Yii::t('app', 'Dashboard');
                                                     'label' => Yii::t('app', 'Reviews'),
                                                     'url' => ['/review/index'],
                                                 ],
+                                                [
+                                                    'label' => Yii::t('app', 'Reserves'),
+                                                    'url' => ['/reserve/index'],
+                                                ],
                                             ],
                                         ],
                                     ],
