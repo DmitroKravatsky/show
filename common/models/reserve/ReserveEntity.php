@@ -36,6 +36,34 @@ class ReserveEntity extends ActiveRecord
     const UAH = 'uah';
     const RUB = 'rub';
     const EUR = 'eur';
+
+    /**
+     * @return array
+     */
+    public static function paymentSystemLabels(): array
+    {
+        return [
+            self::YANDEX_MONEY => Yii::t('app', 'Yandex Money'),
+            self::WEB_MONEY    => Yii::t('app', 'Web Money'),
+            self::TINCOFF      => Yii::t('app', 'Tincoff'),
+            self::PRIVAT24     => Yii::t('app', 'Privat24'),
+            self::SBERBANK     => Yii::t('app', 'Sberbank'),
+            self::QIWI         => Yii::t('app', 'Qiwi'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function currencyLabels(): array
+    {
+        return [
+            self::USD => Yii::t('app', 'USD'),
+            self::UAH => Yii::t('app', 'UAH'),
+            self::RUB => Yii::t('app', 'RUB'),
+            self::EUR => Yii::t('app', 'EUR'),
+        ];
+    }
     
     /**
      * @return string
@@ -88,5 +116,27 @@ class ReserveEntity extends ActiveRecord
             TimestampBehavior::class,
             ValidationExceptionFirstMessage::class,
         ];
+    }
+
+    /**
+     * Returns payment system label
+     * @param $paymentSystem
+     * @return string
+     */
+    public static function getPaymentSystemValue($paymentSystem): string
+    {
+        $paymentSystems = static::paymentSystemLabels();
+        return $paymentSystems[$paymentSystem];
+    }
+
+    /**
+     * Returns currency label
+     * @param $currency
+     * @return string
+     */
+    public static function getCurrencyValue($currency): string
+    {
+        $currencies = static::currencyLabels();
+        return $currencies[$currency];
     }
 }
