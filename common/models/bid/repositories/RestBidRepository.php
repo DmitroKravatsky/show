@@ -36,8 +36,25 @@ trait RestBidRepository
             $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_MONTH)]);
         }
 
+        $bids = $query->orderBy(['created_at' => SORT_DESC])->all();
+
+        $result = [];
+        foreach ($bids as $bid) {
+            /** @var BidEntity $bid */
+            $result[] = [
+                'id'                  => $bid->id,
+                'status'              => BidEntity::getStatusValue($bid->status),
+                'from_payment_system' => BidEntity::getPaymentSystemValue($bid->from_payment_system),
+                'to_payment_system'   => BidEntity::getPaymentSystemValue($bid->to_payment_system),
+                'from_currency'       => BidEntity::getCurrencyValue($bid->from_currency),
+                'to_currency'         => BidEntity::getCurrencyValue($bid->to_currency),
+                'from_sum'            => round($bid->from_sum, 2),
+                'to_sum'              => round($bid->to_sum, 2),
+            ];
+        }
+
         $dataProvider = new ArrayDataProvider([
-            'allModels' => $query->orderBy(['created_at' => SORT_DESC])->all(),
+            'allModels' => $result,
             'pagination' => [
                 'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
                 'page' => isset($params['page']) ? $params['page'] - 1 : 0,
