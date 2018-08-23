@@ -18,41 +18,6 @@ use common\models\language\Language;
 $bundle = yiister\gentelella\assets\Asset::register($this);
 AppAsset::register($this);
 
-$items = [
-    'items' => [
-        [
-            'label' => Yii::t('app', 'Management'),
-            'icon' => 'th',
-            'url' => '#',
-            'items' => [
-                [
-                    'label' => Yii::t('app', 'Bids'), 'url' => '#',
-                    'items' => [
-                        [
-                            'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
-                        ],
-                        [
-                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history']
-                        ],
-                    ],
-                ],
-                [
-                    'label' => Yii::t('app', 'Notifications'),
-                    'url' => ['/notifications/index'],
-                ],
-                [
-                    'label' => Yii::t('app', 'Reviews'),
-                    'url' => ['/review/index'],
-                ],
-            ],
-        ],
-    ],
-];
-
-if (Yii::$app->user->can(User::ROLE_ADMIN)) {
-    array_unshift($items['items'][0]['items'], ['label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/managers-list')]]);
-}
-
 $user = User::findOne(Yii::$app->user->id);
 $this->title = Yii::t('app', 'Dashboard');
 ?>
@@ -111,7 +76,40 @@ $this->title = Yii::t('app', 'Dashboard');
 
                             <div class="menu_section">
                                 <h3><?= Yii::t('app', 'General') ?></h3>
-                                <?= Menu::widget($items) ?>
+                                <?= Menu::widget([
+                                    'items' => [
+                                        [
+                                            'label' => Yii::t('app', 'Management'),
+                                            'icon' => 'th',
+                                            'url' => '#',
+                                            'items' => [
+                                                [
+                                                    'label' => Yii::t('app', 'Managers'), 'url' => ['/managers-list'],
+                                                    'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
+                                                ],
+                                                [
+                                                    'label' => Yii::t('app', 'Bids'), 'url' => '#',
+                                                    'items' => [
+                                                        [
+                                                            'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
+                                                        ],
+                                                        [
+                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history']
+                                                        ],
+                                                    ],
+                                                ],
+                                                [
+                                                    'label' => Yii::t('app', 'Notifications'),
+                                                    'url' => ['/notifications/index'],
+                                                ],
+                                                [
+                                                    'label' => Yii::t('app', 'Reviews'),
+                                                    'url' => ['/review/index'],
+                                                ],
+                                            ],
+                                        ],
+                                    ],
+                                ]) ?>
                             </div>
 
                         </div>
@@ -255,7 +253,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <!-- footer content -->
                 <footer>
                     <div class="text-center">
-                        &copy; <?= date('Y') ?> Created by RatkusSoft
+                        &copy; <?= date('Y') ?> <?= Yii::t('app', 'Created by') ?> RatkusSoft
                     </div>
                     <div class="clearfix"></div>
                 </footer>
