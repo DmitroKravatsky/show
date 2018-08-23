@@ -3,7 +3,6 @@
 namespace rest\modules\api\v1\reserve\controllers;
 
 use common\models\reserve\ReserveEntity;
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
 use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
@@ -13,8 +12,6 @@ use yii\filters\VerbFilter;
 /**
  * Class ReserveController
  * @package rest\modules\api\v1\reserve\controllers
- * 
- * @mixin ResponseBehavior
  */
 class ReserveController extends Controller
 {
@@ -22,6 +19,11 @@ class ReserveController extends Controller
      * @var ReserveEntity $modelClass
      */
     public $modelClass = ReserveEntity::class;
+
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items'
+    ];
 
     /**
      * @return array
@@ -38,8 +40,6 @@ class ReserveController extends Controller
                 'list'   => ['GET'],
             ]
         ];
-        
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
