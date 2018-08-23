@@ -98,12 +98,17 @@ class UpdateAction extends Action
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
             $reviewModel = $reviewModel->updateReview($id, \Yii::$app->request->bodyParams);
-            return $this->controller->setResponse(200, 'Отзыв успешно изменён.', $reviewModel->getAttributes(['id', 'text']));
+            $response = \Yii::$app->getResponse()->setStatusCode(200, \Yii::t('app', 'Review was successfully edited'));
+            return [
+                'status'  => $response->statusCode,
+                'message' => $response->statusText,
+                'data'    => $reviewModel->getAttributes(['id', 'text'])
+            ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Error on review update'));
         }
     }
 }

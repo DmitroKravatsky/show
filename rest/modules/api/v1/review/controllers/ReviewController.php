@@ -22,7 +22,11 @@ class ReviewController extends Controller
      * @var string $modelClass
      */
     public $modelClass = ReviewEntity::class;
-
+    
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items'
+    ];
     /**
      * @return array
      */
