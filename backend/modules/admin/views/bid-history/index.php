@@ -35,7 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format' => 'html',
                         'value' => function (BidHistory $bidHistory) {
                             return Html::a(
-                                $bidHistory->bid->author->getFullName() ?? null,
+                                $bidHistory->bid->author->fullName ?? null,
                                 Url::to(['bid/view', 'id' => $bidHistory->bid_id])
                             );
                         }
@@ -50,7 +50,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'processed_by',
                         'value' => function (BidHistory $bidHistory) {
-                            return $bidHistory->processedBy->getFullName() ?? null;
+                            return $bidHistory->processedBy->fullName ?? null;
                         }
                     ],
                     [
