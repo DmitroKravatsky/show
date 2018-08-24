@@ -27,9 +27,9 @@ class ToggleProcessedAction extends Action
         $bid->processed_by = Yii::$app->user->id;
 
         if ($bid->toggleProcessed()) {
-            Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Bid was successfully updated'));
+            Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Bid successfully updated.'));
         } else {
-            Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Something wrong, please try again later'));
+            Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Something wrong, please try again later.'));
         }
 
         return $this->controller->redirect(['bid/index']);

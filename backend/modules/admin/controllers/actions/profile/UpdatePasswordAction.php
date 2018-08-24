@@ -28,7 +28,7 @@ class UpdatePasswordAction extends Action
         }
 
         if ($user->load(Yii::$app->request->post()) && $user->save()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'The password was successfully updated.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Password was successfully updated.'));
             $user->password = null;
             $user->currentPassword = null;
             $user->repeatPassword = null;

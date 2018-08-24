@@ -8,6 +8,7 @@ use common\models\user\User;
 use PHPUnit\Framework\Exception;
 use yii\base\Action;
 use yii\web\UnprocessableEntityHttpException;
+use Yii;
 
 /**
  * Class UpdateBidStatusAction
@@ -52,7 +53,7 @@ class UpdateBidStatusAction extends Action
                             \Yii::$app->params['supportEmail'], $user->email, 'status is change'
                         );
                         $transaction->commit();
-                        return ['status' => 200, 'message' => 'Status was updated'];
+                        return ['status' => 200, 'message' => Yii::t('app', 'Status successfully updated.')];
 
                     } elseif ($user->phone_number) {
                         \Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);

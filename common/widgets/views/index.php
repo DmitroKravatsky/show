@@ -10,7 +10,7 @@ use yii\helpers\Url;
 
 <li>
     <a class="dropdown-toggle" data-toggle="dropdown" aria-expanded="false">
-        <div class="pull-left flag flag-<?= $currentLanguage ?>"></div>
+        <div style="margin-top: 6px" class="pull-left flag flag-<?= $currentLanguage ?>"></div>
         &nbsp;
         <span class="fa fa-angle-down"></span>
     </a>

@@ -21,7 +21,7 @@ class UpdateAction extends Action
     {
         $reserve = $this->controller->findModel($id);
         if ($reserve->load(Yii::$app->request->post()) && $reserve->save()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Reserve was successfully updated.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Reserve successfully updated.'));
             return $this->controller->redirect(Url::to(['index']));
         }
 

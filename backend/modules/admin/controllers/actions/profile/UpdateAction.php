@@ -57,7 +57,7 @@ class UpdateAction extends Action
 
                 if ($profile->save(true, $profileAttributes)) {
                     $transaction->commit();
-                    Yii::$app->session->setFlash('success', Yii::t('app', 'The profile was successfully updated.'));
+                    Yii::$app->session->setFlash('success', Yii::t('app', 'Profile successfully updated.'));
                     return $this->controller->redirect(['index']);
                 }
             }

@@ -167,7 +167,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <li><?= Html::a(Yii::t('app', 'Profile'), Url::to('/admin/profile/index')) ?></li>
 
                                         <li>
-                                            <a href="<?= Url::to('/admin/logout') ?>"><i class="fa fa-sign-out pull-right"></i> Log Out</a>
+                                            <a href="<?= Url::to('/admin/logout') ?>"><i class="fa fa-sign-out pull-right"></i><?= Yii::t('app', 'Log Out') ?></a>
                                         </li>
                                     </ul>
                                 </li>

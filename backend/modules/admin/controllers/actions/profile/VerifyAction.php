@@ -18,7 +18,7 @@ class VerifyAction extends Action
     {
         $user = BackendUser::findByVerificationToken($token);
         if ($user === null) {
-            throw new NotFoundHttpException(Yii::t('app', 'User is not found'));
+            throw new NotFoundHttpException(Yii::t('app', 'User is not found.'));
         }
 
         $user->verification_token = null;
@@ -29,7 +29,7 @@ class VerifyAction extends Action
 
         $user->validate($attributes);
         $user->save(false, $attributes);
-        Yii::$app->session->setFlash('success', Yii::t('app', 'Email successfully updated.'));
+        Yii::$app->session->setFlash('success', Yii::t('app', 'E-mail successfully updated.'));
 
         return $this->controller->redirect('index');
     }
