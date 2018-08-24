@@ -19,7 +19,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <div class="bid-history-index">
     <?php Panel::begin([
-        'header' => Yii::t('app', 'Bid History'),
+        'header' => Yii::t('app', 'Bids History'),
         'collapsable' => true,
         'removable' => true,
     ]) ?>

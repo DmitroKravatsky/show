@@ -14,7 +14,7 @@ $this->title = Yii::t('app', 'Managers');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?= Html::a('Invite new manager',['/invite-manager'], ['class' => 'btn btn-primary'])?>
+<?= Html::a(Yii::t('app', 'Invite new manager'), ['/invite-manager'], ['class' => 'btn btn-primary'])?>
 <div class="site-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Managers'),
@@ -28,14 +28,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'columns' => [
                     [
                         'attribute' => 'full_name',
+                        'label' => Yii::t('app', 'Full Name'),
                         'value' => function (User $user) {
                             return ($user->profile->name . ' ' . $user->profile->last_name) ?? null;
                         }
                     ],
-                    'email',
-                    'phone_number',
+                    'email:email:E-mail',
+                    'phone_number:raw:' . Yii::t('app', 'Phone Number'),
                     [
                         'attribute' => 'invite_code_status',
+                        'label' => Yii::t('app', 'Invite Code Status'),
                         'filter' => User::getInviteStatuses(),
                         'value' => function (User $user) {
                             return User::getInviteStatusValue($user->invite_code_status);
@@ -51,8 +53,8 @@ $this->params['breadcrumbs'][] = $this->title;
                                     'user_id' => $model->id
                                 ]);
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'lead-delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure?'),
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                                     ]);
                             },
                             'reInvite' => function($url, User $model) {
@@ -62,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ]);
                                 return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
                                     'reInviteUrl' => $reInviteUrl,
-                                    'title' => Yii::t('app', 'reInvite'),
+                                    'title' => Yii::t('app', 'Re-invite'),
                                     'class' => 'ajaxReInviteMessage',
                                     'method' => 'post'
                                 ]);

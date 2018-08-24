@@ -26,16 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
                     'model' => $model,
                     'template' => '<tr data-key="' . $model->id . '"><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>',
                     'attributes' => [
-                        [
-                            'attribute' => 'name',
-                            'label' => Yii::t('app', 'Client First Name')
-                        ],
-                        [
-                            'attribute' => 'last_name',
-                            'label' => Yii::t('app', 'Client Last Name')
-                        ],
+                        'name:raw:' . Yii::t('app', 'Client First Name'),
+                        'last_name:raw:' . Yii::t('app', 'Client Last Name'),
                         'phone_number',
-                        'email:email',
+                        'email:email:E-mail',
                         [
                             'attribute' => 'status',
                             'format' => 'raw',

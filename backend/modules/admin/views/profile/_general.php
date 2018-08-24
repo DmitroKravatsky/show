@@ -18,7 +18,7 @@ use yii\helpers\Html;
 
     <?= $form->field($profile, 'last_name')->textInput(['maxlength' => true]) ?>
 
-    <?= $form->field($user, 'email', ['enableAjaxValidation' => true,])->textInput(['maxlength' => true,]) ?>
+    <?= $form->field($user, 'email', ['enableAjaxValidation' => true,])->textInput(['maxlength' => true,])->label('E-mail') ?>
 
     <?= Html::submitButton(Yii::t('app', 'Update'), ['class' => 'btn btn-success']) ?>
 <?php ActiveForm::end() ?>

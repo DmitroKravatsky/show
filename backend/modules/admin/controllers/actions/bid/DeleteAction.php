@@ -24,10 +24,10 @@ class DeleteAction extends Action
     public function run($id)
     {
         if ($this->controller->findBid($id)->delete()) {
-            \Yii::$app->session->setFlash('delete-success', 'bid was successfully deleted');
+            \Yii::$app->session->setFlash('delete-success', 'Bid successfully deleted.');
             return $this->controller->redirect('/admin/bids');
         }
-        \Yii::$app->session->setFlash('delete-fail', 'Something wrong, please try again later');
+        \Yii::$app->session->setFlash('delete-fail', 'Something wrong, please try again later.');
         return false;
     }
 

@@ -27,7 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'autofocus' => true,
                             'class' => 'form-control',
                             'id' => 'inputEmail',
-                            'placeholder' => Yii::t('app', 'Enter Your E-mail Address')
+                            'placeholder' => Yii::t('app', 'Enter your e-mail address')
                         ])->label(false) ?>
                     </div>
 
@@ -36,7 +36,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= $form->field($modelLogin, 'password')->passwordInput([
                             'class' => 'form-control',
                             'id' => 'inputPassword',
-                            'placeholder' => Yii::t('app', 'Enter Your Password')
+                            'placeholder' => Yii::t('app', 'Enter your password')
                         ])->label(false) ?>
                     </div>
 

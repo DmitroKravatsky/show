@@ -61,7 +61,7 @@ $this->title = Yii::t('app', 'Invite Manager');
 
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                        <?= Yii::t('app', 'Phone number') ?><span class="required">*</span>
+                        <?= Yii::t('app', 'Phone Number') ?><span class="required">*</span>
                     </label>
 
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -87,7 +87,7 @@ $this->title = Yii::t('app', 'Invite Manager');
 
                 <div class="form-group">
                     <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                        <?= Yii::t('app', 'Password again') ?><span class="required">*</span>
+                        <?= Yii::t('app', 'Password Again') ?><span class="required">*</span>
                     </label>
 
                     <div class="col-md-6 col-sm-6 col-xs-12">
@@ -103,7 +103,7 @@ $this->title = Yii::t('app', 'Invite Manager');
                 <div class="form-group">
                     <div class="col-md-6 col-sm-6 col-xs-12 col-md-offset-3">
                         <button id="reset" class="btn btn-primary" type="reset"><?= Yii::t('app', 'Reset') ?></button>
-                        <?= Html::submitButton(Yii::t('app', 'Registry'), [
+                        <?= Html::submitButton(Yii::t('app', 'Save'), [
                             'class' => 'btn btn-success',
                             'name'  => 'registration-button'
                         ]); ?>

@@ -41,12 +41,13 @@ $this->params['breadcrumbs'][] = $this->title;
         ],
         [
             'attribute' => 'full_name',
+            'label' => Yii::t('app', 'Full Name'),
             'format' => 'raw',
             'value' => function($model) {
                 return $model->last_name . ' ' . $model->name;
             }
         ],
-        'email:email',
+        'email:email:E-mail',
         'phone_number',
         [
             'attribute' => 'processed',
@@ -62,9 +63,9 @@ $this->params['breadcrumbs'][] = $this->title;
                 return $bid->perfomer->fullName ?? null;
             }
         ],
-        'from_sum',
-        'from_wallet',
-        'to_wallet',
+        'from_sum:raw:' . Yii::t('app', 'Amount From Customer'),
+        'from_wallet:raw:' . Yii::t('app', 'Where Did The Money Come From'),
+        'to_wallet:raw:' . Yii::t('app', 'Need To Transfer Money Here'),
         [
             'attribute' => 'created_at',
             'format' => 'date',
@@ -98,8 +99,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'id' => $model['id']
                     ]);
                     return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                        'title' => \Yii::t('app', 'lead-delete'),
-                        'data-confirm' => \Yii::t('app', 'Are you sure?'),
+                        'title' => \Yii::t('app', 'Delete'),
+                        'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
                     ]);
                 },
             ]
