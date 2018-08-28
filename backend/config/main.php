@@ -9,6 +9,8 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'name' => 'Exchanger',
+    'sourceLanguage' => 'en',
+    'language' => 'en',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -23,6 +25,7 @@ return [
     'defaultRoute' => 'authorization/authorization/login',
     'components' => [
         'request' => [
+            'class' => 'common\components\language\LanguageRequest',
             'csrfParam' => '_csrf-backend',
             'baseUrl' => '/admin',
         ],
@@ -49,6 +52,7 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
+            'class' => 'common\components\language\LanguageUrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
@@ -83,9 +87,5 @@ return [
             ],
         ],
     ],
-    'on beforeAction' => function ($event) {
-        $language = Yii::$app->session->get('language', 'en');
-        Yii::$app->language = $language;
-    },
     'params' => $params,
 ];
