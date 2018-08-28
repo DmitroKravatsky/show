@@ -29,16 +29,16 @@ trait RestReviewRepository
     public function create(array $params): ReviewEntity
     {
         $user = RestUserEntity::findIdentity(\Yii::$app->user->id);
-        if ($user->haveBids()) {
-            $reviewModel = new self;
-            $reviewModel->setAttributes($params);
-            if (!$reviewModel->save()) {
-                $this->throwModelException($reviewModel->errors);
-            }
-
-            return $reviewModel;
+        if (!$user->hasBids()) {
+            throw new ForbiddenHttpException(\Yii::t('app', 'You must have at least one bid to write a review'));
         }
-        throw new ForbiddenHttpException(\Yii::t('app', 'You must have at least one bid to write a review'));
+        $reviewModel = new self;
+        $reviewModel->setAttributes($params);
+        if (!$reviewModel->save()) {
+            $this->throwModelException($reviewModel->errors);
+        }
+
+        return $reviewModel;
 
     }
 

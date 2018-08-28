@@ -421,7 +421,7 @@ class RestUserEntity extends User
      * Checks if user have at least one bid
      * @return bool
      */
-    public function haveBids():bool
+    public function hasBids():bool
     {
         return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
     }
