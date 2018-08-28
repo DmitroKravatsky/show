@@ -10,10 +10,10 @@ $(function () {
             type : "post",
             dataType : 'json',
             error: function () {
-                alert('Error occurred while processing request');
+                alert('Something wrong, please try again later.');
             },
             success : function () {
-                alert('Message was successfully send');
+                alert('Message was successfully send.');
             }
         })
     });

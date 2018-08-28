@@ -2,6 +2,7 @@
 namespace backend\controllers;
 
 use Yii;
+use yii\helpers\Url;
 use yii\web\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\AccessControl;
@@ -91,8 +92,12 @@ class SiteController extends Controller
      */
     public function actionToggleLanguage($language)
     {
-        Yii::$app->session->set('language', $language);
-        return $this->redirect(Yii::$app->request->referrer);
+        Yii::$app->language = $language;
+
+        if (Yii::$app->user->isGuest) {
+            return $this->redirect(Yii::$app->request->baseUrl . '/' . $language);
+        }
+        return $this->redirect(Url::to(['/index']));
     }
 
     /**

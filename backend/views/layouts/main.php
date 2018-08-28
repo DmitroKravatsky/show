@@ -94,7 +94,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                                             'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
                                                         ],
                                                         [
-                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history']
+                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history/index']
                                                         ],
                                                     ],
                                                 ],
@@ -247,6 +247,10 @@ $this->title = Yii::t('app', 'Dashboard');
                     <div class="clearfix"></div>
 
                     <?= Breadcrumbs::widget([
+                        'homeLink' => [
+                            'label' => Yii::t('yii', 'Home'),
+                            'url' => Url::to(['admin/index']),
+                        ],
                         'links' => $this->params['breadcrumbs'] ?? [],
                     ]) ?>
                     <?= Alert::widget() ?>
@@ -257,7 +261,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <!-- footer content -->
                 <footer>
                     <div class="text-center">
-                        &copy; <?= date('Y') ?> <?= Yii::t('app', 'Created by') ?> RatkusSoft
+                        &copy; <?= date('Y') ?> <?= Yii::t('app', 'Created By') ?> RatkusSoft
                     </div>
                     <div class="clearfix"></div>
                 </footer>

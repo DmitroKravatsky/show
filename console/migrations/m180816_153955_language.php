@@ -23,7 +23,7 @@ class m180816_153955_language extends Migration
         ], $tableOptions);
 
         $this->batchInsert($this->tableName, ['id', 'code', 'name', 'visible'], [
-            [1, 'gb', 'English', 1],
+            [1, 'en', 'English', 1],
             [2, 'ru', 'Русский', 1]
         ]);
     }

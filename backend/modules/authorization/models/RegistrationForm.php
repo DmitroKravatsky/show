@@ -54,14 +54,14 @@ class RegistrationForm extends Model
     public function attributeLabels()
     {
         return [
-            'email'                 => 'Email',
-            'password'              => 'Пароль',
-            'confirm_password'      => 'Подтверждение пароля',
-            'created_at'            => 'Дата создания',
-            'updated_at'            => 'Дата изменения',
-            'name'                  => 'Имя пользователя',
-            'last_name'             => 'Фамилия пользователя',
-            'role'                  => 'Должность',
+            'email'                 => Yii::t('app', 'E-mail'),
+            'password'              => Yii::t('app', 'Password'),
+            'confirm_password'      => Yii::t('app', 'Password Confirm'),
+            'created_at'            => Yii::t('app', 'Created At'),
+            'updated_at'            => Yii::t('app', 'Updated At'),
+            'name'                  => Yii::t('app', 'First Name'),
+            'last_name'             => Yii::t('app', 'Last Name'),
+            'role'                  => Yii::t('app', 'Role'),
         ];
     }
 
