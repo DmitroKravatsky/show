@@ -24,7 +24,7 @@ class LanguageChoice extends Widget
     {
         parent::init();
 
-        $this->currentLanguage = Yii::$app->session->get('language', 'gb');
+        $this->currentLanguage = $this->currentLanguage ?? Yii::$app->language;
     }
 
     public function run()

@@ -9,6 +9,8 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'name' => 'Exchanger',
+    'sourceLanguage' => 'en',
+    'language' => 'en',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -23,6 +25,7 @@ return [
     'defaultRoute' => 'authorization/authorization/login',
     'components' => [
         'request' => [
+            'class' => 'common\components\language\LanguageRequest',
             'csrfParam' => '_csrf-backend',
             'baseUrl' => '/admin',
         ],
@@ -49,23 +52,23 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
+            'class' => 'common\components\language\LanguageUrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
                 'index'                            => 'admin/admin/index',
                 'update-manager-password'          => 'admin/admin/update-manager-password',
                 'managers-list'                    => 'admin/admin/managers-list',
-                'manager/view/<id:\d+>'            => 'admin/manager/view',
-                'bid/index'                        => 'admin/bid/index',
-                'login'                            => 'authorization/authorization/login',
                 'invite-manager'                   => 'admin/admin/invite-manager',
+                're-invite'                        => 'admin/admin/re-invite',
+                'delete-manager'                   => 'admin/admin/delete-manager',
+                'manager/view/<id:\d+>'            => 'admin/manager/view',
+                'bid/<action:[\w-]+>'              => 'admin/bid/<action>',
+                'login'                            => 'authorization/authorization/login',
                 'logout'                           => 'authorization/authorization/logout',
-                'profile/index'                    => 'admin/profile/index',
-                'profile/update'                   => 'admin/profile/update',
-                'profile/verify'                   => 'admin/profile/verify',
-                'bids'                             => 'admin/bid/index',
+                'profile/<action:[\w-]+>'          => 'admin/profile/<action>',
                 'bid/view/<id:\d+>'                => 'admin/bid/view',
-                'bid-history'                      => 'admin/bid-history/index',
+                'bid-history/<action:[\w-]+>'      => 'admin/bid-history/<action>',
                 'notifications/index'              => 'admin/notifications/index',
                 'notification/view/<id:\d+>'       => 'admin/notifications/view',
                 'review/index'                     => 'admin/review/index',
@@ -83,9 +86,5 @@ return [
             ],
         ],
     ],
-    'on beforeAction' => function ($event) {
-        $language = Yii::$app->session->get('language', 'en');
-        Yii::$app->language = $language;
-    },
     'params' => $params,
 ];
