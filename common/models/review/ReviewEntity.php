@@ -18,7 +18,8 @@ use Yii;
  * 
  * @property integer $id
  * @property integer $created_by
- * @property string $text
+ * @property string  $text
+ * @property string  $terms_condition
  * @property integer $created_at
  * @property integer $updated_at
  *
@@ -43,11 +44,12 @@ class ReviewEntity extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'         => '#',
-            'created_by' => Yii::t('app', 'Created By'),
-            'text'       => Yii::t('app', 'Text'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'id'              => '#',
+            'created_by'      => Yii::t('app', 'Created By'),
+            'text'            => Yii::t('app', 'Text'),
+            'terms_condition' => Yii::t('app', 'Terms Condition'),
+            'created_at'      => Yii::t('app', 'Created At'),
+            'updated_at'      => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -60,6 +62,7 @@ class ReviewEntity extends ActiveRecord
             ['text', 'string'],
             ['created_by', 'default', 'value' => \Yii::$app->user->id],
             ['text', 'required'],
+            ['terms_condition', 'required', 'requiredValue' => 1],
         ];
     }
 

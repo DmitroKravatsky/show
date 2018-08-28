@@ -3,8 +3,11 @@
 namespace common\models\review\repositories;
 
 use common\models\review\ReviewEntity;
+use common\models\user\User;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
+use yii\web\ForbiddenHttpException;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -21,9 +24,14 @@ trait RestReviewRepository
      * @return ReviewEntity
      *
      * @throws \yii\web\UnprocessableEntityHttpException
+     * @throws \yii\web\ForbiddenHttpException
      */
     public function create(array $params): ReviewEntity
     {
+        $user = RestUserEntity::findIdentity(\Yii::$app->user->id);
+        if (!$user->hasBids()) {
+            throw new ForbiddenHttpException(\Yii::t('app', 'You must have at least one bid to write a review'));
+        }
         $reviewModel = new self;
         $reviewModel->setAttributes($params);
         if (!$reviewModel->save()) {
@@ -31,6 +39,7 @@ trait RestReviewRepository
         }
 
         return $reviewModel;
+
     }
 
     /**
