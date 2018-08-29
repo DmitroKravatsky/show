@@ -10,10 +10,10 @@ $(function () {
             type : "post",
             dataType : 'json',
             error: function () {
-                alert('Something wrong, please try again later.');
+                $('#re-invite-error').show();
             },
             success : function () {
-                alert('Message was successfully send.');
+                $('#re-invite-success').show();
             }
         })
     });

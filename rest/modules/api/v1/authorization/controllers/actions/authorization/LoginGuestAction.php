@@ -2,7 +2,6 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use common\models\userNotifications\UserNotificationsEntity;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -73,17 +72,5 @@ class LoginGuestAction extends Action
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function afterRun()
-    {
-        $userNotifications = new UserNotificationsEntity();
-        return $userNotifications->addNotify(
-            UserNotificationsEntity::getMessageForLoginGuest(),
-            current($this->modelClass->findByRole(RestUserEntity::ROLE_GUEST))
-        );
     }
 }

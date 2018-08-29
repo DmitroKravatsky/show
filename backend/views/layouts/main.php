@@ -193,18 +193,24 @@ $this->title = Yii::t('app', 'Dashboard');
                                             <?php foreach ($notifications as $notification): ?>
                                                 <li>
                                                     <a href="<?= Url::to(["/notification/view/{$notification->id}"])?>">
-                                                    <span class="image">
-                                                        <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                                    </span>
-                                                    <span>
-                                                        <span class="name">
-                                                            <?= $notification->userProfile->getUserFullName() ?? null; ?>
+                                                        <span class="image">
+                                                            <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                         </span>
-                                                        <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
-                                                    </span>
-                                                    <span class="message">
-                                                        <?= $notification->text ?>
-                                                    </span>
+
+                                                        <span>
+                                                            <span class="name">
+                                                                <?= $notification->userProfile->getUserFullName() ?? null; ?>
+                                                            </span>
+                                                            <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
+                                                        </span>
+
+                                                        <span class="message">
+                                                            <?php if ($notification->type == UserNotificationsEntity::TYPE_NEW_USER): ?>
+                                                                <?= Yii::t('app', $notification->text, [
+                                                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                                                ]) ?>
+                                                            <?php endif; ?>
+                                                        </span>
                                                     </a>
                                                 </li>
                                             <?php endforeach;?>

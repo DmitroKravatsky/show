@@ -2,15 +2,19 @@
 
 namespace common\models\userNotifications;
 
-use common\models\userNotifications\repositories\RestUserNotificationsRepository;
-use common\models\userProfile\UserProfileEntity;
-use rest\behaviors\ValidationExceptionFirstMessage;
+use common\behaviors\{
+    JsonBehavior,
+    ValidationExceptionFirstMessage
+};
+use common\models\{
+    userNotifications\repositories\RestUserNotificationsRepository,
+    userProfile\UserProfileEntity,
+    user\User
+};
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use yii\web\NotFoundHttpException;
 use Yii;
-use common\models\user\User;
 
 /**
  * Class UserNotificationsEntity
@@ -19,8 +23,10 @@ use common\models\user\User;
  * @mixin ValidationExceptionFirstMessage
  *
  * @property integer $id
+ * @property integer $type
  * @property integer $recipient_id
  * @property string $text
+ * @property string $custom_data
  * @property string $status
  * @property integer $created_at
  * @property integer $updated_at
@@ -35,12 +41,30 @@ class UserNotificationsEntity extends ActiveRecord
     const STATUS_READ   = 'read';
     const STATUS_UNREAD = 'unread';
 
+    const TYPE_NEW_USER        = 1;
+    const TYPE_NEW_BID         = 2;
+    const TYPE_PAID_CLIENT     = 3;
+    const TYPE_BID_IN_PROGRESS = 4;
+    const TYPE_BID_DONE        = 5;
+    const TYPE_BID_REJECTED    = 6;
+
     /**
      * @return string
      */
     public static function tableName(): string
     {
         return '{{%user_notifications}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypeLabels(): array
+    {
+        return [
+            self::TYPE_NEW_USER => Yii::t('app', 'New User'),
+            self::TYPE_NEW_BID  => Yii::t('app', 'New Bid'),
+        ];
     }
 
     /**
@@ -85,7 +109,7 @@ class UserNotificationsEntity extends ActiveRecord
     public function rules(): array
     {
         return [
-            ['recipient_id', 'integer'],
+            [['recipient_id', 'type',], 'integer'],
             ['text', 'string'],
             ['status', 'in', 'range' => [self::STATUS_READ, self::STATUS_UNREAD]],
             [
@@ -95,6 +119,7 @@ class UserNotificationsEntity extends ActiveRecord
                 'targetClass'     => RestUserEntity::class,
                 'targetAttribute' => ['recipient_id' => 'id'],
             ],
+            [['custom_data'], 'safe'],
         ];
     }
 
@@ -106,6 +131,7 @@ class UserNotificationsEntity extends ActiveRecord
         return [
             'TimestampBehavior'               => TimestampBehavior::class,
             'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::class,
+            'json'                            => ['class' => JsonBehavior::class, 'attributes' => ['custom_data']],
         ];
     }
 
@@ -136,40 +162,51 @@ class UserNotificationsEntity extends ActiveRecord
     /**
      * Generates a message for a new user notification
      *
-     * @param $params array
-     *
      * @return string
      */
-    public static function getMessageForNewUser(array $params)
+    public static function getMessageForNewUser(): string
     {
-        $phone_number = $params['phone_number'];
-        $message = Yii::t('app', 'A new user has been registered. Registration was conducted with a phone number') . ' ';
-        $message .= $phone_number;
+        return 'A new user has been registered. Registration was conducted with a phone number {phone_number}.';
+    }
 
-        return $message;
+    /**
+     * Generates a custom data for a new user notification
+     *
+     * @param string $phoneNumber
+     *
+     * @return array
+     */
+    public static function getCustomDataForNewUser($phoneNumber): array
+    {
+        return ['phone_number' => $phoneNumber];
     }
 
     /**
      * Generates a message for a newly created bid. Status accepted is default
      *
-     * @param $params array
-     *
      * @return string
-     *
-     * @throws NotFoundHttpException
      */
-    public static function getMessageForNewBid(array $params)
+    public static function getMessageForNewBid(): string
     {
-        $sum = $params['to_sum'];
-        $currency = $params['to_currency'];
-        $to_wallet = $params['to_wallet'];
+        return 'Your bid is accepted. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.';
+    }
 
-        $message = <<<EOT
-Ваша заявка приянта. Перевод на карту {$sum} {$currency} через приложение Wallet. Получатель:
-Карта/счет {$to_wallet}
-EOT;
-
-        return $message;
+    /**
+     * Generates a message for a newly created bid. Status accepted is default
+     *
+     * @param float $sum
+     * @param string $currency
+     * @param string $wallet
+     *
+     * @return array
+     */
+    public static function getCustomDataForNewBid($sum, $currency, $wallet): array
+    {
+        return [
+            'sum' => $sum,
+            'currency' => $currency,
+            'wallet' => $wallet,
+        ];
     }
 
     /**
@@ -198,42 +235,50 @@ EOT;
     /**
      * Generates a message for paid bid by client
      *
-     * @param $params array
-     *
      * @return string
      */
-    public static function getMessageForClientPaid(array $params)
+    public static function getMessageForClientPaid()
     {
-        $from_currency = $params['from_currency'];
-        $sum = $params['from_sum'];
-        $to_wallet = $params['to_wallet'];
+        return 'Your payment of {sum} {currency} to wallet {wallet} is accepted.';
+    }
 
-        $message = Yii::t(
-            'app',
-            'Your payment of {sum} {from_currency} to wallet {to_wallet} is accepted',
-            ['from_currency' => $from_currency, 'sum' => $sum, 'to_wallet' => $to_wallet]
-        );
-
-        return $message;
+    /**
+     * Generates a custom data for paid bid by client
+     *
+     * @param float $sum
+     * @param string $currency
+     * @param string $wallet
+     *
+     * @return array
+     */
+    public static function getCustomDataForClientPaid($sum, $currency, $wallet)
+    {
+        return [
+            'sum'      => $sum,
+            'currency' => $currency,
+            'wallet'   => $wallet,
+        ];
     }
 
     /**
      * Generates a message for paid bid by client
      *
-     * @param $params array
-     *
      * @return string
      */
-    public static function getMessageForInProgress(array $params)
+    public static function getMessageForInProgress(): string
     {
-        $bid_id = $params['bid_id'];
+        return 'Your bid number {bid_id} is now in progress.';
+    }
 
-        $message = Yii::t(
-            'app',
-            'Your bid number {bid_id} is now in progress',
-            ['bid_id' => $bid_id]
-        );
-
-        return $message;
+    /**
+     * Generates a message for paid bid by client
+     *
+     * @param integer $bidId
+     *
+     * @return array
+     */
+    public static function getCustomDataForInProgress($bidId): array
+    {
+        return ['bid_id' => $bidId];
     }
 }

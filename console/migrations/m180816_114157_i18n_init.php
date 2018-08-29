@@ -144,6 +144,11 @@ class m180816_114157_i18n_init extends Migration
             [129, 'app', 'Password Confirm'],
             [130, 'app', 'Edit'],
             [131, 'app', 'Message was successfully send.'],
+            [132, 'app', 'A new user has been registered. Registration was conducted with a phone number {phone_number}.'],
+            [133, 'app', 'Your bid is accepted. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.'],
+            [134, 'app', 'Your payment of {sum} {currency} to wallet {wallet} is accepted.'],
+            [135, 'app', 'Your bid number {bid_id} is now in progress.'],
+            [136, 'app', 'Your bid is rejected. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -278,6 +283,11 @@ class m180816_114157_i18n_init extends Migration
             [129, 'ru', 'Подтвердите пароль'],
             [130, 'ru', 'Редактировать'],
             [131, 'ru', 'Сообщение успешно отправлено.'],
+            [132, 'ru', 'Зарегистрирован новый пользователь. Регистрация проводилась с номером телефона {phone_number}.'],
+            [133, 'ru', 'Ваша заявка принята. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.'],
+            [134, 'ru', 'Ваш платёж {sum} {currency} в {wallet} принят.'],
+            [135, 'ru', 'Ваша заявка {bid_id} в обработке.'],
+            [136, 'ru', 'Ваша заявка не выполнена. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.'],
         ]);
     }
 
