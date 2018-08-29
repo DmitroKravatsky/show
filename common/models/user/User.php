@@ -2,7 +2,7 @@
 
 namespace common\models\user;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotificationsEntity as Notification;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -279,14 +279,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForNewUser(
-                    [
-                        'phone_number'  => $this->phone_number,
-                        'email'      => $this->email,
-                    ]
-                ),
-                self::DEFAULT_ADMIN_ID
+            (new Notification())->addNotify(
+                Notification::TYPE_NEW_USER,
+                Notification::getMessageForNewUser(),
+                self::DEFAULT_ADMIN_ID,
+                Notification::getCustomDataForNewUser($this->phone_number)
             );
         }
         return parent::afterSave($insert, $changedAttributes);

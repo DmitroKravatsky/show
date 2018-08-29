@@ -91,72 +91,79 @@ trait RestUserNotificationsRepository
     /**
      * Creates a new notify
      *
+     * @param $type int
      * @param $text string
      * @param $recipientId int
+     * @param $customData string
      *
      * @return mixed
      */
-    public function addNotify(string $text, int $recipientId)
+    public function addNotify($type, string $text, int $recipientId, $customData = null)
     {
-        $this->setAttributes(['text' => $text, 'recipient_id' => $recipientId]);
+        $this->setAttributes([
+            'type'         => $type,
+            'text'         => $text,
+            'recipient_id' => $recipientId,
+            'custom_data'  => $customData
+        ]);
+
+
         return $this->save();
     }
 
     /**
      * Generates a message for a bid with status done
      *
-     * @param $params array
-     *
      * @return string
-     *
-     * @throws NotFoundHttpException
      */
-    public static function getMessageForDoneBid(array $params)
+    public static function getMessageForDoneBid(): string
     {
-        $fullName = UserProfileEntity::getFullName($params['created_by']);
-        $sum = $params['to_sum'];
-        $currency = $params['to_currency'];
-        $to_wallet = $params['to_wallet'];
+        return 'Your bid is accepted. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.';
+    }
 
-        $message = <<<EOT
-{$fullName}, Ваша заявка успешно обработана. Перевод на карту {$sum} {$currency} через приложение Wallet. Получатель:
-Карта/счет {$to_wallet}
-EOT;
-    
-        return $message;
+    /**
+     * Generates a custom data for a bid with status done
+     *
+     * @param float $sum
+     * @param string $currency
+     * @param string $wallet
+     *
+     * @return array
+     */
+    public static function getCustomDataForDoneBid($sum, $currency, $wallet): array
+    {
+        return [
+            'sum'       => $sum,
+            'currency'  => $currency,
+            'to_wallet' => $wallet,
+        ];
     }
 
     /**
      * Generates a message for a bid with status rejected
      *
-     * @param $params array
-     *
      * @return string
-     *
-     * @throws NotFoundHttpException
      */
-    public static function getMessageForRejectedBid(array $params)
+    public static function getMessageForRejectedBid(): string
     {
-        $fullName = UserProfileEntity::getFullName($params['created_by']);
-        $sum = $params['to_sum'];
-        $currency = $params['to_currency'];
-        $to_wallet = $params['to_wallet'];
-
-        $message = <<<EOT
-{$fullName}, Ваша заявка не выполнена. Перевод на карту {$sum} {$currency} через приложение Wallet. Получатель:
-Карта/счет {$to_wallet}
-EOT;
-
-        return $message;
+        return 'Your bid is rejected. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.';
     }
 
     /**
-     * Generates a message for a guest User
+     * Generates a custom data for a bid with status rejected
      *
-     * @return string
+     * @param float $sum
+     * @param string $currency
+     * @param string $wallet
+     *
+     * @return array
      */
-    public static function getMessageForLoginGuest(): string
+    public static function getCustomDataForRejectedBid($sum, $currency, $wallet): array
     {
-        return 'Вы вошли как "Гость", для доступа ко всему функционалу приложения, пройдите этап регистрации.';
+        return [
+            'sum'      => $sum,
+            'currency' => $currency,
+            'wallet'   => $wallet
+        ];
     }
 }
