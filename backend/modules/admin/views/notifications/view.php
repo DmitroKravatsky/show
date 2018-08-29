@@ -2,10 +2,10 @@
 
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotificationsEntity as Notification;
 
 /** @var \yii\web\View $this */
-/** @var \common\models\userNotifications\UserNotificationsEntity $notification */
+/** @var Notification $notification */
 
 $this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Notifications'), 'url' => ['index']];
@@ -28,11 +28,21 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     'id',
                     [
                         'attribute' => 'recipient_id',
-                        'value' => function (UserNotificationsEntity $userNotification) {
-                            return $userNotification->recipient->profile->name ?? null;
+                        'value' => function (Notification $notification) {
+                            return $notification->recipient->profile->name ?? null;
                         }
                     ],
-                    'text:ntext',
+                    [
+                        'attribute' => 'text',
+                        'value' => function (Notification $notification) {
+                            if ($notification->type = Notification::TYPE_NEW_USER) {
+                                return Yii::t('app', $notification->text, [
+                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                ]);
+                            }
+                            return null;
+                        }
+                    ],
                     'created_at:date',
                 ],
             ]) ?>

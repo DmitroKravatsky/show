@@ -3,14 +3,18 @@
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use yiister\gentelella\widgets\grid\GridView;
-use common\models\bid\BidEntity;
-use common\models\userNotifications\UserNotificationsEntity;
-use yii\helpers\StringHelper;
-use yii\helpers\Html;
+use common\models\{
+    bid\BidEntity,
+    userNotifications\UserNotificationsEntity as Notification
+};
+use yii\helpers\{
+    Html,
+    Url,
+    StringHelper
+};
 use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
 use yii\grid\ActionColumn;
-use yii\helpers\Url;
 use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
@@ -20,7 +24,7 @@ use common\helpers\UrlHelper;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch UserNotificationsEntity */
+/* @var $notificationsSearch Notification */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -208,15 +212,20 @@ use common\helpers\UrlHelper;
                 'columns' => [
                     [
                         'attribute' => 'status',
-                        'filter' => UserNotificationsEntity::getStatusLabels(),
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return UserNotificationsEntity::getStatusValue($userNotifications->status);
+                        'filter' => Notification::getStatusLabels(),
+                        'value' => function (Notification $notification) {
+                            return Notification::getStatusValue($notification->status);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return StringHelper::truncate(Html::encode($userNotifications->text), 40);
+                        'value' => function (Notification $notification) {
+                            if ($notification->type = Notification::TYPE_NEW_USER) {
+                                return StringHelper::truncate(Yii::t('app', $notification->text, [
+                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                ]), 40);
+                            }
+                            return null;
                         }
                     ],
                     [

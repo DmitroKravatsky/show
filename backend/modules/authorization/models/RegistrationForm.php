@@ -62,6 +62,7 @@ class RegistrationForm extends Model
             'name'                  => Yii::t('app', 'First Name'),
             'last_name'             => Yii::t('app', 'Last Name'),
             'role'                  => Yii::t('app', 'Role'),
+            'phone_number'          => Yii::t('app', 'Phone Number'),
         ];
     }
 

@@ -149,6 +149,8 @@ class m180816_114157_i18n_init extends Migration
             [134, 'app', 'Your payment of {sum} {currency} to wallet {wallet} is accepted.'],
             [135, 'app', 'Your bid number {bid_id} is now in progress.'],
             [136, 'app', 'Your bid is rejected. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.'],
+            [137, 'app', 'Close'],
+            [138, 'app', 'Creation password'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -288,6 +290,8 @@ class m180816_114157_i18n_init extends Migration
             [134, 'ru', 'Ваш платёж {sum} {currency} в {wallet} принят.'],
             [135, 'ru', 'Ваша заявка {bid_id} в обработке.'],
             [136, 'ru', 'Ваша заявка не выполнена. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.'],
+            [137, 'ru', 'Закрыть'],
+            [138, 'ru', 'Создание пароля'],
         ]);
     }
 
