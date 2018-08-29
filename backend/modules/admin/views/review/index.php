@@ -9,7 +9,7 @@ use yii\helpers\Html;
 use yii\helpers\StringHelper;
 use yii\grid\ActionColumn;
 use yii\helpers\Url;
-use backend\models\BackendUser;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\review\ReviewSearch $searchModel */
@@ -28,6 +28,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <?php Pjax::begin() ?>
             <?= GridView::widget([
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [

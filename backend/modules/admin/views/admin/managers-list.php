@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
+use common\helpers\UrlHelper;
 
 /* @var $this yii\web\View */
 /* @var \common\models\user\UserSearch $searchModel */
@@ -24,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin(); ?>
             <?= GridView::widget([
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [

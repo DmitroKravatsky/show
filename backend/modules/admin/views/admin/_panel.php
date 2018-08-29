@@ -11,6 +11,7 @@ use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
 use yii\grid\ActionColumn;
 use yii\helpers\Url;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /* @var $bidSearch \common\models\bid\BidSearch */
@@ -34,6 +35,7 @@ use yii\helpers\Url;
             <?= GridView::widget([
                 'dataProvider' => $bidProvider,
                 'filterModel' => $bidSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
@@ -96,6 +98,7 @@ use yii\helpers\Url;
             <?= GridView::widget([
                 'dataProvider' => $reviewProvider,
                 'filterModel' => $reviewSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
@@ -148,12 +151,14 @@ use yii\helpers\Url;
                 <?= GridView::widget([
                     'dataProvider' => $userProvider,
                     'filterModel' => $userSearch,
+                    'filterUrl' => UrlHelper::getFilterUrl(),
                     'hover' => true,
                     'summary' => '',
                     'columns' => [
-                        'email:email',
+                        'email:email:E-mail',
                         [
                             'attribute' => 'created_at',
+                            'label' => Yii::t('app', 'Created At'),
                             'format' => 'date',
                             'filter' => DateRangePicker::widget([
                                 'model' => $userSearch,
@@ -197,6 +202,7 @@ use yii\helpers\Url;
             <?= GridView::widget([
                 'dataProvider' => $notificationsProvider,
                 'filterModel' => $notificationsSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
