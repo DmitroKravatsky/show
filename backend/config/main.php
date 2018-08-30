@@ -73,6 +73,8 @@ return [
                 'bid/view/<id:\d+>'                => 'admin/bid/view',
                 'bid-history/<action:[\w-]+>'      => 'admin/bid-history/<action>',
                 'notifications/index'              => 'admin/notifications/index',
+                'notifications/read-all'           => 'admin/notifications/read-all',
+                'notifications/delete-all'         => 'admin/notifications/delete-all',
                 'notification/view/<id:\d+>'       => 'admin/notifications/view',
                 'review/index'                     => 'admin/review/index',
                 'review/view/<id:\d+>'             => 'admin/review/view',
