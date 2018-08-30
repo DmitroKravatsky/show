@@ -1,16 +1,14 @@
 <?php
 
-use common\models\review\ReviewEntity;
 use yiister\gentelella\widgets\grid\GridView;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
-use yii\helpers\StringHelper;
 use yii\grid\ActionColumn;
 use yii\helpers\Url;
-use backend\models\BackendUser;
 use common\models\reserve\ReserveEntity;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\reserve\ReserveEntitySearch $searchModel */
@@ -29,6 +27,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <?php Pjax::begin() ?>
             <?= GridView::widget([
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [

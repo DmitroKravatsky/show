@@ -28,7 +28,7 @@ use yii\helpers\Url;
             [
                 'icon'   => 'user',
                 'header' => Yii::t('app', 'Managers'),
-                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['managers-list']), ['title' => Yii::t('app', 'Managers')]),
+                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['/managers-list']), ['title' => Yii::t('app', 'Managers')]),
                 'number' => $countManagers,
             ]
         ) ?>
@@ -40,7 +40,7 @@ use yii\helpers\Url;
         [
             'icon'   => 'comments-o',
             'header' => Yii::t('app', 'Reviews'),
-            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['']), ['title' => Yii::t('app', 'Reviews')]),
+            'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['review/index']), ['title' => Yii::t('app', 'Reviews')]),
             'number' => $countReviews,
         ]
     ) ?>

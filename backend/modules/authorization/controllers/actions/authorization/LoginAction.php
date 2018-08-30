@@ -36,11 +36,11 @@ class LoginAction extends Action
             if (Yii::$app->user->can('admin') || Yii::$app->user->can('manager')) {
                 return $this->controller->redirect(['/index']);
             } else {
-                Yii::$app->getSession()->setFlash('error', "You haven't permission to enter to protected area. Please check your credentials. ");
+                Yii::$app->getSession()->setFlash('error', "You haven't permission to enter to protected area. Please check your credentials.");
                 return $this->controller->redirect(Yii::$app->homeUrl);
             }
         } else {
-            $modelLogin->addError('password', \Yii::t('app', 'Incorrect email or password'));
+            $modelLogin->addError('password', \Yii::t('app', 'Incorrect email or password.'));
         }
 
         return $this->controller->render($this->view, [

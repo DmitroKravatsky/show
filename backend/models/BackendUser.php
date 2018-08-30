@@ -33,6 +33,15 @@ class BackendUser extends User
         ];
     }
 
+    public function attributeLabels()
+    {
+        return [
+            'password'         => Yii::t('app', 'Password'),
+            'currentPassword'  => Yii::t('app', 'Current Password'),
+            'repeatPassword'   => Yii::t('app', 'Repeat Password'),
+        ];
+    }
+
     /**
      * @param bool $insert
      * @return bool
@@ -113,8 +122,6 @@ class BackendUser extends User
             self::STATUS_BANNED     => Yii::t('app', 'Banned'),
             self::STATUS_UNVERIFIED => Yii::t('app', 'Unverified'),
             self::STATUS_VERIFIED   => Yii::t('app', 'Verified'),
-
         ];
     }
-
 }

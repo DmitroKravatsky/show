@@ -5,6 +5,7 @@ use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
+use common\helpers\UrlHelper;
 
 /* @var $this yii\web\View */
 /* @var \common\models\user\UserSearch $searchModel */
@@ -13,6 +14,18 @@ use yiister\gentelella\widgets\Panel;
 $this->title = Yii::t('app', 'Managers');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<div id="re-invite-success" class="alert alert-success alert-dismissible fade in" role="alert" style="display: none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <?= Yii::t('app', 'Message was successfully send.') ?>
+</div>
+
+<div id="re-invite-error" class="alert alert-error alert-dismissible fade in" role="alert" style="display: none">
+    <button type="button" class="close" data-dismiss="alert" aria-label="Close"><span aria-hidden="true">×</span>
+    </button>
+    <?= Yii::t('app', 'Something wrong, please try again later.') ?>
+</div>
 
 <?= Html::a(Yii::t('app', 'Invite new manager'), ['/invite-manager'], ['class' => 'btn btn-primary'])?>
 <div class="site-index">
@@ -24,6 +37,7 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin(); ?>
             <?= GridView::widget([
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
                 'columns' => [
                     [

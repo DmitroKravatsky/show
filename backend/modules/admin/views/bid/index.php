@@ -6,8 +6,8 @@ use yii\helpers\Html;
 use common\models\bid\BidEntity;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
-use backend\models\BackendUser;
 use common\models\user\User;
+use common\helpers\UrlHelper;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -25,6 +25,7 @@ $this->params['breadcrumbs'][] = $this->title;
 <?= GridView::widget([
     'dataProvider' => $dataProvider,
     'filterModel' => $searchModel,
+    'filterUrl' => UrlHelper::getFilterUrl(),
     'columns' => [
         [
             'attribute' => 'status',

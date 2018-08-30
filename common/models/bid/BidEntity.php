@@ -6,7 +6,7 @@ use common\models\{
     bid\repositories\RestBidRepository,
     bidHistory\BidHistory,
     user\User,
-    userNotifications\UserNotificationsEntity,
+    userNotifications\UserNotificationsEntity as Notification,
     userProfile\UserProfileEntity
 };
 use yii\{
@@ -310,24 +310,18 @@ class BidEntity extends ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->status == self::STATUS_DONE) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForDoneBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_DONE,
+                Notification::getMessageForDoneBid(),
+                $this->created_by,
+                Notification::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         } elseif ($this->status == self::STATUS_REJECTED) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForRejectedBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_REJECTED,
+                Notification::getMessageForRejectedBid(),
+                $this->created_by,
+                Notification::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -348,33 +342,28 @@ class BidEntity extends ActiveRecord
         $bidHistory->save(false);
 
         if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
-            (new UserNotificationsEntity())->addNotify(
-                UserNotificationsEntity::getMessageForClientPaid([
-                    'from_currency' => $this->from_currency,
-                    'from_sum'      => $this->from_sum,
-                    'to_wallet'     => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_PAID_CLIENT,
+                Notification::getMessageForClientPaid(),
+                $this->created_by,
+                Notification::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
             );
         }
         if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
-            (new UserNotificationsEntity())->addNotify(
-                UserNotificationsEntity::getMessageForInProgress([
-                    'bid_id' => $this->id,
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_IN_PROGRESS,
+                Notification::getMessageForInProgress(),
+                $this->created_by,
+                Notification::getCustomDataForInProgress($this->id)
             );
         }
 
         if ($insert && $this->created_by === Yii::$app->user->id) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForNewBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_NEW_BID,
+                Notification::getMessageForNewBid(),
+                $this->created_by,
+                Notification::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 

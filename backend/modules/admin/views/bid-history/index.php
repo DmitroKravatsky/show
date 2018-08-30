@@ -7,7 +7,7 @@ use common\models\bidHistory\BidHistory;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\daterange\DateRangePicker;
-use backend\models\BackendUser;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -27,6 +27,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
                 'columns' => [
                     [

@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models;
 
 use borales\extensions\phoneInput\PhoneInputValidator;
+use common\models\bid\BidEntity;
 use common\models\userProfile\UserProfileEntity;
 use common\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
@@ -36,7 +37,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_refresh_token
  * @property integer $created_at
  * @property integer $updated_at
- * @property integer $recovery_code
+ * @property string $recovery_code
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
@@ -196,7 +197,8 @@ class RestUserEntity extends User
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
-            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
+            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]],
+            [['recovery_code'], 'string', 'max' => 4],
         ];
     }
 
@@ -414,5 +416,14 @@ class RestUserEntity extends User
         } else if ($user = static::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
             return $user;
         }
+    }
+
+    /**
+     * Checks if user have at least one bid
+     * @return bool
+     */
+    public function hasBids():bool
+    {
+        return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
     }
 }

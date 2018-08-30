@@ -46,7 +46,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title">
-                            <a href="<?= Url::to('/admin') ?>" class="site_title">
+                            <a href="<?= Url::to(['admin/index']) ?>" class="site_title">
                                 <span><?= Yii::t('app', 'Dashboard') ?></span>
                             </a>
                         </div>
@@ -94,7 +94,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                                             'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
                                                         ],
                                                         [
-                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history']
+                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history/index']
                                                         ],
                                                     ],
                                                 ],
@@ -164,7 +164,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                     </a>
 
                                     <ul class="dropdown-menu dropdown-usermenu pull-right">
-                                        <li><?= Html::a(Yii::t('app', 'Profile'), Url::to('/admin/profile/index')) ?></li>
+                                        <li><?= Html::a(Yii::t('app', 'Profile'), Url::to(['profile/index'])) ?></li>
 
                                         <li>
                                             <a href="<?= Url::to('/admin/logout') ?>"><i class="fa fa-sign-out pull-right"></i><?= Yii::t('app', 'Log Out') ?></a>
@@ -193,18 +193,24 @@ $this->title = Yii::t('app', 'Dashboard');
                                             <?php foreach ($notifications as $notification): ?>
                                                 <li>
                                                     <a href="<?= Url::to(["/notification/view/{$notification->id}"])?>">
-                                                    <span class="image">
-                                                        <img src="http://placehold.it/128x128" alt="Profile Image" />
-                                                    </span>
-                                                    <span>
-                                                        <span class="name">
-                                                            <?= $notification->userProfile->getUserFullName() ?? null; ?>
+                                                        <span class="image">
+                                                            <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                         </span>
-                                                        <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
-                                                    </span>
-                                                    <span class="message">
-                                                        <?= $notification->text ?>
-                                                    </span>
+
+                                                        <span>
+                                                            <span class="name">
+                                                                <?= $notification->userProfile->getUserFullName() ?? null; ?>
+                                                            </span>
+                                                            <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
+                                                        </span>
+
+                                                        <span class="message">
+                                                            <?php if ($notification->type == UserNotificationsEntity::TYPE_NEW_USER): ?>
+                                                                <?= Yii::t('app', $notification->text, [
+                                                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                                                ]) ?>
+                                                            <?php endif; ?>
+                                                        </span>
                                                     </a>
                                                 </li>
                                             <?php endforeach;?>
@@ -247,6 +253,10 @@ $this->title = Yii::t('app', 'Dashboard');
                     <div class="clearfix"></div>
 
                     <?= Breadcrumbs::widget([
+                        'homeLink' => [
+                            'label' => Yii::t('yii', 'Home'),
+                            'url' => Url::to(['admin/index']),
+                        ],
                         'links' => $this->params['breadcrumbs'] ?? [],
                     ]) ?>
                     <?= Alert::widget() ?>
@@ -257,7 +267,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <!-- footer content -->
                 <footer>
                     <div class="text-center">
-                        &copy; <?= date('Y') ?> <?= Yii::t('app', 'Created by') ?> RatkusSoft
+                        &copy; <?= date('Y') ?> <?= Yii::t('app', 'Created By') ?> RatkusSoft
                     </div>
                     <div class="clearfix"></div>
                 </footer>

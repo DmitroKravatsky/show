@@ -3,11 +3,11 @@
 use yiister\gentelella\widgets\Panel;
 use yiister\gentelella\widgets\grid\GridView;
 use yii\widgets\Pjax;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotificationsEntity as Notification;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\StringHelper;
 use yii\helpers\Html;
-use backend\models\BackendUser;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -27,25 +27,31 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
                 'columns' => [
                     [
                         'attribute' => 'recipient_id',
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return $userNotifications->recipient->profile->name ?? null;
+                        'value' => function (Notification $notification) {
+                            return $notification->recipient->profile->name ?? null;
                         }
                     ],
                     [
                         'attribute' => 'status',
-                        'filter' => UserNotificationsEntity::getStatusLabels(),
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return UserNotificationsEntity::getStatusValue($userNotifications->status);
+                        'filter' => Notification::getStatusLabels(),
+                        'value' => function (Notification $notification) {
+                            return Notification::getStatusValue($notification->status);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return StringHelper::truncate(Html::encode($userNotifications->text), 180);
+                        'value' => function (Notification $notification) {
+                            if ($notification->type == Notification::TYPE_NEW_USER) {
+                                return Yii::t('app', $notification->text, [
+                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                ]);
+                            }
+                            return StringHelper::truncate(Html::encode($notification->text), 180);
                         }
                     ],
                     [
