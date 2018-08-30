@@ -111,7 +111,7 @@ class SendRecoveryCodeAction extends Action
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
 
-        $recoveryCode = rand(1000, 9999);
+        $recoveryCode = 0000;//rand(1000, 9999);
         /** @var $user RestUserEntity */
         $user = new RestUserEntity();
         $user = $user->getUserByPhoneNumber($phoneNumber);
@@ -119,10 +119,10 @@ class SendRecoveryCodeAction extends Action
         $user->recovery_code = $recoveryCode;
         $user->created_recovery_code = time();
 
-        Yii::$app->sendSms->run(
+       /* Yii::$app->sendSms->run(
             'Ваш код востановления пароля, ' .$user->recovery_code. ' он будет активен в течении часа',
             $phoneNumber
-        );
+        );*/
 
         if ($user->save(false)) {
             $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
