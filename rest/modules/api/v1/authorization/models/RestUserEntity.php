@@ -37,7 +37,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_refresh_token
  * @property integer $created_at
  * @property integer $updated_at
- * @property integer $recovery_code
+ * @property string $recovery_code
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
@@ -197,7 +197,8 @@ class RestUserEntity extends User
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
-            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
+            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]],
+            [['recovery_code'], 'string', 'max' => 4],
         ];
     }
 
