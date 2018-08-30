@@ -19,13 +19,17 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <div class="col-md-6">
             <?php Panel::begin([
                 'header' => Yii::t('app', 'Notification'),
-                'collapsable' => true,
-                'removable' => true,
             ]) ?>
             <?= DetailView::widget([
                 'model' => $notification,
                 'attributes' => [
                     'id',
+                    [
+                        'attribute' => 'type',
+                        'value' => function (Notification $notification) {
+                            return ;
+                        }
+                    ],
                     [
                         'attribute' => 'recipient_id',
                         'value' => function (Notification $notification) {

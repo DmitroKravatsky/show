@@ -20,7 +20,10 @@ return [
         ],
         'authorization' => [
             'class' => 'backend\modules\authorization\Module',
-        ]
+        ],
+        'gridview' =>  [
+            'class' => '\kartik\grid\Module',
+        ],
     ],
     'defaultRoute' => 'authorization/authorization/login',
     'components' => [

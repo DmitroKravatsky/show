@@ -1,11 +1,12 @@
 <?php
 use common\models\user\User;
-use yii\grid\GridView;
+use kartik\grid\GridView;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use common\helpers\UrlHelper;
+use common\helpers\Toolbar;
 
 /* @var $this yii\web\View */
 /* @var \common\models\user\UserSearch $searchModel */
@@ -27,7 +28,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?= Yii::t('app', 'Something wrong, please try again later.') ?>
 </div>
 
-<?= Html::a(Yii::t('app', 'Invite new manager'), ['/invite-manager'], ['class' => 'btn btn-primary'])?>
 <div class="site-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Managers'),
@@ -39,13 +39,36 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
+                'toolbar' =>  [
+                    ['content' =>
+                        Toolbar::createButton('/invite-manager', Yii::t('app', 'Invite new manager')) .
+                        Toolbar::deleteButton('') .
+                        Toolbar::resetButton()
+                    ],
+                    '{export}',
+                    '{toggleData}',
+                ],
+                'export' => [
+                    'fontAwesome' => true
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full Name'),
                         'value' => function (User $user) {
                             return ($user->profile->name . ' ' . $user->profile->last_name) ?? null;
-                        }
+                        },
                     ],
                     'email:email:E-mail',
                     'phone_number:raw:' . Yii::t('app', 'Phone Number'),

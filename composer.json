@@ -29,7 +29,8 @@
         "frostealth/yii2-aws-s3": "~2.0",
         "yiister/yii2-gentelella": "~1.0",
         "kartik-v/yii2-widget-fileinput": "@dev",
-        "kartik-v/yii2-date-range": "*"
+        "kartik-v/yii2-date-range": "*",
+        "kartik-v/yii2-grid": "@dev"
     },
     "require-dev": {
         "yiisoft/yii2-debug": "~2.0.0",

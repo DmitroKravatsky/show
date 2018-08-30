@@ -2,7 +2,7 @@
 
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
-use yiister\gentelella\widgets\grid\GridView;
+use kartik\grid\GridView;
 use common\models\{
     bid\BidEntity,
     userNotifications\UserNotificationsEntity as Notification
@@ -40,9 +40,21 @@ use common\helpers\UrlHelper;
                 'dataProvider' => $bidProvider,
                 'filterModel' => $bidSearch,
                 'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     'email:email',
                     [
                         'attribute' => 'from_sum',
@@ -103,9 +115,21 @@ use common\helpers\UrlHelper;
                 'dataProvider' => $reviewProvider,
                 'filterModel' => $reviewSearch,
                 'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     'created_by',
                     'text:ntext',
                     [
@@ -156,9 +180,21 @@ use common\helpers\UrlHelper;
                     'dataProvider' => $userProvider,
                     'filterModel' => $userSearch,
                     'filterUrl' => UrlHelper::getFilterUrl(),
+                    'panel' => [
+                        'type' => GridView::TYPE_DEFAULT,
+                        'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                    ],
+                    'toolbar' => '',
                     'hover' => true,
                     'summary' => '',
                     'columns' => [
+                        [
+                            'class' => 'kartik\grid\SerialColumn',
+                            'contentOptions' => ['class' => 'kartik-sheet-style'],
+                            'width' => '36px',
+                            'header' => '',
+                            'headerOptions' => ['class' => 'kartik-sheet-style']
+                        ],
                         'email:email:E-mail',
                         [
                             'attribute' => 'created_at',
@@ -207,9 +243,21 @@ use common\helpers\UrlHelper;
                 'dataProvider' => $notificationsProvider,
                 'filterModel' => $notificationsSearch,
                 'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'status',
                         'filter' => Notification::getStatusLabels(),
