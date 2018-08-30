@@ -1,13 +1,14 @@
 <?php
 
 use yiister\gentelella\widgets\Panel;
-use yiister\gentelella\widgets\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use common\models\bidHistory\BidHistory;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\daterange\DateRangePicker;
 use common\helpers\UrlHelper;
+use common\helpers\Toolbar;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -29,7 +30,29 @@ $this->params['breadcrumbs'][] = $this->title;
                 'filterModel' => $searchModel,
                 'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
+                'toolbar' =>  [
+                    ['content' =>
+                        Toolbar::deleteButton('') .
+                        Toolbar::resetButton()
+                    ],
+                    '{export}',
+                    '{toggleData}',
+                ],
+                'export' => [
+                    'fontAwesome' => true
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'created_by',
                         'label' => Yii::t('app', 'Created By'),

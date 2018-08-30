@@ -1,6 +1,6 @@
 <?php
 
-use yiister\gentelella\widgets\grid\GridView;
+use kartik\grid\GridView;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
@@ -9,6 +9,7 @@ use yii\grid\ActionColumn;
 use yii\helpers\Url;
 use common\models\reserve\ReserveEntity;
 use common\helpers\UrlHelper;
+use common\helpers\Toolbar;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\reserve\ReserveEntitySearch $searchModel */
@@ -29,7 +30,29 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'filterModel' => $searchModel,
                 'filterUrl' => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
+                'toolbar' =>  [
+                    ['content' =>
+                        Toolbar::deleteButton('') .
+                        Toolbar::resetButton()
+                    ],
+                    '{export}',
+                    '{toggleData}',
+                ],
+                'export' => [
+                    'fontAwesome' => true
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'payment_system',
                         'filter' => ReserveEntity::paymentSystemLabels(),
