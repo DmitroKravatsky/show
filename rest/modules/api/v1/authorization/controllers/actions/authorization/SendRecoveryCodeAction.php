@@ -108,13 +108,14 @@ class SendRecoveryCodeAction extends Action
     public function run()
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
-        $recoveryCode = 0000; //rand(1000, 9999);
+        $recoveryCode = '0000'; //rand(1000, 9999);
 
         $user = new RestUserEntity();
         if (($user = $user->findByPhoneNumber($phoneNumber)) === null) {
             throw new NotFoundHttpException(Yii::t('app', 'User not found'));
         }
 
+        $attributes = ['recovery_code', 'created_recovery_code'];
         try {
             $user->recovery_code = $recoveryCode;
             $user->created_recovery_code = time();
@@ -124,7 +125,7 @@ class SendRecoveryCodeAction extends Action
 //                $phoneNumber
 //            );
 
-            if ($user->save(false)) {
+            if ($user->save(false, $attributes)) {
                 $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
                 return $response->content = [
                     'status' => $response->statusCode,
