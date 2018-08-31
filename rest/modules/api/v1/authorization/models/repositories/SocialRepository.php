@@ -260,11 +260,12 @@ trait SocialRepository
             if (!$userProfile->save(false)) {
                 throw new ServerErrorHttpException($user->errors);
             }
-            $transaction->commit();
 
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
             $user->created_refresh_token = time();
             $user->save(false,['refresh_token', 'created_refresh_token']);
+            $transaction->commit();
+
             return $user;
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
