@@ -40,15 +40,14 @@ return [
             'on afterLogin' => function ($event) {
                 /** @var \common\models\user\User $user */
                 $user = $event->identity;
-                $user->status_online = true;
-                $user->save(false, ['status_online']);
+                $user->setStatusOnline(true);
+                $user->setLastLogin();
             },
             'on beforeLogout' => function ($event) {
                 /** @var \common\models\user\User $user */
                 $user = $event->identity;
-                $user->status_online = false;
-                $user->last_login = time();
-                $user->save(false, ['status_online', 'last_login']);
+                $user->setStatusOnline(false);
+                $user->setLastLogin();
             }
         ],
         'session' => [

@@ -251,6 +251,21 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+    public function setLastLogin()
+    {
+        $this->last_login = time();
+        $this->save(false, ['last_login']);
+    }
+
+    /**
+     * @param boolean $value
+     */
+    public function setStatusOnline($value)
+    {
+        $this->status_online = (boolean) $value;
+        $this->save(false, ['status_online']);
+    }
+
     /**
      * @param $roleName
      * @return array

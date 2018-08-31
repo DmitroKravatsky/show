@@ -37,7 +37,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hover' => true,
                 'toolbar' =>  [
                     ['content' =>
-                        Toolbar::deleteButton('') .
                         Toolbar::resetButton()
                     ],
                     '{export}',

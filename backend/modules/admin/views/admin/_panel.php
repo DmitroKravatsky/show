@@ -291,6 +291,7 @@ use common\helpers\UrlHelper;
                     ],
                     [
                         'attribute' => 'status',
+                        'label' => Yii::t('app', 'Status Online'),
                         'filter' => Notification::getStatusLabels(),
                         'value' => function (Notification $notification) {
                             return Notification::getStatusValue($notification->status);

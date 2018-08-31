@@ -44,7 +44,6 @@ $this->params['breadcrumbs'][] = $this->title;
                 'toolbar' =>  [
                     ['content' =>
                         Toolbar::createButton('/invite-manager', Yii::t('app', 'Invite new manager')) .
-                        Toolbar::deleteButton('') .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -76,6 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     'phone_number:raw:' . Yii::t('app', 'Phone Number'),
                     [
                         'attribute' => 'status_online',
+                        'label' => Yii::t('app', 'Status Online'),
                         'filter' => User::getStatusOnlineLabels(),
                         'value' => function (User $user) {
                             return User::getStatusOnlineValue($user->status_online);
