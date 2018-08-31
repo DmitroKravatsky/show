@@ -3,9 +3,7 @@
 namespace backend\modules\admin\controllers\actions\bid;
 
 use backend\modules\admin\controllers\BidController;
-use common\models\bid\BidEntity;
 use common\models\user\User;
-use PHPUnit\Framework\Exception;
 use yii\base\Action;
 use yii\web\UnprocessableEntityHttpException;
 use Yii;
@@ -32,6 +30,7 @@ class UpdateBidStatusAction extends Action
         $id = $bodyParams['id'];
         $newStatus = $bodyParams['status'];
 
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             $bid = $this->controller->findBid($id);
 
@@ -44,7 +43,7 @@ class UpdateBidStatusAction extends Action
                     throw new UnprocessableEntityHttpException();
                 }
                 $user = User::findOne(['id' => $bid->created_by]);
-                $transaction = \Yii::$app->db->beginTransaction();
+
                 if ($bid->save()) {
                     if ($user->email) {
                         \Yii::$app->sendMail->run(
@@ -58,17 +57,15 @@ class UpdateBidStatusAction extends Action
                     } elseif ($user->phone_number) {
                         \Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
                         $transaction->commit();
-                        return ['status' => 200, 'message' => 'Status was updated'];
+                        return ['status' => 200, 'message' => Yii::t('app', 'Status successfully updated.')];
 
                     }
                 }
             }
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollBack();
-            \Yii::$app->response->setStatusCode($e->getCode());
-            \Yii::error($e->getMessage());
+            Yii::$app->response->setStatusCode(500, Yii::t('app', 'Something wrong, please try again later.'));
+            Yii::error($e->getMessage());
         }
-
     }
 }
