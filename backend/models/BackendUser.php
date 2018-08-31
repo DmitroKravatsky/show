@@ -30,7 +30,7 @@ class BackendUser extends User
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
-            [['verification_code'], 'integer'],
+            [['verification_code', 'status_online', 'last_login',], 'integer'],
             ['phone_number', PhoneInputValidator::class],
             ['phone_number', 'checkPhoneNumberExistence'],
         ];

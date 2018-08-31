@@ -5,7 +5,9 @@ use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
     bid\BidEntity,
-    userNotifications\UserNotificationsEntity as Notification
+    userNotifications\UserNotificationsEntity as Notification,
+    userNotifications\UserNotificationsSearch,
+    user\User
 };
 use yii\helpers\{
     Html,
@@ -24,7 +26,7 @@ use common\helpers\UrlHelper;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch Notification */
+/* @var $notificationsSearch UserNotificationsSearch */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -32,7 +34,6 @@ use common\helpers\UrlHelper;
     <?php Panel::begin([
         'header' => Yii::t('app', 'Bids'),
         'collapsable' => true,
-        'expandable' => true,
         'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
@@ -58,8 +59,16 @@ use common\helpers\UrlHelper;
                     'email:email',
                     [
                         'attribute' => 'from_sum',
+                        'label' => Yii::t('app', 'Amount From Customer'),
                         'value' => function (BidEntity $bid) {
                             return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
+                        }
+                    ],
+                    [
+                        'attribute' => 'to_sum',
+                        'label' => Yii::t('app', 'Amount To Be Transferred'),
+                        'value' => function (BidEntity $bid) {
+                            return round($bid->to_sum, 2) . ' ' . $bid->to_currency;
                         }
                     ],
                     [
@@ -107,7 +116,6 @@ use common\helpers\UrlHelper;
     <?php Panel::begin([
         'header' => Yii::t('app', 'Reviews'),
         'collapsable' => true,
-        'expandable' => true,
         'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
@@ -196,6 +204,29 @@ use common\helpers\UrlHelper;
                             'headerOptions' => ['class' => 'kartik-sheet-style']
                         ],
                         'email:email:E-mail',
+                        [
+                            'attribute' => 'status_online',
+                            'filter' => User::getStatusOnlineLabels(),
+                            'value' => function (User $user) {
+                                return User::getStatusOnlineValue($user->status_online);
+                            }
+                        ],
+                        [
+                            'attribute' => 'last_login',
+                            'label' => Yii::t('app', 'Last Login'),
+                            'format' => 'date',
+                            'filter' => DateRangePicker::widget([
+                                'model' => $userSearch,
+                                'attribute' => 'lastLoginRange',
+                                'convertFormat' => true,
+                                'pluginOptions' => [
+                                    'timePicker' => true,
+                                    'locale' => [
+                                        'format' => 'Y-m-d',
+                                    ]
+                                ]
+                            ]),
+                        ],
                         [
                             'attribute' => 'created_at',
                             'label' => Yii::t('app', 'Created At'),

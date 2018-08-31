@@ -36,7 +36,20 @@ return [
             'identityClass' => 'common\models\user\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-            'loginUrl' => 'authorization/authorization/login',
+            'loginUrl' => '/admin',
+            'on afterLogin' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->status_online = true;
+                $user->save(false, ['status_online']);
+            },
+            'on beforeLogout' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->status_online = false;
+                $user->last_login = time();
+                $user->save(false, ['status_online', 'last_login']);
+            }
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
