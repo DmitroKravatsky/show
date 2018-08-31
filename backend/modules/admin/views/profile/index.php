@@ -16,6 +16,11 @@ $filePreviewClass = 'file-preview-image kv-preview-data';
 $this->title = Yii::t('app', 'User Profile');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+<style>
+    .collapse-link {
+        margin-left: 46px;
+    }
+</style>
 
 <div class="profile-index">
     <div class="title">
@@ -25,7 +30,6 @@ $this->params['breadcrumbs'][] = $this->title;
     <?php Panel::begin([
         'header' => Yii::t('app', 'User Report'),
         'collapsable' => true,
-        'removable' => true,
     ]) ?>
         <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
             <?php $form = ActiveForm::begin([
