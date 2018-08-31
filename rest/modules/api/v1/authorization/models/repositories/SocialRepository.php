@@ -181,7 +181,6 @@ trait SocialRepository
                         ->where(['source_id' => $userData->id])
                         ->orWhere(['email' => $userData->email])
                         ->one();
-//                    var_dump($existedUser); exit;
                     if ($existedUser) {
                         return $this->gmailLogin($existedUser);
                     }
@@ -227,7 +226,6 @@ trait SocialRepository
                 'terms_condition'  => $params['terms_condition'],
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
                 'confirm_password' => $pass,
-                'created_refresh_token' => time(),
             ];
 
             if (isset($userData->email)) {
@@ -265,7 +263,8 @@ trait SocialRepository
             $transaction->commit();
 
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
-            $user->save(false,['refresh_token']);
+            $user->created_refresh_token = time();
+            $user->save(false,['refresh_token', 'created_refresh_token']);
             return $user;
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
