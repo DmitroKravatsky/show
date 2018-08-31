@@ -96,6 +96,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     'from_sum:raw:' . Yii::t('app', 'Amount From Customer'),
+                    'to_sum:raw:' . Yii::t('app', 'Amount To Be Transferred'),
                     'from_wallet:raw:' . Yii::t('app', 'Where Did The Money Come From'),
                     'to_wallet:raw:' . Yii::t('app', 'Need To Transfer Money Here'),
                     [

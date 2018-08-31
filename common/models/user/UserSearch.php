@@ -12,6 +12,7 @@ use yii\data\ActiveDataProvider;
 class UserSearch extends User
 {
     public $dateRange;
+    public $lastLoginRange;
     public $role;
 
     /**
@@ -26,8 +27,8 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'created_at',], 'integer'],
-            [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status'], 'safe'],
+            [['id', 'created_at', 'status_online',], 'integer'],
+            [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status', 'lastLoginRange',], 'safe'],
         ];
     }
 
@@ -55,7 +56,7 @@ class UserSearch extends User
             $query->andWhere(['auth_assignment.item_name' => $this->role]);
         }
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
@@ -71,6 +72,7 @@ class UserSearch extends User
             'id' => $this->id,
             'invite_code_status' => $this->invite_code_status,
             'status' => $this->status,
+            'status_online' => $this->status_online,
             'created_at' => $this->created_at,
         ]);
 
@@ -80,7 +82,11 @@ class UserSearch extends User
 
         $query->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['or',['like', 'user_profile.name', $this->full_name],['like', 'user_profile.last_name', $this->full_name]]);
+            ->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->full_name],
+                ['like', 'user_profile.last_name', $this->full_name]
+            ]);
 
         if (!empty($this->time_range) && strpos($this->time_range, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->time_range);
@@ -90,6 +96,11 @@ class UserSearch extends User
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
             $query->andFilterWhere(['between', 'user.created_at', strtotime($fromDate), strtotime($toDate)]);
+        }
+
+        if (!empty($this->lastLoginRange) && strpos($this->lastLoginRange, '-') !== false) {
+            list($fromDate, $toDate) = explode(' - ', $this->lastLoginRange);
+            $query->andFilterWhere(['between', 'user.last_login', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;
