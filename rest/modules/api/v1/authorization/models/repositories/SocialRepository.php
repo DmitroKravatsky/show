@@ -318,7 +318,6 @@ trait SocialRepository
                     ->where(['source_id' => $userData->id])
                     ->orWhere(['email' => $userData->email])
                     ->one();
-//                    var_dump($existedUser); exit;
                     if ($existedUser) {
                         return $this->fbLogin($existedUser);
                     }
@@ -376,7 +375,6 @@ trait SocialRepository
     public function fbRegister($userData, array $params): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
-//        var_dump($params); exit;
         try {
             $data = [
                 'source'           => self::FB,
@@ -399,14 +397,14 @@ trait SocialRepository
                 $this->throwModelException($user->errors);
             }
 
-            /*$viewPath = '@common/views/mail/sendPassword-html.php';
+            $viewPath = '@common/views/mail/sendPassword-html.php';
             if (!empty($userData->email)) {
                 \Yii::$app->sendMail->run(
                     $viewPath,
                     ['email' => $user->email, 'password' => $pass],
                     \Yii::$app->params['supportEmail'], $user->email, 'Your password'
                 );
-            }*/
+            }
             $userProfile = new UserProfileEntity();
             $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
             $userProfile->setAttributes([
