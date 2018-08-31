@@ -3,11 +3,9 @@
 namespace backend\modules\admin\controllers\actions\profile;
 
 use backend\models\BackendUser;
-use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\Action;
 use Yii;
-use yii\helpers\VarDumper;
 use yii\web\ErrorHandler;
 use yii\widgets\ActiveForm;
 use yii\web\Response;
@@ -42,7 +40,7 @@ class UpdateAction extends Action
                     $token = Yii::$app->security->generateRandomString();
                     $user->verification_token = $token;
                     $user->new_email = $newEmail;
-                    $attributes = ['verification_token', 'new_email'];
+                    $attributes = ['verification_token', 'new_email',];
                     $user->validate($attributes);
                     $user->save(false, $attributes);
                     $profile->save(false);
@@ -55,7 +53,7 @@ class UpdateAction extends Action
                     return $this->controller->redirect(['index']);
                 }
 
-                if ($profile->save(true, $profileAttributes)) {
+                if ($profile->save(true, $profileAttributes) && $user->save(true, ['phone_number'])) {
                     $transaction->commit();
                     Yii::$app->session->setFlash('success', Yii::t('app', 'Profile successfully updated.'));
                     return $this->controller->redirect(['index']);

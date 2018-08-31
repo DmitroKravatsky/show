@@ -20,6 +20,11 @@ use yii\helpers\Html;
 
     <?= $form->field($user, 'email', ['enableAjaxValidation' => true,])->textInput(['maxlength' => true,])->label('E-mail') ?>
 
+    <?= $form->field($user, 'phone_number', ['enableAjaxValidation' => true, 'enableClientValidation' => false])->textInput([
+        'maxlength' => true,
+        'placeholder' => +79788765123
+    ]) ?>
+
     <?= Html::submitButton(Yii::t('app', 'Update'), ['class' => 'btn btn-success']) ?>
 <?php ActiveForm::end() ?>
 
