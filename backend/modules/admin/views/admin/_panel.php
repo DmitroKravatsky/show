@@ -206,6 +206,7 @@ use common\helpers\UrlHelper;
                         'email:email:E-mail',
                         [
                             'attribute' => 'status_online',
+                            'label' => Yii::t('app', 'Status Online'),
                             'filter' => User::getStatusOnlineLabels(),
                             'value' => function (User $user) {
                                 return User::getStatusOnlineValue($user->status_online);
@@ -291,7 +292,6 @@ use common\helpers\UrlHelper;
                     ],
                     [
                         'attribute' => 'status',
-                        'label' => Yii::t('app', 'Status Online'),
                         'filter' => Notification::getStatusLabels(),
                         'value' => function (Notification $notification) {
                             return Notification::getStatusValue($notification->status);
