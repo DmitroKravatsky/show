@@ -50,6 +50,7 @@ class RestUserEntity extends User
     const ROLE_USER  = 'user';
     const ROLE_GUEST = 'guest';
 
+    const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
@@ -115,6 +116,10 @@ class RestUserEntity extends User
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
+        $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'refresh_token', 'created_refresh_token', 'verification_code'
+        ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
             'email', 'password', 'confirm_password', 'phone_number','recovery_code'
@@ -154,11 +159,11 @@ class RestUserEntity extends User
             [
                 'terms_condition',
                 'required',
-                'on'            => self::SCENARIO_REGISTER,
+                'on'            => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
                 'requiredValue' => 1,
                 'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
             ],
-            ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER,]],
+            ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],],
             [
                 'current_password',
                 'validateCurrentPassword',
@@ -178,7 +183,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER,]
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
@@ -190,7 +195,12 @@ class RestUserEntity extends User
                 'confirm_password',
                 'compare',
                 'compareAttribute' => 'password',
-                'on'               => [self::SCENARIO_REGISTER, self::SCENARIO_RECOVERY_PWD]
+                'on'               =>
+                    [
+                        self::SCENARIO_REGISTER,
+                        self::SCENARIO_SOCIAL_REGISTER,
+                        self::SCENARIO_RECOVERY_PWD
+                    ]
             ],
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
@@ -213,6 +223,7 @@ class RestUserEntity extends User
 
         if (
             $this->scenario === self::SCENARIO_REGISTER
+            || $this->scenario === self::SCENARIO_SOCIAL_REGISTER
             || $this->scenario === self::SCENARIO_RECOVERY_PWD
             || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
         ) {
@@ -220,6 +231,10 @@ class RestUserEntity extends User
             $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
             $this->status = self::STATUS_UNVERIFIED;
             $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+        }
+
+        if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
+            $this->status = self::STATUS_VERIFIED;
         }
         return true;
     }
@@ -247,7 +262,7 @@ class RestUserEntity extends User
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->scenario == self::SCENARIO_REGISTER && $insert) {
+        if ($this->scenario == (self::SCENARIO_REGISTER || self::SCENARIO_SOCIAL_REGISTER) && $insert) {
             $this->role = self::ROLE_USER;
             $userRole = \Yii::$app->authManager->getRole($this->role);
             \Yii::$app->authManager->assign($userRole, $this->getId());

@@ -176,9 +176,12 @@ trait SocialRepository
                 if (isset($userData->error)) {
                     throw new ServerErrorHttpException;
                 }
-
                 if (isset($userData->id)) {
-                    $existedUser = RestUserEntity::findOne(['source_id' => $userData->id]);
+                    $existedUser = RestUserEntity::find()
+                        ->where(['source_id' => $userData->id])
+                        ->orWhere(['email' => $userData->email])
+                        ->one();
+//                    var_dump($existedUser); exit;
                     if ($existedUser) {
                         return $this->gmailLogin($existedUser);
                     }
@@ -215,49 +218,60 @@ trait SocialRepository
      */
     public function gmailRegister($userData, array $params): RestUserEntity
     {
-        $data = [
-            'source'           => self::GMAIL,
-            'source_id'        => $userData->id,
-            'terms_condition'  => $params['terms_condition'],
-            'password'         => $pass = \Yii::$app->security->generateRandomString(10),
-            'confirm_password' => $pass,
-            'refresh_token'    => \Yii::$app->security->generateRandomString(100),
-            'created_refresh_token' => time(),
-        ];
+        $transaction = \Yii::$app->db->beginTransaction();
 
-        if (isset($userData->email)) {
-            $data['email'] = $userData->email;
-        } elseif (isset($params['phone_number'])) {
-            $data['phone_number'] = $params['phone_number'];
-        }
-        $user = new RestUserEntity();
-        $user->scenario = self::SCENARIO_REGISTER;
-        $user->setAttributes($data);
+        try {
+            $data = [
+                'source'           => self::GMAIL,
+                'source_id'        => $userData->id,
+                'terms_condition'  => $params['terms_condition'],
+                'password'         => $pass = \Yii::$app->security->generateRandomString(10),
+                'confirm_password' => $pass,
+                'created_refresh_token' => time(),
+            ];
 
-        if (!$user->save(false)) {
-            throw new ServerErrorHttpException($user->errors);
-        }
-        $viewPath = '@common/views/mail/sendPassword-html.php';
-        if (!empty($userData->email)) {
-            \Yii::$app->sendMail->run(
-                $viewPath,
-                ['email' => $user->email, 'password' => $pass],
-                \Yii::$app->params['supportEmail'], $user->email, 'Your password'
-            );
-        }
-        $userProfile = new UserProfileEntity();
-        $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
-        $userProfile->setAttributes([
-            'name'      => $userData->name,
-            'last_name' => $userData->family_name,
-            'user_id'   => $user->id,
-            'avatar'    => $userData->picture
-        ]);
+            if (isset($userData->email)) {
+                $data['email'] = $userData->email;
+            } elseif (isset($params['phone_number'])) {
+                $data['phone_number'] = $params['phone_number'];
+            }
+            $user = new RestUserEntity();
+            $user->scenario = self::SCENARIO_SOCIAL_REGISTER;
+            $user->setAttributes($data);
 
-        if (!$userProfile->save(false)) {
-            throw new ServerErrorHttpException($user->errors);
+            if (!$user->save(false)) {
+                throw new ServerErrorHttpException($user->errors);
+            }
+            $viewPath = '@common/views/mail/sendPassword-html.php';
+            if (!empty($userData->email)) {
+                \Yii::$app->sendMail->run(
+                    $viewPath,
+                    ['email' => $user->email, 'password' => $pass],
+                    \Yii::$app->params['supportEmail'], $user->email, 'Your password'
+                );
+            }
+            $userProfile = new UserProfileEntity();
+            $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
+            $userProfile->setAttributes([
+                'name'      => $userData->name,
+                'last_name' => $userData->family_name,
+                'user_id'   => $user->id,
+                'avatar'    => $userData->picture
+            ]);
+
+            if (!$userProfile->save(false)) {
+                throw new ServerErrorHttpException($user->errors);
+            }
+            $transaction->commit();
+
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->save(false,['refresh_token']);
+            return $user;
+        } catch (ServerErrorHttpException $e) {
+            $transaction->rollBack();
+            throw new ServerErrorHttpException($e->getMessage());
         }
-        return $user;
+
     }
 
     /**
@@ -274,7 +288,7 @@ trait SocialRepository
     {
         if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
             $user->created_refresh_token = time();
-            $user->refresh_token = \Yii::$app->security->generateRandomString(100);
+            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
 
             if (!$user->save(false)) {
                 throw new ServerErrorHttpException('Server internal error');
