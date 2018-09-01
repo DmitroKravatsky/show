@@ -6,6 +6,7 @@ use common\models\user\User;
 use yii\base\Action;
 use Yii;
 use yii\web\ErrorHandler;
+use yii\web\Response;
 
 /**
  * Class ReInviteManagerAction
@@ -27,6 +28,7 @@ class ReInviteManagerAction extends Action
         $userModel->invite_code = \Yii::$app->security->generateRandomString(32);
         $userModel->invite_code_status = "ACTIVE";
 
+        Yii::$app->response->format = Response::FORMAT_JSON;
         try {
             if (\Yii::$app->request->isAjax) {
                 if ($userModel->save(false)) {

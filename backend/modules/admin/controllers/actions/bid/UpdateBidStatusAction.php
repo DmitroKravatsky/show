@@ -7,6 +7,7 @@ use common\models\user\User;
 use yii\base\Action;
 use yii\web\UnprocessableEntityHttpException;
 use Yii;
+use yii\web\Response;
 
 /**
  * Class UpdateBidStatusAction
@@ -20,16 +21,16 @@ class UpdateBidStatusAction extends Action
     /**
      * Updates a status of the bid
      * @return array
-     * @throws UnprocessableEntityHttpException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function run()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
         $bodyParams = \Yii::$app->request->getBodyParams();
         $id = $bodyParams['id'];
         $newStatus = $bodyParams['status'];
 
+        Yii::$app->response->format = Response::FORMAT_JSON;
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $bid = $this->controller->findBid($id);
