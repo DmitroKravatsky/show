@@ -52,7 +52,8 @@ class ReInviteManagerAction extends Action
             }
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
-            Yii::$app->response->setStatusCode(500, Yii::t('app', 'Something wrong, please try again later.'));
+            Yii::$app->response->setStatusCode(500);
+            return  ['message' => Yii::t('app', 'Something wrong, please try again later.')];
         }
         return $this->controller->redirect('managers-list');
 

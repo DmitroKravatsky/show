@@ -65,8 +65,9 @@ class UpdateBidStatusAction extends Action
             }
         } catch (\Exception $e) {
             $transaction->rollBack();
-            Yii::$app->response->setStatusCode(500, Yii::t('app', 'Something wrong, please try again later.'));
             Yii::error($e->getMessage());
+            Yii::$app->response->setStatusCode(500);
+            return  ['message' => Yii::t('app', 'Bid')];
         }
     }
 }
