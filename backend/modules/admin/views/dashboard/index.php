@@ -35,7 +35,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                     'action' => 'update-manager-password',
                     'id' => 'password-reset-form'
                 ]); ?>
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding: 0px">
                         <div class="col-xs-12">
                             <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'password', [
@@ -50,7 +50,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
                                     ->passwordInput(['placeholder' => Yii::t('app', 'Repeat Password')])
-                                    ->label(Yii::t('app', 'Confirm Password')) ?>
+                                    ->label(Yii::t('app', 'Repeat Password')) ?>
                             </div>
 
                             <div class="result"></div>
@@ -66,7 +66,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                 <?php ActiveForm::end(); ?>
 
                 <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('yii', 'Close') ?></button>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
                 </div>
             </div>
         </div>

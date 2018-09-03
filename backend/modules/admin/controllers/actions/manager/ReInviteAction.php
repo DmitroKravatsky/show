@@ -28,6 +28,7 @@ class ReInviteAction extends Action
         $userModel->password = \Yii::$app->security->generatePasswordHash($newPassword);
         $userModel->invite_code = \Yii::$app->security->generateRandomString(32);
         $userModel->invite_code_status = "ACTIVE";
+        $userModel->accept_invite = false;
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         try {

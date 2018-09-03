@@ -72,7 +72,7 @@ return [
             'showScriptName' => false,
             'rules' => [
                 'index'                            => 'admin/dashboard/index',
-                'update-manager-password'          => 'admin/admin/update-manager-password',
+                'update-manager-password'          => 'admin/dashboard/update-manager-password',
                 'manager/<action:[\w-]+>'          => 'admin/manager/<action>',
                 'manager/<action:[\w-]+>/<id:\d+>' => 'admin/manager/<action>',
                 'manager/view/<id:\d+>'            => 'admin/manager/view',
