@@ -153,6 +153,9 @@ class m180816_114157_i18n_init extends Migration
             [138, 'app', 'Creation password'],
             [139, 'app', 'Status Online'],
             [140, 'app', 'Last Login'],
+            [141, 'app', 'Manager successfully deleted.'],
+            [142, 'app', 'Manager successfully created.'],
+            [143, 'app', 'Invite Manager.'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -296,6 +299,9 @@ class m180816_114157_i18n_init extends Migration
             [138, 'ru', 'Создание пароля'],
             [139, 'ru', 'Статус Онлайн'],
             [140, 'ru', 'Последний Вход'],
+            [141, 'ru', 'Менеджер успешно удалён.'],
+            [142, 'ru', 'Менеджер успешно создан.'],
+            [143, 'ru', 'Пригласить Менеджера'],
         ]);
     }
 

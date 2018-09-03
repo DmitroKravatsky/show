@@ -18,15 +18,19 @@ $this->title = Yii::t('app', 'Managers');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<style>
+    .collapse-link {
+        margin-left: 46px;
+    }
+</style>
 
-<div class="site-index">
+<div class="manager-index">
     <div id="re-invite-success"></div>
     <div id="re-invite-error"></div>
 
     <?php Panel::begin([
         'header' => Yii::t('app', 'Managers'),
         'collapsable' => true,
-        'removable' => true,
     ]) ?>
         <?php Pjax::begin(); ?>
             <?= GridView::widget([
@@ -35,7 +39,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar' =>  [
                     ['content' =>
-                        Toolbar::createButton('/invite-manager', Yii::t('app', 'Invite new manager')) .
+                        Toolbar::createButton(Url::to('/manager/invite'), Yii::t('app', 'Invite new manager')) .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -56,6 +60,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
+                    'id:raw:#',
                     [
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full Name'),
@@ -98,26 +103,35 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]),
                     ],
                     [
+                        'attribute' => 'created_at',
+                        'label' => Yii::t('app', 'Created At'),
+                        'format' => 'date',
+                        'filter' => DateRangePicker::widget([
+                            'model' => $searchModel,
+                            'attribute' => 'dateRange',
+                            'convertFormat' => true,
+                            'pluginOptions' => [
+                                'timePicker' => true,
+                                'locale' => [
+                                    'format' => 'Y-m-d',
+                                ]
+                            ]
+                        ]),
+                    ],
+                    [
                         'class' => \yii\grid\ActionColumn::class,
                         'template' => '{delete} {reInvite}',
                         'buttons' => [
                             'delete' => function($url, User $model) {
-                                $customUrl = Url::to([
-                                    '/admin/admin/delete-manager',
-                                    'user_id' => $model->id
-                                ]);
+                                $customUrl = Url::to(['/manager/delete', 'userId' => $model->id]);
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
                                     'title' => Yii::t('app', 'Delete'),
                                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                                     ]);
                             },
                             'reInvite' => function($url, User $model) {
-                                $reInviteUrl = Url::to([
-                                    '/admin/admin/re-invite',
-                                    'user_id' => $model->id,
-                                ]);
                                 return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
-                                    'reInviteUrl' => $reInviteUrl,
+                                    'reInviteUrl' => Url::to(['/manager/re-invite', 'userId' => $model->id,]),
                                     'title' => Yii::t('app', 'Re-invite'),
                                     'class' => 'ajaxReInviteMessage',
                                     'method' => 'post'

@@ -301,7 +301,11 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getCountManagers(): int
     {
-        return count(static::findByRole(self::ROLE_MANAGER));
+        return static::find()
+            ->select('id')
+            ->innerJoin('{{%auth_assignment}}', 'id = user_id')
+            ->where(['item_name' => self::ROLE_MANAGER])
+            ->count();
     }
 
     /**

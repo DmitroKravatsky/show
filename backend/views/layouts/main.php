@@ -46,7 +46,7 @@ $this->title = Yii::t('app', 'Dashboard');
                 <div class="col-md-3 left_col">
                     <div class="left_col scroll-view">
                         <div class="navbar nav_title">
-                            <a href="<?= Url::to(['admin/index']) ?>" class="site_title">
+                            <a href="<?= Url::to(['index']) ?>" class="site_title">
                                 <span><?= Yii::t('app', 'Dashboard') ?></span>
                             </a>
                         </div>
@@ -84,7 +84,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'url' => '#',
                                             'items' => [
                                                 [
-                                                    'label' => Yii::t('app', 'Managers'), 'url' => ['/managers-list'],
+                                                    'label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/manager/index')],
                                                     'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
                                                 ],
                                                 [

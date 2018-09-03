@@ -69,7 +69,7 @@ class UserSearch extends User
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            static::tableName() . '.id' => $this->id,
             'invite_code_status' => $this->invite_code_status,
             'status' => $this->status,
             'status_online' => $this->status_online,

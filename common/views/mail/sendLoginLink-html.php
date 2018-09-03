@@ -8,7 +8,7 @@ use yii\helpers\Html;
 /* @var string $email */
 ?>
 <div class="invite-link">
-    <p>Уважаемый клиент <?= Html::encode($email) ?>,</p>
+    <p>Уважаемый оператор <?= Html::encode($email) ?>,</p>
 
     <p>Чтобы закончить процедуру регистрации Вам необходимо перейти по ссылке <?= Html::a(Html::encode($loginLink), $loginLink) ?></p>
 
