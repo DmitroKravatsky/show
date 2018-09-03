@@ -261,7 +261,7 @@ $this->title = Yii::t('app', 'Dashboard');
                     <?= Breadcrumbs::widget([
                         'homeLink' => [
                             'label' => Yii::t('yii', 'Home'),
-                            'url' => Url::to(['admin/index']),
+                            'url' => Url::to(['/index']),
                         ],
                         'links' => $this->params['breadcrumbs'] ?? [],
                     ]) ?>
