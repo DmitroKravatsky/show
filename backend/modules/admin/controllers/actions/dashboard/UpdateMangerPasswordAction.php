@@ -30,6 +30,7 @@ class UpdateMangerPasswordAction extends Action
                 $user = User::findByEmail(\Yii::$app->user->identity->email);
                 $user->password = \Yii::$app->security->generatePasswordHash($modelRegistration->password);
                 $user->status = User::STATUS_VERIFIED;
+                $user->accept_invite = true;
                 if ($user->save(false)) {
                     Yii::$app->user->logout();
                     Yii::$app->session->setFlash('success', Yii::t('app', 'Password updated successfully.'));

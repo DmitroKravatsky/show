@@ -87,6 +87,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         }
                     ],
                     [
+                        'attribute' => 'accept_invite',
+                        'label' => Yii::t('app', 'Accept Invite'),
+                        'filter' => User::getAcceptInviteLabels(),
+                        'value' => function (User $user) {
+                            return User::getAcceptInviteStatusValue($user->accept_invite);
+                        }
+                    ],
+                    [
                         'attribute' => 'last_login',
                         'label' => Yii::t('app', 'Last Login'),
                         'format' => 'date',
@@ -120,8 +128,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{delete} {reInvite}',
+                        'template' => '{view} {delete} {reInvite}',
                         'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/manager/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
                             'delete' => function($url, User $model) {
                                 $customUrl = Url::to(['/manager/delete', 'userId' => $model->id]);
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [

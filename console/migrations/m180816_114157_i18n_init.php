@@ -156,6 +156,7 @@ class m180816_114157_i18n_init extends Migration
             [141, 'app', 'Manager successfully deleted.'],
             [142, 'app', 'Manager successfully created.'],
             [143, 'app', 'Invite Manager.'],
+            [144, 'app', 'Accept Invite'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -302,6 +303,7 @@ class m180816_114157_i18n_init extends Migration
             [141, 'ru', 'Менеджер успешно удалён.'],
             [142, 'ru', 'Менеджер успешно создан.'],
             [143, 'ru', 'Пригласить Менеджера'],
+            [144, 'ru', 'Инвайт Принят'],
         ]);
     }
 
