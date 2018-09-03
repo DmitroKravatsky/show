@@ -8,7 +8,9 @@ use yii\filters\AccessControl;
 use backend\modules\admin\controllers\actions\notifications\{
     IndexAction,
     ViewAction,
-    DeleteAction
+    DeleteAction,
+    ReadAllAction,
+    DeleteAllAction
 };
 use Yii;
 use yii\web\NotFoundHttpException;
@@ -26,7 +28,7 @@ class NotificationsController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'delete',],
+                        'actions' => ['index', 'view', 'delete', 'read-all', 'delete-all',],
                         'roles'   => ['admin', 'manager',]
                     ],
                 ],
@@ -48,6 +50,12 @@ class NotificationsController extends Controller
             ],
             'delete' => [
                 'class' => DeleteAction::class
+            ],
+            'read-all' => [
+                'class' => ReadAllAction::class
+            ],
+            'delete-all' => [
+                'class' => DeleteAllAction::class
             ],
         ];
     }

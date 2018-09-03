@@ -35,7 +35,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar' =>  [
                     ['content' =>
-                        Toolbar::deleteButton('') .
                         Toolbar::resetButton()
                     ],
                     '{export}',

@@ -13,13 +13,22 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<style>
+    .collapse-link {
+        margin-left: 46px;
+    }
+</style>
+
 <div class="bid-entity-view">
     <div class="row">
         <label class="control-label col-md-3 col-sm-3 col-xs-12">
         </label>
         <div class="col-md-6">
+            <div id="bid-status-error"></div>
+            <div id="bid-status-success"></div>
+
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Bids'),
+                'header' => Yii::t('app', 'Bid'),
                 'collapsable' => true,
             ]) ?>
                 <?= DetailView::widget([

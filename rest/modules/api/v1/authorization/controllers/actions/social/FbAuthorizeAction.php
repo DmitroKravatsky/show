@@ -118,11 +118,15 @@ class FbAuthorizeAction extends Action
         /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
         $user = $userModel->fbAuthorization(\Yii::$app->request->bodyParams);
-
-        return $this->controller->setResponse(200, 'You have been successfully authorized', [
-            'user_id'       => $user->id,
-            'access_token'  => $user->getJWT(),
-            'refresh_token' => $user->refresh_token
-        ]);
+        $response = \Yii::$app->getResponse()->setStatusCode(200);
+        return [
+            'status'  => $response->statusCode,
+            'message' => \Yii::t('app', 'Authorization was successful'),
+            'data'    => [
+                'user_id' => $user->id,
+                'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                'refresh_token' => $user->refresh_token
+            ]
+        ];
     }
 }

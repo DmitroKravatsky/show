@@ -31,7 +31,8 @@ $this->params['breadcrumbs'][] = $this->title;
                 'hover' => true,
                 'toolbar' =>  [
                     ['content' =>
-                        Toolbar::deleteButton('') .
+                        Toolbar::deleteButton('/notifications/delete-all', Yii::t('app', 'Delete all')) .
+                        Toolbar::readAllButton('/notifications/read-all') .
                         Toolbar::resetButton()
                     ],
                     '{export}',

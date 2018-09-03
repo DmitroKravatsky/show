@@ -50,8 +50,8 @@ class RestUserEntity extends User
     const ROLE_USER  = 'user';
     const ROLE_GUEST = 'guest';
 
-    const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_REGISTER        = 'register';
+    const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
     const SCENARIO_LOGIN           = 'login';
@@ -116,8 +116,9 @@ class RestUserEntity extends User
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
+
         $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
@@ -183,7 +184,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
+                'on' => [self::SCENARIO_REGISTER]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
@@ -201,6 +202,7 @@ class RestUserEntity extends User
                         self::SCENARIO_SOCIAL_REGISTER,
                         self::SCENARIO_RECOVERY_PWD
                     ]
+
             ],
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
@@ -221,11 +223,16 @@ class RestUserEntity extends User
     {
         parent::beforeSave($insert);
 
-        $this->defaultBeforeSavePropertiesProcess();
+        $this->defaultBeforeSavePropertiesPreProcess();
 
         if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
             $this->status = self::STATUS_VERIFIED;
         }
+
+        if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
+            $this->status = self::STATUS_VERIFIED;
+        }
+
         return true;
     }
 

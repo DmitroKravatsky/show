@@ -151,6 +151,8 @@ class m180816_114157_i18n_init extends Migration
             [136, 'app', 'Your bid is rejected. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.'],
             [137, 'app', 'Close'],
             [138, 'app', 'Creation password'],
+            [139, 'app', 'Status Online'],
+            [140, 'app', 'Last Login'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -292,6 +294,8 @@ class m180816_114157_i18n_init extends Migration
             [136, 'ru', 'Ваша заявка не выполнена. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.'],
             [137, 'ru', 'Закрыть'],
             [138, 'ru', 'Создание пароля'],
+            [139, 'ru', 'Статус Онлайн'],
+            [140, 'ru', 'Последний Вход'],
         ]);
     }
 

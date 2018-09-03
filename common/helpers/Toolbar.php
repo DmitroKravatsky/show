@@ -34,4 +34,13 @@ class Toolbar
             ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => Yii::t('app', 'Reset Grid')]
         ) . ' ';
     }
+
+    public static function readAllButton($url)
+    {
+        return Html::a(
+                '<i class="glyphicon glyphicon-eye-open"></i>',
+                Url::to([$url]),
+                ['data-pjax' => 0, 'class' => 'btn btn-primary', 'title' => Yii::t('app', 'Read all')]
+        ) . ' ';
+    }
 }

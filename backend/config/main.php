@@ -36,7 +36,19 @@ return [
             'identityClass' => 'common\models\user\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-            'loginUrl' => 'authorization/authorization/login',
+            'loginUrl' => '/admin',
+            'on afterLogin' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->setStatusOnline(true);
+                $user->setLastLogin();
+            },
+            'on beforeLogout' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->setStatusOnline(false);
+                $user->setLastLogin();
+            }
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
@@ -73,6 +85,8 @@ return [
                 'bid/view/<id:\d+>'                => 'admin/bid/view',
                 'bid-history/<action:[\w-]+>'      => 'admin/bid-history/<action>',
                 'notifications/index'              => 'admin/notifications/index',
+                'notifications/read-all'           => 'admin/notifications/read-all',
+                'notifications/delete-all'         => 'admin/notifications/delete-all',
                 'notification/view/<id:\d+>'       => 'admin/notifications/view',
                 'review/index'                     => 'admin/review/index',
                 'review/view/<id:\d+>'             => 'admin/review/view',

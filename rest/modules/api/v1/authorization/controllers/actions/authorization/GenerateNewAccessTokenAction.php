@@ -60,13 +60,6 @@ class GenerateNewAccessTokenAction extends Action
      *      description="Generate new access_token for user",
      *      produces={"application/json"},
      *      @SWG\Parameter(
-     *        in = "header",
-     *        name = "Authorization",
-     *        description = "Authorization: Bearer &lt;token&gt;",
-     *        required = true,
-     *        type = "string"
-     *      ),
-     *      @SWG\Parameter(
      *          in = "formData",
      *          name = "refresh_token",
      *          description = "User refresh_token",

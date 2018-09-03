@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\user\User;
 use Yii;
+use borales\extensions\phoneInput\PhoneInputValidator;
 
 class BackendUser extends User
 {
@@ -19,7 +20,7 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password', 'email',], 'required'],
+            [['password', 'email', 'phone_number',], 'required'],
             [['email', 'new_email',], 'email'],
             [['email'], 'checkEmailExistence'],
             [['verification_token'], 'string', 'max' => 255],
@@ -29,7 +30,9 @@ class BackendUser extends User
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
-            [['verification_code'], 'integer'],
+            [['verification_code', 'status_online', 'last_login',], 'integer'],
+            ['phone_number', PhoneInputValidator::class],
+            ['phone_number', 'checkPhoneNumberExistence'],
         ];
     }
 
@@ -39,6 +42,7 @@ class BackendUser extends User
             'password'         => Yii::t('app', 'Password'),
             'currentPassword'  => Yii::t('app', 'Current Password'),
             'repeatPassword'   => Yii::t('app', 'Repeat Password'),
+            'phone_number'     => Yii::t('app', 'Phone Number'),
         ];
     }
 
@@ -88,6 +92,14 @@ class BackendUser extends User
         $user = static::find()->where(['email' => $this->email])->andWhere(['!=', 'id', Yii::$app->user->id])->one();
         if ($user !== null) {
             $this->addError($attribute, Yii::t('app', 'This email address has already been taken.'));
+        }
+    }
+
+    public function checkPhoneNumberExistence($attribute, $params)
+    {
+        $user = static::find()->where(['phone_number' => $this->phone_number])->andWhere(['!=', 'id', Yii::$app->user->id])->one();
+        if ($user !== null) {
+            $this->addError($attribute, Yii::t('app', 'This phone number address has already been taken.'));
         }
     }
 

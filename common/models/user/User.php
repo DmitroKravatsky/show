@@ -36,6 +36,8 @@ use Yii;
  * @property integer $invite_code_status
  * @property integer $verification_token
  * @property integer $new_email
+ * @property integer $status_online
+ * @property integer $last_login
  *
  * @property UserProfileEntity $profile
  */
@@ -56,6 +58,9 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INVITE_ACTIVE = 'ACTIVE';
     const STATUS_INVITE_INACTIVE = 'INACTIVE';
 
+    const STATUS_ONLINE_NO = 0;
+    const STATUS_ONLINE_YES = 1;
+
     /**
      * @inheritdoc
      */
@@ -73,6 +78,18 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::STATUS_INVITE_ACTIVE => Yii::t('app', 'Active'),
             self::STATUS_INVITE_INACTIVE => Yii::t('app', 'Inactive'),
+        ];
+    }
+
+    /**
+     * Returns status online labels
+     * @return array
+     */
+    public static function getStatusOnlineLabels(): array
+    {
+        return [
+            self::STATUS_ONLINE_NO => Yii::t('app', 'No'),
+            self::STATUS_ONLINE_YES => Yii::t('app', 'Yes'),
         ];
     }
 
@@ -234,6 +251,21 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+    public function setLastLogin()
+    {
+        $this->last_login = time();
+        $this->save(false, ['last_login']);
+    }
+
+    /**
+     * @param boolean $value
+     */
+    public function setStatusOnline($value)
+    {
+        $this->status_online = (boolean) $value;
+        $this->save(false, ['status_online']);
+    }
+
     /**
      * @param $roleName
      * @return array
@@ -296,6 +328,16 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getInviteStatusValue($status): string
     {
         $statuses = static::getInviteStatuses();
+        return $statuses[$status];
+    }
+
+    /**
+     * @param integer $status
+     * @return string
+     */
+    public static function getStatusOnlineValue($status): string
+    {
+        $statuses = static::getStatusOnlineLabels();
         return $statuses[$status];
     }
 }

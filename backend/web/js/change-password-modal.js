@@ -9,11 +9,23 @@ $(function () {
             url: reInviteUrl,
             type : "post",
             dataType : 'json',
-            error: function () {
-                $('#re-invite-error').show();
+            success: function (result) {
+                $('#re-invite-success').html(
+                    '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>' + result.message +
+                    '</div>'
+                );
             },
-            success : function () {
-                $('#re-invite-success').show();
+            error : function (result) {
+                $('#re-invite-error').html(
+                    '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>' + result.statusText +
+                    '</div>'
+                );
             }
         })
     });

@@ -209,6 +209,12 @@ $this->title = Yii::t('app', 'Dashboard');
                                                                 <?= Yii::t('app', $notification->text, [
                                                                     'phone_number' => $notification->custom_data->phone_number ?? null
                                                                 ]) ?>
+                                                            <?php elseif ($notification->type == UserNotificationsEntity::TYPE_NEW_BID): ?>
+                                                                <?= Yii::t('app', $notification->text, [
+                                                                    'sum'      => $notification->custom_data->sum ?? null,
+                                                                    'currency' => $notification->custom_data->currency ?? null,
+                                                                    'wallet'   => $notification->custom_data->wallet ?? null,
+                                                                ]) ?>
                                                             <?php endif; ?>
                                                         </span>
                                                     </a>
