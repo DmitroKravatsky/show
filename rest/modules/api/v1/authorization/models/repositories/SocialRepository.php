@@ -386,8 +386,9 @@ trait SocialRepository
 
             if (isset($userData->email)) {
                 $data['email'] = $userData->email;
-            } elseif (isset($params['phone_number'])) {
-                $data['phone_number'] = $params['phone_number'];
+            }
+            if (isset($userData->phone_number)) {
+                $data['phone_number'] = $userData->phone_number;
             }
             $user = new RestUserEntity();
             $user->scenario = self::SCENARIO_SOCIAL_REGISTER;

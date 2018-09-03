@@ -117,7 +117,6 @@ class FbAuthorizeAction extends Action
     {
         /** @var RestUserEntity $userModel */
         $userModel = new $this->modelClass;
-        var_dump(\Yii::$app->request->bodyParams); exit;
         $user = $userModel->fbAuthorization(\Yii::$app->request->bodyParams);
         $response = \Yii::$app->getResponse()->setStatusCode(200);
         return [
