@@ -339,9 +339,9 @@ trait AuthorizationRepository
                 throw new NotFoundHttpException('User not found');
             }
 
-            $user->verification_code = 0000;//rand(1000, 9999),
+            $user->verification_code = 0000;//rand(1000, 9999);
             if ($user->save(false)) {
-               /* \Yii::$app->sendSms->run(
+                /*\Yii::$app->sendSms->run(
                     'Ваш код верификации: ' .$user->verification_code,
                     $phoneNumber
                 );*/
