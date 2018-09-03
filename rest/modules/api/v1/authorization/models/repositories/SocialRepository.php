@@ -225,7 +225,6 @@ trait SocialRepository
                 'source_id'        => $userData->id,
                 'terms_condition'  => $params['terms_condition'],
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
-                'confirm_password' => $pass,
             ];
 
             if (isset($userData->email)) {

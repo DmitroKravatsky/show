@@ -221,17 +221,7 @@ class RestUserEntity extends User
     {
         parent::beforeSave($insert);
 
-        if (
-            $this->scenario === self::SCENARIO_REGISTER
-            || $this->scenario === self::SCENARIO_SOCIAL_REGISTER
-            || $this->scenario === self::SCENARIO_RECOVERY_PWD
-            || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
-        ) {
-            $this->auth_key = \Yii::$app->security->generateRandomString();
-            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-            $this->status = self::STATUS_UNVERIFIED;
-            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
-        }
+        $this->defaultBeforeSavePropertiesProcess();
 
         if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
             $this->status = self::STATUS_VERIFIED;
@@ -440,5 +430,23 @@ class RestUserEntity extends User
     public function hasBids():bool
     {
         return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
+    }
+
+    /**
+     * Process auth_key, password_reset_token, status, password
+     */
+    public function defaultBeforeSavePropertiesProcess()
+    {
+        if (
+            $this->scenario === self::SCENARIO_REGISTER
+            || $this->scenario === self::SCENARIO_SOCIAL_REGISTER
+            || $this->scenario === self::SCENARIO_RECOVERY_PWD
+            || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
+        ) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
+            $this->status = self::STATUS_UNVERIFIED;
+            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+        }
     }
 }
