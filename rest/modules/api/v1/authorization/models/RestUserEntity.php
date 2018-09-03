@@ -118,7 +118,7 @@ class RestUserEntity extends User
         ];
 
         $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
@@ -184,7 +184,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER]
+                'on' => [self::SCENARIO_REGISTER]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [

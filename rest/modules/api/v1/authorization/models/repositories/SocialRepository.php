@@ -6,6 +6,7 @@ use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
 use PHPUnit\Framework\Exception;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
+use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -315,14 +316,14 @@ trait SocialRepository
 
                 if (isset($userData->id)) {
                     $existedUser = RestUserEntity::find()
-                    ->where(['source_id' => $userData->id])
-                    ->orWhere(['email' => $userData->email])
-                    ->one();
+                        ->where(['source_id' => $userData->id])
+                        ->orWhere(['email' => $userData->email])
+                        ->one();
                     if ($existedUser) {
                         return $this->fbLogin($existedUser);
                     }
 
-                    $newUser = $this->fbRegister($userData, $params);
+                    $newUser = $this->fbRegister($userData, $params['terms_condition']);
 
                     $transaction->commit();
                     return $newUser;
@@ -367,21 +368,20 @@ trait SocialRepository
     /**
      * Add user to a system
      * @param $userData
-     * @param array $params
+     * @param $termsCondition integer Marked if user accepts condition
      * @return RestUserEntity
      * @throws UnprocessableEntityHttpException
      * @throws ServerErrorHttpException
      */
-    public function fbRegister($userData, array $params): RestUserEntity
+    public function fbRegister($userData, $termsCondition): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $data = [
                 'source'           => self::FB,
                 'source_id'        => $userData->id,
-                'terms_condition'  => $params['terms_condition'],
+                'terms_condition'  => $termsCondition,
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
-                'confirm_password' => $pass,
             ];
 
             if (isset($userData->email)) {
@@ -419,12 +419,13 @@ trait SocialRepository
             }
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
             $user->created_refresh_token = time();
-            $user->save(false,['refresh_token', 'created_refresh_token']);
+            $user->save(false, ['refresh_token', 'created_refresh_token']);
             $transaction->commit();
 
             return $user;
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
+            \Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException($e->getMessage());
         }
 
