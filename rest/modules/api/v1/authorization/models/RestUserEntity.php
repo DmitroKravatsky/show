@@ -435,7 +435,7 @@ class RestUserEntity extends User
     /**
      * Process auth_key, password_reset_token, status, password
      */
-    public function defaultBeforeSavePropertiesProcess()
+    public function defaultBeforeSavePropertiesPreProcess()
     {
         if (
             $this->scenario === self::SCENARIO_REGISTER

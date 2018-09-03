@@ -4,7 +4,6 @@ namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
 use GuzzleHttp\Client;
-use PHPUnit\Framework\Exception;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -184,7 +183,7 @@ trait SocialRepository
                     if ($existedUser) {
                         return $this->gmailLogin($existedUser);
                     }
-                    $newUser = $this->gmailRegister($userData, $params);
+                    $newUser = $this->gmailRegister($userData, $params['terms_condition']);
 
                     $transaction->commit();
                     return $newUser;
@@ -207,7 +206,7 @@ trait SocialRepository
 
     /**
      * Gmail registration
-     * @param $params array of post data
+     * @param $termsCondition integer Marked if user accepts condition
      *
      * @return RestUserEntity whether the attributes are valid and the record is inserted successfully
      *
@@ -215,7 +214,7 @@ trait SocialRepository
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function gmailRegister($userData, array $params): RestUserEntity
+    public function gmailRegister($userData, $termsCondition): RestUserEntity
     {
         $transaction = \Yii::$app->db->beginTransaction();
 
@@ -223,14 +222,15 @@ trait SocialRepository
             $data = [
                 'source'           => self::GMAIL,
                 'source_id'        => $userData->id,
-                'terms_condition'  => $params['terms_condition'],
+                'terms_condition'  => $termsCondition,
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             ];
 
             if (isset($userData->email)) {
                 $data['email'] = $userData->email;
-            } elseif (isset($params['phone_number'])) {
-                $data['phone_number'] = $params['phone_number'];
+            }
+            if (isset($userData->phone_number)) {
+                $data['phone_number'] = $userData->phone_number;
             }
             $user = new RestUserEntity();
             $user->scenario = self::SCENARIO_SOCIAL_REGISTER;
@@ -262,12 +262,13 @@ trait SocialRepository
 
             $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
             $user->created_refresh_token = time();
-            $user->save(false,['refresh_token', 'created_refresh_token']);
+            $user->save(false, ['refresh_token', 'created_refresh_token']);
             $transaction->commit();
 
             return $user;
         } catch (ServerErrorHttpException $e) {
             $transaction->rollBack();
+            \Yii::error($e->getMessage());
             throw new ServerErrorHttpException($e->getMessage());
         }
 
