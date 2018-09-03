@@ -2,13 +2,11 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\admin\{
-    DeleteManagerAction, IndexAction, InviteManagerAction, ManagersListAction,
-    ReInviteManagerAction, UpdateMangerPasswordAction};
+use backend\modules\admin\controllers\actions\dashboard\{ IndexAction, UpdateMangerPasswordAction };
 use yii\web\Controller;
 use yii\filters\AccessControl;
 
-class AdminController extends Controller
+class DashboardController extends Controller
 {
     /**
      * @return array
@@ -23,11 +21,6 @@ class AdminController extends Controller
                         'allow'   => true,
                         'actions' => ['index', 'update-manager-password'],
                         'roles'   => ['admin', 'manager',]
-                    ],
-                    [
-                        'allow'   => true,
-                        'actions' => ['invite-manager', 'delete-manager', 'managers-list', 're-invite',],
-                        'roles'   => ['admin',]
                     ],
                 ],
             ],
@@ -45,23 +38,11 @@ class AdminController extends Controller
     public function actions()
     {
         return [
-            'index'          => [
+            'index'                   => [
                 'class' => IndexAction::class
-            ],
-            'invite-manager' => [
-                'class' => InviteManagerAction::class
             ],
             'update-manager-password' => [
                 'class' => UpdateMangerPasswordAction::class
-            ],
-            'delete-manager' => [
-                'class' => DeleteManagerAction::class
-            ],
-            'managers-list'  => [
-                'class' => ManagersListAction::class
-            ],
-            're-invite'      => [
-                'class' => ReInviteManagerAction::class
             ],
         ];
     }

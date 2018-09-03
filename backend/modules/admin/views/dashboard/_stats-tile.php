@@ -28,7 +28,7 @@ use yii\helpers\Url;
             [
                 'icon'   => 'user',
                 'header' => Yii::t('app', 'Managers'),
-                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['/managers-list']), ['title' => Yii::t('app', 'Managers')]),
+                'text'   => Html::a(Yii::t('app', 'View all'), Url::to(['/manager/index']), ['title' => Yii::t('app', 'Managers')]),
                 'number' => $countManagers,
             ]
         ) ?>

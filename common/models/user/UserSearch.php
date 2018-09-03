@@ -27,7 +27,7 @@ class UserSearch extends User
     public function rules()
     {
         return [
-            [['id', 'created_at', 'status_online',], 'integer'],
+            [['id', 'created_at', 'status_online', 'accept_invite',], 'integer'],
             [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status', 'lastLoginRange',], 'safe'],
         ];
     }
@@ -69,10 +69,11 @@ class UserSearch extends User
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
+            static::tableName() . '.id' => $this->id,
             'invite_code_status' => $this->invite_code_status,
             'status' => $this->status,
             'status_online' => $this->status_online,
+            'accept_invite' => $this->accept_invite,
             'created_at' => $this->created_at,
         ]);
 

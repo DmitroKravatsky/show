@@ -38,6 +38,7 @@ use Yii;
  * @property integer $new_email
  * @property integer $status_online
  * @property integer $last_login
+ * @property integer $accept_invite
  *
  * @property UserProfileEntity $profile
  */
@@ -60,6 +61,9 @@ class User extends ActiveRecord implements IdentityInterface
 
     const STATUS_ONLINE_NO = 0;
     const STATUS_ONLINE_YES = 1;
+
+    const ACCEPT_INVITE_NO  = 0;
+    const ACCEPT_INVITE_YES = 1;
 
     /**
      * @inheritdoc
@@ -90,6 +94,14 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::STATUS_ONLINE_NO => Yii::t('app', 'No'),
             self::STATUS_ONLINE_YES => Yii::t('app', 'Yes'),
+        ];
+    }
+
+    public static function getAcceptInviteLabels(): array
+    {
+        return [
+            self::ACCEPT_INVITE_NO => Yii::t('app', 'No'),
+            self::ACCEPT_INVITE_YES => Yii::t('app', 'Yes'),
         ];
     }
 
@@ -301,7 +313,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getCountManagers(): int
     {
-        return count(static::findByRole(self::ROLE_MANAGER));
+        return static::find()
+            ->innerJoin('{{%auth_assignment}}', 'id = user_id')
+            ->where(['item_name' => self::ROLE_MANAGER])
+            ->count();
     }
 
     /**
@@ -338,6 +353,16 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getStatusOnlineValue($status): string
     {
         $statuses = static::getStatusOnlineLabels();
+        return $statuses[$status];
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public static function getAcceptInviteStatusValue($status): string
+    {
+        $statuses = static::getAcceptInviteLabels();
         return $statuses[$status];
     }
 }
