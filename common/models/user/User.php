@@ -39,6 +39,7 @@ use Yii;
  * @property integer $status_online
  * @property integer $last_login
  * @property integer $accept_invite
+ * @property integer $register_by_bid
  *
  * @property UserProfileEntity $profile
  */

@@ -88,7 +88,7 @@ trait AuthorizationRepository
 
         /** @var RestUserEntity $user */
         $user = $this->getUserByPhoneNumber($params['phone_number']);
-        if ($user->status === self::STATUS_UNVERIFIED) {
+        if ($user->status === self::STATUS_UNVERIFIED && $user->register_by_bid == self::REGISTER_BY_BID_NO) {
             throw new ForbiddenHttpException('You must be verified to login');
         }
         if ($user->validatePassword($params['password'])) {
@@ -353,5 +353,16 @@ trait AuthorizationRepository
         }
 
         throw new ServerErrorHttpException('Internal server error');
+    }
+
+    /**
+     * Verifies the user created on the bid after logging in
+     */
+    public function verifyUserAfterLogin()
+    {
+        if ($this->register_by_bid === self::REGISTER_BY_BID_YES && $this->status != self::STATUS_VERIFIED) {
+            $this->status = self::STATUS_VERIFIED;
+            $this->save(false, ['status']);
+        }
     }
 }

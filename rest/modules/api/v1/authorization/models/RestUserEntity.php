@@ -51,6 +51,7 @@ class RestUserEntity extends User
     const ROLE_GUEST = 'guest';
 
     const SCENARIO_REGISTER        = 'register';
+    const SCENARIO_REGISTER_BY_BID = 'register-by-bid';
     const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
@@ -64,6 +65,9 @@ class RestUserEntity extends User
     const FB     = 'fb';
     const GMAIL  = 'gmail';
     const NATIVE = 'native';
+
+    const REGISTER_BY_BID_NO = 0;
+    const REGISTER_BY_BID_YES = 1;
 
     public $confirm_password;
     public $current_password;
@@ -117,6 +121,8 @@ class RestUserEntity extends User
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
+        $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
+
         $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
@@ -154,9 +160,16 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['verification_code'], 'integer'],
+            [['verification_code', 'register_by_bid',], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
-            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD, self::SCENARIO_VERIFY_PROFILE]],
+            [
+                'phone_number',
+                'required',
+                'on' => [
+                    self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD,
+                    self::SCENARIO_VERIFY_PROFILE, self::SCENARIO_REGISTER_BY_BID,
+                ]
+            ],
             [
                 'terms_condition',
                 'required',
@@ -254,12 +267,14 @@ class RestUserEntity extends User
     /**
      * @param bool $insert
      * @param array $changedAttributes
+     * @throws \Exception
      */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->scenario == (self::SCENARIO_REGISTER || self::SCENARIO_SOCIAL_REGISTER) && $insert) {
+        $scenarios = [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID];
+        if ($insert && in_array($this->scenario, $scenarios)) {
             $this->role = self::ROLE_USER;
             $userRole = \Yii::$app->authManager->getRole($this->role);
             \Yii::$app->authManager->assign($userRole, $this->getId());
@@ -444,12 +459,12 @@ class RestUserEntity extends User
      */
     public function defaultBeforeSavePropertiesPreProcess()
     {
-        if (
-            $this->scenario === self::SCENARIO_REGISTER
-            || $this->scenario === self::SCENARIO_SOCIAL_REGISTER
-            || $this->scenario === self::SCENARIO_RECOVERY_PWD
-            || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
-        ) {
+        $scenarios = [
+            self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_RECOVERY_PWD,
+            self::SCENARIO_UPDATE_PASSWORD, self::SCENARIO_REGISTER_BY_BID
+        ];
+
+        if (in_array($this->scenario, $scenarios)) {
             $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
             $this->status = self::STATUS_UNVERIFIED;
