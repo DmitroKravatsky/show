@@ -94,10 +94,38 @@ $this->params['breadcrumbs'][] = $this->title;
                             return $bid->perfomer->fullName ?? null;
                         }
                     ],
-                    'from_sum:raw:' . Yii::t('app', 'Amount From Customer'),
-                    'to_sum:raw:' . Yii::t('app', 'Amount To Be Transferred'),
-                    'from_wallet:raw:' . Yii::t('app', 'Where Did The Money Come From'),
-                    'to_wallet:raw:' . Yii::t('app', 'Need To Transfer Money Here'),
+                    [
+                        'attribute' => 'from_sum',
+                        'format' => 'raw',
+                        'header' => Yii::t('app', 'Amount From Customer'),
+                        'value' => function($model) {
+                            return $model->from_sum . ' ' . $model->from_currency;
+                        },
+                    ],
+                    [
+                        'attribute' => 'to_sum',
+                        'format' => 'raw',
+                        'header' => Yii::t('app', 'Amount To Be Transferred'),
+                        'value' => function($model) {
+                            return $model->to_sum . ' ' . $model->to_currency;
+                        },
+                    ],
+                    [
+                        'attribute' => 'from_wallet',
+                        'format' => 'raw',
+                        'header' => Yii::t('app', 'Where Did The Money Come From'),
+                        'value' => function($model) {
+                            return $model->from_wallet . ' (' . $model->from_payment_system . ')';
+                        },
+                    ],
+                    [
+                        'attribute' => 'to_wallet',
+                        'format' => 'raw',
+                        'header' => Yii::t('app', 'Need To Transfer Money Here'),
+                        'value' => function($model) {
+                            return $model->to_wallet . ' (' . $model->to_payment_system . ')';
+                        },
+                    ],
                     [
                         'attribute' => 'created_at',
                         'format' => 'date',
