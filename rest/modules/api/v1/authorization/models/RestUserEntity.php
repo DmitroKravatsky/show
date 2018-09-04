@@ -224,7 +224,11 @@ class RestUserEntity extends User
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]],
             [['recovery_code'], 'string', 'max' => 4],
-            [['phone_number'], 'unique'],
+            [
+                ['phone_number', 'email',],
+                'unique',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID]
+            ],
         ];
     }
 
