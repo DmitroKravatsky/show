@@ -26,7 +26,7 @@ class DeleteAction extends Action
     {
         if ($this->controller->findBid($id)->delete()) {
             \Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Bid successfully deleted.'));
-            return $this->controller->redirect(Url::to(['bid/index']));
+            return $this->controller->redirect(Url::to(\Yii::$app->request->referrer));
         }
         \Yii::$app->session->setFlash('delete-fail', Yii::t('app', 'Something wrong, please try again later.'));
         return false;
