@@ -186,7 +186,7 @@ trait RestBidRepository
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
             $transaction->rollBack();
-            throw new ServerErrorHttpException();
+            throw new ServerErrorHttpException($e->getMessage());
         }
 
         return $bid;
@@ -204,7 +204,8 @@ trait RestBidRepository
                 if (!$user->save(true, ['email'])) {
                     $this->throwModelException($user->errors);
                 }
-            } elseif ($user->phone_number != $bid->phone_number) {
+            }
+            if ($user->phone_number != $bid->phone_number) {
                 $user->phone_number = $bid->phone_number;
                 if (!$user->save(true, ['phone_number'])) {
                     $this->throwModelException($user->errors);
