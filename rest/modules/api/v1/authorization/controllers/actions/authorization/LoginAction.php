@@ -102,6 +102,7 @@ class LoginAction extends Action
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
                 $user->created_refresh_token = time();
                 $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+                $user->verifyUserAfterLogin();
 
                 if (!$user->save(false)) {
                     throw new ServerErrorHttpException();

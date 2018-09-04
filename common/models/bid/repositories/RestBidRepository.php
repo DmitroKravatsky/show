@@ -2,12 +2,17 @@
 
 namespace common\models\bid\repositories;
 
+use common\components\SendSms;
 use common\models\bid\BidEntity;
+use common\models\userProfile\UserProfileEntity;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
+use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
+use Yii;
 
 /**
  * Class RestBidRepository
@@ -151,25 +156,119 @@ trait RestBidRepository
      * @param $postData array of the POST data
      *
      * @return BidEntity whether the attributes are valid and the record is inserted successfully
-     *
+
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
      */
     public function createBid(array $postData): BidEntity
     {
         $bid = new BidEntity();
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
-        $bid->setAttributes($postData);
 
-        if (!$bid->validate()) {
-            $this->throwModelException($bid->errors);
-        }
-
-        if (!$bid->save(false)) {
+        $transaction = Yii::$app->db->beginTransaction();
+        try {
+            $bid->setAttributes($postData);
+            if (!$bid->validate()) {
+                $this->throwModelException($bid->errors);
+            }
+            if (!$bid->save(false)) {
+                throw new ServerErrorHttpException();
+            }
+            if (Yii::$app->user->can(RestUserEntity::ROLE_GUEST)) {
+                $this->createOrUpdateUserByBid($bid);
+            }
+            $transaction->commit();
+        } catch (UnprocessableEntityHttpException $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            $transaction->rollBack();
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            $transaction->rollBack();
             throw new ServerErrorHttpException();
         }
 
         return $bid;
+    }
+
+    /**
+     * @param BidEntity $bid
+     * @throws \yii\base\Exception
+     */
+    protected function createOrUpdateUserByBid(BidEntity $bid)
+    {
+        if (($user = RestUserEntity::findByEmail($bid->email)) || ($user = RestUserEntity::findByPhoneNumber($bid->phone_number))) {
+            if ($user->email != $bid->email) {
+                $user->email = $bid->email;
+                if (!$user->save(true, ['email'])) {
+                    $this->throwModelException($user->errors);
+                }
+            } elseif ($user->phone_number != $bid->phone_number) {
+                $user->phone_number = $bid->phone_number;
+                if (!$user->save(true, ['phone_number'])) {
+                    $this->throwModelException($user->errors);
+                }
+            }
+
+            $profile = $user->profile;
+            if ($profile->name != $bid->name) {
+                $profile->name = $bid->name;
+            }
+            if ($profile->last_name != $bid->last_name) {
+                $profile->last_name = $bid->last_name;
+            }
+            if (!$profile->save(true, ['name', 'last_name'])) {
+                $this->throwModelException($profile->errors);
+            }
+            return;
+        }
+
+
+        $userAttributes = ['email' => $bid->email, 'phone_number' => $bid->phone_number];
+        $password = Yii::$app->security->generateRandomString(12);
+        $user = new RestUserEntity(['scenario' => RestUserEntity::SCENARIO_REGISTER_BY_BID]);
+        $userAttributes = array_merge($userAttributes, [
+            'password' => $password,
+            'register_by_bid' => RestUserEntity::REGISTER_BY_BID_YES,
+        ]);
+        $user->setAttributes($userAttributes);
+        if (!$user->validate()) {
+            $this->throwModelException($user->errors);
+        }
+        $user->save(false);
+
+        $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
+        $user->created_refresh_token = time();
+        $user->save(false, ['refresh_token', 'created_refresh_token']);
+
+        $profileAttributes = ['name' => $bid->name, 'last_name' => $bid->last_name, 'user_id' => $user->id];
+        $profile = new UserProfileEntity();
+        $profile->setAttributes($profileAttributes);
+        if (!$profile->validate()) {
+            $this->throwModelException($profile->errors);
+        }
+        $profile->save(false);
+
+        /** @var SendSms $smsComponent */
+        $smsComponent = Yii::$app->sendSms;
+        //$smsComponent->run($this->getMessageForRegistrationByPhoneNumber($user, $password), $user->phone_number);
+    }
+
+    /**
+     * @param RestUserEntity $user
+     * @param string $password
+     * @return string
+     */
+    protected function getMessageForRegistrationByPhoneNumber(RestUserEntity $user, $password): string
+    {
+        $message = <<<MES
+Уважаемы клиент, {$user->getFullName()}, была произведена регистрация.
+Ваш логин: {$user->phone_number}.
+Ваш пароль: {$password}.
+MES;
+
+        return $message;
     }
 
     /**
