@@ -41,7 +41,8 @@ class LoginGuestAction extends Action
      *              "status": 200,
      *              "message": "Authorization was successful",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "exp": 1536224824,
      *              }
      *         }
      *     ),
@@ -65,7 +66,8 @@ class LoginGuestAction extends Action
                     'status'  => \Yii::$app->response->statusCode,
                     'message' => "Authorization was successful",
                     'data'    => [
-                        'access_token' => $user->getJWT(['user_id' => $user->id])
+                        'access_token' => $accessToken = $user->getJWT(['user_id' => $user->id]),
+                        'exp'          => RestUserEntity::getPayload($accessToken, 'exp'),
                     ]
                 ];
             }
