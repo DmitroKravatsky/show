@@ -3,9 +3,10 @@
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
 use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\{ controllers\AuthorizationController, models\RestUserEntity };
 use yii\rest\Action;
+use yii\web\{ ErrorHandler, ServerErrorHttpException, UnprocessableEntityHttpException };
+use Yii;
 
 /**
  * Class RegisterAction
@@ -30,15 +31,17 @@ class RegisterAction extends Action
         return [
             'reportParams' => [
                 'class'       => ValidatePostParameters::class,
-                'inputParams' => ['phone_number', 'password', 'terms_condition', 'confirm_password']
+                'inputParams' => ['phone_number', 'password', 'terms_condition', 'confirm_password', 'name', 'last_name']
             ]
         ];
     }
 
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\BadRequestHttpException
      */
-    protected function beforeRun()
+    protected function beforeRun(): bool
     {
         $this->validationParams();
 
@@ -57,6 +60,20 @@ class RegisterAction extends Action
      *          in = "formData",
      *          name = "phone_number",
      *          description = "User phone number",
+     *          required = true,
+     *          type = "string"
+     *      ),
+     *     @SWG\Parameter(
+     *          in = "formData",
+     *          name = "name",
+     *          description = "User first name",
+     *          required = true,
+     *          type = "string"
+     *      ),
+     *     @SWG\Parameter(
+     *          in = "formData",
+     *          name = "last_name",
+     *          description = "User last name",
      *          required = true,
      *          type = "string"
      *      ),
@@ -106,6 +123,10 @@ class RegisterAction extends Action
      *         }
      *     ),
      *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
+     *     ),
+     *     @SWG\Response (
      *         response = 422,
      *         description = "Validation Error"
      *     ),
@@ -125,18 +146,25 @@ class RegisterAction extends Action
     {
         /** @var RestUserEntity $model */
         $model = new $this->modelClass;
-        /** @var RestUserEntity $user */
-        $user = $model->register(\Yii::$app->request->bodyParams);
+        try {
+            /** @var RestUserEntity $user */
+            $user = $model->register(Yii::$app->request->bodyParams);
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException(Yii::t('app', 'Something wrong, please try again later.'));
+        }
 
-        $response = \Yii::$app->getResponse()->setStatusCode(201, 'Registration was successfully ended');
+        $response = Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Registration was successfully ended',
+            'message' => Yii::t('app', 'Registration was successfully ended'),
             'data'    => [
                 'id'            => $user->id,
                 'phone_number'  => $user->phone_number,
-                'status'        => $user->status,],
-
+                'status'        => $user->status,
+            ],
         ];
     }
 }
