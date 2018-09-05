@@ -215,8 +215,8 @@ trait AuthorizationRepository
                 throw new UnprocessableEntityHttpException('Refresh token is invalid');
             }
 
-            $newAccessToken = $user->getJWT();
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $newAccessToken = $user->getJWT(['user_id' => $user->id]);
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
             $user->created_refresh_token = time();
 
             if (!$user->save()) {

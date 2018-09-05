@@ -61,6 +61,7 @@ class LoginAction extends Action
      *              "data": {
      *                  "user_id" : "157",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "exp": 1536224824,
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk"
      *              }
      *         }
@@ -101,7 +102,7 @@ class LoginAction extends Action
 
             if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
                 $user->created_refresh_token = time();
-                $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+                $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
                 $user->verifyUserAfterLogin();
 
                 if (!$user->save(false)) {
@@ -114,7 +115,8 @@ class LoginAction extends Action
                     'message' => 'Authorization was successful',
                     'data'    => [
                         'user_id' => $user->id,
-                        'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                        'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
+                        'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
                         'refresh_token' => $user->refresh_token
                     ]
                 ];

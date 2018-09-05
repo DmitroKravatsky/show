@@ -261,7 +261,7 @@ trait SocialRepository
                 throw new ServerErrorHttpException($user->errors);
             }
 
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
             $user->created_refresh_token = time();
             $user->save(false, ['refresh_token', 'created_refresh_token']);
             $transaction->commit();
@@ -278,18 +278,17 @@ trait SocialRepository
     /**
      * Gmail login
      *
-     * @param $user
+     * @param RestUserEntity $user
      *
      * @return RestUserEntity
      *
-     * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
     public function gmailLogin(RestUserEntity $user): RestUserEntity
     {
         if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
             $user->created_refresh_token = time();
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
 
             if (!$user->save(false)) {
                 throw new ServerErrorHttpException('Server internal error');
@@ -304,9 +303,11 @@ trait SocialRepository
      *
      * @param array $params
      * @return RestUserEntity
+     * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
-     * @throws BadRequestHttpException
+     * @throws \GuzzleHttp\Exception\GuzzleException
+     * @throws \yii\db\Exception
      */
     public function fbAuthorization(array $params): RestUserEntity
     {
@@ -362,15 +363,15 @@ trait SocialRepository
 
     /**
      * Facebook login
-     * @param $user array user model
+     * @param RestUserEntity $user
      * @return mixed
      * @throws ServerErrorHttpException
      */
-    public function fbLogin($user): RestUserEntity
+    public function fbLogin(RestUserEntity $user): RestUserEntity
     {
         if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
             $user->created_refresh_token = time();
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
 
             if (!$user->save(false)) {
                 throw new ServerErrorHttpException('Server internal error');
@@ -432,7 +433,7 @@ trait SocialRepository
             if (!$userProfile->save()) {
                 $this->throwModelException($userProfile->errors);
             }
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
             $user->created_refresh_token = time();
             $user->save(false, ['refresh_token', 'created_refresh_token']);
             $transaction->commit();

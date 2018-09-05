@@ -89,6 +89,7 @@ class FbAuthorizeAction extends Action
      *              "data": {
      *                  "user_id": "124",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "exp": 1536224824,
      *                  "refresh_token": "b_pZ4P3Z10BbEwe0A6GE2Aij8cfDDAEc"
      *              }
      *         }
@@ -124,7 +125,8 @@ class FbAuthorizeAction extends Action
             'message' => \Yii::t('app', 'Authorization was successful'),
             'data'    => [
                 'user_id' => $user->id,
-                'access_token'  => $user->getJWT(['user_id' => $user->id]),
+                'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
+                'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
                 'refresh_token' => $user->refresh_token
             ]
         ];
