@@ -430,24 +430,13 @@ class RestUserEntity extends User
     }
 
     /**
-     * Check if User is already exist by his phone_number.
-     * If user exists and unverified return model
-     * @param $phoneNumber
+     * Returns User model by phone number
+     * @param string $phoneNumber
      * @return mixed
      */
-    public function isUserExist($phoneNumber)
+    public function getUnverifiedUserByPhoneNumber($phoneNumber)
     {
-        $user = static::find()
-            ->where(['phone_number' => $phoneNumber])
-            ->andWhere(['!=', 'status', self::STATUS_UNVERIFIED])
-            ->one();
-
-        if ($user) {
-            $this->addError('phone_number', \Yii::t('app', 'Phone number is already taken'));
-            return $this->throwModelException($this->errors);
-        } else if ($user = static::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
-            return $user;
-        }
+        return static::find()->where(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])->one();
     }
 
     /**

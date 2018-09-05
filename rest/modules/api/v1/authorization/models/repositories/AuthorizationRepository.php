@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\user\User;
+use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\BlockToken;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\base\ErrorHandler;
@@ -18,7 +19,7 @@ use yii\web\{
 trait AuthorizationRepository
 {
     /**
-     * Add new user to db with the set of income data
+     *  Add new user to db with the set of income data
      *
      * @param $params array of POST data
      *
@@ -26,14 +27,16 @@ trait AuthorizationRepository
      *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
+     * @throws \yii\db\Exception
      */
     public function register(array $params)
     {
         $transaction = \Yii::$app->db->beginTransaction();
-
         try {
-            $user = $this->isUserExist($params) ?? new RestUserEntity();
-            $user->setScenario(self::SCENARIO_REGISTER);
+            $user = $this->getUnverifiedUserByPhoneNumber($params['phone_number']);
+            if ($user == null) {
+                $user = new RestUserEntity(['scenario' => self::SCENARIO_REGISTER]);
+            }
             $user->setAttributes([
                 'source'                => self::NATIVE,
                 'phone_number'          => $params['phone_number'],
@@ -42,13 +45,18 @@ trait AuthorizationRepository
                 'confirm_password'      => $params['confirm_password'],
                 'verification_code'     => 0000//rand(1000, 9999),
             ]);
-
-            if (!$user->validate()) {
-                return $this->throwModelException($user->errors);
+            if (!$user->save()) {
+                $this->throwModelException($user->errors);
             }
 
-            if (!$user->save()) {
-                return $this->throwModelException($user->errors);
+            $profile = $user->profile ?? new UserProfileEntity();
+            $profile->setAttributes([
+                'user_id'   => $user->id,
+                'name'      => $params['name'],
+                'last_name' => $params['last_name'],
+            ]);
+            if (!$profile->save()) {
+                $this->throwModelException($profile->errors);
             }
 
             //\Yii::$app->sendSms->run('Ваш код верификации ' . $user->verification_code, $user->phone_number);
@@ -59,10 +67,9 @@ trait AuthorizationRepository
         } catch (UnprocessableEntityHttpException $e) {
             $transaction->rollBack();
             throw new UnprocessableEntityHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
+        } catch (\Exception $e) {
             $transaction->rollBack();
-            \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+            throw new ServerErrorHttpException();
         }
     }
 
