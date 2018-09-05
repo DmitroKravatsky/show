@@ -229,11 +229,6 @@ class RestUserEntity extends User
                 'unique',
                 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID]
             ],
-//            [
-//                ['phone_number',],
-//                'checkUserExist',
-//                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID]
-//            ],
         ];
     }
 
@@ -442,14 +437,6 @@ class RestUserEntity extends User
     public function getUnverifiedUserByPhoneNumber($phoneNumber)
     {
         return static::find()->where(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])->one();
-    }
-
-    public function checkUserExist($attribute)
-    {
-        $user = static::find()->where(['phone_number' => $attribute, 'status' => self::STATUS_VERIFIED])->one();
-        if ($user != null) {
-            $this->addError($attribute, \Yii::t('app', '{$attribute} is already taken'));
-        }
     }
 
     /**
