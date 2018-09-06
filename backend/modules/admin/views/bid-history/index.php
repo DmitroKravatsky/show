@@ -18,6 +18,8 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids History'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="bid-history-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Bids History'),

@@ -448,4 +448,17 @@ class BidEntity extends ActiveRecord
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'processed_by']);
     }
+
+    /**
+     * @param string $status
+     * @return bool
+     */
+    public static function canUpdateStatus($status): bool
+    {
+        $statuses = [self::STATUS_PAID_BY_US_DONE, self::STATUS_REJECTED];
+        if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($status, $statuses)) {
+            return false;
+        }
+        return true;
+    }
 }

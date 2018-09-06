@@ -44,7 +44,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                     $bid,
                                     'status',
                                     BidEntity::getManagerAllowedStatuses(),
-                                    ['class' => 'status']
+                                    ['class' => 'status', 'disabled' => !BidEntity::canUpdateStatus($bid->status)]
                                 );
                             }
                         ],
@@ -83,4 +83,5 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php Panel::end() ?>
         </div>
     </div>
+    <div id="loader"></div>
 </div>

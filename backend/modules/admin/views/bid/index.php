@@ -62,12 +62,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'status',
-                        'value' => function($model) {
+                        'value' => function (BidEntity $bid) {
                             return Html::activeDropDownList(
-                                $model,
+                                $bid,
                                 'status',
                                 BidEntity::getManagerAllowedStatuses(),
-                                ['class' => 'status',]
+                                [
+                                    'class' => 'status',
+                                    'disabled' => !BidEntity::canUpdateStatus($bid->status)
+                                ]
                             );
                         },
                         'contentOptions' => ['style' => 'width:11%;'],
