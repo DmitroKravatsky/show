@@ -95,4 +95,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>

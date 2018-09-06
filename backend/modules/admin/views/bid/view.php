@@ -13,11 +13,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<style>
-    .collapse-link {
-        margin-left: 46px;
-    }
-</style>
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 
 <div class="bid-entity-view">
     <div class="row">
@@ -44,7 +40,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             'format' => 'raw',
                             'label' => Yii::t('app', 'Bid Status'),
                             'value' => function (BidEntity $bid) {
-                                return Html::activeDropDownList($bid, 'status', BidEntity::statusLabels(), ['class' => 'status']);
+                                return Html::activeDropDownList(
+                                    $bid,
+                                    'status',
+                                    BidEntity::getManagerAllowedStatuses(),
+                                    ['class' => 'status']
+                                );
                             }
                         ],
                         [

@@ -67,12 +67,11 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
-    const STATUS_NEW            = 'new';
-    const STATUS_PAID_BY_CLIENT = 'paid_by_client';
-    const STATUS_IN_PROGRESS    = 'in_progress';
-    const STATUS_PAID_BY_US     = 'paid_by_us';
-    const STATUS_DONE           = 'done';
-    const STATUS_REJECTED       = 'rejected';
+    const STATUS_NEW             = 'new';
+    const STATUS_PAID_BY_CLIENT  = 'paid_by_client';
+    const STATUS_IN_PROGRESS     = 'in_progress';
+    const STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
+    const STATUS_REJECTED        = 'rejected';
 
     const PROCESSED_YES = 1;
     const PROCESSED_NO  = 0;
@@ -125,12 +124,23 @@ class BidEntity extends ActiveRecord
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_NEW            => Yii::t('app', 'New'),
-            self::STATUS_PAID_BY_CLIENT => Yii::t('app', 'Paid by client'),
-            self::STATUS_IN_PROGRESS    => Yii::t('app', 'In progress'),
-            self::STATUS_PAID_BY_US     => Yii::t('app', 'Paid by us'),
-            self::STATUS_DONE           => Yii::t('app', 'Done'),
-            self::STATUS_REJECTED       => Yii::t('app', 'Rejected'),
+            self::STATUS_NEW             => Yii::t('app', 'New'),
+            self::STATUS_PAID_BY_CLIENT  => Yii::t('app', 'Paid by client'),
+            self::STATUS_IN_PROGRESS     => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
+            self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getManagerAllowedStatuses(): array
+    {
+        return [
+            self::STATUS_IN_PROGRESS     => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
+            self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
         ];
     }
 
@@ -228,7 +238,7 @@ class BidEntity extends ActiveRecord
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
             'email', 'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
         ];
-        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status'];
+        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status', 'processed', 'processed_by'];
 
         return $scenarios;
     }
@@ -250,8 +260,8 @@ class BidEntity extends ActiveRecord
             ],
             ['status', 'in', 'range' =>
                 [
-                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_IN_PROGRESS,
-                    self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_CLIENT,
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_IN_PROGRESS,
+                    self::STATUS_PAID_BY_US_DONE, self::STATUS_PAID_BY_CLIENT,
                 ]
             ],
             [
@@ -309,7 +319,7 @@ class BidEntity extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($this->status == self::STATUS_DONE) {
+        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
             (new Notification())->addNotify(
                 Notification::TYPE_BID_DONE,
                 Notification::getMessageForDoneBid(),
@@ -387,22 +397,6 @@ class BidEntity extends ActiveRecord
     {
         $this->processed = !$this->processed;
         return $this->save(false);
-    }
-
-    /**
-     * Returns all available values of bid status
-     * @return array
-     */
-    public static function getAllAvailableStatuses(): array
-    {
-        return [
-            BidEntity::STATUS_NEW             => BidEntity::STATUS_NEW,
-            BidEntity::STATUS_PAID_BY_CLIENT  => BidEntity::STATUS_PAID_BY_CLIENT,
-            BidEntity::STATUS_IN_PROGRESS     => BidEntity::STATUS_IN_PROGRESS,
-            BidEntity::STATUS_PAID_BY_US      => BidEntity::STATUS_PAID_BY_US,
-            BidEntity::STATUS_DONE            => BidEntity::STATUS_DONE,
-            BidEntity::STATUS_REJECTED        => BidEntity::STATUS_REJECTED,
-        ];
     }
 
     /**
