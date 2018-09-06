@@ -2,7 +2,6 @@
 
 namespace common\models\userNotifications;
 
-use common\models\userProfile\UserProfileEntity;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -47,7 +46,7 @@ class UserNotificationsSearch extends UserNotificationsEntity
             ->where(['recipient_id' => Yii::$app->user->id]);
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->orderBy(['status' => SORT_DESC, 'created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
@@ -59,7 +58,7 @@ class UserNotificationsSearch extends UserNotificationsEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'status', $this->status])
+        $query->andFilterWhere(['status' => $this->status])
             ->andFilterWhere(['like', 'text', $this->text])
             ->andFilterWhere([
                 'or',

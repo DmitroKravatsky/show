@@ -35,9 +35,8 @@ $this->title = Yii::t('app', 'My Yii Application');
                     'action' => 'update-manager-password',
                     'id' => 'password-reset-form'
                 ]); ?>
-                    <div class="modal-body">
+                    <div class="modal-body" style="padding: 0px">
                         <div class="col-xs-12">
-                            <p>In a terms of high security we advise you to change your password for account</p>
                             <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'password', [
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
@@ -51,7 +50,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                                     'template' => "{label}\n<i class=\"fa fa-lock fa-fw prefix\" aria-hidden=\"true\"></i>\n{input}\n{hint}\n{error}"
                                 ])
                                     ->passwordInput(['placeholder' => Yii::t('app', 'Repeat Password')])
-                                    ->label(Yii::t('app', 'Confirm Password')) ?>
+                                    ->label(Yii::t('app', 'Repeat Password')) ?>
                             </div>
 
                             <div class="result"></div>

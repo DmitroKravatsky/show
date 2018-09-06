@@ -2,15 +2,22 @@
 
 use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
-use yiister\gentelella\widgets\grid\GridView;
-use common\models\bid\BidEntity;
-use common\models\userNotifications\UserNotificationsEntity;
-use yii\helpers\StringHelper;
-use yii\helpers\Html;
+use kartik\grid\GridView;
+use common\models\{
+    bid\BidEntity,
+    userNotifications\UserNotificationsEntity as Notification,
+    userNotifications\UserNotificationsSearch,
+    user\User
+};
+use yii\helpers\{
+    Html,
+    Url,
+    StringHelper
+};
 use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
 use yii\grid\ActionColumn;
-use yii\helpers\Url;
+use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
 /* @var $bidSearch \common\models\bid\BidSearch */
@@ -19,7 +26,7 @@ use yii\helpers\Url;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch UserNotificationsEntity */
+/* @var $notificationsSearch UserNotificationsSearch */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -27,21 +34,41 @@ use yii\helpers\Url;
     <?php Panel::begin([
         'header' => Yii::t('app', 'Bids'),
         'collapsable' => true,
-        'expandable' => true,
         'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
             <?= GridView::widget([
                 'dataProvider' => $bidProvider,
                 'filterModel' => $bidSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     'email:email',
                     [
                         'attribute' => 'from_sum',
+                        'label' => Yii::t('app', 'Amount From Customer'),
                         'value' => function (BidEntity $bid) {
                             return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
+                        }
+                    ],
+                    [
+                        'attribute' => 'to_sum',
+                        'label' => Yii::t('app', 'Amount To Be Transferred'),
+                        'value' => function (BidEntity $bid) {
+                            return round($bid->to_sum, 2) . ' ' . $bid->to_currency;
                         }
                     ],
                     [
@@ -89,17 +116,28 @@ use yii\helpers\Url;
     <?php Panel::begin([
         'header' => Yii::t('app', 'Reviews'),
         'collapsable' => true,
-        'expandable' => true,
         'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
             <?= GridView::widget([
                 'dataProvider' => $reviewProvider,
                 'filterModel' => $reviewSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
-                    'id',
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     'created_by',
                     'text:ntext',
                     [
@@ -149,13 +187,50 @@ use yii\helpers\Url;
                 <?= GridView::widget([
                     'dataProvider' => $userProvider,
                     'filterModel' => $userSearch,
+                    'filterUrl' => UrlHelper::getFilterUrl(),
+                    'panel' => [
+                        'type' => GridView::TYPE_DEFAULT,
+                        'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                    ],
+                    'toolbar' => '',
                     'hover' => true,
                     'summary' => '',
                     'columns' => [
-                        'id',
-                        'email:email',
+                        [
+                            'class' => 'kartik\grid\SerialColumn',
+                            'contentOptions' => ['class' => 'kartik-sheet-style'],
+                            'width' => '36px',
+                            'header' => '',
+                            'headerOptions' => ['class' => 'kartik-sheet-style']
+                        ],
+                        'email:email:E-mail',
+                        [
+                            'attribute' => 'status_online',
+                            'label' => Yii::t('app', 'Status Online'),
+                            'filter' => User::getStatusOnlineLabels(),
+                            'value' => function (User $user) {
+                                return User::getStatusOnlineValue($user->status_online);
+                            }
+                        ],
+                        [
+                            'attribute' => 'last_login',
+                            'label' => Yii::t('app', 'Last Login'),
+                            'format' => 'date',
+                            'filter' => DateRangePicker::widget([
+                                'model' => $userSearch,
+                                'attribute' => 'lastLoginRange',
+                                'convertFormat' => true,
+                                'pluginOptions' => [
+                                    'timePicker' => true,
+                                    'locale' => [
+                                        'format' => 'Y-m-d',
+                                    ]
+                                ]
+                            ]),
+                        ],
                         [
                             'attribute' => 'created_at',
+                            'label' => Yii::t('app', 'Created At'),
                             'format' => 'date',
                             'filter' => DateRangePicker::widget([
                                 'model' => $userSearch,
@@ -199,21 +274,38 @@ use yii\helpers\Url;
             <?= GridView::widget([
                 'dataProvider' => $notificationsProvider,
                 'filterModel' => $notificationsSearch,
+                'filterUrl' => UrlHelper::getFilterUrl(),
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
+                'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
                 'columns' => [
-                    'id',
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'status',
-                        'filter' => UserNotificationsEntity::getStatusLabels(),
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return UserNotificationsEntity::getStatusValue($userNotifications->status);
+                        'filter' => Notification::getStatusLabels(),
+                        'value' => function (Notification $notification) {
+                            return Notification::getStatusValue($notification->status);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (UserNotificationsEntity $userNotifications) {
-                            return StringHelper::truncate(Html::encode($userNotifications->text), 40);
+                        'value' => function (Notification $notification) {
+                            if ($notification->type = Notification::TYPE_NEW_USER) {
+                                return StringHelper::truncate(Yii::t('app', $notification->text, [
+                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                ]), 40);
+                            }
+                            return null;
                         }
                     ],
                     [

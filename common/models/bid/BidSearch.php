@@ -59,7 +59,7 @@ class BidSearch extends BidEntity
         $query = BidEntity::find()->joinWith(['managerProfile']);
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
@@ -72,12 +72,8 @@ class BidSearch extends BidEntity
         }
 
         $query->andFilterWhere([
-            'id' => $this->id,
-            'created_by' => $this->created_by,
             'from_sum' => $this->from_sum,
             'to_sum' => $this->to_sum,
-            'created_at' => $this->created_at,
-            'updated_at' => $this->updated_at,
             'processed' => $this->processed,
         ]);
 
@@ -91,14 +87,22 @@ class BidSearch extends BidEntity
             ->andFilterWhere(['like', 'from_wallet', $this->from_wallet])
             ->andFilterWhere(['like', 'to_wallet', $this->to_wallet])
             ->andFilterWhere(['like', 'from_currency', $this->from_currency])
-            ->andFilterWhere(['like', 'to_currency', $this->to_currency]);
+            ->andFilterWhere(['like', 'to_currency', $this->to_currency])
+            ->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->processed_by],
+                ['like', 'user_profile.last_name', $this->processed_by]
+            ])->andFilterWhere([
+                'or',
+                ['like', 'bid.name', $this->full_name],
+                ['like', 'bid.last_name', $this->full_name]
+            ]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', 'bid.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
-        $query->andFilterWhere(['or',['like', 'user_profile.name', $this->processed_by],['like', 'user_profile.last_name', $this->processed_by]]);
-        $query->andFilterWhere(['or',['like', 'bid.name', $this->full_name],['like', 'bid.last_name', $this->full_name]]);
+
         return $dataProvider;
     }
 }

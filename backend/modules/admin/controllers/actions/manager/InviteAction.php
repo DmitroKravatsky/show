@@ -1,26 +1,23 @@
 <?php
 
-namespace backend\modules\admin\controllers\actions\admin;
+namespace backend\modules\admin\controllers\actions\manager;
 
 use backend\modules\authorization\models\RegistrationForm;
 use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\Action;
 use Yii;
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yii\web\Response;
 
 /**
- * Class InviteManagerAction
- * @package backend\modules\admin\controllers\actions\admin
+ * Class InviteAction
+ * @package backend\modules\admin\controllers\actions\manager
  */
-class InviteManagerAction extends Action
+class InviteAction extends Action
 {
-    public $view = '@backend/modules/admin/views/admin/invite-manager';
-
     /**
-     * Renders an admin panel
-     *
      * @return array|string|Response
      * @throws \yii\base\Exception
      * @throws \yii\db\Exception
@@ -34,8 +31,7 @@ class InviteManagerAction extends Action
             return ActiveForm::validate($modelRegistration);
         }
 
-        if (\Yii::$app->request->post()) {
-            $modelRegistration->load(\Yii::$app->request->post());
+        if (Yii::$app->request->post() && $modelRegistration->load(Yii::$app->request->post())) {
             if ($modelRegistration->validate()) {
                 $userModel   = new User();
                 $userProfile = new UserProfileEntity();
@@ -52,7 +48,6 @@ class InviteManagerAction extends Action
                 $transaction = \Yii::$app->db->beginTransaction();
 
                 if ($userModel->save()) {
-
                     $userProfile->setAttributes([
                         'user_id'   => $userModel->id,
                         'name'      => $modelRegistration->name,
@@ -76,19 +71,20 @@ class InviteManagerAction extends Action
                             ],
                             \Yii::$app->params['supportEmail'], $modelRegistration->email, 'ConfirmRegistration'
                         );
-                        return $this->controller->redirect('managers-list');
+                        Yii::$app->session->setFlash('success', Yii::t('app', 'Manager successfully created.'));
+                        return $this->controller->redirect(Url::to('index'));
                     }
                 }
-                return $this->controller->render($this->view, [
+                return $this->controller->render('invite', [
                     'modelRegistration' => $modelRegistration
                 ]);
             }
-            return $this->controller->render($this->view, [
+            return $this->controller->render('invite', [
                 'modelRegistration' => $modelRegistration
             ]);
         }
 
-        return $this->controller->render($this->view, [
+        return $this->controller->render('invite', [
             'modelRegistration' => $modelRegistration
         ]);
     }

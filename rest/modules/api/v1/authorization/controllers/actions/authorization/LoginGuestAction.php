@@ -2,7 +2,6 @@
 
 namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
 
-use common\models\userNotifications\UserNotificationsEntity;
 use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\rest\Action;
@@ -42,7 +41,8 @@ class LoginGuestAction extends Action
      *              "status": 200,
      *              "message": "Authorization was successful",
      *              "data": {
-     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew"
+     *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "exp": 1536224824,
      *              }
      *         }
      *     ),
@@ -66,24 +66,13 @@ class LoginGuestAction extends Action
                     'status'  => \Yii::$app->response->statusCode,
                     'message' => "Authorization was successful",
                     'data'    => [
-                        'access_token' => $user->getJWT(['user_id' => $user->id])
+                        'access_token' => $accessToken = $user->getJWT(['user_id' => $user->id]),
+                        'exp'          => RestUserEntity::getPayload($accessToken, 'exp'),
                     ]
                 ];
             }
         } catch (ServerErrorHttpException $e) {
             throw new ServerErrorHttpException('Internal server error');
         }
-    }
-
-    /**
-     * @return mixed
-     */
-    protected function afterRun()
-    {
-        $userNotifications = new UserNotificationsEntity();
-        return $userNotifications->addNotify(
-            UserNotificationsEntity::getMessageForLoginGuest(),
-            current($this->modelClass->findByRole(RestUserEntity::ROLE_GUEST))
-        );
     }
 }

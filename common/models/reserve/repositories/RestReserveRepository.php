@@ -3,6 +3,7 @@
 namespace common\models\reserve\repositories;
 
 use common\models\reserve\ReserveEntity;
+use yii\data\ArrayDataProvider;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -52,6 +53,40 @@ trait RestReserveRepository
         }
 
         return $reserveModel;
+    }
+
+    public function getList($params)
+    {
+        $query = ReserveEntity::find()->select([
+            'id', 'payment_system', 'currency', 'sum',
+        ]);
+
+        if (isset($params['filter'])) {
+            $query->andWhere(['currency' => $params['filter']]);
+        }
+
+        $reserves = $query->all();
+
+        $result = [];
+        foreach ($reserves as $reserve) {
+            /** @var ReserveEntity $reserve */
+            $result[] = [
+                'id'             => $reserve->id,
+                'payment_system' => static::getPaymentSystemValue($reserve->payment_system),
+                'currency'       => static::getCurrencyValue($reserve->currency),
+                'sum'            => round($reserve->sum, 2),
+            ];
+        }
+
+        $dataProvider = new ArrayDataProvider([
+            'allModels' => $result,
+            'pagination' => [
+                'pageSize' => $params['per-page'] ?? \Yii::$app->params['posts-per-page'],
+                'page' => isset($params['page']) ? $params['page'] - 1 : 0,
+            ]
+        ]);
+
+        return $dataProvider;
     }
 
     /**

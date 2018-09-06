@@ -45,7 +45,7 @@ class ReviewSearch extends ReviewEntity
         $query = ReviewEntity::find()->joinWith('createdByProfile');
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]

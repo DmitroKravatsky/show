@@ -24,26 +24,54 @@ class ListAction extends Action
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
-     *              @SWG\Property(property="status", type="integer", description="Status code"),
-     *              @SWG\Property(property="message", type="string", description="Status message"),
-     *              @SWG\Property(property="data", type="object",
-     *                  @SWG\Property(property="id", type="integer", description="Review id"),
-     *                  @SWG\Property(property="text", type="string", description="Review text"),
-     *                  @SWG\Property(property="created_at", type="integer", description="Review created at")
+     *              @SWG\Property(property="items", type="object",
+     *                   @SWG\Property(property="id", type="integer", description="Review id"),
+     *                   @SWG\Property(property="text", type="string", description="Review text"),
+     *                   @SWG\Property(property="created_at", type="date", description="Review creation date"),
      *              ),
+     *              @SWG\Property(property="_links", type="object",
+     *                  @SWG\Property(property="self", type="object",
+     *                      @SWG\Property(property="href", type="string", description="Current link"),
+     *                  ),
+     *             ),
+     *             @SWG\Property(property="_meta", type="object",
+     *                @SWG\Property(property="self", type="object",
+     *                    @SWG\Property(property="total-count", type="string", description="Total number of items"),
+     *                    @SWG\Property(property="page-count", type="integer", description="Current page"),
+     *                    @SWG\Property(property="current-page", type="integer", description="Current page"),
+     *                    @SWG\Property(property="per-page", type="integer", description="Number of items per page"),
+     *                )
+     *             ),
      *         ),
      *         examples = {
-     *              "status": 200,
-     *              "message": "",
-     *              "data": {
-     *                  "id": 6,
-     *                  "text": "Деньги пришли быстро и без проблем",
-     *                  "created_at": "1520256641"
-     *              }
+     *              "items": {
+     *                 {
+     *                   "id": 6,
+     *                   "name":"Sasha",
+     *                   "text": "Деньги пришли быстро и без проблем",
+     *                   "created_at": "1520256641"
+     *                 },
+     *                 {
+     *                   "id": 8,
+     *                   "name":"Dimon",
+     *                   "text": "Деньги пришли быстро и без проблем.Everything OK",
+     *                   "created_at": "1520256641"
+     *                  },
+     *              },
+     *              "_links": {
+     *                   "self": {
+     *                      "href": "http://work.local/api/v1/review/list"
+     *                   },
+     *               },
+     *               "_meta": {
+     *                   "totalCount": 4,
+     *                   "pageCount": 2,
+     *                   "currentPage": 2,
+     *                   "perPage": 2
+     *               }
      *         }
-     *     )
+     *     ),
      * )
-     *
      * @return \yii\data\ArrayDataProvider
      */
     public function run()

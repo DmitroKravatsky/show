@@ -1,13 +1,14 @@
 <?php
 
 use yiister\gentelella\widgets\Panel;
-use yiister\gentelella\widgets\grid\GridView;
+use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use common\models\bidHistory\BidHistory;
 use yii\helpers\Html;
 use yii\helpers\Url;
 use kartik\daterange\DateRangePicker;
-use backend\models\BackendUser;
+use common\helpers\UrlHelper;
+use common\helpers\Toolbar;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -17,9 +18,11 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids History'), 'url
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="bid-history-index">
     <?php Panel::begin([
-        'header' => Yii::t('app', 'Bid History'),
+        'header' => Yii::t('app', 'Bids History'),
         'collapsable' => true,
         'removable' => true,
     ]) ?>
@@ -27,15 +30,37 @@ $this->params['breadcrumbs'][] = $this->title;
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel' => $searchModel,
+                'filterUrl' => UrlHelper::getFilterUrl(),
                 'hover' => true,
+                'toolbar' =>  [
+                    ['content' =>
+                        Toolbar::resetButton()
+                    ],
+                    '{export}',
+                    '{toggleData}',
+                ],
+                'export' => [
+                    'fontAwesome' => true
+                ],
+                'panel' => [
+                    'type' => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
+                ],
                 'columns' => [
+                    [
+                        'class' => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width' => '36px',
+                        'header' => '',
+                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
                     [
                         'attribute' => 'created_by',
                         'label' => Yii::t('app', 'Created By'),
                         'format' => 'html',
                         'value' => function (BidHistory $bidHistory) {
                             return Html::a(
-                                $bidHistory->bid->author->getFullName() ?? null,
+                                $bidHistory->bid->author->fullName ?? null,
                                 Url::to(['bid/view', 'id' => $bidHistory->bid_id])
                             );
                         }
@@ -50,7 +75,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'processed_by',
                         'value' => function (BidHistory $bidHistory) {
-                            return $bidHistory->processedBy->getFullName() ?? null;
+                            return $bidHistory->processedBy->fullName ?? null;
                         }
                     ],
                     [
@@ -72,4 +97,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ]) ?>
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>

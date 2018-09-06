@@ -3,8 +3,9 @@
 namespace backend\modules\admin\controllers\actions\bid;
 
 use backend\modules\admin\controllers\BidController;
-use common\models\bid\BidEntity;
+use Yii;
 use yii\base\Action;
+use yii\helpers\Url;
 use yii\web\NotFoundHttpException;
 
 /**
@@ -24,10 +25,10 @@ class DeleteAction extends Action
     public function run($id)
     {
         if ($this->controller->findBid($id)->delete()) {
-            \Yii::$app->session->setFlash('delete-success', 'bid was successfully deleted');
-            return $this->controller->redirect('/admin/bids');
+            \Yii::$app->session->setFlash('delete-success', Yii::t('app', 'Bid successfully deleted.'));
+            return $this->controller->redirect(Url::to(\Yii::$app->request->referrer));
         }
-        \Yii::$app->session->setFlash('delete-fail', 'Something wrong, please try again later');
+        \Yii::$app->session->setFlash('delete-fail', Yii::t('app', 'Something wrong, please try again later.'));
         return false;
     }
 

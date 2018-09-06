@@ -12,7 +12,7 @@ return [
             'POST'        => 'create',
             'DELETE {id}' => 'delete',
             'GET list'    => 'list',
-            'GET detail'  => 'detail',
+            'GET {id}'    => 'detail',
         ],
     ],
     /** User Module */

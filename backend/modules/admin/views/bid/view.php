@@ -13,35 +13,39 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="bid-entity-view">
     <div class="row">
         <label class="control-label col-md-3 col-sm-3 col-xs-12">
         </label>
         <div class="col-md-6">
+            <div id="bid-status-error"></div>
+            <div id="bid-status-success"></div>
+
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Bids'),
+                'header' => Yii::t('app', 'Bid'),
                 'collapsable' => true,
             ]) ?>
                 <?= DetailView::widget([
                     'model' => $model,
                     'template' => '<tr data-key="' . $model->id . '"><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>',
                     'attributes' => [
-                        [
-                            'attribute' => 'name',
-                            'label' => Yii::t('app', 'Client First Name')
-                        ],
-                        [
-                            'attribute' => 'last_name',
-                            'label' => Yii::t('app', 'Client Last Name')
-                        ],
+                        'name:raw:' . Yii::t('app', 'Client First Name'),
+                        'last_name:raw:' . Yii::t('app', 'Client Last Name'),
                         'phone_number',
-                        'email:email',
+                        'email:email:E-mail',
                         [
                             'attribute' => 'status',
                             'format' => 'raw',
                             'label' => Yii::t('app', 'Bid Status'),
                             'value' => function (BidEntity $bid) {
-                                return Html::activeDropDownList($bid, 'status', BidEntity::statusLabels(), ['class' => 'status']);
+                                return Html::activeDropDownList(
+                                    $bid,
+                                    'status',
+                                    BidEntity::getManagerAllowedStatuses(),
+                                    ['class' => 'status', 'disabled' => !BidEntity::canUpdateStatus($bid->status)]
+                                );
                             }
                         ],
                         [
@@ -79,4 +83,5 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php Panel::end() ?>
         </div>
     </div>
+    <div id="loader"></div>
 </div>

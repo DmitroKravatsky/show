@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\modules\admin\controllers\actions\admin;
+namespace backend\modules\admin\controllers\actions\dashboard;
 
 use backend\modules\authorization\models\RegistrationForm;
 use common\models\bid\BidEntity;
@@ -16,12 +16,10 @@ use yii\web\ForbiddenHttpException;
 
 /**
  * Class IndexAction
- * @package backend\modules\admin\controllers\actions\admin
+ * @package backend\modules\admin\controllers\actions\dashboard
  */
 class IndexAction extends Action
 {
-    public $view = '@backend/modules/admin/views/admin/index';
-
     /**
      * Renders an admin panel
      *
@@ -38,7 +36,7 @@ class IndexAction extends Action
             $passwordUpdateModel = new RegistrationForm();
             $passwordUpdateModel->setAttributes($userData);
 
-            return $this->controller->render($this->view, ['passwordUpdateModel' => $passwordUpdateModel]);
+            return $this->controller->render('index', ['passwordUpdateModel' => $passwordUpdateModel]);
         }
 
         $params = \Yii::$app->request->queryParams;
@@ -55,7 +53,7 @@ class IndexAction extends Action
         $userProvider = $userSearch->search($params);
         $notificationsProvider = $notificationsSearch->search($params);
 
-        return $this->controller->render($this->view, [
+        return $this->controller->render('index', [
             'countBids'             => BidEntity::find()->count(),
             'countManagers'         => User::getCountManagers(),
             'countReviews'          => ReviewEntity::find()->count(),

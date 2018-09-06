@@ -13,11 +13,11 @@ use yii\helpers\Html;
     'action' => Url::to(['profile/update-password']),
     'method' => 'POST',
 ]) ?>
-    <?= $form->field($user, 'currentPassword', ['enableAjaxValidation' => true,])->passwordInput(['maxlength' => true]) ?>
+    <?= $form->field($user, 'currentPassword', ['enableAjaxValidation' => true,])->passwordInput(['maxlength' => true])->label(Yii::t('app', 'Current Password')) ?>
 
-    <?= $form->field($user, 'password')->passwordInput(['maxlength' => true]) ?>
+    <?= $form->field($user, 'password')->passwordInput(['maxlength' => true])->label(Yii::t('app', 'Password')) ?>
 
-    <?= $form->field($user, 'repeatPassword')->passwordInput(['maxlength' => true]) ?>
+    <?= $form->field($user, 'repeatPassword')->passwordInput(['maxlength' => true])->label(Yii::t('app', 'Repeat Password')) ?>
 
     <?= Html::submitButton(Yii::t('app', 'Update'), ['class' => 'btn btn-success']) ?>
 <?php ActiveForm::end() ?>

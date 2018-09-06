@@ -2,7 +2,7 @@
 
 namespace common\models\user;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotificationsEntity as Notification;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -36,6 +36,10 @@ use Yii;
  * @property integer $invite_code_status
  * @property integer $verification_token
  * @property integer $new_email
+ * @property integer $status_online
+ * @property integer $last_login
+ * @property integer $accept_invite
+ * @property integer $register_by_bid
  *
  * @property UserProfileEntity $profile
  */
@@ -56,6 +60,12 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_INVITE_ACTIVE = 'ACTIVE';
     const STATUS_INVITE_INACTIVE = 'INACTIVE';
 
+    const STATUS_ONLINE_NO = 0;
+    const STATUS_ONLINE_YES = 1;
+
+    const ACCEPT_INVITE_NO  = 0;
+    const ACCEPT_INVITE_YES = 1;
+
     /**
      * @inheritdoc
      */
@@ -73,6 +83,26 @@ class User extends ActiveRecord implements IdentityInterface
         return [
             self::STATUS_INVITE_ACTIVE => Yii::t('app', 'Active'),
             self::STATUS_INVITE_INACTIVE => Yii::t('app', 'Inactive'),
+        ];
+    }
+
+    /**
+     * Returns status online labels
+     * @return array
+     */
+    public static function getStatusOnlineLabels(): array
+    {
+        return [
+            self::STATUS_ONLINE_NO => Yii::t('app', 'No'),
+            self::STATUS_ONLINE_YES => Yii::t('app', 'Yes'),
+        ];
+    }
+
+    public static function getAcceptInviteLabels(): array
+    {
+        return [
+            self::ACCEPT_INVITE_NO => Yii::t('app', 'No'),
+            self::ACCEPT_INVITE_YES => Yii::t('app', 'Yes'),
         ];
     }
 
@@ -234,6 +264,21 @@ class User extends ActiveRecord implements IdentityInterface
         $this->password_reset_token = null;
     }
 
+    public function setLastLogin()
+    {
+        $this->last_login = time();
+        $this->save(false, ['last_login']);
+    }
+
+    /**
+     * @param boolean $value
+     */
+    public function setStatusOnline($value)
+    {
+        $this->status_online = (boolean) $value;
+        $this->save(false, ['status_online']);
+    }
+
     /**
      * @param $roleName
      * @return array
@@ -269,7 +314,10 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getCountManagers(): int
     {
-        return count(static::findByRole(self::ROLE_MANAGER));
+        return static::find()
+            ->innerJoin('{{%auth_assignment}}', 'id = user_id')
+            ->where(['item_name' => self::ROLE_MANAGER])
+            ->count();
     }
 
     /**
@@ -279,14 +327,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForNewUser(
-                    [
-                        'phone_number'  => $this->phone_number,
-                        'email'      => $this->email,
-                    ]
-                ),
-                self::DEFAULT_ADMIN_ID
+            (new Notification())->addNotify(
+                Notification::TYPE_NEW_USER,
+                Notification::getMessageForNewUser(),
+                self::DEFAULT_ADMIN_ID,
+                Notification::getCustomDataForNewUser($this->phone_number)
             );
         }
         return parent::afterSave($insert, $changedAttributes);
@@ -299,6 +344,26 @@ class User extends ActiveRecord implements IdentityInterface
     public static function getInviteStatusValue($status): string
     {
         $statuses = static::getInviteStatuses();
+        return $statuses[$status];
+    }
+
+    /**
+     * @param integer $status
+     * @return string
+     */
+    public static function getStatusOnlineValue($status): string
+    {
+        $statuses = static::getStatusOnlineLabels();
+        return $statuses[$status];
+    }
+
+    /**
+     * @param $status
+     * @return string
+     */
+    public static function getAcceptInviteStatusValue($status): string
+    {
+        $statuses = static::getAcceptInviteLabels();
         return $statuses[$status];
     }
 }

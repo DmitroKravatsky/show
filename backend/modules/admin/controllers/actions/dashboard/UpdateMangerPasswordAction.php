@@ -1,6 +1,6 @@
 <?php
 
-namespace backend\modules\admin\controllers\actions\admin;
+namespace backend\modules\admin\controllers\actions\dashboard;
 
 use backend\modules\authorization\models\RegistrationForm;
 use common\models\user\User;
@@ -9,11 +9,11 @@ use Yii;
 
 /**
  * Class UpdateMangerPasswordAction
- * @package backend\modules\admin\controllers\actions\admin
+ * @package backend\modules\admin\controllers\actions\dashboard
  */
 class UpdateMangerPasswordAction extends Action
 {
-    public $view = '@backend/modules/admin/views/admin/update-manager-password';
+    public $view = '@backend/modules/admin/views/dashboard/update-manager-password';
 
     /**
      * Renders an admin panel
@@ -30,6 +30,7 @@ class UpdateMangerPasswordAction extends Action
                 $user = User::findByEmail(\Yii::$app->user->identity->email);
                 $user->password = \Yii::$app->security->generatePasswordHash($modelRegistration->password);
                 $user->status = User::STATUS_VERIFIED;
+                $user->accept_invite = true;
                 if ($user->save(false)) {
                     Yii::$app->user->logout();
                     Yii::$app->session->setFlash('success', Yii::t('app', 'Password updated successfully.'));

@@ -258,8 +258,8 @@ trait AuthorizationJwt
         try {
             $payloads = JWT::decode($refreshToken, self::getSecretKey(), [static::getAlgorithm()]);
 
-            if (isset($payloads->id)) {
-                return ($payloads->id);
+            if (isset($payloads->user_id)) {
+                return ($payloads->user_id);
             }
             throw new UnprocessableEntityHttpException('Invalid refresh token');
 

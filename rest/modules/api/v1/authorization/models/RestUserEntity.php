@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models;
 
 use borales\extensions\phoneInput\PhoneInputValidator;
+use common\models\bid\BidEntity;
 use common\models\userProfile\UserProfileEntity;
 use common\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
@@ -36,7 +37,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_refresh_token
  * @property integer $created_at
  * @property integer $updated_at
- * @property integer $recovery_code
+ * @property string $recovery_code
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
@@ -50,6 +51,8 @@ class RestUserEntity extends User
     const ROLE_GUEST = 'guest';
 
     const SCENARIO_REGISTER        = 'register';
+    const SCENARIO_REGISTER_BY_BID = 'register-by-bid';
+    const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
     const SCENARIO_LOGIN           = 'login';
@@ -62,6 +65,9 @@ class RestUserEntity extends User
     const FB     = 'fb';
     const GMAIL  = 'gmail';
     const NATIVE = 'native';
+
+    const REGISTER_BY_BID_NO = 0;
+    const REGISTER_BY_BID_YES = 1;
 
     public $confirm_password;
     public $current_password;
@@ -115,6 +121,13 @@ class RestUserEntity extends User
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
+        $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
+
+        $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'role',
+            'refresh_token', 'created_refresh_token', 'verification_code'
+        ];
+
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
             'email', 'password', 'confirm_password', 'phone_number','recovery_code'
         ];
@@ -147,17 +160,24 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['verification_code'], 'integer'],
+            [['verification_code', 'register_by_bid',], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
-            ['phone_number', 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD, self::SCENARIO_VERIFY_PROFILE]],
+            [
+                'phone_number',
+                'required',
+                'on' => [
+                    self::SCENARIO_REGISTER, self::SCENARIO_LOGIN, self::SCENARIO_RECOVERY_PWD,
+                    self::SCENARIO_VERIFY_PROFILE, self::SCENARIO_REGISTER_BY_BID,
+                ]
+            ],
             [
                 'terms_condition',
                 'required',
-                'on'            => self::SCENARIO_REGISTER,
+                'on'            => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
                 'requiredValue' => 1,
                 'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
             ],
-            ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER,]],
+            ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],],
             [
                 'current_password',
                 'validateCurrentPassword',
@@ -177,7 +197,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER,]
+                'on' => [self::SCENARIO_REGISTER]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
@@ -189,14 +209,26 @@ class RestUserEntity extends User
                 'confirm_password',
                 'compare',
                 'compareAttribute' => 'password',
-                'on'               => [self::SCENARIO_REGISTER, self::SCENARIO_RECOVERY_PWD]
+                'on'               =>
+                    [
+                        self::SCENARIO_REGISTER,
+                        self::SCENARIO_SOCIAL_REGISTER,
+                        self::SCENARIO_RECOVERY_PWD
+                    ]
+
             ],
             [['source', 'source_id', 'phone_number'], 'string'],
             ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
-            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]]
+            ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]],
+            [['recovery_code'], 'string', 'max' => 4],
+            [
+                ['phone_number', 'email',],
+                'unique',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID]
+            ],
         ];
     }
 
@@ -209,16 +241,16 @@ class RestUserEntity extends User
     {
         parent::beforeSave($insert);
 
-        if (
-            $this->scenario === self::SCENARIO_REGISTER
-            || $this->scenario === self::SCENARIO_RECOVERY_PWD
-            || $this->scenario === self::SCENARIO_UPDATE_PASSWORD
-        ) {
-            $this->auth_key = \Yii::$app->security->generateRandomString();
-            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-            $this->status = self::STATUS_UNVERIFIED;
-            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+        $this->defaultBeforeSavePropertiesPreProcess();
+
+        if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
+            $this->status = self::STATUS_VERIFIED;
         }
+
+        if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
+            $this->status = self::STATUS_VERIFIED;
+        }
+
         return true;
     }
 
@@ -240,12 +272,14 @@ class RestUserEntity extends User
     /**
      * @param bool $insert
      * @param array $changedAttributes
+     * @throws \Exception
      */
     public function afterSave($insert, $changedAttributes)
     {
         parent::afterSave($insert, $changedAttributes);
 
-        if ($this->scenario == self::SCENARIO_REGISTER && $insert) {
+        $scenarios = [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID];
+        if ($insert && in_array($this->scenario, $scenarios)) {
             $this->role = self::ROLE_USER;
             $userRole = \Yii::$app->authManager->getRole($this->role);
             \Yii::$app->authManager->assign($userRole, $this->getId());
@@ -396,23 +430,39 @@ class RestUserEntity extends User
     }
 
     /**
-     * Check if User is already exist by his phone_number.
-     * If user exists and unverified return model
-     * @param $phoneNumber
+     * Returns User model by phone number
+     * @param string $phoneNumber
      * @return mixed
      */
-    public function isUserExist($phoneNumber)
+    public function getUnverifiedUserByPhoneNumber($phoneNumber)
     {
-        $user = static::find()
-            ->where(['phone_number' => $phoneNumber])
-            ->andWhere(['!=', 'status', self::STATUS_UNVERIFIED])
-            ->one();
+        return static::find()->where(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])->one();
+    }
 
-        if ($user) {
-            $this->addError('phone_number', \Yii::t('app', 'Phone number is already taken'));
-            return $this->throwModelException($this->errors);
-        } else if ($user = static::findOne(['phone_number' => $phoneNumber, 'status' => self::STATUS_UNVERIFIED])) {
-            return $user;
+    /**
+     * Checks if user have at least one bid
+     * @return bool
+     */
+    public function hasBids():bool
+    {
+        return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
+    }
+
+    /**
+     * Process auth_key, password_reset_token, status, password
+     */
+    public function defaultBeforeSavePropertiesPreProcess()
+    {
+        $scenarios = [
+            self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_RECOVERY_PWD,
+            self::SCENARIO_UPDATE_PASSWORD, self::SCENARIO_REGISTER_BY_BID
+        ];
+
+        if (in_array($this->scenario, $scenarios)) {
+            $this->auth_key = \Yii::$app->security->generateRandomString();
+            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
+            $this->status = self::STATUS_UNVERIFIED;
+            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
         }
     }
 }

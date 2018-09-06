@@ -13,7 +13,9 @@ use rest\modules\api\v1\authorization\controllers\AuthorizationController;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\{
-    rest\Action, web\BadRequestHttpException, web\ServerErrorHttpException
+    rest\Action,
+    web\NotFoundHttpException,
+    web\ServerErrorHttpException
 };
 
 /**
@@ -87,10 +89,6 @@ class SendRecoveryCodeAction extends Action
      *         }
      *     ),
      *     @SWG\Response (
-     *         response = 400,
-     *         description = "Bad request"
-     *     ),
-     *     @SWG\Response (
      *         response = 404,
      *         description = "User not found"
      *     ),
@@ -104,35 +102,40 @@ class SendRecoveryCodeAction extends Action
      * Send recovery code to user
      *
      * @return array
-     * @throws BadRequestHttpException
+     * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
     public function run()
     {
         $phoneNumber = \Yii::$app->request->post('phone_number');
+        $recoveryCode = '0000'; //rand(1000, 9999);
 
-        $recoveryCode = rand(1000, 9999);
-        /** @var $user RestUserEntity */
         $user = new RestUserEntity();
-        $user = $user->getUserByPhoneNumber($phoneNumber);
-
-        $user->recovery_code = $recoveryCode;
-        $user->created_recovery_code = time();
-
-        Yii::$app->sendSms->run(
-            'Ваш код востановления пароля, ' .$user->recovery_code. ' он будет активен в течении часа',
-            $phoneNumber
-        );
-
-        if ($user->save(false)) {
-            $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
-            return $response->content = [
-                'status'  => $response->statusCode,
-                'message' => 'Recovery code was successfully sent'
-            ];
-
+        if (($user = $user->findByPhoneNumber($phoneNumber)) === null) {
+            throw new NotFoundHttpException(Yii::t('app', 'User not found'));
         }
 
-        throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');
+        $attributes = ['recovery_code', 'created_recovery_code'];
+        try {
+            $user->recovery_code = $recoveryCode;
+            $user->created_recovery_code = time();
+
+//            Yii::$app->sendSms->run(
+//                'Ваш код востановления пароля, ' . $user->recovery_code . ' он будет активен в течении часа',
+//                $phoneNumber
+//            );
+
+            if ($user->save(false, $attributes)) {
+                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
+                return $response->content = [
+                    'status' => $response->statusCode,
+                    'message' => Yii::t('app', 'Recovery code was successfully sent')
+                ];
+
+            }
+            throw new ServerErrorHttpException();
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');
+        }
     }
 }

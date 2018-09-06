@@ -9,6 +9,8 @@ $params = array_merge(
 return [
     'id' => 'app-backend',
     'name' => 'Exchanger',
+    'sourceLanguage' => 'en',
+    'language' => 'en',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
@@ -18,11 +20,15 @@ return [
         ],
         'authorization' => [
             'class' => 'backend\modules\authorization\Module',
-        ]
+        ],
+        'gridview' =>  [
+            'class' => '\kartik\grid\Module',
+        ],
     ],
     'defaultRoute' => 'authorization/authorization/login',
     'components' => [
         'request' => [
+            'class' => 'common\components\language\LanguageRequest',
             'csrfParam' => '_csrf-backend',
             'baseUrl' => '/admin',
         ],
@@ -30,7 +36,19 @@ return [
             'identityClass' => 'common\models\user\User',
             'enableAutoLogin' => true,
             'identityCookie' => ['name' => '_identity-backend', 'httpOnly' => true],
-            'loginUrl' => 'authorization/authorization/login',
+            'loginUrl' => '/admin',
+            'on afterLogin' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->setStatusOnline(true);
+                $user->setLastLogin();
+            },
+            'on beforeLogout' => function ($event) {
+                /** @var \common\models\user\User $user */
+                $user = $event->identity;
+                $user->setStatusOnline(false);
+                $user->setLastLogin();
+            }
         ],
         'session' => [
             // this is the name of the session cookie used for login on the backend
@@ -49,28 +67,30 @@ return [
             'errorAction' => 'site/error',
         ],
         'urlManager' => [
+            'class' => 'common\components\language\LanguageUrlManager',
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'index'                      => 'admin/admin/index',
-                'update-manager-password'    => 'admin/admin/update-manager-password',
-                'managers-list'              => 'admin/admin/managers-list',
-                'manager/view/<id:\d+>'      => 'admin/manager/view',
-                'bid/index'                  => 'admin/bid/index',
-                'login'                      => 'authorization/authorization/login',
-                'invite-manager'             => 'admin/admin/invite-manager',
-                'logout'                     => 'authorization/authorization/logout',
-                'profile/index'              => 'admin/profile/index',
-                'profile/update'             => 'admin/profile/update',
-                'profile/verify'             => 'admin/profile/verify',
-                'bids'                       => 'admin/bid/index',
-                'bid/view/<id:\d+>'          => 'admin/bid/view',
-                'bid-history'                => 'admin/bid-history/index',
-                'notifications/index'        => 'admin/notifications/index',
-                'notification/view/<id:\d+>' => 'admin/notifications/view',
-                'review/index'               => 'admin/review/index',
-                'review/view/<id:\d+>'       => 'admin/review/view',
-                'invite/<action:[\w-]+>'     => 'admin/invite/<action>',
+                'index'                            => 'admin/dashboard/index',
+                'update-manager-password'          => 'admin/dashboard/update-manager-password',
+                'manager/<action:[\w-]+>'          => 'admin/manager/<action>',
+                'manager/<action:[\w-]+>/<id:\d+>' => 'admin/manager/<action>',
+                'manager/view/<id:\d+>'            => 'admin/manager/view',
+                'bid/<action:[\w-]+>'              => 'admin/bid/<action>',
+                'login'                            => 'authorization/authorization/login',
+                'logout'                           => 'authorization/authorization/logout',
+                'profile/<action:[\w-]+>'          => 'admin/profile/<action>',
+                'bid/view/<id:\d+>'                => 'admin/bid/view',
+                'bid-history/<action:[\w-]+>'      => 'admin/bid-history/<action>',
+                'notifications/index'              => 'admin/notifications/index',
+                'notifications/read-all'           => 'admin/notifications/read-all',
+                'notifications/delete-all'         => 'admin/notifications/delete-all',
+                'notification/view/<id:\d+>'       => 'admin/notifications/view',
+                'review/index'                     => 'admin/review/index',
+                'review/view/<id:\d+>'             => 'admin/review/view',
+                'invite/<action:[\w-]+>'           => 'admin/invite/<action>',
+                'reserve/<action:[\w-]+>'          => 'admin/reserve/<action>',
+                'reserve/<action:[\w-]+>/<id:\d+>' => 'admin/reserve/<action>',
             ],
         ],
         'view' => [
@@ -81,9 +101,5 @@ return [
             ],
         ],
     ],
-    'on beforeAction' => function ($event) {
-        $language = Yii::$app->session->get('language', 'en');
-        Yii::$app->language = $language;
-    },
     'params' => $params,
 ];

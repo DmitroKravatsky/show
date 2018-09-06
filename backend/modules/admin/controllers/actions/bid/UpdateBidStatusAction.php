@@ -2,12 +2,14 @@
 
 namespace backend\modules\admin\controllers\actions\bid;
 
+use backend\models\BackendUser;
 use backend\modules\admin\controllers\BidController;
 use common\models\bid\BidEntity;
 use common\models\user\User;
-use PHPUnit\Framework\Exception;
 use yii\base\Action;
 use yii\web\UnprocessableEntityHttpException;
+use Yii;
+use yii\web\Response;
 
 /**
  * Class UpdateBidStatusAction
@@ -21,21 +23,26 @@ class UpdateBidStatusAction extends Action
     /**
      * Updates a status of the bid
      * @return array
-     * @throws UnprocessableEntityHttpException
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\db\Exception
      */
     public function run()
     {
-        \Yii::$app->response->format = \yii\web\Response::FORMAT_JSON;
-
         $bodyParams = \Yii::$app->request->getBodyParams();
         $id = $bodyParams['id'];
         $newStatus = $bodyParams['status'];
 
+        Yii::$app->response->format = Response::FORMAT_JSON;
+        $transaction = \Yii::$app->db->beginTransaction();
         try {
             $bid = $this->controller->findBid($id);
 
             $bid->setScenario($bid::SCENARIO_UPDATE_BID_STATUS);
-            $bid->setAttribute('status', $newStatus);
+            $bid->status = $newStatus;
+            $bid->processed_by = Yii::$app->user->id;
+            if (($newStatus == BidEntity::STATUS_PAID_BY_US_DONE) || ($newStatus == BidEntity::STATUS_REJECTED)) {
+                $bid->processed = BidEntity::PROCESSED_YES;
+            }
 
             if ($bid->getDirtyAttributes()) {
                 if (!$bid->validate()) {
@@ -43,31 +50,40 @@ class UpdateBidStatusAction extends Action
                     throw new UnprocessableEntityHttpException();
                 }
                 $user = User::findOne(['id' => $bid->created_by]);
-                $transaction = \Yii::$app->db->beginTransaction();
+
                 if ($bid->save()) {
                     if ($user->email) {
-                        \Yii::$app->sendMail->run(
+                        Yii::$app->sendMail->run(
                             '@common/views/mail/sendBidStatus-html.php',
                             ['email' => $user->email, 'status' => $bid->status, 'id' => $bid->id],
                             \Yii::$app->params['supportEmail'], $user->email, 'status is change'
                         );
                         $transaction->commit();
-                        return ['status' => 200, 'message' => 'Status was updated'];
 
                     } elseif ($user->phone_number) {
-                        \Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
+                        Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
                         $transaction->commit();
-                        return ['status' => 200, 'message' => 'Status was updated'];
-
                     }
+
+                    $isAdmin = Yii::$app->user->can(BackendUser::ROLE_ADMIN);
+                    $result = [
+                        'status'    => 200,
+                        'message'   => Yii::t('app', 'Status successfully updated.'),
+                        'isAdmin'   => $isAdmin,
+                        'bidStatus' => $bid->status,
+                    ];
+                    if ($isAdmin) {
+                        $result['processedStatus'] = BidEntity::getProcessedStatusValue($bid->processed);
+                        $result['processedBy'] = Yii::$app->user->identity->profile->name;
+                    }
+                    return $result;
                 }
             }
-
-        } catch (Exception $e) {
+        } catch (\Exception $e) {
             $transaction->rollBack();
-            \Yii::$app->response->setStatusCode($e->getCode());
-            \Yii::error($e->getMessage());
+            Yii::error($e->getMessage());
+            Yii::$app->response->setStatusCode(500);
+            return  ['message' => Yii::t('app', 'Bid')];
         }
-
     }
 }

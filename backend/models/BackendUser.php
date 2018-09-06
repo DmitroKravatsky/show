@@ -4,6 +4,7 @@ namespace backend\models;
 
 use common\models\user\User;
 use Yii;
+use borales\extensions\phoneInput\PhoneInputValidator;
 
 class BackendUser extends User
 {
@@ -19,7 +20,7 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password', 'email',], 'required'],
+            [['password', 'email', 'phone_number',], 'required'],
             [['email', 'new_email',], 'email'],
             [['email'], 'checkEmailExistence'],
             [['verification_token'], 'string', 'max' => 255],
@@ -29,7 +30,19 @@ class BackendUser extends User
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
-            [['verification_code'], 'integer'],
+            [['verification_code', 'status_online', 'last_login', 'accept_invite',], 'integer'],
+            ['phone_number', PhoneInputValidator::class],
+            ['phone_number', 'checkPhoneNumberExistence'],
+        ];
+    }
+
+    public function attributeLabels()
+    {
+        return [
+            'password'         => Yii::t('app', 'Password'),
+            'currentPassword'  => Yii::t('app', 'Current Password'),
+            'repeatPassword'   => Yii::t('app', 'Repeat Password'),
+            'phone_number'     => Yii::t('app', 'Phone Number'),
         ];
     }
 
@@ -82,14 +95,24 @@ class BackendUser extends User
         }
     }
 
+    public function checkPhoneNumberExistence($attribute, $params)
+    {
+        $user = static::find()->where(['phone_number' => $this->phone_number])->andWhere(['!=', 'id', Yii::$app->user->id])->one();
+        if ($user !== null) {
+            $this->addError($attribute, Yii::t('app', 'This phone number address has already been taken.'));
+        }
+    }
+
     /**
      * @return array
      */
-    public static function getUsernames(): array
+    public static function getManagerNames(): array
     {
         return static::find()
             ->leftJoin('user_profile', 'user_id = user.id')
+            ->innerJoin('auth_assignment', 'auth_assignment.user_id = user.id')
             ->select(['name', 'user.id'])
+            ->where(['auth_assignment.item_name' => self::ROLE_MANAGER])
             ->indexBy('id')
             ->column();
     }
@@ -113,8 +136,6 @@ class BackendUser extends User
             self::STATUS_BANNED     => Yii::t('app', 'Banned'),
             self::STATUS_UNVERIFIED => Yii::t('app', 'Unverified'),
             self::STATUS_VERIFIED   => Yii::t('app', 'Verified'),
-
         ];
     }
-
 }

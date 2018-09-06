@@ -22,9 +22,9 @@ class DeleteAction extends Action
     {
         $notification = $this->controller->findNotification($id, Yii::$app->user->id);
         if ($notification->delete()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'The notification was successfully deleted.'));
+            Yii::$app->session->setFlash('success', Yii::t('app', 'Notification successfully deleted.'));
         } else {
-            Yii::$app->session->setFlash('error', Yii::t('app', 'Something wrong, please try again later'));
+            Yii::$app->session->setFlash('error', Yii::t('app', 'Something wrong, please try again later.'));
         }
 
         return $this->controller->redirect('index');

@@ -84,14 +84,19 @@ class DeleteAction extends Action
         try {
             $reviewModel = new ReviewEntity();
             if ($reviewModel->deleteReview($id)) {
-                return $this->controller->setResponse(200, 'Отзыв успешно удалён.', ['id' => $id]);
+                $response = \Yii::$app->getResponse()->setStatusCode(200, \Yii::t('app', 'Review was deleted'));
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => $response->statusText,
+                    'data'    => ['id' => $id]
+                ];
             }
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении отзыва.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Error on review deleting'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении отзыва.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Error on review deleting'));
         }
     }
 }

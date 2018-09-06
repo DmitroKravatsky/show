@@ -21,7 +21,8 @@ class DestroyAction extends Action
 
         $user->invite_code = null;
         $user->invite_code_status = BackendUser::STATUS_INVITE_INACTIVE;
-        $user->save(false, ['invite_code', 'invite_code_status']);
+        $user->accept_invite = false;
+        $user->save(false, ['invite_code', 'invite_code_status', 'accept_invite']);
 
         Yii::$app->user->logout();
         Yii::$app->session->setFlash('error', Yii::t('app', 'Invitation link expired.'));

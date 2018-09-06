@@ -3,12 +3,19 @@
 namespace common\models\bid;
 
 use common\models\{
-    bid\repositories\RestBidRepository, bidHistory\BidHistory, user\User, userNotifications\UserNotificationsEntity, userProfile\UserProfileEntity
+    bid\repositories\RestBidRepository,
+    bidHistory\BidHistory,
+    user\User,
+    userNotifications\UserNotificationsEntity as Notification,
+    userProfile\UserProfileEntity
 };
-use rest\behaviors\ValidationExceptionFirstMessage;
-use yii\behaviors\TimestampBehavior;
-use yii\db\ActiveRecord;
+use yii\{
+    behaviors\TimestampBehavior,
+    db\ActiveRecord
+};
 use Yii;
+use rest\behaviors\ValidationExceptionFirstMessage;
+use borales\extensions\phoneInput\PhoneInputValidator;
 
 /**
  * Class BidEntity
@@ -60,15 +67,20 @@ class BidEntity extends ActiveRecord
     const RUB = 'rub';
     const EUR = 'eur';
 
-    const STATUS_NEW            = 'new';
-    const STATUS_PAID_BY_CLIENT = 'paid_by_client';
-    const STATUS_IN_PROGRESS    = 'in_progress';
-    const STATUS_PAID_BY_US     = 'paid_by_us';
-    const STATUS_DONE           = 'done';
-    const STATUS_REJECTED       = 'rejected';
+    const STATUS_NEW             = 'new';
+    const STATUS_PAID_BY_CLIENT  = 'paid_by_client';
+    const STATUS_IN_PROGRESS     = 'in_progress';
+    const STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
+    const STATUS_REJECTED        = 'rejected';
 
     const PROCESSED_YES = 1;
     const PROCESSED_NO  = 0;
+
+    const SORT_WEEK    = 'week';
+    const SORT_MONTH   = 'month';
+
+    const SECONDS_IN_WEEK  = 3600 * 24 * 7;
+    const SECONDS_IN_MONTH = 3600 * 24 * 30;
 
     /**
      * @var bool
@@ -112,12 +124,23 @@ class BidEntity extends ActiveRecord
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_NEW            => Yii::t('app', 'New'),
-            self::STATUS_PAID_BY_CLIENT => Yii::t('app', 'Paid by client'),
-            self::STATUS_IN_PROGRESS    => Yii::t('app', 'In progress'),
-            self::STATUS_PAID_BY_US     => Yii::t('app', 'Paid by us'),
-            self::STATUS_DONE           => Yii::t('app', 'Done'),
-            self::STATUS_REJECTED       => Yii::t('app', 'Rejected'),
+            self::STATUS_NEW             => Yii::t('app', 'New'),
+            self::STATUS_PAID_BY_CLIENT  => Yii::t('app', 'Paid by client'),
+            self::STATUS_IN_PROGRESS     => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
+            self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public static function getManagerAllowedStatuses(): array
+    {
+        return [
+            self::STATUS_IN_PROGRESS     => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
+            self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
         ];
     }
 
@@ -146,6 +169,30 @@ class BidEntity extends ActiveRecord
     {
         $systems = static::paymentSystemLabels();
         return $systems[$system];
+    }
+
+    /**
+     * @return array
+     */
+    public static function currencyLabels(): array
+    {
+        return [
+            self::USD => Yii::t('app', 'USD'),
+            self::UAH => Yii::t('app', 'UAH'),
+            self::RUB => Yii::t('app', 'RUB'),
+            self::EUR => Yii::t('app', 'EUR'),
+        ];
+    }
+
+    /**
+     * Returns currency label
+     * @param $currency
+     * @return string
+     */
+    public static function getCurrencyValue($currency): string
+    {
+        $currencies = static::currencyLabels();
+        return $currencies[$currency];
     }
 
     /**
@@ -191,7 +238,7 @@ class BidEntity extends ActiveRecord
             'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
             'email', 'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
         ];
-        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status'];
+        $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status', 'processed', 'processed_by'];
 
         return $scenarios;
     }
@@ -213,8 +260,8 @@ class BidEntity extends ActiveRecord
             ],
             ['status', 'in', 'range' =>
                 [
-                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_DONE, self::STATUS_IN_PROGRESS,
-                    self::STATUS_PAID_BY_US, self::STATUS_PAID_BY_CLIENT,
+                    self::STATUS_NEW, self::STATUS_REJECTED, self::STATUS_IN_PROGRESS,
+                    self::STATUS_PAID_BY_US_DONE, self::STATUS_PAID_BY_CLIENT,
                 ]
             ],
             [
@@ -225,8 +272,10 @@ class BidEntity extends ActiveRecord
                 'required'
             ],
             [['email'], 'string', 'max' => 255],
-            [['from_wallet', 'to_wallet'], 'string', 'max' => 32],
+            [['from_wallet', 'to_wallet'], 'string', 'max' => 32, 'min' => 12],
+            [['from_wallet', 'to_wallet'], 'integer'],
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
+            [['name', 'last_name'], 'string', 'min' => 2],
             [
                 ['from_payment_system', 'to_payment_system'],
                 'in',
@@ -234,7 +283,7 @@ class BidEntity extends ActiveRecord
             ],
             [['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]],
             ['email', 'email'],
-            [['from_sum', 'to_sum'], 'double'],
+            [['from_sum', 'to_sum'], 'double', 'min' => 10],
             [['created_at', 'updated_at'], 'safe'],
             ['terms_confirm', 'boolean', 'on' => self::SCENARIO_CREATE],
             [
@@ -248,6 +297,7 @@ class BidEntity extends ActiveRecord
             [['processed_by'], 'required', 'when' => function (self $bid) {
                 return $bid->processed;
             }],
+            [['phone_number'], PhoneInputValidator::class],
 
         ];
     }
@@ -269,25 +319,19 @@ class BidEntity extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($this->status == self::STATUS_DONE) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForDoneBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_DONE,
+                Notification::getMessageForDoneBid(),
+                $this->created_by,
+                Notification::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         } elseif ($this->status == self::STATUS_REJECTED) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForRejectedBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_REJECTED,
+                Notification::getMessageForRejectedBid(),
+                $this->created_by,
+                Notification::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -308,33 +352,28 @@ class BidEntity extends ActiveRecord
         $bidHistory->save(false);
 
         if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
-            (new UserNotificationsEntity())->addNotify(
-                UserNotificationsEntity::getMessageForClientPaid([
-                    'from_currency' => $this->from_currency,
-                    'from_sum'      => $this->from_sum,
-                    'to_wallet'     => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_PAID_CLIENT,
+                Notification::getMessageForClientPaid(),
+                $this->created_by,
+                Notification::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
             );
         }
         if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
-            (new UserNotificationsEntity())->addNotify(
-                UserNotificationsEntity::getMessageForInProgress([
-                    'bid_id' => $this->id,
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_BID_IN_PROGRESS,
+                Notification::getMessageForInProgress(),
+                $this->created_by,
+                Notification::getCustomDataForInProgress($this->id)
             );
         }
 
         if ($insert && $this->created_by === Yii::$app->user->id) {
-            (new UserNotificationsEntity)->addNotify(
-                UserNotificationsEntity::getMessageForNewBid([
-                    'created_by'  => $this->created_by,
-                    'to_sum'      => $this->to_sum,
-                    'to_currency' => $this->to_currency,
-                    'to_wallet'   => $this->to_wallet
-                ]),
-                $this->created_by
+            (new Notification())->addNotify(
+                Notification::TYPE_NEW_BID,
+                Notification::getMessageForNewBid(),
+                $this->created_by,
+                Notification::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -358,22 +397,6 @@ class BidEntity extends ActiveRecord
     {
         $this->processed = !$this->processed;
         return $this->save(false);
-    }
-
-    /**
-     * Returns all available values of bid status
-     * @return array
-     */
-    public static function getAllAvailableStatuses(): array
-    {
-        return [
-            BidEntity::STATUS_NEW             => BidEntity::STATUS_NEW,
-            BidEntity::STATUS_PAID_BY_CLIENT  => BidEntity::STATUS_PAID_BY_CLIENT,
-            BidEntity::STATUS_IN_PROGRESS     => BidEntity::STATUS_IN_PROGRESS,
-            BidEntity::STATUS_PAID_BY_US      => BidEntity::STATUS_PAID_BY_US,
-            BidEntity::STATUS_DONE            => BidEntity::STATUS_DONE,
-            BidEntity::STATUS_REJECTED        => BidEntity::STATUS_REJECTED,
-        ];
     }
 
     /**
@@ -424,5 +447,18 @@ class BidEntity extends ActiveRecord
     public function getManagerProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'processed_by']);
+    }
+
+    /**
+     * @param string $status
+     * @return bool
+     */
+    public static function canUpdateStatus($status): bool
+    {
+        $statuses = [self::STATUS_PAID_BY_US_DONE, self::STATUS_REJECTED];
+        if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($status, $statuses)) {
+            return false;
+        }
+        return true;
     }
 }
