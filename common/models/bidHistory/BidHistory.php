@@ -23,12 +23,11 @@ use common\models\bid\BidEntity;
  */
 class BidHistory extends ActiveRecord
 {
-    const STATUS_NEW            = 'new';
-    const STATUS_PAID_BY_CLIENT = 'paid_by_client';
-    const STATUS_IN_PROGRESS    = 'in_progress';
-    const STATUS_PAID_BY_US     = 'paid_by_us';
-    const STATUS_DONE           = 'done';
-    const STATUS_REJECTED       = 'rejected';
+    const STATUS_NEW             = 'new';
+    const STATUS_PAID_BY_CLIENT  = 'paid_by_client';
+    const STATUS_IN_PROGRESS     = 'in_progress';
+    const STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
+    const STATUS_REJECTED        = 'rejected';
 
     /**
      * @return array
@@ -36,12 +35,11 @@ class BidHistory extends ActiveRecord
     public static function statusLabels(): array
     {
         return [
-            self::STATUS_NEW            => Yii::t('app', 'New'),
-            self::STATUS_PAID_BY_CLIENT => Yii::t('app', 'Paid by client'),
-            self::STATUS_IN_PROGRESS    => Yii::t('app', 'In progress'),
-            self::STATUS_PAID_BY_US     => Yii::t('app', 'Paid by us'),
-            self::STATUS_DONE           => Yii::t('app', 'Done'),
-            self::STATUS_REJECTED       => Yii::t('app', 'Rejected'),
+            self::STATUS_NEW             => Yii::t('app', 'New'),
+            self::STATUS_PAID_BY_CLIENT  => Yii::t('app', 'Paid by client'),
+            self::STATUS_IN_PROGRESS     => Yii::t('app', 'In progress'),
+            self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
+            self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
         ];
     }
 

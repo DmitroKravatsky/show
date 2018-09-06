@@ -106,11 +106,13 @@ class BackendUser extends User
     /**
      * @return array
      */
-    public static function getUsernames(): array
+    public static function getManagerNames(): array
     {
         return static::find()
             ->leftJoin('user_profile', 'user_id = user.id')
+            ->innerJoin('auth_assignment', 'auth_assignment.user_id = user.id')
             ->select(['name', 'user.id'])
+            ->where(['auth_assignment.item_name' => self::ROLE_MANAGER])
             ->indexBy('id')
             ->column();
     }

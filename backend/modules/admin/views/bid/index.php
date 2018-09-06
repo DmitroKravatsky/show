@@ -1,15 +1,13 @@
 <?php
 
-use kartik\daterange\DateRangePicker;
-use kartik\grid\GridView;
-use yii\helpers\Html;
-use common\models\bid\BidEntity;
-use yii\helpers\Url;
+use kartik\{ daterange\DateRangePicker, grid\GridView };
+use yii\helpers\{ Html, Url };
+use common\models\{ bid\BidEntity, user\User };
 use yii\widgets\Pjax;
-use common\models\user\User;
 use common\helpers\UrlHelper;
 use yiister\gentelella\widgets\Panel;
 use common\helpers\Toolbar;
+use backend\models\BackendUser;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -23,6 +21,11 @@ $this->params['breadcrumbs'][] = $this->title;
         <?= $message ?>
     </div>
 <?php endif;?>
+
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
+<div id="bid-status-error"></div>
+<div id="bid-status-success"></div>
 
 <div class="bid-index">
     <?php Panel::begin([
@@ -60,10 +63,11 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'status',
                         'value' => function($model) {
-                            return Html::activeDropDownList($model, 'status', BidEntity::statusLabels(),
-                                [
-                                    'class' => 'status',
-                                ]
+                            return Html::activeDropDownList(
+                                $model,
+                                'status',
+                                BidEntity::getManagerAllowedStatuses(),
+                                ['class' => 'status',]
                             );
                         },
                         'contentOptions' => ['style' => 'width:11%;'],
@@ -89,6 +93,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'processed_by',
+                        'filter' => BackendUser::getManagerNames(),
                         'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
                         'value' => function (BidEntity $bid) {
                             return $bid->perfomer->fullName ?? null;
@@ -170,4 +175,5 @@ $this->params['breadcrumbs'][] = $this->title;
             ])?>
         <?php Pjax::end()?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>
