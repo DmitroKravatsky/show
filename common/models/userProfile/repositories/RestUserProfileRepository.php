@@ -61,11 +61,11 @@ trait RestUserProfileRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
-            $userProfile = UserProfileEntity::findOne(['user_id' => \Yii::$app->user->id]);
+            $userProfile = static::findUserProfile(\Yii::$app->user->id);
+
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
-            if (isset($params['base64_image'])) {
+            if (isset($params['avatar'])) {
                 $params['avatar'] = $this->updateAvatar($params);
-                unset($params['base64_image']);
             }
             $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
@@ -83,7 +83,7 @@ trait RestUserProfileRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             $transaction->rollBack();
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении профиля.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Server error occurred while updating profile'));
         }
     }
 
@@ -148,9 +148,24 @@ trait RestUserProfileRepository
         $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
             . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
 
-        $result = $s3->commands()->put($fileName, base64_decode($params['base64_image']))
+        $result = $s3->commands()->put($fileName, base64_decode($params['avatar']))
             ->withContentType("image/jpeg")->execute();
         return $result->get('ObjectURL');
 
+    }
+
+    /**
+     * Returns userProfile model
+     * @param $userId integer User id
+     * @return mixed
+     * @throws NotFoundHttpException
+     */
+    public static function findUserProfile($userId)
+    {
+        $userProfile = static::find()->where(['user_id' => $userId])->one();
+        if (!$userProfile) {
+            throw new NotFoundHttpException();
+        }
+        return $userProfile;
     }
 }

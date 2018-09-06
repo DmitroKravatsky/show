@@ -157,6 +157,7 @@ class m180816_114157_i18n_init extends Migration
             [142, 'app', 'Manager successfully created.'],
             [143, 'app', 'Invite Manager.'],
             [144, 'app', 'Accept Invite'],
+            [145, 'app', 'Server error occurred while updating profile'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -304,6 +305,7 @@ class m180816_114157_i18n_init extends Migration
             [142, 'ru', 'Менеджер успешно создан.'],
             [143, 'ru', 'Пригласить Менеджера'],
             [144, 'ru', 'Инвайт Принят'],
+            [145, 'ru', 'Произошла ошибка на сервере при обновлении профиля '],
         ]);
     }
 
