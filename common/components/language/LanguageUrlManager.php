@@ -14,7 +14,8 @@ class LanguageUrlManager extends UrlManager
         $url = parent::createUrl($params);
 
         $explodeUrl = explode($this->prefixUrl, $url);
+        $language = Yii::$app->session->get('language') ?? Yii::$app->language;
 
-        return $this->prefixUrl . '/' . Yii::$app->language . $explodeUrl[1];
+        return $this->prefixUrl . '/' . $language . $explodeUrl[1];
     }
 }

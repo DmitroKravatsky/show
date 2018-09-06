@@ -93,6 +93,7 @@ class SiteController extends Controller
     public function actionToggleLanguage($language)
     {
         Yii::$app->language = $language;
+        Yii::$app->session->set('language', $language);
 
         if (Yii::$app->user->isGuest) {
             return $this->redirect(Yii::$app->request->baseUrl . '/' . $language);
