@@ -247,10 +247,6 @@ class RestUserEntity extends User
             $this->status = self::STATUS_VERIFIED;
         }
 
-        if ($this->scenario === self::SCENARIO_SOCIAL_REGISTER) {
-            $this->status = self::STATUS_VERIFIED;
-        }
-
         return true;
     }
 
@@ -458,11 +454,19 @@ class RestUserEntity extends User
             self::SCENARIO_UPDATE_PASSWORD, self::SCENARIO_REGISTER_BY_BID
         ];
 
+        $registrationScenarios = [
+            self::SCENARIO_REGISTER, self::SCENARIO_REGISTER_BY_BID
+        ];
+
         if (in_array($this->scenario, $scenarios)) {
             $this->auth_key = \Yii::$app->security->generateRandomString();
             $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-            $this->status = self::STATUS_UNVERIFIED;
             $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+            $this->status = self::STATUS_VERIFIED;
+        }
+
+        if (in_array($this->scenario, $registrationScenarios)) {
+            $this->status = self::STATUS_UNVERIFIED;
         }
     }
 }
