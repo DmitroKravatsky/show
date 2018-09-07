@@ -53,12 +53,12 @@ $this->params['breadcrumbs']['title'] = $this->title;
 
                     <div class="form-group">
                         <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                            <?= Yii::t('app', 'Email') ?><span class="required">*</span>
+                            E-mail<span class="required">*</span>
                         </label>
 
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <?= $formRegistration->field($modelRegistration, 'email', ['enableAjaxValidation' => true])
-                                ->textInput(['placeholder' => Yii::t('app', 'E-mail')])
+                                ->textInput(['placeholder' => 'E-mail'])
                                 ->label(false)
                             ?>
                         </div>
@@ -71,7 +71,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
 
                         <div class="col-md-6 col-sm-6 col-xs-12">
                             <?= $formRegistration->field($modelRegistration, 'phone_number', ['enableAjaxValidation' => true, 'enableClientValidation' => false])
-                                ->textInput(['placeholder' => Yii::t('app', '+79788765123')])
+                                ->textInput(['placeholder' => '+79788765123'])
                                 ->label(false)
                             ?>
                         </div>

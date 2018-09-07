@@ -43,6 +43,7 @@ class BackendUser extends User
             'currentPassword'  => Yii::t('app', 'Current Password'),
             'repeatPassword'   => Yii::t('app', 'Repeat Password'),
             'phone_number'     => Yii::t('app', 'Phone Number'),
+            'source'           => Yii::t('app', 'Source'),
         ];
     }
 
