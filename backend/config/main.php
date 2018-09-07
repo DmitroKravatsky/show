@@ -1,4 +1,7 @@
 <?php
+
+use common\helpers\UrlHelper;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -101,5 +104,8 @@ return [
             ],
         ],
     ],
+    'on beforeAction' => function () {
+        Yii::$app->getResponse()->headers->set('X-Pjax-Url', UrlHelper::getCustomUrl());
+    },
     'params' => $params,
 ];
