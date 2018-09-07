@@ -78,7 +78,6 @@ return [
                 'update-manager-password'                => 'admin/dashboard/update-manager-password',
                 'manager/<action:[\w-]+>'                => 'admin/manager/<action>',
                 'manager/<action:[\w-]+>/<id:\d+>'       => 'admin/manager/<action>',
-                'manager/view/<id:\d+>'                  => 'admin/manager/view',
                 'bid/<action:[\w-]+>'                    => 'admin/bid/<action>',
                 'login'                                  => 'authorization/authorization/login',
                 'logout'                                 => 'authorization/authorization/logout',

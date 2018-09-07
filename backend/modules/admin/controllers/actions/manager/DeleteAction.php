@@ -37,6 +37,6 @@ class DeleteAction extends Action
             Yii::$app->session->setFlash('error', Yii::t('app', 'Something wrong, please try again later.'));
             throw new ServerErrorHttpException();
         }
-        return $this->controller->redirect(Url::to('index'));
+        return $this->controller->redirect(Url::to(\Yii::$app->request->referrer));
     }
 }
