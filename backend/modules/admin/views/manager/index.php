@@ -9,6 +9,7 @@ use yiister\gentelella\widgets\Panel;
 use common\helpers\UrlHelper;
 use common\helpers\Toolbar;
 use kartik\daterange\DateRangePicker;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var \common\models\user\UserSearch $searchModel */
@@ -18,11 +19,9 @@ $this->title = Yii::t('app', 'Managers');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<style>
-    .collapse-link {
-        margin-left: 46px;
-    }
-</style>
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
+<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
 <div class="manager-index">
     <div id="re-invite-success"></div>

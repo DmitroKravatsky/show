@@ -6,11 +6,14 @@
 use yii\helpers\Html;
 use yii\widgets\ActiveForm;
 use yiister\gentelella\widgets\Panel;
+use yii\web\View;
 
 $this->title = Yii::t('app', 'Invite Manager');
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Managers'), 'url' => ['index']];
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
+
+<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
 <div class="invite-index">
     <div class="row">

@@ -8,6 +8,7 @@ use common\helpers\UrlHelper;
 use yiister\gentelella\widgets\Panel;
 use common\helpers\Toolbar;
 use backend\models\BackendUser;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -23,6 +24,8 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php endif;?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
+<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
 <div id="bid-status-error"></div>
 <div id="bid-status-success"></div>
