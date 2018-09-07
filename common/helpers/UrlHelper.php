@@ -4,6 +4,7 @@ namespace common\helpers;
 
 use Yii;
 use yii\helpers\Url;
+use common\models\language\Language;
 
 class UrlHelper
 {
@@ -33,5 +34,29 @@ class UrlHelper
             $normalizeUrl = $normalizeUrl . '?' . $queryParams;
         }
         return $normalizeUrl;
+    }
+
+    public static function getReferrerUrlByLocale()
+    {
+        $referrer = Yii::$app->request->referrer;
+        $langCodes = static::getLanguageCodes();
+
+        $pattern = '(';
+        foreach ($langCodes as $langCode) {
+            $pattern .= $langCode . '|';
+        }
+        $pattern = rtrim($pattern, '|');
+        $pattern .= ')';
+
+        return preg_replace($pattern, Yii::$app->language, $referrer);
+    }
+
+    /**
+     * Returns an array of available language codes
+     * @return array
+     */
+    protected static function getLanguageCodes()
+    {
+        return array_keys(Language::getVisibleList());
     }
 }
