@@ -19,26 +19,49 @@ use Yii;
 /**
  * Class UserNotificationsEntity
  * @package common\models\userNotifications
- * @property integer $id
- * @property integer $user_id
- * @property integer $notification_id
- * @property string  $is_read
- * @property integer $created_at
- * @property integer $updated_at
  *
  * @mixin ValidationExceptionFirstMessage
  *
+ * @property integer $id
+ * @property integer $type
+ * @property integer $recipient_id
+ * @property string $text
+ * @property string $custom_data
+ * @property string $status
+ * @property integer $created_at
+ * @property integer $updated_at
+ *
+ * @property User $recipient
+ * @property UserProfileEntity $recipientProfile
  */
-class UserNotificationsEntity extends ActiveRecord
+class NotificationsEntity extends ActiveRecord
 {
     use RestUserNotificationsRepository;
+
+    const TYPE_NEW_USER        = 'new_user';
+    const TYPE_NEW_BID         = 'new_bid';
+    const TYPE_PAID_CLIENT     = 'paid_by_client';
+    const TYPE_BID_IN_PROGRESS = 'bid_in_progress';
+    const TYPE_BID_DONE        = 'bid_done';
+    const TYPE_BID_REJECTED    = 'bid_rejected';
 
     /**
      * @return string
      */
     public static function tableName(): string
     {
-        return '{{%user_notifications}}';
+        return '{{%notifications}}';
+    }
+
+    /**
+     * @return array
+     */
+    public static function getTypeLabels(): array
+    {
+        return [
+            self::TYPE_NEW_USER => Yii::t('app', 'New User'),
+            self::TYPE_NEW_BID  => Yii::t('app', 'New Bid'),
+        ];
     }
 
     /**
@@ -48,11 +71,29 @@ class UserNotificationsEntity extends ActiveRecord
     {
         return [
             'id'           => '#',
-            'user_id'      => Yii::t('app', 'User id'),
-            'notification_id' => Yii::t('app', 'Text'),
-            'is_read'       => Yii::t('app', 'Read'),
+            'text'         => Yii::t('app', 'Text'),
+            'type'         => Yii::t('app', 'Notification Type'),
             'created_at'   => Yii::t('app', 'Created At'),
             'updated_at'   => Yii::t('app', 'Updated At'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [
+                'type',
+                'enum',
+                [
+                    self::TYPE_NEW_USER, self::TYPE_NEW_BID, self::TYPE_PAID_CLIENT,
+                    self::TYPE_BID_IN_PROGRESS, self::TYPE_BID_DONE, self::TYPE_BID_REJECTED
+                ]
+            ],
+            ['text', 'string'],
+            [['custom_data'], 'safe'],
         ];
     }
 
@@ -64,23 +105,8 @@ class UserNotificationsEntity extends ActiveRecord
         return [
             'TimestampBehavior'               => TimestampBehavior::class,
             'ValidationExceptionFirstMessage' => ValidationExceptionFirstMessage::class,
+            'json'                            => ['class' => JsonBehavior::class, 'attributes' => ['custom_data']],
         ];
-    }
-
-    /**
-     * @return \yii\db\ActiveQuery
-     */
-    public function getRecipient()
-    {
-        return $this->hasOne(User::class, ['id' => 'recipient_id']);
-    }
-
-    /**
-     * @return int
-     */
-    public static function getCountUnreadNotificationsByRecipient(): int
-    {
-       return (int) static::find()->where(['is_read' => 0, 'user_id' => Yii::$app->user->id])->count();
     }
 
     /**
@@ -133,28 +159,6 @@ class UserNotificationsEntity extends ActiveRecord
         ];
     }
 
-    /**
-     * Returns a list of users unread notifications
-     * @return static[]
-     */
-    public static function getUnreadUserNotifications($limit)
-    {
-        return self::find()
-            ->where(['is_read' => 0, 'user_id' => Yii::$app->user->id])
-            ->with('notification')
-            ->limit($limit)
-            ->orderBy(['created_at' => SORT_DESC])
-            ->all();
-    }
-
-    /**
-     * Relates UserNotificationsEntity model with UserProfile model
-     * @return \yii\db\ActiveQuery
-     */
-    public function getUserProfile()
-    {
-        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'user_id']);
-    }
 
     /**
      * Generates a message for paid bid by client
@@ -206,23 +210,8 @@ class UserNotificationsEntity extends ActiveRecord
         return ['bid_id' => $bidId];
     }
 
-    /**
-     * Relates UserNotificationsEntity model with Notifications model
-     * @return \yii\db\ActiveQuery
-     */
-    public function getNotification()
+    public function getUserNotifications()
     {
-        return $this->hasOne(NotificationsEntity::class, ['id' => 'notification_id']);
+        return $this->hasOne(UserNotificationsEntity::class, ['notification_id' => 'id']);
     }
-
-    public function getIsReadStatuses()
-    {
-        return [0 => Yii::t('app', 'Is Not read'), 1 => Yii::t('app', 'Is read')];
-    }
-
-    public static function getIsReadLabel($value)
-    {
-        return $value ? Yii::t('app', 'Is read') : Yii::t('app', 'Is Not read');
-    }
-
 }

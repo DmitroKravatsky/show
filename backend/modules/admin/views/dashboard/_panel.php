@@ -4,10 +4,7 @@ use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
-    bid\BidEntity,
-    userNotifications\UserNotificationsEntity as Notification,
-    userNotifications\UserNotificationsSearch,
-    user\User
+    bid\BidEntity, userNotifications\NotificationsEntity, userNotifications\UserNotificationsEntity, userNotifications\NotificationsSearch, user\User
 };
 use yii\helpers\{
     Html,
@@ -26,7 +23,7 @@ use common\helpers\UrlHelper;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch UserNotificationsSearch */
+/* @var $notificationsSearch NotificationsSearch */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -291,16 +288,17 @@ use common\helpers\UrlHelper;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'status',
-                        'filter' => Notification::getStatusLabels(),
-                        'value' => function (Notification $notification) {
-                            return Notification::getStatusValue($notification->status);
+                        'attribute' => 'read',
+                        'label' => 'Status',
+                        'filter' =>  (new UserNotificationsEntity)->getIsReadStatuses(),
+                        'value' => function (NotificationsEntity $notification) {
+                            return UserNotificationsEntity::getIsReadLabel($notification->userNotifications->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (Notification $notification) {
-                            if ($notification->type = Notification::TYPE_NEW_USER) {
+                        'value' => function (NotificationsEntity $notification) {
+                            if ($notification->type = NotificationsEntity::TYPE_NEW_USER) {
                                 return StringHelper::truncate(Yii::t('app', $notification->text, [
                                     'phone_number' => $notification->custom_data->phone_number ?? null
                                 ]), 40);

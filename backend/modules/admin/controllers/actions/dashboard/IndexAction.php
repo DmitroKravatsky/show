@@ -10,7 +10,7 @@ use common\models\review\ReviewSearch;
 use common\models\user\User;
 use common\models\user\UserSearch;
 use common\models\userNotifications\UserNotificationsEntity;
-use common\models\userNotifications\UserNotificationsSearch;
+use common\models\userNotifications\NotificationsSearch;
 use yii\base\Action;
 use yii\web\ForbiddenHttpException;
 
@@ -46,7 +46,7 @@ class IndexAction extends Action
         $reviewSearch = new ReviewSearch();
         $userSearch = new UserSearch();
         $userSearch->role = User::ROLE_MANAGER;
-        $notificationsSearch = new UserNotificationsSearch();
+        $notificationsSearch = new NotificationsSearch();
 
         $bidProvider = $bidSearch->search($params);
         $reviewProvider = $reviewSearch->search($params);
