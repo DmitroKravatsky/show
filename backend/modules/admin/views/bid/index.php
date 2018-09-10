@@ -9,6 +9,7 @@ use yiister\gentelella\widgets\Panel;
 use common\helpers\Toolbar;
 use backend\models\BackendUser;
 use yii\web\View;
+use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -55,6 +56,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
+                'rowOptions' => function (BidEntity $bid) {
+                    return $bid->status === BidEntity::STATUS_NEW ? ['class' => 'success'] : [];
+                },
                 'columns' => [
                     [
                         'class' => 'kartik\grid\SerialColumn',
@@ -65,16 +69,24 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'status',
+                        'filter' => BidEntity::statusLabels(),
                         'value' => function (BidEntity $bid) {
-                            return Html::activeDropDownList(
-                                $bid,
-                                'status',
-                                BidEntity::getManagerAllowedStatuses(),
-                                [
+                            return BidEntity::getStatusValue($bid->status);
+                        },
+                    ],
+                    [
+                        'attribute' => 'change_status',
+                        'label' => Yii::t('app', 'Change Status'),
+                        'value' => function (BidEntity $bid) {
+                            return Select2::widget([
+                                'name'    => 'status',
+                                'data'    => BidEntity::getManagerAllowedStatuses(),
+                                'options' => [
                                     'class' => 'status',
-                                    'disabled' => !BidEntity::canUpdateStatus($bid->status)
-                                ]
-                            );
+                                    'disabled' => !BidEntity::canUpdateStatus($bid->status),
+                                    'placeholder' => Yii::t('app', 'Select status')
+                                ],
+                            ]);
                         },
                         'contentOptions' => ['style' => 'width:11%;'],
                         'format' => 'raw',

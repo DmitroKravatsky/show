@@ -161,6 +161,8 @@ class m180816_114157_i18n_init extends Migration
             [146, 'app', 'Source'],
             [147, 'app', 'Read all'],
             [148, 'app', 'Delete all'],
+            [149, 'app', 'Change Status'],
+            [150, 'app', 'Select status'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -312,6 +314,8 @@ class m180816_114157_i18n_init extends Migration
             [146, 'ru', 'Источник'],
             [147, 'ru', 'Прочитать все'],
             [148, 'ru', 'Удалить все'],
+            [149, 'ru', 'Изменить Статус'],
+            [150, 'ru', 'Выбрать статус'],
         ]);
     }
 
