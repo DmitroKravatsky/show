@@ -1,9 +1,9 @@
 
-    $('.status').on('change', function () {
+    $('body').on('change', '.status', function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
         var processedDataColSeq = 5;
-        var processedByDataColSeq = 6;
+        var processedByDataColSeq = 7;
         var STATUS_REJECTED = 'rejected';
         var STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
         var ACTION_ID = 'view';
@@ -18,13 +18,15 @@
                 var processedStatus = result.processedStatus;
                 var processedBy = result.processedBy;
                 var bidStatus = result.bidStatus;
+                var tableRow = $('tr[data-key="' + fieldId + '"]');
 
                 if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
                     if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
                         $('.status').prop('disabled', true);
                     }
                 } else {
-                    $('tr[data-key="' + fieldId + '"]').children().each(function () {
+                    tableRow.removeClass('success');
+                    tableRow.children().each(function () {
                         if ((typeof processedStatus !== undefined) && (typeof processedBy !== undefined)) {
                             if ($(this).data('col-seq') === processedDataColSeq) {
                                 $(this).html(processedStatus);

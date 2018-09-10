@@ -56,7 +56,7 @@ class BidSearch extends BidEntity
      */
     public function search($params)
     {
-        $query = BidEntity::find()->joinWith(['managerProfile']);
+        $query = BidEntity::find()->joinWith(['managerProfile'])->with('processedByProfile');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query->orderBy(['created_at' => SORT_DESC]),
@@ -72,9 +72,8 @@ class BidSearch extends BidEntity
         }
 
         $query->andFilterWhere([
-            'from_sum' => $this->from_sum,
-            'to_sum' => $this->to_sum,
-            'processed' => $this->processed,
+            'processed'            => $this->processed,
+            'user_profile.user_id' => $this->processed_by,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
@@ -82,17 +81,9 @@ class BidSearch extends BidEntity
             ->andFilterWhere(['like', 'phone_number', $this->phone_number])
             ->andFilterWhere(['like', 'email', $this->email])
             ->andFilterWhere(['like', 'status', $this->status])
-            ->andFilterWhere(['like', 'from_payment_system', $this->from_payment_system])
-            ->andFilterWhere(['like', 'to_payment_system', $this->to_payment_system])
-            ->andFilterWhere(['like', 'from_wallet', $this->from_wallet])
-            ->andFilterWhere(['like', 'to_wallet', $this->to_wallet])
-            ->andFilterWhere(['like', 'from_currency', $this->from_currency])
-            ->andFilterWhere(['like', 'to_currency', $this->to_currency])
+            ->andFilterWhere(['like', 'from_payment_system', $this->from_wallet])
+            ->andFilterWhere(['like', 'to_payment_system', $this->to_wallet])
             ->andFilterWhere([
-                'or',
-                ['like', 'user_profile.name', $this->processed_by],
-                ['like', 'user_profile.last_name', $this->processed_by]
-            ])->andFilterWhere([
                 'or',
                 ['like', 'bid.name', $this->full_name],
                 ['like', 'bid.last_name', $this->full_name]

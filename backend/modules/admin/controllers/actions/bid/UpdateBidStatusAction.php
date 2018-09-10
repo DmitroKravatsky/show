@@ -62,7 +62,7 @@ class UpdateBidStatusAction extends Action
                         $transaction->commit();
 
                     } elseif ($user->phone_number) {
-                        Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
+                        //Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
                         $transaction->commit();
                     }
 
