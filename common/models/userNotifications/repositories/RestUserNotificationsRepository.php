@@ -2,6 +2,7 @@
 
 namespace common\models\userNotifications\repositories;
 
+use common\models\userNotifications\NotificationsEntity;
 use common\models\userNotifications\UserNotificationsEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
@@ -93,22 +94,44 @@ trait RestUserNotificationsRepository
      *
      * @param $type int
      * @param $text string
-     * @param $recipientId int
+     * @param $recipientId int|array
      * @param $customData string
      *
      * @return mixed
      */
-    public function addNotify($type, string $text, int $recipientId, $customData = null)
+    public function addNotify($type, string $text, $recipientId, $customData = null)
     {
-        $this->setAttributes([
-            'type'         => $type,
-            'text'         => $text,
-            'recipient_id' => $recipientId,
-            'custom_data'  => $customData
+        $notification = new NotificationsEntity();
+        $notification->setAttributes([
+            'type' => $type,
+            'text' => $text,
+            'custom_data' => $customData
         ]);
+        $notification->save();
+        $userNotificationRelation = new UserNotificationsEntity();
 
+        if (is_array($recipientId)) {
+            foreach ($recipientId as $id) {
+                $data[] = [
+                    'user_id'          => $recipientId,
+                    'notification_id ' => $notification->id,
+                    'custom_data'  => $customData,
+                    'is_read'  => 0
+                ];
+            }
+           return \Yii::$app->db->createCommand()->batchInsert(
+               self::tableName(),
+               ['type', 'text', 'custom_data'],
+               $data
+            );
 
-        return $this->save();
+        } elseif (is_int($recipientId)) {
+            $userNotificationRelation->user_id = $recipientId;
+            $userNotificationRelation->notification_id = $notification->id;
+            $userNotificationRelation->is_read = 0;
+
+            return $this->save();
+        }
     }
 
     /**

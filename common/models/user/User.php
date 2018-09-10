@@ -2,7 +2,8 @@
 
 namespace common\models\user;
 
-use common\models\userNotifications\UserNotificationsEntity as Notification;
+use common\models\userNotifications\NotificationsEntity;
+use common\models\userNotifications\repositories\RestUserNotificationsRepository;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -45,6 +46,8 @@ use Yii;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    use RestUserNotificationsRepository;
+
     const ROLE_ADMIN   = 'admin';
     const ROLE_GUEST   = 'guest';
     const ROLE_MANAGER = 'manager';
@@ -327,11 +330,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            (new Notification())->addNotify(
-                Notification::TYPE_NEW_USER,
-                Notification::getMessageForNewUser(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_NEW_USER,
+                NotificationsEntity::getMessageForNewUser(),
                 self::DEFAULT_ADMIN_ID,
-                Notification::getCustomDataForNewUser($this->phone_number)
+                NotificationsEntity::getCustomDataForNewUser($this->phone_number)
             );
         }
         return parent::afterSave($insert, $changedAttributes);
@@ -365,5 +368,21 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $statuses = static::getAcceptInviteLabels();
         return $statuses[$status];
+    }
+
+    public static function getAllOnlineManagersIds()
+    {
+        $managers =  static::find()
+            ->select('id')
+            ->leftJoin('auth_assignment', 'auth_assignment.user_id = id')
+            ->where(['user.status_online' => 1])
+            ->andWhere(['auth_assignment.item_name' => self::ROLE_MANAGER])
+            ->all();
+
+        foreach ($managers as $manager) {
+            $managersIds[] = $manager->id;
+        }
+//        var_dump($managersIds);
+        return $managersIds;
     }
 }

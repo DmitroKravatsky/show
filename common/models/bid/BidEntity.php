@@ -6,7 +6,7 @@ use common\models\{
     bid\repositories\RestBidRepository,
     bidHistory\BidHistory,
     user\User,
-    userNotifications\UserNotificationsEntity as Notification,
+    userNotifications\NotificationsEntity,
     userProfile\UserProfileEntity
 };
 use yii\{
@@ -320,18 +320,18 @@ class BidEntity extends ActiveRecord
     public function beforeSave($insert)
     {
         if ($this->status == self::STATUS_PAID_BY_US_DONE) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_DONE,
-                Notification::getMessageForDoneBid(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_DONE,
+                NotificationsEntity::getMessageForDoneBid(),
                 $this->created_by,
-                Notification::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         } elseif ($this->status == self::STATUS_REJECTED) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_REJECTED,
-                Notification::getMessageForRejectedBid(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_REJECTED,
+                NotificationsEntity::getMessageForRejectedBid(),
                 $this->created_by,
-                Notification::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -352,28 +352,28 @@ class BidEntity extends ActiveRecord
         $bidHistory->save(false);
 
         if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
-            (new Notification())->addNotify(
-                Notification::TYPE_PAID_CLIENT,
-                Notification::getMessageForClientPaid(),
-                $this->created_by,
-                Notification::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_PAID_CLIENT,
+                NotificationsEntity::getMessageForClientPaid(),
+                User::getAllOnlineManagersIds(),
+                NotificationsEntity::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
             );
         }
         if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_IN_PROGRESS,
-                Notification::getMessageForInProgress(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_IN_PROGRESS,
+                NotificationsEntity::getMessageForInProgress(),
                 $this->created_by,
-                Notification::getCustomDataForInProgress($this->id)
+                NotificationsEntity::getCustomDataForInProgress($this->id)
             );
         }
 
         if ($insert && $this->created_by === Yii::$app->user->id) {
-            (new Notification())->addNotify(
-                Notification::TYPE_NEW_BID,
-                Notification::getMessageForNewBid(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_NEW_BID,
+                NotificationsEntity::getMessageForNewBid(),
                 $this->created_by,
-                Notification::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 

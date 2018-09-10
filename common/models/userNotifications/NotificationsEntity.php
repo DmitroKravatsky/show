@@ -85,8 +85,8 @@ class NotificationsEntity extends ActiveRecord
         return [
             [
                 'type',
-                'enum',
-                [
+                'in',
+                'range' => [
                     self::TYPE_NEW_USER, self::TYPE_NEW_BID, self::TYPE_PAID_CLIENT,
                     self::TYPE_BID_IN_PROGRESS, self::TYPE_BID_DONE, self::TYPE_BID_REJECTED
                 ]
