@@ -307,8 +307,9 @@ use common\helpers\UrlHelper;
                         }
                     ],
                     [
-                        'attribute' => 'created_at',
+                        'attribute' => 'dateRange',
                         'format' => 'date',
+                        'value' => 'created_at',
                         'filter' => DateRangePicker::widget([
                             'model' => $notificationsSearch,
                             'attribute' => 'dateRange',

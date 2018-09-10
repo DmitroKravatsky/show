@@ -2,7 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\notifications;
 
-use common\models\userNotifications\NotificationsSearch;
+use common\models\userNotifications\UserNotificationsSearch;
 use yii\base\Action;
 use Yii;
 
@@ -13,7 +13,7 @@ class IndexAction extends Action
      */
     public function run(): string
     {
-        $searchModel = new NotificationsSearch();
+        $searchModel = new UserNotificationsSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->controller->render('index', [

@@ -56,27 +56,35 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'read',
+                        'attribute' => 'full_name',
+                        'label' => 'Status',
+                        'value' => function (UserNotificationsEntity $userNotification) {
+                            return $userNotification->userProfile->name . $userNotification->userProfile->last_name;
+                        }
+                    ],
+                    [
+                        'attribute' => 'is_read',
                         'label' => 'Status',
                         'filter' =>  (new UserNotificationsEntity)->getIsReadStatuses(),
-                        'value' => function (NotificationsEntity $notification) {
-                            return UserNotificationsEntity::getIsReadLabel($notification->userNotifications->is_read);
+                        'value' => function (UserNotificationsEntity $userNotification) {
+                            return UserNotificationsEntity::getIsReadLabel($userNotification->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (NotificationsEntity $notification) {
-                            if ($notification->type = NotificationsEntity::TYPE_NEW_USER) {
-                                return StringHelper::truncate(Yii::t('app', $notification->text, [
-                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                        'value' => function (UserNotificationsEntity $userNotification) {
+                            if ($userNotification->notification->type = NotificationsEntity::TYPE_NEW_USER) {
+                                return StringHelper::truncate(Yii::t('app', $userNotification->notification->text, [
+                                    'phone_number' => $userNotification->notification->custom_data->phone_number ?? null
                                 ]), 40);
                             }
-                            return StringHelper::truncate(Html::encode($notification->text), 180);
+                            return StringHelper::truncate(Html::encode($userNotification->notification->text), 180);
                         }
                     ],
                     [
-                        'attribute' => 'created_at',
+                        'attribute' => 'dateRange',
                         'format' => 'date',
+                        'value' => 'notification.created_at',
                         'filter' => DateRangePicker::widget([
                             'model' => $searchModel,
                             'attribute' => 'dateRange',

@@ -3,7 +3,6 @@
 namespace common\models\userNotifications;
 
 use common\behaviors\{
-    JsonBehavior,
     ValidationExceptionFirstMessage
 };
 use common\models\{
@@ -11,7 +10,6 @@ use common\models\{
     userProfile\UserProfileEntity,
     user\User
 };
-use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use Yii;
@@ -39,6 +37,17 @@ class UserNotificationsEntity extends ActiveRecord
     public static function tableName(): string
     {
         return '{{%user_notifications}}';
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['id', 'user_id', 'notification_id', 'created_at'], 'integer'],
+            [['read'], 'enum', [0,1]],
+        ];
     }
 
     /**
@@ -215,14 +224,22 @@ class UserNotificationsEntity extends ActiveRecord
         return $this->hasOne(NotificationsEntity::class, ['id' => 'notification_id']);
     }
 
+    /**
+     * Convert is_read status from bool to string
+     * @return array
+     */
     public function getIsReadStatuses()
     {
-        return [0 => Yii::t('app', 'Is Not read'), 1 => Yii::t('app', 'Is read')];
+        return [0 => Yii::t('app', 'No'), 1 => Yii::t('app', 'Yes')];
     }
 
+    /**
+     * @param $value
+     * @return string
+     */
     public static function getIsReadLabel($value)
     {
-        return $value ? Yii::t('app', 'Is read') : Yii::t('app', 'Is Not read');
+        return $value ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
     }
 
 }

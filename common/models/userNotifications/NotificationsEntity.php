@@ -11,7 +11,6 @@ use common\models\{
     userProfile\UserProfileEntity,
     user\User
 };
-use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
 use Yii;
@@ -210,6 +209,10 @@ class NotificationsEntity extends ActiveRecord
         return ['bid_id' => $bidId];
     }
 
+    /**
+     * Relates notifications with relation table user_notifications
+     * @return \yii\db\ActiveQuery
+     */
     public function getUserNotifications()
     {
         return $this->hasOne(UserNotificationsEntity::class, ['notification_id' => 'id']);

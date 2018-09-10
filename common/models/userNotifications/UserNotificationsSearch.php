@@ -7,12 +7,14 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
- * NotificationsSearch represents the model behind the search form of `common\models\userNotifications\NotificationsEntity`.
+ * UserNotificationsSearch represents the model behind
+ * the search form of `common\models\userNotifications\UserNotificationsEntity`.
  */
-class NotificationsSearch extends NotificationsEntity
+class UserNotificationsSearch extends UserNotificationsEntity
 {
     public $dateRange;
-    public $read;
+    public $text;
+    public $full_name;
 
     /**
      * @return array
@@ -20,8 +22,8 @@ class NotificationsSearch extends NotificationsEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_at'], 'integer'],
-            [['read', 'text', 'recipient', 'dateRange'], 'safe'],
+            [['id', 'user_id', 'notification_id', 'created_at'], 'integer'],
+            [['is_read', 'text', 'full_name', 'dateRange'], 'safe'],
         ];
     }
 
@@ -42,9 +44,9 @@ class NotificationsSearch extends NotificationsEntity
      */
     public function search($params)
     {
-        $query = NotificationsEntity::find()
-            ->joinWith('userNotifications')
-            ->where(['user_id' => Yii::$app->user->id]);
+        $query = UserNotificationsEntity::find()
+            ->joinWith('notification')
+            ->joinWith('userProfile');
         $dataProvider = new ActiveDataProvider([
             'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
@@ -58,8 +60,13 @@ class NotificationsSearch extends NotificationsEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['user_notifications.is_read' => $this->read])
-            ->andFilterWhere(['like', 'text', $this->text]);
+        $query->andFilterWhere(['is_read' => $this->is_read])
+            ->andFilterWhere(['like', 'notifications.text', $this->text])
+            ->andFilterWhere([
+                'or',
+                ['like', 'user_profile.name', $this->full_name],
+                ['like', 'user_profile.last_name', $this->full_name]
+            ]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
