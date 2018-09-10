@@ -1,5 +1,5 @@
 
-    $('.status').on('change', function () {
+    $('body').on('change', '.status', function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
         var processedDataColSeq = 5;

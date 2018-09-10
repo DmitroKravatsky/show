@@ -163,6 +163,7 @@ class m180816_114157_i18n_init extends Migration
             [148, 'app', 'Delete all'],
             [149, 'app', 'Change Status'],
             [150, 'app', 'Select status'],
+            [151, 'app', 'Bid Closed'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -316,6 +317,7 @@ class m180816_114157_i18n_init extends Migration
             [148, 'ru', 'Удалить все'],
             [149, 'ru', 'Изменить Статус'],
             [150, 'ru', 'Выбрать статус'],
+            [151, 'ru', 'Заявка Закрыта '],
         ]);
     }
 
