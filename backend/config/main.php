@@ -1,4 +1,7 @@
 <?php
+
+use common\helpers\UrlHelper;
+
 $params = array_merge(
     require __DIR__ . '/../../common/config/params.php',
     require __DIR__ . '/../../common/config/params-local.php',
@@ -71,26 +74,23 @@ return [
             'enablePrettyUrl' => true,
             'showScriptName' => false,
             'rules' => [
-                'index'                            => 'admin/dashboard/index',
-                'update-manager-password'          => 'admin/dashboard/update-manager-password',
-                'manager/<action:[\w-]+>'          => 'admin/manager/<action>',
-                'manager/<action:[\w-]+>/<id:\d+>' => 'admin/manager/<action>',
-                'manager/view/<id:\d+>'            => 'admin/manager/view',
-                'bid/<action:[\w-]+>'              => 'admin/bid/<action>',
-                'login'                            => 'authorization/authorization/login',
-                'logout'                           => 'authorization/authorization/logout',
-                'profile/<action:[\w-]+>'          => 'admin/profile/<action>',
-                'bid/view/<id:\d+>'                => 'admin/bid/view',
-                'bid-history/<action:[\w-]+>'      => 'admin/bid-history/<action>',
-                'notifications/index'              => 'admin/notifications/index',
-                'notifications/read-all'           => 'admin/notifications/read-all',
-                'notifications/delete-all'         => 'admin/notifications/delete-all',
-                'notification/view/<id:\d+>'       => 'admin/notifications/view',
-                'review/index'                     => 'admin/review/index',
-                'review/view/<id:\d+>'             => 'admin/review/view',
-                'invite/<action:[\w-]+>'           => 'admin/invite/<action>',
-                'reserve/<action:[\w-]+>'          => 'admin/reserve/<action>',
-                'reserve/<action:[\w-]+>/<id:\d+>' => 'admin/reserve/<action>',
+                'index'                                  => 'admin/dashboard/index',
+                'update-manager-password'                => 'admin/dashboard/update-manager-password',
+                'manager/<action:[\w-]+>'                => 'admin/manager/<action>',
+                'manager/<action:[\w-]+>/<id:\d+>'       => 'admin/manager/<action>',
+                'bid/<action:[\w-]+>'                    => 'admin/bid/<action>',
+                'login'                                  => 'authorization/authorization/login',
+                'logout'                                 => 'authorization/authorization/logout',
+                'profile/<action:[\w-]+>'                => 'admin/profile/<action>',
+                'bid/view/<id:\d+>'                      => 'admin/bid/view',
+                'bid-history/<action:[\w-]+>'            => 'admin/bid-history/<action>',
+                'notifications/<action:[\w-]+>'          => 'admin/notifications/<action>',
+                'notifications/<action:[\w-]+>/<id:\d+>' => 'admin/notifications/<action>',
+                'review/index'                           => 'admin/review/index',
+                'review/view/<id:\d+>'                   => 'admin/review/view',
+                'invite/<action:[\w-]+>'                 => 'admin/invite/<action>',
+                'reserve/<action:[\w-]+>'                => 'admin/reserve/<action>',
+                'reserve/<action:[\w-]+>/<id:\d+>'       => 'admin/reserve/<action>',
             ],
         ],
         'view' => [
@@ -101,5 +101,8 @@ return [
             ],
         ],
     ],
+    'on beforeAction' => function () {
+        Yii::$app->getResponse()->headers->set('X-Pjax-Url', UrlHelper::getCustomUrl());
+    },
     'params' => $params,
 ];

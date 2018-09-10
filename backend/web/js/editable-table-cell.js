@@ -12,7 +12,7 @@
             url : '/admin/admin/bid/update-bid-status',
             type : "POST",
             async: false,
-            data: {'status':newStatus, 'id':fieldId},
+            data: {'status' : newStatus, 'id' : fieldId, 'language' : language},
             success : function (result) {
                 var isAdmin = result.isAdmin;
                 var processedStatus = result.processedStatus;
@@ -53,7 +53,7 @@
                     '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                             '<span aria-hidden="true">×</span>' +
-                        '</button>' + result.statusText +
+                        '</button>' + result.responseJSON.message +
                     '</div>'
                 );
             }

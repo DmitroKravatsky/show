@@ -4,6 +4,7 @@ use yii\widgets\DetailView;
 use yiister\gentelella\widgets\Panel;
 use common\models\bid\BidEntity;
 use yii\helpers\Html;
+use yii\web\View;
 
 /* @var $this yii\web\View */
 /* @var $model BidEntity */
@@ -14,6 +15,8 @@ $this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
+<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
 <div class="bid-entity-view">
     <div class="row">

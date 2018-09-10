@@ -7,10 +7,9 @@ use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use common\models\userNotifications\UserNotificationsEntity as Notification;
 use kartik\daterange\DateRangePicker;
-use yii\helpers\StringHelper;
-use yii\helpers\Html;
-use common\helpers\UrlHelper;
-use common\helpers\Toolbar;
+use yii\helpers\{ StringHelper, Html };
+use common\helpers\{ UrlHelper, Toolbar };
+use yii\helpers\Url;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
@@ -100,6 +99,15 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'class' => \yii\grid\ActionColumn::class,
                         'template' => '{view}&nbsp{delete}',
+                        'buttons' => [
+                            'delete' => function($url, Notification $notification) {
+                                $url = Url::to(['/notifications/delete', 'id' => $notification->id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ]
                     ],
                 ],
             ]) ?>

@@ -70,8 +70,8 @@ class UpdateAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "base64_image",
-     *          description = "User avatar",
+     *          name = "avatar",
+     *          description = "User avatar in base64 format",
      *          required = false,
      *          type = "string",
      *          format = "byte"

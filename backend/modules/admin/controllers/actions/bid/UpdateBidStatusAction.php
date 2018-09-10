@@ -31,6 +31,7 @@ class UpdateBidStatusAction extends Action
         $bodyParams = \Yii::$app->request->getBodyParams();
         $id = $bodyParams['id'];
         $newStatus = $bodyParams['status'];
+        $language = $bodyParams['language'];
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         $transaction = \Yii::$app->db->beginTransaction();
@@ -68,7 +69,7 @@ class UpdateBidStatusAction extends Action
                     $isAdmin = Yii::$app->user->can(BackendUser::ROLE_ADMIN);
                     $result = [
                         'status'    => 200,
-                        'message'   => Yii::t('app', 'Status successfully updated.'),
+                        'message'   => Yii::t('app', 'Status successfully updated.', [], $language),
                         'isAdmin'   => $isAdmin,
                         'bidStatus' => $bid->status,
                     ];
@@ -78,12 +79,14 @@ class UpdateBidStatusAction extends Action
                     }
                     return $result;
                 }
+                return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
             }
+            return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
         } catch (\Exception $e) {
             $transaction->rollBack();
             Yii::error($e->getMessage());
             Yii::$app->response->setStatusCode(500);
-            return  ['message' => Yii::t('app', 'Bid')];
+            return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
         }
     }
 }

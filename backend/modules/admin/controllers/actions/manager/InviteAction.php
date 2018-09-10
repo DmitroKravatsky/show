@@ -72,7 +72,7 @@ class InviteAction extends Action
                             \Yii::$app->params['supportEmail'], $modelRegistration->email, 'ConfirmRegistration'
                         );
                         Yii::$app->session->setFlash('success', Yii::t('app', 'Manager successfully created.'));
-                        return $this->controller->redirect(Url::to('index'));
+                        return $this->controller->redirect(Url::to(['/manager/index']));
                     }
                 }
                 return $this->controller->render('invite', [

@@ -13,11 +13,7 @@ $this->title = Yii::t('app', 'Manager') . ': ' . $manager->id;
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
-<style>
-    .collapse-link {
-        margin-left: 46px;
-    }
-</style>
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 
 <div class="manager-view">
     <div class="row">
