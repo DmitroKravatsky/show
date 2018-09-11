@@ -2,8 +2,6 @@
     $('body').on('change', '.status', function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
-        var processedDataColSeq = 5;
-        var processedByDataColSeq = 7;
         var STATUS_REJECTED = 'rejected';
         var STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
         var ACTION_ID = 'view';
@@ -18,23 +16,24 @@
                 var processedStatus = result.processedStatus;
                 var processedBy = result.processedBy;
                 var bidStatus = result.bidStatus;
+                var inProgressByManager = result.inProgressByManager;
                 var tableRow = $('tr[data-key="' + fieldId + '"]');
 
                 if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
+                    $('#status').html(bidStatus);
+                    $('#in-progress-by-column').html(inProgressByManager);
+                    $('#processed-by').html(processedBy);
                     if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
                         $('.status').prop('disabled', true);
                     }
                 } else {
                     tableRow.removeClass('success');
-                    tableRow.children().each(function () {
-                        if ((typeof processedStatus !== undefined) && (typeof processedBy !== undefined)) {
-                            if ($(this).data('col-seq') === processedDataColSeq) {
-                                $(this).html(processedStatus);
-                            }
-                            if ($(this).data('col-seq') === processedByDataColSeq) {
-                                $(this).html(processedBy);
-                            }
-                        }
+                    tableRow.each(function () {
+                        $(this).find('.status-column').html(bidStatus);
+                        $(this).find('.processed-column').html(processedStatus);
+                        $(this).find('.processed-by-column').html(processedBy);
+                        $(this).find('.in-progress-by-column').html(inProgressByManager);
+
                         if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
                             $(this).find('.status').prop('disabled', true);
                         }

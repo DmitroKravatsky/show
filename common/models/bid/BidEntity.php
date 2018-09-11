@@ -40,12 +40,14 @@ use borales\extensions\phoneInput\PhoneInputValidator;
  * @property float $to_sum
  * @property int $processed
  * @property int $processed_by
+ * @property integer $in_progress_by_manager
  * @property integer $created_at
  * @property integer $updated_at
  *
  * @property User $author
  * @property User $processedBy
  * @property UserProfileEntity $processedByProfile
+ * @property User $inProgressByManager
  * @property BidHistory[] $bidHistories
  */
 class BidEntity extends ActiveRecord
@@ -250,7 +252,7 @@ class BidEntity extends ActiveRecord
     public function rules(): array
     {
         return [
-            [['id', 'created_by', 'processed', 'processedBy',], 'integer'],
+            [['id', 'created_by', 'processed', 'processedBy', 'in_progress_by_manager',], 'integer'],
             ['created_by', 'default', 'value' => \Yii::$app->user->id],
             [
                 'created_by',
@@ -294,7 +296,8 @@ class BidEntity extends ActiveRecord
                 'requiredValue' => 1,
                 'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения"')
             ],
-            [['processed_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['processed_by' => 'id']],
+            [['processed_by', 'in_progress_by_manager'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['processed_by' => 'id']],
+            [['in_progress_by_manager', 'in_progress_by_manager'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['in_progress_by_manager' => 'id']],
             [['processed_by'], 'required', 'when' => function (self $bid) {
                 return $bid->processed;
             }],
@@ -416,6 +419,15 @@ class BidEntity extends ActiveRecord
     public function getProcessedByProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'processed_by']);
+    }
+
+    /**
+     * Returns bid's author
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInProgressByManager()
+    {
+        return $this->hasOne(User::class, ['id' => 'in_progress_by_manager']);
     }
 
     /**

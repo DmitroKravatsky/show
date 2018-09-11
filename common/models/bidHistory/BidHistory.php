@@ -3,6 +3,7 @@
 namespace common\models\bidHistory;
 
 use common\models\user\User;
+use common\models\userProfile\UserProfileEntity;
 use Yii;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveQuery;
@@ -20,6 +21,7 @@ use common\models\bid\BidEntity;
  *
  * @property BidEntity $bid
  * @property User $processedBy
+ * @property UserProfileEntity $processedByProfile
  */
 class BidHistory extends ActiveRecord
 {
@@ -107,6 +109,15 @@ class BidHistory extends ActiveRecord
     public function getProcessedBy(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'processed_by']);
+    }
+
+    /**
+     * Returns bid's author
+     * @return \yii\db\ActiveQuery
+     */
+    public function getProcessedByProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'processed_by']);
     }
 
     /**
