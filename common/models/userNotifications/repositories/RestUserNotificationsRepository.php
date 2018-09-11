@@ -110,9 +110,8 @@ trait RestUserNotificationsRepository
             'text' => $text,
             'custom_data' => $customData
         ]);
-        $notification->validate();
-        $notification->save();
 
+        $notification->save();
         $userNotificationRelation = new UserNotificationsEntity();
 
         if (is_array($recipientId)) {
@@ -120,9 +119,9 @@ trait RestUserNotificationsRepository
                 $data[] = [
                     'user_id'          => $id,
                     'notification_id ' => $notification->id,
-                    'is_read'  => 0,
-                    'created_at' => time(),
-                    'updated_at' => time()
+                    'is_read'          => UserNotificationsEntity::STATUS_READ_NO,
+                    'created_at'       => time(),
+                    'updated_at'       => time()
                 ];
             }
 

@@ -46,6 +46,7 @@ use borales\extensions\phoneInput\PhoneInputValidator;
  * @property User $author
  * @property User $processedBy
  * @property UserProfileEntity $processedByProfile
+ * @property UserProfileEntity $bidOwnerProfile
  * @property BidHistory[] $bidHistories
  */
 class BidEntity extends ActiveRecord
@@ -386,7 +387,6 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::getCustomDataForInProgress($this->id)
             );
         }
-
         return parent::afterSave($insert, $changedAttributes);
     }
 
@@ -481,6 +481,10 @@ class BidEntity extends ActiveRecord
         return true;
     }
 
+    /**
+     * Relates BidEntity with UserProfile
+     * @return \yii\db\ActiveQuery
+     */
     public function getBidOwnerProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'created_by']);

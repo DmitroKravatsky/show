@@ -248,8 +248,7 @@ class User extends ActiveRecord implements IdentityInterface
     {
         /** @var UserProfileEntity $profile */
         $profile = $this->profile;
-        if (!$profile)
-        {
+        if (!$profile) {
             return null;
         }
         return $profile->name . ' ' . $profile->last_name;
@@ -380,20 +379,13 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public static function getAllOnlineManagersIds()
     {
-        $managers =  static::find()
+        $managersIds =  static::find()
             ->select('id')
             ->leftJoin('auth_assignment', 'auth_assignment.user_id = id')
-            ->where(['user.status_online' => 1])
+            ->where(['user.status_online' => self::STATUS_ONLINE_YES])
             ->andWhere(['auth_assignment.item_name' => self::ROLE_MANAGER])
-            ->all();
+            ->column();
 
-        if (!$managers) {
-            return null;
-        }
-
-        foreach ($managers as $manager) {
-            $managersIds[] = $manager->id;
-        }
-        return $managersIds;
+        return $managersIds ?? null;
     }
 }

@@ -31,7 +31,7 @@ class m180907_102102_new_notifications_tables_structure extends Migration
             'id' => $this->primaryKey(),
             'user_id' => $this->integer()->notNull(),
             'notification_id' => $this->integer()->notNull(),
-            'is_read' => $this->boolean(),
+            'is_read' => $this->boolean()->defaultValue(false),
             'created_at' => $this->integer()->notNull(),
             'updated_at' => $this->integer()->notNull(),
         ]);
@@ -63,8 +63,28 @@ class m180907_102102_new_notifications_tables_structure extends Migration
      */
     public function safeDown()
     {
-        echo "m180907_102102_new_notifications_tables_structure cannot be reverted.\n";
+        $this->dropTable($this->userNotificationsTable);
 
-        return false;
+        $this->dropTable($this->notificationsTable);
+
+        $this->createTable($this->userNotificationsTable, [
+            'id' => $this->primaryKey(),
+            'status' => "ENUM('read', 'unread') DEFAULT 'unread'",
+            'recipient_id' => $this->integer()->notNull(),
+            'text' => $this->text(),
+            'created_at' => $this->integer(),
+            'updated_at' => $this->integer()
+        ]);
+
+        $this->addForeignKey(
+            'fk-user_notifications-user',
+            $this->tableName,
+            'recipient_id',
+            'user',
+            'id',
+            'CASCADE',
+            'RESTRICT'
+        );
     }
+
 }

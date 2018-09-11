@@ -58,13 +58,13 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full name'),
                         'value' => function (UserNotificationsEntity $userNotification) {
-                            return $userNotification->userProfile->UserFullName ?? null;
+                            return $userNotification->userProfile->userFullName ?? null;
                         }
                     ],
                     [
                         'attribute' => 'is_read',
                         'label' => 'Status',
-                        'filter' =>  (new UserNotificationsEntity)->getIsReadStatuses(),
+                        'filter' => UserNotificationsEntity::getIsReadStatuses(),
                         'value' => function (UserNotificationsEntity $userNotification) {
                             return UserNotificationsEntity::getIsReadLabel($userNotification->is_read);
                         }

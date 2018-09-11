@@ -31,6 +31,9 @@ class UserNotificationsEntity extends ActiveRecord
 {
     use RestUserNotificationsRepository;
 
+    const STATUS_READ_YES = 1;
+    const STATUS_READ_NO  = 0;
+
     /**
      * @return string
      */
@@ -46,7 +49,7 @@ class UserNotificationsEntity extends ActiveRecord
     {
         return [
             [['id', 'user_id', 'notification_id', 'created_at'], 'integer'],
-            [['read'], 'in',  'range' => [0,1]],
+            [['is_read'], 'in',  'range' => [self::STATUS_READ_NO, self::STATUS_READ_YES]],
         ];
     }
 
@@ -178,7 +181,7 @@ class UserNotificationsEntity extends ActiveRecord
      * Convert is_read status from bool to string
      * @return array
      */
-    public function getIsReadStatuses()
+    public static function getIsReadStatuses()
     {
         return [0 => Yii::t('app', 'No'), 1 => Yii::t('app', 'Yes')];
     }
