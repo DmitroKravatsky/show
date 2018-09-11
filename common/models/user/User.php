@@ -244,10 +244,14 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return string
      */
-    public function getFullName(): string
+    public function getFullName()
     {
         /** @var UserProfileEntity $profile */
         $profile = $this->profile;
+        if (!$profile)
+        {
+            return null;
+        }
         return $profile->name . ' ' . $profile->last_name;
     }
 

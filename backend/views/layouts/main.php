@@ -192,7 +192,6 @@ $this->title = Yii::t('app', 'Dashboard');
                                             </li>
                                         <?php else:?>
                                             <?php foreach ($userNotifications as $userNotification): ?>
-                                                <?php //echo '<pre>' ; var_dump($userNotification); exit; ?>
                                                 <li>
                                                     <a href="<?= Url::to(["/notification/view/{$userNotification->notification_id}"])?>">
                                                         <span class="image">
@@ -203,7 +202,6 @@ $this->title = Yii::t('app', 'Dashboard');
                                                             <span class="name">
                                                                 <?= $userNotification->userProfile->getUserFullName() ?? null; ?>
                                                             </span>
-<!--                                                            --><?php //echo '<pre>' ; var_dump($userNotification); exit; ?>
                                                             <span class="time"><?= date('d-m-y h:m', $userNotification->notification->created_at) ?></span>
                                                         </span>
 
