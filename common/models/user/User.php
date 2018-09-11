@@ -370,6 +370,10 @@ class User extends ActiveRecord implements IdentityInterface
         return $statuses[$status];
     }
 
+    /**
+     * Returns ids list of all online managers
+     * @return mixed
+     */
     public static function getAllOnlineManagersIds()
     {
         $managers =  static::find()
@@ -379,10 +383,13 @@ class User extends ActiveRecord implements IdentityInterface
             ->andWhere(['auth_assignment.item_name' => self::ROLE_MANAGER])
             ->all();
 
+        if (!$managers) {
+            return null;
+        }
+
         foreach ($managers as $manager) {
             $managersIds[] = $manager->id;
         }
-//        var_dump($managersIds);
         return $managersIds;
     }
 }

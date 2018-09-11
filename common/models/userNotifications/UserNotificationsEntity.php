@@ -46,7 +46,7 @@ class UserNotificationsEntity extends ActiveRecord
     {
         return [
             [['id', 'user_id', 'notification_id', 'created_at'], 'integer'],
-            [['read'], 'enum', [0,1]],
+            [['read'], 'in',  'range' => [0,1]],
         ];
     }
 
@@ -163,56 +163,6 @@ class UserNotificationsEntity extends ActiveRecord
     public function getUserProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'user_id']);
-    }
-
-    /**
-     * Generates a message for paid bid by client
-     *
-     * @return string
-     */
-    public static function getMessageForClientPaid()
-    {
-        return 'Your payment of {sum} {currency} to wallet {wallet} is accepted.';
-    }
-
-    /**
-     * Generates a custom data for paid bid by client
-     *
-     * @param float $sum
-     * @param string $currency
-     * @param string $wallet
-     *
-     * @return array
-     */
-    public static function getCustomDataForClientPaid($sum, $currency, $wallet)
-    {
-        return [
-            'sum'      => $sum,
-            'currency' => $currency,
-            'wallet'   => $wallet,
-        ];
-    }
-
-    /**
-     * Generates a message for paid bid by client
-     *
-     * @return string
-     */
-    public static function getMessageForInProgress(): string
-    {
-        return 'Your bid number {bid_id} is now in progress.';
-    }
-
-    /**
-     * Generates a message for paid bid by client
-     *
-     * @param integer $bidId
-     *
-     * @return array
-     */
-    public static function getCustomDataForInProgress($bidId): array
-    {
-        return ['bid_id' => $bidId];
     }
 
     /**

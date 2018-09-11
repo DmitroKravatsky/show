@@ -137,7 +137,7 @@ class NotificationsEntity extends ActiveRecord
      */
     public static function getMessageForNewBid(): string
     {
-        return 'Your bid is accepted. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.';
+        return 'User {full_name} has created new bid. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.';
     }
 
     /**
@@ -149,9 +149,10 @@ class NotificationsEntity extends ActiveRecord
      *
      * @return array
      */
-    public static function getCustomDataForNewBid($sum, $currency, $wallet): array
+    public static function getCustomDataForNewBid($fullName, $sum, $currency, $wallet): array
     {
         return [
+            'full_name' => $fullName,
             'sum' => $sum,
             'currency' => $currency,
             'wallet' => $wallet,
@@ -166,7 +167,7 @@ class NotificationsEntity extends ActiveRecord
      */
     public static function getMessageForClientPaid()
     {
-        return 'Your payment of {sum} {currency} to wallet {wallet} is accepted.';
+        return 'Client {full_name} has paid {sum} {currency} to wallet {wallet} .';
     }
 
     /**
@@ -178,12 +179,13 @@ class NotificationsEntity extends ActiveRecord
      *
      * @return array
      */
-    public static function getCustomDataForClientPaid($sum, $currency, $wallet)
+    public static function getCustomDataForClientPaid($fullName, $sum, $currency, $wallet)
     {
         return [
-            'sum'      => $sum,
-            'currency' => $currency,
-            'wallet'   => $wallet,
+            'full_name' => $fullName,
+            'sum'       => $sum,
+            'currency'  => $currency,
+            'wallet'    => $wallet,
         ];
     }
 

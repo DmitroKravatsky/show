@@ -192,6 +192,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                             </li>
                                         <?php else:?>
                                             <?php foreach ($userNotifications as $userNotification): ?>
+                                                <?php //echo '<pre>' ; var_dump($userNotification); exit; ?>
                                                 <li>
                                                     <a href="<?= Url::to(["/notification/view/{$userNotification->notification_id}"])?>">
                                                         <span class="image">
@@ -213,6 +214,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                                                 ]) ?>
                                                             <?php elseif ($userNotification->notification->type == NotificationsEntity::TYPE_NEW_BID): ?>
                                                                 <?= Yii::t('app', $userNotification->notification->text, [
+                                                                    'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
                                                                     'sum'      => $userNotification->notification->custom_data->sum ?? null,
                                                                     'currency' => $userNotification->notification->custom_data->currency ?? null,
                                                                     'wallet'   => $userNotification->notification->custom_data->wallet ?? null,

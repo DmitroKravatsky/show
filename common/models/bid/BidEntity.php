@@ -345,8 +345,21 @@ class BidEntity extends ActiveRecord
         $bidHistory->bid_id = $this->id;
         $bidHistory->status = $this->status;
 
+        $bidOwnerFullName = $this->bidOwnerProfile ? $this->bidOwnerProfile->UserFullName : null;
+
         if ($insert) {
             $this->sendEmailToManagers($this);
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_NEW_BID,
+                NotificationsEntity::getMessageForNewBid(),
+                User::getAllOnlineManagersIds(),
+                NotificationsEntity::getCustomDataForNewBid(
+                    $bidOwnerFullName,
+                    $this->to_sum,
+                    $this->to_currency,
+                    $this->to_wallet
+                )
+            );
         } else {
             $bidHistory->processed_by = Yii::$app->user->id;
         }
@@ -357,7 +370,12 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::TYPE_PAID_CLIENT,
                 NotificationsEntity::getMessageForClientPaid(),
                 User::getAllOnlineManagersIds(),
-                NotificationsEntity::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForClientPaid(
+                    $bidOwnerFullName,
+                    $this->from_sum,
+                    $this->from_currency,
+                    $this->to_wallet
+                )
             );
         }
         if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
@@ -366,15 +384,6 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::getMessageForInProgress(),
                 $this->created_by,
                 NotificationsEntity::getCustomDataForInProgress($this->id)
-            );
-        }
-
-        if ($insert && $this->created_by === Yii::$app->user->id) {
-            (new NotificationsEntity())->addNotify(
-                NotificationsEntity::TYPE_NEW_BID,
-                NotificationsEntity::getMessageForNewBid(),
-                $this->created_by,
-                NotificationsEntity::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -470,5 +479,10 @@ class BidEntity extends ActiveRecord
             return false;
         }
         return true;
+    }
+
+    public function getBidOwnerProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'created_by']);
     }
 }

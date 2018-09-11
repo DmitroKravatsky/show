@@ -101,36 +101,45 @@ trait RestUserNotificationsRepository
      */
     public function addNotify($type, string $text, $recipientId, $customData = null)
     {
+        if ($recipientId === null) {
+            return true;
+        }
         $notification = new NotificationsEntity();
         $notification->setAttributes([
             'type' => $type,
             'text' => $text,
             'custom_data' => $customData
         ]);
+        $notification->validate();
         $notification->save();
+
         $userNotificationRelation = new UserNotificationsEntity();
 
         if (is_array($recipientId)) {
             foreach ($recipientId as $id) {
                 $data[] = [
-                    'user_id'          => $recipientId,
+                    'user_id'          => $id,
                     'notification_id ' => $notification->id,
-                    'custom_data'  => $customData,
-                    'is_read'  => 0
+                    'is_read'  => 0,
+                    'created_at' => time(),
+                    'updated_at' => time()
                 ];
             }
-           return \Yii::$app->db->createCommand()->batchInsert(
-               self::tableName(),
-               ['type', 'text', 'custom_data'],
-               $data
-            );
+
+            return \Yii::$app->db->createCommand()
+                ->batchInsert(
+                   UserNotificationsEntity::tableName(),
+                   ['user_id', 'notification_id', 'is_read', 'created_at', 'updated_at'],
+                   $data
+                )
+                ->execute();
 
         } elseif (is_int($recipientId)) {
             $userNotificationRelation->user_id = $recipientId;
             $userNotificationRelation->notification_id = $notification->id;
             $userNotificationRelation->is_read = 0;
 
-            return $this->save();
+            return $userNotificationRelation->save();
         }
     }
 
