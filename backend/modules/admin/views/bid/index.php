@@ -68,11 +68,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'status',
-                        'filter'    => BidEntity::statusLabels(),
-                        'value'     => function (BidEntity $bid) {
+                        'attribute'      => 'status',
+                        'filter'         => BidEntity::statusLabels(),
+                        'value'          => function (BidEntity $bid) {
                             return BidEntity::getStatusValue($bid->status);
                         },
+                        'contentOptions' => ['class' => 'status-column'],
                     ],
                     [
                         'attribute' => 'change_status',
@@ -88,7 +89,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ]);
                         },
-                        'contentOptions'   => ['style' => 'width:11%;'],
                         'format'           => 'raw',
                         'filter'           => BidEntity::statusLabels()
                     ],
@@ -103,20 +103,31 @@ $this->params['breadcrumbs'][] = $this->title;
                     'email:email:E-mail',
                     'phone_number',
                     [
-                        'attribute' => 'processed',
-                        'label'     => Yii::t('app', 'Bid Closed'),
-                        'visible'   => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'format'    => 'raw',
-                        'filter'    => BidEntity::getProcessedStatusList(),
-                        'value'     => 'processedStatus'
+                        'attribute'      => 'processed',
+                        'label'          => Yii::t('app', 'Bid Closed'),
+                        'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'format'         => 'raw',
+                        'filter'         => BidEntity::getProcessedStatusList(),
+                        'value'          => 'processedStatus',
+                        'contentOptions' => ['class' => 'processed-column'],
                     ],
                     [
-                        'attribute' => 'processed_by',
-                        'filter'    => BackendUser::getManagerNames(),
-                        'visible'   => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'value'     => function (BidEntity $bid) {
+                        'attribute'      => 'processed_by',
+                        'filter'         => BackendUser::getManagerNames(),
+                        'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'value'          => function (BidEntity $bid) {
                             return $bid->perfomer->fullName ?? null;
-                        }
+                        },
+                        'contentOptions' => ['class' => 'processed-by-column'],
+                    ],
+                    [
+                        'attribute'      => 'in_progress_by_manager',
+                        'filter'         => BackendUser::getManagerNames(),
+                        'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'value'          => function (BidEntity $bid) {
+                            return $bid->inProgressByManager->fullName ?? null;
+                        },
+                        'contentOptions' => ['class' => 'in-progress-by-column'],
                     ],
                     [
                         'attribute' => 'from_sum',
@@ -178,7 +189,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
                                 );
                             },
                             'delete' => function($url, $model) {

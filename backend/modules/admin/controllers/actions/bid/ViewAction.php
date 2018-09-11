@@ -3,8 +3,7 @@
 namespace backend\modules\admin\controllers\actions\bid;
 
 use backend\modules\admin\controllers\BidController;
-use backend\modules\admin\models\BidEntitySearch;
-use common\models\bid\BidEntity;
+use common\models\bidHistory\BidHistorySearch;
 use yii\base\Action;
 use yii\web\NotFoundHttpException;
 
@@ -20,14 +19,22 @@ class ViewAction extends Action
 
     /**
      * View detail bid info
+     * @param integer $id
      * @return string
+     * @throws NotFoundHttpException
      */
     public function run($id)
     {
         $model = $this->controller->findBid($id);
 
+        $searchModel = new BidHistorySearch();
+        $searchModel->bidId = $id;
+        $dataProvider = $searchModel->search(\Yii::$app->request->queryParams);
+
         return $this->controller->render('view', [
-            'model'  => $model,
+            'model'        => $model,
+            'searchModel'  => $searchModel,
+            'dataProvider' => $dataProvider,
         ]);
     }
 }
