@@ -88,15 +88,8 @@ $this->title = Yii::t('app', 'Dashboard');
                                                     'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
                                                 ],
                                                 [
-                                                    'label' => Yii::t('app', 'Bids'), 'url' => '#',
-                                                    'items' => [
-                                                        [
-                                                            'label' => Yii::t('app', 'List'), 'url' => ['/bid/index'],
-                                                        ],
-                                                        [
-                                                            'label' => Yii::t('app', 'Bids History'), 'url' => ['/bid-history/index']
-                                                        ],
-                                                    ],
+                                                    'label' => Yii::t('app', 'Bids'),
+                                                    'url' => ['/bid/index'],
                                                 ],
                                                 [
                                                     'label' => Yii::t('app', 'Notifications'),
