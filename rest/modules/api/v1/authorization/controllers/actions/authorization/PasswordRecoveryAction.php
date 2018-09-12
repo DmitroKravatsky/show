@@ -48,7 +48,9 @@ class PasswordRecoveryAction extends Action
     }
 
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws BadRequestHttpException
+     * @throws \yii\base\InvalidConfigException
      */
     protected function beforeRun()
     {
@@ -142,16 +144,16 @@ class PasswordRecoveryAction extends Action
         $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
             if ($user->recoveryCode(Yii::$app->request->post())) {
-                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Password recovery has been ended successfully');
+                $response = \Yii::$app->getResponse()->setStatusCode(200);
                 return $response->content = [
                     'status' => $response->statusCode,
-                    'message' => 'Password recovery has been ended successfully'
+                    'message' => 'Восстановления пароля прошло успешно.'
                 ];
             }
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException($e->getMessage());
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 }

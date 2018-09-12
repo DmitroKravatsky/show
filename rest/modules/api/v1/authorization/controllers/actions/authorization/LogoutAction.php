@@ -45,7 +45,7 @@ class LogoutAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "You have been successfully logout",
+     *              "message": "Выход успешно осуществлён.",
      *              "data": {}
      *         }
      *     ),
@@ -73,10 +73,10 @@ class LogoutAction extends Action
 
         $user->logout();
 
-        $response = \Yii::$app->getResponse()->setStatusCode(200, 'You have been successfully logout');
+        $response = \Yii::$app->getResponse()->setStatusCode(200);
         return $response->content = [
-            'status' => $response->statusCode,
-            'message' => 'You have been successfully logout'
+            'status'  => $response->statusCode,
+            'message' => 'Выход успешно осуществлён.'
         ];
     }
 }

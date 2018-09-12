@@ -52,8 +52,8 @@ class VerificationProfileAction extends Action
      *              @SWG\Property(property="data", type="object")
      *         ),
      *         examples = {
-     *              "status": 201,
-     *              "message": "Your profile has been verified",
+     *              "status": 200,
+     *              "message": "Верификация профиля проша успешно.",
      *              "data": {
      *                  "id" : 21,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -89,10 +89,10 @@ class VerificationProfileAction extends Action
         $model = new $this->modelClass;
         $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
 
-        $response = \Yii::$app->getResponse()->setStatusCode(200, 'Your profile has been verified');
+        $response = \Yii::$app->getResponse()->setStatusCode(200);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Your profile has been verified',
+            'message' => 'Верификация профиля прошла успешно.',
             'data'    => [
                 /** @var RestUserEntity $user */
                 'id'            => $user->id,
