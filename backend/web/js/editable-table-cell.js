@@ -25,6 +25,7 @@
                     if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
                         $('.status').prop('disabled', true);
                     }
+                    location.reload()
                 } else {
                     tableRow.removeClass('success');
                     tableRow.each(function () {
