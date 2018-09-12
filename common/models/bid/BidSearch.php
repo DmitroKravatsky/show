@@ -76,6 +76,7 @@ class BidSearch extends BidEntity
             'processed'            => $this->processed,
             'user_profile.user_id' => $this->processed_by,
             'm.id'                 => $this->in_progress_by_manager,
+            'bid.status'           => $this->status,
         ])->joinWith([
             'inProgressByManager' => function ($query) {
                 $query->from(['m' => BackendUser::tableName()]);
@@ -84,9 +85,8 @@ class BidSearch extends BidEntity
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'bid.phone_number', $this->phone_number])
+            ->andFilterWhere(['like', 'bid.email', $this->email])
             ->andFilterWhere(['like', 'from_payment_system', $this->from_wallet])
             ->andFilterWhere(['like', 'to_payment_system', $this->to_wallet])
             ->andFilterWhere([

@@ -9,7 +9,6 @@
         $.ajax({
             url : '/admin/admin/bid/update-bid-status',
             type : "POST",
-            async: false,
             data: {'status' : newStatus, 'id' : fieldId, 'language' : language},
             success : function (result) {
                 var isAdmin = result.isAdmin;
