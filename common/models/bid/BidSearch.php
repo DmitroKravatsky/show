@@ -2,6 +2,7 @@
 
 namespace common\models\bid;
 
+use backend\models\BackendUser;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -25,7 +26,7 @@ class BidSearch extends BidEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'created_by', 'created_at', 'updated_at', 'in_progress_by_manager',], 'integer'],
             [['processed_by'], 'string'],
             [
                 [
@@ -74,6 +75,11 @@ class BidSearch extends BidEntity
         $query->andFilterWhere([
             'processed'            => $this->processed,
             'user_profile.user_id' => $this->processed_by,
+            'm.id'                 => $this->in_progress_by_manager,
+        ])->joinWith([
+            'inProgressByManager' => function ($query) {
+                $query->from(['m' => BackendUser::tableName()]);
+            },
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])

@@ -7,6 +7,7 @@ use backend\modules\admin\controllers\BidController;
 use common\models\bid\BidEntity;
 use common\models\user\User;
 use yii\base\Action;
+use yii\helpers\Html;
 use yii\web\UnprocessableEntityHttpException;
 use Yii;
 use yii\web\Response;
@@ -71,10 +72,11 @@ class UpdateBidStatusAction extends Action
                         $transaction->commit();
                     }
 
+                    $noSetMsg = Html::tag('span', Yii::t('yii', '(not set)', [], $language), ['class' => 'not-set']);
                     $processedBy = Yii::$app->user->identity->profile->name;
-                    $inProgressByManager = Yii::t('yii', '(not set)', [], $language);
+                    $inProgressByManager = $noSetMsg;
                     if ($bid->status == BidEntity::STATUS_IN_PROGRESS) {
-                        $processedBy = Yii::t('yii', '(not set)', [], $language);
+                        $processedBy = $noSetMsg;
                         $inProgressByManager = Yii::$app->user->identity->profile->name;
                     }
 
@@ -88,8 +90,10 @@ class UpdateBidStatusAction extends Action
                         'inProgressByManager' => $inProgressByManager,
                     ];
                 }
+                Yii::$app->response->setStatusCode(500);
                 return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
             }
+            Yii::$app->response->setStatusCode(500);
             return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
         } catch (\Exception $e) {
             $transaction->rollBack();

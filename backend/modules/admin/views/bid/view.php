@@ -184,6 +184,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                     }
                                 ],
                                 [
+                                    'attribute'      => 'in_progress_by_manager',
+                                    'filter'         => BackendUser::getManagerNames(),
+                                    'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                                    'value'          => function (BidHistory $bidHistory) {
+                                        return $bidHistory->inProgressByManager->fullName ?? null;
+                                    },
+                                    'contentOptions' => ['class' => 'in-progress-by-column'],
+                                ],
+                                [
                                     'attribute' => 'time',
                                     'format'    => 'datetime',
                                     'filter'    => DateRangePicker::widget([

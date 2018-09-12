@@ -350,8 +350,12 @@ class BidEntity extends ActiveRecord
 
         if ($insert) {
             $this->sendEmailToManagers($this);
-        } else {
-            $bidHistory->processed_by = Yii::$app->user->id;
+        } elseif (!$insert) {
+            if ($this->status === self::STATUS_IN_PROGRESS) {
+                $bidHistory->in_progress_by_manager = Yii::$app->user->id;
+            } else {
+                $bidHistory->processed_by = Yii::$app->user->id;
+            }
         }
         $bidHistory->save(false);
 

@@ -2,10 +2,10 @@
 
 namespace common\models\bidHistory;
 
-use common\models\bid\BidEntity;
-use common\models\userProfile\UserProfileEntity;
+use common\models\{ bid\BidEntity, userProfile\UserProfileEntity };
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use backend\models\BackendUser;
 
 /**
  * BidHistorySearch represents the model behind the search form of `common\models\bidHistory\BidHistory`.
@@ -22,7 +22,7 @@ class BidHistorySearch extends BidHistory
     public function rules(): array
     {
         return [
-            [['id', 'bid_id', 'time',], 'integer'],
+            [['id', 'bid_id', 'time', 'in_progress_by_manager',], 'integer'],
             [['status', 'time_range', 'processed_by', 'created_by',], 'safe'],
         ];
     }
@@ -64,7 +64,12 @@ class BidHistorySearch extends BidHistory
         }
 
         $query->andFilterWhere([
-            'user_profile.user_id' => $this->processed_by,
+            'user_profile.user_id'  => $this->processed_by,
+            'm.id'                  => $this->in_progress_by_manager,
+        ])->joinWith([
+            'inProgressByManager' => function ($query) {
+                $query->from(['m' => BackendUser::tableName()]);
+            },
         ]);
 
         $query->andFilterWhere(['like', BidHistory::tableName() . '.status', $this->status])

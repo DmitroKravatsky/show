@@ -16,11 +16,13 @@ use common\models\bid\BidEntity;
  * @property int $id
  * @property int $bid_id
  * @property int $processed_by
+ * @property int $in_progress_by_manager
  * @property int $status
  * @property int $time
  *
  * @property BidEntity $bid
  * @property User $processedBy
+ * @property User $inProgressByManager
  * @property UserProfileEntity $processedByProfile
  */
 class BidHistory extends ActiveRecord
@@ -60,9 +62,16 @@ class BidHistory extends ActiveRecord
     {
         return [
             [['bid_id', 'status'], 'required'],
-            [['bid_id', 'time'], 'integer'],
+            [['bid_id', 'time', 'processed_by', 'in_progress_by_manager',], 'integer'],
             [['bid_id'], 'exist', 'skipOnError' => true, 'targetClass' => BidEntity::class, 'targetAttribute' => ['bid_id' => 'id']],
             [['processed_by'], 'exist', 'skipOnError' => true, 'targetClass' => User::class, 'targetAttribute' => ['processed_by' => 'id']],
+            [
+                ['in_progress_by_manager'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => User::class,
+                'targetAttribute' => ['in_progress_by_manager' => 'id']
+            ],
         ];
     }
 
@@ -109,6 +118,15 @@ class BidHistory extends ActiveRecord
     public function getProcessedBy(): ActiveQuery
     {
         return $this->hasOne(User::class, ['id' => 'processed_by']);
+    }
+
+    /**
+     * Returns bid's author
+     * @return \yii\db\ActiveQuery
+     */
+    public function getInProgressByManager()
+    {
+        return $this->hasOne(User::class, ['id' => 'in_progress_by_manager']);
     }
 
     /**
