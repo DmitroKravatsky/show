@@ -57,7 +57,7 @@ class LoginAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Authorization was successful",
+     *              "message": "Авторизация прошла успешно.",
      *              "data": {
      *                  "user_id" : "157",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -108,13 +108,13 @@ class LoginAction extends Action
                 if (!$user->save(false)) {
                     throw new ServerErrorHttpException();
                 }
-                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
+                $response = \Yii::$app->getResponse()->setStatusCode(200);
 
                 return [
                     'status'  => $response->statusCode,
-                    'message' => 'Authorization was successful',
+                    'message' => 'Авторизация прошла успешно.',
                     'data'    => [
-                        'user_id' => $user->id,
+                        'user_id'       => $user->id,
                         'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
                         'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
                         'refresh_token' => $user->refresh_token
@@ -131,7 +131,7 @@ class LoginAction extends Action
         } catch (UnauthorizedHttpException $e) {
             throw new UnauthorizedHttpException('Wrong credentials');
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Server internal error');
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 }

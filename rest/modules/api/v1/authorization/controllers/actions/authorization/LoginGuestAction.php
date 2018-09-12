@@ -39,7 +39,7 @@ class LoginGuestAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Authorization was successful",
+     *              "message": "Авторизация прошла успешно.",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "exp": 1536224824,
@@ -61,7 +61,7 @@ class LoginGuestAction extends Action
         try {
             $this->modelClass = new RestUserEntity();
             if ($user = $this->modelClass->loginGuest()) {
-                \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successful');
+                \Yii::$app->getResponse()->setStatusCode(200, 'Авторизация прошла успешно.');
                 return [
                     'status'  => \Yii::$app->response->statusCode,
                     'message' => "Authorization was successful",
@@ -72,7 +72,7 @@ class LoginGuestAction extends Action
                 ];
             }
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Internal server error');
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 }
