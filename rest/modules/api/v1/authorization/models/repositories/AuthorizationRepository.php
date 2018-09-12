@@ -277,12 +277,12 @@ trait AuthorizationRepository
             }
 
             if ($user->verification_code !== (int)($params['verification_code'])) {
-                throw new UnprocessableEntityHttpException('Wrong verification code');
+                throw new UnprocessableEntityHttpException('Неверный код верификации.');
             }
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);// todo зачем?!!!!
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);// todo зачем?!!!!
             $user->created_refresh_token = time();  // todo зачем?!!!!
 
 

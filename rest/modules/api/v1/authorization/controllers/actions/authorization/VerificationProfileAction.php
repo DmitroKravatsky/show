@@ -57,6 +57,7 @@ class VerificationProfileAction extends Action
      *              "data": {
      *                  "id" : 21,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
+     *                  "exp": 1536224824,
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *              }
      *         }
@@ -96,7 +97,8 @@ class VerificationProfileAction extends Action
             'data'    => [
                 /** @var RestUserEntity $user */
                 'id'            => $user->id,
-                'access_token'  => $user->getJWT(),
+                'access_token'  => $token = $user->getJWT(['user_id' => $user->id]),
+                'exp'           => RestUserEntity::getPayload($token, 'exp'),
                 'refresh_token' => $user->refresh_token,
             ]
         ];
