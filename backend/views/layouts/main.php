@@ -7,7 +7,7 @@
 
 use backend\assets\AppAsset;
 use common\models\userNotifications\NotificationsEntity;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
@@ -173,12 +173,12 @@ $this->title = Yii::t('app', 'Dashboard');
                                     </ul>
                                 </li>
 
-                                <?php $userNotifications = UserNotificationsEntity::getUnreadUserNotifications(3) ?>
+                                <?php $userNotifications = UserNotifications::getUnreadUserNotifications(3) ?>
 
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-bell-o"></i>
-                                        <span class="badge bg-green"><?= UserNotificationsEntity::getCountUnreadNotificationsByRecipient() ?></span>
+                                        <span class="badge bg-green"><?= UserNotifications::getCountUnreadNotificationsByRecipient() ?></span>
                                     </a>
 
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">

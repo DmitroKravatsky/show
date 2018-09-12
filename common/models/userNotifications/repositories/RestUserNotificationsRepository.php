@@ -3,11 +3,10 @@
 namespace common\models\userNotifications\repositories;
 
 use common\models\userNotifications\NotificationsEntity;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
-use common\models\userProfile\UserProfileEntity;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -27,7 +26,7 @@ trait RestUserNotificationsRepository
     public function getUserNotificationsByUser(array $params): ArrayDataProvider
     {
         try {
-            $userNotificationsModel = UserNotificationsEntity::find()
+            $userNotificationsModel = UserNotifications::find()
                 ->select(['text', 'created_at'])
                 ->where(['recipient_id' => \Yii::$app->user->id]);
             if (isset($params['status'])) {
@@ -112,14 +111,14 @@ trait RestUserNotificationsRepository
         ]);
 
         $notification->save();
-        $userNotificationRelation = new UserNotificationsEntity();
+        $userNotificationRelation = new UserNotifications();
 
         if (is_array($recipientId)) {
             foreach ($recipientId as $id) {
                 $data[] = [
                     'user_id'          => $id,
                     'notification_id ' => $notification->id,
-                    'is_read'          => UserNotificationsEntity::STATUS_READ_NO,
+                    'is_read'          => UserNotifications::STATUS_READ_NO,
                     'created_at'       => time(),
                     'updated_at'       => time()
                 ];
@@ -127,7 +126,7 @@ trait RestUserNotificationsRepository
 
             return \Yii::$app->db->createCommand()
                 ->batchInsert(
-                   UserNotificationsEntity::tableName(),
+                   UserNotifications::tableName(),
                    ['user_id', 'notification_id', 'is_read', 'created_at', 'updated_at'],
                    $data
                 )
@@ -140,6 +139,7 @@ trait RestUserNotificationsRepository
 
             return $userNotificationRelation->save();
         }
+        throw new \InvalidArgumentException('RecipientId must be array or integer');
     }
 
     /**

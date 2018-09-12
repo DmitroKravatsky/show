@@ -10,7 +10,7 @@ use yii\data\ActiveDataProvider;
  * UserNotificationsSearch represents the model behind
  * the search form of `common\models\userNotifications\UserNotificationsEntity`.
  */
-class UserNotificationsSearch extends UserNotificationsEntity
+class UserNotificationsSearch extends UserNotifications
 {
     public $dateRange;
     public $text;
@@ -44,7 +44,7 @@ class UserNotificationsSearch extends UserNotificationsEntity
      */
     public function search($params)
     {
-        $query = UserNotificationsEntity::find()
+        $query = UserNotifications::find()
             ->joinWith('notification')
             ->joinWith('userProfile');
         $dataProvider = new ActiveDataProvider([

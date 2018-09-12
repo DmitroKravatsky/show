@@ -217,6 +217,6 @@ class NotificationsEntity extends ActiveRecord
      */
     public function getUserNotifications()
     {
-        return $this->hasOne(UserNotificationsEntity::class, ['notification_id' => 'id']);
+        return $this->hasOne(UserNotifications::class, ['notification_id' => 'id']);
     }
 }

@@ -4,7 +4,7 @@ use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
-    bid\BidEntity, userNotifications\NotificationsEntity, userNotifications\UserNotificationsEntity, userNotifications\NotificationsSearch, user\User
+    bid\BidEntity, userNotifications\NotificationsEntity, userNotifications\UserNotifications, userNotifications\NotificationsSearch, user\User
 };
 use yii\helpers\{
     Html,
@@ -290,9 +290,9 @@ use common\helpers\UrlHelper;
                     [
                         'attribute' => 'read',
                         'label' => 'Status',
-                        'filter' =>  (new UserNotificationsEntity)->getIsReadStatuses(),
+                        'filter' =>  (new UserNotifications)->getIsReadStatuses(),
                         'value' => function (NotificationsEntity $notification) {
-                            return UserNotificationsEntity::getIsReadLabel($notification->userNotifications->is_read);
+                            return UserNotifications::getIsReadLabel($notification->userNotifications->is_read);
                         }
                     ],
                     [

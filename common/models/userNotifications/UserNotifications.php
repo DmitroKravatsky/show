@@ -27,7 +27,7 @@ use Yii;
  * @mixin ValidationExceptionFirstMessage
  *
  */
-class UserNotificationsEntity extends ActiveRecord
+class UserNotifications extends ActiveRecord
 {
     use RestUserNotificationsRepository;
 
