@@ -7,7 +7,7 @@ use kartik\daterange\DateRangePicker;
 use yii\helpers\Html;
 use yii\grid\ActionColumn;
 use yii\helpers\Url;
-use common\models\reserve\ReserveEntity;
+use common\models\reserve\ReserveEntity as Reserve;
 use common\helpers\UrlHelper;
 use common\helpers\Toolbar;
 
@@ -27,62 +27,67 @@ $this->params['breadcrumbs']['title'] = $this->title;
     ]) ?>
         <?php Pjax::begin() ?>
             <?= GridView::widget([
-                'filterModel' => $searchModel,
-                'filterUrl' => UrlHelper::getFilterUrl(),
+                'filterModel'  => $searchModel,
+                'filterUrl'    => UrlHelper::getFilterUrl(),
                 'dataProvider' => $dataProvider,
-                'toolbar' =>  [
+                'toolbar'      =>  [
                     ['content' =>
                         Toolbar::resetButton()
                     ],
                     '{export}',
                     '{toggleData}',
                 ],
-                'export' => [
+                'export'       => [
                     'fontAwesome' => true
                 ],
-                'panel' => [
-                    'type' => GridView::TYPE_DEFAULT,
+                'panel'        => [
+                    'type'    => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
-                'columns' => [
+                'columns'      => [
                     [
-                        'class' => 'kartik\grid\SerialColumn',
+                        'class'          => 'kartik\grid\SerialColumn',
                         'contentOptions' => ['class' => 'kartik-sheet-style'],
-                        'width' => '36px',
-                        'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                        'width'          => '36px',
+                        'header'         => '',
+                        'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
                         'attribute' => 'payment_system',
-                        'filter' => ReserveEntity::paymentSystemLabels(),
-                        'value' => function (ReserveEntity $reserve) {
-                            return ReserveEntity::getPaymentSystemValue($reserve->payment_system);
+                        'filter' => Reserve::paymentSystemLabels(),
+                        'value' => function (Reserve $reserve) {
+                            return Reserve::getPaymentSystemValue($reserve->payment_system);
                         }
                     ],
                     [
                         'attribute' => 'currency',
-                        'filter' => ReserveEntity::currencyLabels(),
-                        'value' => function (ReserveEntity $reserve) {
-                            return ReserveEntity::getCurrencyValue($reserve->currency);
+                        'filter'    => Reserve::currencyLabels(),
+                        'value'     => function (Reserve $reserve) {
+                            return Reserve::getCurrencyValue($reserve->currency);
                         }
                     ],
                     [
-                        'attribute' => 'sum',
-                        'value' => function (ReserveEntity $reserve) {
-                            return round($reserve->sum, 2);
-                        }
+                        'attribute'       => 'sum',
+                        'class'           => 'kartik\grid\EditableColumn',
+                        'editableOptions' => [
+                            'header'    => Yii::t('app', 'Sum'),
+                            'inputType' => \kartik\editable\Editable::INPUT_SPIN,
+                            'options'   => [
+                                'pluginOptions' => ['min' => 0, 'max' => 100000]
+                            ]
+                        ],
                     ],
                     [
                         'attribute' => 'created_at',
-                        'format' => 'date',
-                        'value' => 'created_at',
-                        'filter' => DateRangePicker::widget([
+                        'format'    => 'date',
+                        'value'     => 'created_at',
+                        'filter'    => DateRangePicker::widget([
                             'model'          => $searchModel,
                             'attribute'      => 'createdDateRange',
                             'convertFormat'  => true,
                             'pluginOptions'  => [
                                 'timePicker' => true,
-                                'locale' => [
+                                'locale'     => [
                                     'format' => 'Y-m-d',
                                 ]
                             ]
@@ -90,32 +95,32 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'attribute' => 'created_at',
-                        'format' => 'date',
-                        'value' => 'created_at',
-                        'filter' => DateRangePicker::widget([
+                        'format'    => 'date',
+                        'value'     => 'created_at',
+                        'filter'    => DateRangePicker::widget([
                             'model'          => $searchModel,
                             'attribute'      => 'updatedDateRange',
                             'convertFormat'  => true,
                             'pluginOptions'  => [
                                 'timePicker' => true,
-                                'locale' => [
+                                'locale'     => [
                                     'format' => 'Y-m-d',
                                 ]
                             ]
                         ]),
                     ],
                     [
-                        'class' => ActionColumn::class,
+                        'class'    => ActionColumn::class,
                         'template' => '{view} {update}',
-                        'buttons' => [
-                            'view' => function ($url, ReserveEntity $reserve) {
+                        'buttons'  => [
+                            'view' => function ($url, Reserve $reserve) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/reserve/view/' . $reserve->id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             },
-                            'update' => function ($url, ReserveEntity $reserve) {
+                            'update' => function ($url, Reserve $reserve) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-pencil"></span>',
                                     Url::to(['/reserve/update/' . $reserve->id]),
