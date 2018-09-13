@@ -17,37 +17,40 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="login_wrapper">
         <div class="animate form login_form">
             <section class="login_content">
-                <?php $form = ActiveForm::begin(['id' => 'login-form',
+                <?php $form = ActiveForm::begin([
+                    'id'      => 'login-form',
                     'options' => ['class' => 'form-signin']
                 ]); ?>
                     <h1><?= Yii::t('app', 'Admin Panel') ?></h1>
 
                     <div>
-                        <?= $form->field($modelLogin, 'email')->textInput([
-                            'autofocus' => true,
-                            'class' => 'form-control',
-                            'id' => 'inputEmail',
+                        <?= $form->field($modelLogin, 'email', ['enableClientValidation' => true])->textInput([
+                            'autofocus'   => true,
+                            'class'       => 'form-control',
+                            'id'          => 'inputEmail',
                             'placeholder' => Yii::t('app', 'Enter your e-mail address')
                         ])->label(false) ?>
                     </div>
 
                     <div>
-
-                        <?= $form->field($modelLogin, 'password')->passwordInput([
-                            'class' => 'form-control',
-                            'id' => 'inputPassword',
+                        <?= $form->field($modelLogin, 'password', ['enableAjaxValidation' => true,])->passwordInput([
+                            'class'       => 'form-control',
+                            'id'          => 'inputPassword',
                             'placeholder' => Yii::t('app', 'Enter your password')
                         ])->label(false) ?>
                     </div>
 
                     <div>
                         <?= $form->field($modelLogin, 'rememberMe')->checkbox()->label(Yii::t('app', 'Remember me'), [
-                                'class' => "checkbox-inline", "style"=>"padding-left: 0px;"
+                            'class' => 'checkbox-inline',
+                            'style' => 'padding-left: 0px;'
                         ]) ?>
+
                         <div class="clearfix"></div>
+
                         <?= Html::submitButton(Yii::t('app', 'Login'), [
                             'class' => 'btn btn-default submit',
-                            'name' => 'login-button'
+                            'name'  => 'login-button'
                         ]) ?>
                     </div>
 

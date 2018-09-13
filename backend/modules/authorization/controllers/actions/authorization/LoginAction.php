@@ -2,8 +2,9 @@
 
 namespace backend\modules\authorization\controllers\actions\authorization;
 
+use backend\models\BackendUser;
 use backend\modules\authorization\models\LoginForm;
-use yii\base\Action;
+use yii\{ base\Action, widgets\ActiveForm, web\Response };
 use Yii;
 
 class LoginAction extends Action
@@ -32,19 +33,28 @@ class LoginAction extends Action
             return $this->controller->redirect(['/index', 'inviteCode' => $invitedCode]);
         }
 
-        if ($modelLogin->load(\Yii::$app->request->post()) && $modelLogin->login()) {
-            if (Yii::$app->user->can('admin') || Yii::$app->user->can('manager')) {
+        if (Yii::$app->request->isAjax && $modelLogin->load(Yii::$app->request->post())) {
+            Yii::$app->response->format = Response::FORMAT_JSON;
+            return ActiveForm::validate($modelLogin);
+        }
+
+        if ($modelLogin->load(Yii::$app->request->post()) && $modelLogin->login()) {
+            if (Yii::$app->user->can(BackendUser::ROLE_ADMIN) || Yii::$app->user->can(BackendUser::ROLE_MANAGER)) {
                 return $this->controller->redirect(['/index']);
             } else {
                 Yii::$app->getSession()->setFlash('error', "You haven't permission to enter to protected area. Please check your credentials.");
                 return $this->controller->redirect(Yii::$app->homeUrl);
             }
-        } else {
-            $modelLogin->addError('password', \Yii::t('app', 'Incorrect email or password.'));
         }
 
         return $this->controller->render($this->view, [
             'modelLogin' => $modelLogin,
         ]);
+    }
+
+    public function beforeRun()
+    {
+        Yii::$app->language = Yii::$app->session->get('language', Yii::$app->language);
+        return true;
     }
 }
