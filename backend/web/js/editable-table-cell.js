@@ -5,18 +5,21 @@
         var STATUS_REJECTED = 'rejected';
         var STATUS_PAID_BY_US_DONE = 'paid_by_us_done';
         var ACTION_ID = 'view';
+        var selectId = $(this).attr('id');
 
         $.ajax({
             url : '/admin/admin/bid/update-bid-status',
             type : "POST",
             data: {'status' : newStatus, 'id' : fieldId, 'language' : language},
-            success : function (result) {
+            success : function (result) { console.log(selectId)
                 var isAdmin = result.isAdmin;
                 var processedStatus = result.processedStatus;
                 var processedBy = result.processedBy;
                 var bidStatus = result.bidStatus;
                 var inProgressByManager = result.inProgressByManager;
                 var tableRow = $('tr[data-key="' + fieldId + '"]');
+                var bidOldStatusValue = result.bidOldStatusValue;
+                var bidOldStatusText = result.bidOldStatusText;
 
                 if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
                     $('#status').html(bidStatus);
@@ -28,6 +31,13 @@
                     location.reload()
                 } else {
                     tableRow.removeClass('success');
+                    $('#' + selectId + ' option:selected').remove();
+                    $('#' + selectId).append(
+                        $('<option></option>')
+                            .attr('value', bidOldStatusValue)
+                            .text(bidOldStatusText)
+                    );
+
                     tableRow.each(function () {
                         $(this).find('.status-column').html(bidStatus);
                         $(this).find('.processed-column').html(processedStatus);
