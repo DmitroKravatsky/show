@@ -69,9 +69,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     [
                         'attribute'       => 'sum',
                         'class'           => 'kartik\grid\EditableColumn',
+                        'value'           => function (Reserve $reserve) {
+                            return round($reserve->sum, 2);
+                        },
                         'editableOptions' => [
                             'header'    => Yii::t('app', 'Sum'),
-                            'inputType' => \kartik\editable\Editable::INPUT_SPIN,
                             'options'   => [
                                 'pluginOptions' => ['min' => 0, 'max' => 100000]
                             ]
