@@ -164,6 +164,9 @@ class m180816_114157_i18n_init extends Migration
             [149, 'app', 'Change Status'],
             [150, 'app', 'Select status'],
             [151, 'app', 'Bid Closed'],
+            [152, 'app', 'Logs'],
+            [153, 'app', 'Reset Grid'],
+            [154, 'app', 'In Progress By Manager'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -318,6 +321,9 @@ class m180816_114157_i18n_init extends Migration
             [149, 'ru', 'Изменить Статус'],
             [150, 'ru', 'Выбрать статус'],
             [151, 'ru', 'Заявка Закрыта '],
+            [152, 'ru', 'Логи'],
+            [153, 'ru', 'Сбросить таблицу'],
+            [154, 'ru', 'Обрабатывается Менеджером'],
         ]);
     }
 

@@ -1,11 +1,10 @@
 <?php
 
 use common\models\userNotifications\NotificationsEntity;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
-use common\models\userNotifications\UserNotificationsEntity as Notification;
 use kartik\daterange\DateRangePicker;
 use yii\helpers\{ StringHelper, Html };
 use common\helpers\{ UrlHelper, Toolbar };
@@ -57,27 +56,27 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full name'),
-                        'value' => function (UserNotificationsEntity $userNotification) {
+                        'value' => function (UserNotifications $userNotification) {
                             return $userNotification->userProfile->userFullName ?? null;
                         }
                     ],
                     [
                         'attribute' => 'is_read',
-                        'label' => 'Status',
-                        'filter' => UserNotificationsEntity::getIsReadStatuses(),
-                        'value' => function (UserNotificationsEntity $userNotification) {
-                            return UserNotificationsEntity::getIsReadLabel($userNotification->is_read);
+                        'filter' => UserNotifications::getIsReadStatuses(),
+                        'value' => function (UserNotifications $userNotification) {
+                            return UserNotifications::getIsReadLabel($userNotification->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (UserNotificationsEntity $userNotification) {
-                            if ($userNotification->notification->type = NotificationsEntity::TYPE_NEW_USER) {
-                                return StringHelper::truncate(Yii::t('app', $userNotification->notification->text, [
-                                    'phone_number' => $userNotification->notification->custom_data->phone_number ?? null
-                                ]), 40);
-                            }
-                            return StringHelper::truncate(Html::encode($userNotification->notification->text), 180);
+                        'value' => function (UserNotifications $userNotification) {
+                            return StringHelper::truncate( Yii::t('app', $userNotification->notification->text, [
+                                'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
+                                'sum'      => $userNotification->notification->custom_data->sum ?? null,
+                                'currency' => $userNotification->notification->custom_data->currency ?? null,
+                                'wallet'   => $userNotification->notification->custom_data->wallet ?? null,
+                                'phone_number' => $userNotification->notification->custom_data->phone_number ?? null,
+                            ]), 40);
                         }
                     ],
                     [
@@ -100,8 +99,15 @@ $this->params['breadcrumbs'][] = $this->title;
                         'class' => \yii\grid\ActionColumn::class,
                         'template' => '{view}&nbsp{delete}',
                         'buttons' => [
-                            'delete' => function($url, Notification $notification) {
-                                $url = Url::to(['/notifications/delete', 'id' => $notification->id]);
+                            'view' => function($url, UserNotifications $notification) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/notifications/view', 'id' => $notification->notification_id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'delete' => function($url, UserNotifications $notification) {
+                                $url = Url::to(['/notifications/delete', 'id' => $notification->notification_id]);
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
                                     'title' => Yii::t('app', 'Delete'),
                                     'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),

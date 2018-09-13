@@ -114,7 +114,7 @@ class RegisterAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Registration was successfully ended",
+     *              "message": "Регистрация прошла успешно.",
      *              "data": {
      *                  "id" : 21,
      *                  "phone_number": "+380939353498",
@@ -153,13 +153,13 @@ class RegisterAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException(Yii::t('app', 'Something wrong, please try again later.'));
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
 
         $response = Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => Yii::t('app', 'Registration was successfully ended'),
+            'message' => 'Регистрация прошла успешно.',
             'data'    => [
                 'id'            => $user->id,
                 'phone_number'  => $user->phone_number,

@@ -3,7 +3,7 @@
 namespace backend\modules\admin\controllers\actions\notifications;
 
 use backend\modules\admin\controllers\NotificationsController;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\base\Action;
 use Yii;
 
@@ -12,8 +12,8 @@ class ViewAction extends Action
     /** @var NotificationsController */
     public $controller;
 
-    /** @var UserNotificationsEntity */
-    public $notification;
+    /** @var UserNotifications */
+    public $userNotification;
 
     /**
      * @param int $id
@@ -22,15 +22,15 @@ class ViewAction extends Action
      */
     public function run($id)
     {
-        $this->notification = $this->controller->findNotification($id, Yii::$app->user->id);
+        $this->userNotification = $this->controller->findUserNotification($id, Yii::$app->user->id);
         return $this->controller->render('view', [
-            'notification' => $this->notification,
+            'notification' => $this->userNotification->notification,
         ]);
     }
 
     protected function afterRun()
     {
-        $this->notification->status = UserNotificationsEntity::STATUS_READ;
-        $this->notification->save(false, ['status']);
+        $this->userNotification->is_read = UserNotifications::STATUS_READ_YES;
+        $this->userNotification->save(false, ['is_read']);
     }
 }

@@ -2,6 +2,7 @@
 
 namespace common\models\bid;
 
+use backend\models\BackendUser;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -25,7 +26,7 @@ class BidSearch extends BidEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_by', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'created_by', 'created_at', 'updated_at', 'in_progress_by_manager',], 'integer'],
             [['processed_by'], 'string'],
             [
                 [
@@ -74,13 +75,18 @@ class BidSearch extends BidEntity
         $query->andFilterWhere([
             'processed'            => $this->processed,
             'user_profile.user_id' => $this->processed_by,
+            'm.id'                 => $this->in_progress_by_manager,
+            'bid.status'           => $this->status,
+        ])->joinWith([
+            'inProgressByManager' => function ($query) {
+                $query->from(['m' => BackendUser::tableName()]);
+            },
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name])
             ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'email', $this->email])
-            ->andFilterWhere(['like', 'status', $this->status])
+            ->andFilterWhere(['like', 'bid.phone_number', $this->phone_number])
+            ->andFilterWhere(['like', 'bid.email', $this->email])
             ->andFilterWhere(['like', 'from_payment_system', $this->from_wallet])
             ->andFilterWhere(['like', 'to_payment_system', $this->to_wallet])
             ->andFilterWhere([

@@ -96,7 +96,7 @@ trait AuthorizationRepository
         /** @var RestUserEntity $user */
         $user = $this->getUserByPhoneNumber($params['phone_number']);
         if ($user->status === self::STATUS_UNVERIFIED && $user->register_by_bid == self::REGISTER_BY_BID_NO) {
-            throw new ForbiddenHttpException('You must be verified to login');
+            throw new ForbiddenHttpException('Номер телефона не найден.');
         }
         if ($user->validatePassword($params['password'])) {
             return $user;
@@ -142,7 +142,7 @@ trait AuthorizationRepository
         if ($user) {
             return $user;
         }
-        throw new NotFoundHttpException('User not found');
+        throw new NotFoundHttpException('Пользователь не найден.');
     }
 
     /**
@@ -243,7 +243,7 @@ trait AuthorizationRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e){
             \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Произошла ошибка при генерации нового токена.');
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 
@@ -273,16 +273,16 @@ trait AuthorizationRepository
 
             $user = RestUserEntity::findOne(['phone_number' => $user->phone_number]);
             if (!$user) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException('Пользователь не найден.');
             }
 
             if ($user->verification_code !== (int)($params['verification_code'])) {
-                throw new UnprocessableEntityHttpException('Wrong verification code');
+                throw new UnprocessableEntityHttpException('Неверный код верификации.');
             }
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
             $user->verification_code = null;
-            $user->refresh_token = $user->getRefreshToken(['id' => $user->id]);// todo зачем?!!!!
+            $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);// todo зачем?!!!!
             $user->created_refresh_token = time();  // todo зачем?!!!!
 
 
@@ -295,7 +295,7 @@ trait AuthorizationRepository
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Internal server error');
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 
@@ -343,7 +343,7 @@ trait AuthorizationRepository
             /** @var RestUserEntity $user */
             $user = static::findByPhoneNumber($phoneNumber);
             if (!$user) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException('Пользователь не найден.');
             }
 
             $user->verification_code = 0000;//rand(1000, 9999);
@@ -356,10 +356,10 @@ trait AuthorizationRepository
             }
 
         } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('User not found');
+            throw new NotFoundHttpException('Пользователь не найден.');
         }
 
-        throw new ServerErrorHttpException('Internal server error');
+        throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
     }
 
     /**

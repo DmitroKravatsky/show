@@ -46,7 +46,8 @@ class UserNotificationsSearch extends UserNotifications
     {
         $query = UserNotifications::find()
             ->joinWith('notification')
-            ->joinWith('userProfile');
+            ->joinWith('userProfile')
+            ->where(['user_notifications.user_id' => Yii::$app->user->id]);
         $dataProvider = new ActiveDataProvider([
             'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [

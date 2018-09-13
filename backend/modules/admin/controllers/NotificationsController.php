@@ -2,7 +2,8 @@
 
 namespace backend\modules\admin\controllers;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\NotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\modules\admin\controllers\actions\notifications\{
@@ -61,16 +62,16 @@ class NotificationsController extends Controller
     }
 
     /**
-     * @param int $id
-     * @param int $recipientId
-     * @return UserNotificationsEntity|null
+     * @param int $notificationId
+     * @param int $userId
+     * @return UserNotifications|null
      * @throws NotFoundHttpException
      */
-    public function findNotification($id, $recipientId)
+    public function findUserNotification($notificationId, $userId)
     {
-        $notification = UserNotificationsEntity::findOne(['id' => $id, 'recipient_id' => $recipientId]);
-        if ($notification !== null) {
-            return $notification;
+        $userNotification = UserNotifications::findOne(['notification_id' => $notificationId, 'user_id' => $userId]);
+        if ($userNotification !== null) {
+            return $userNotification;
         }
         throw new NotFoundHttpException(Yii::t('app', 'Notification not found'));
     }

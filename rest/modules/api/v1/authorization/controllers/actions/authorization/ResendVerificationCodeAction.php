@@ -36,7 +36,9 @@ class ResendVerificationCodeAction extends Action
     }
 
     /**
-     * @inheritdoc
+     * @return bool
+     * @throws \yii\base\InvalidConfigException
+     * @throws \yii\web\BadRequestHttpException
      */
     protected function beforeRun()
     {
@@ -65,7 +67,7 @@ class ResendVerificationCodeAction extends Action
      *         description = "success",
      *         examples = {
      *              "status": 200,
-     *              "message": "Validation code was successfully send"
+     *              "message": "Код верификации успешно отправлен."
      *         }
      *     ),
      *     @SWG\Response (
@@ -89,7 +91,7 @@ class ResendVerificationCodeAction extends Action
         if ($model->resendVerificationCode(\Yii::$app->request->post('phone_number'))) {
             return [
                 'status'   => 200,
-                'message'  => 'Validation code was successfully send'
+                'message'  => 'Код верификации успешно отправлен.'
             ];
         }
     }

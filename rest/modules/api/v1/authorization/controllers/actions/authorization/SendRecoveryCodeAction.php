@@ -83,7 +83,7 @@ class SendRecoveryCodeAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Recovery code was successfully sent",
+     *              "message": "Код восстановления успешно отправлен.",
      *              "data": {
      *              }
      *         }
@@ -126,16 +126,16 @@ class SendRecoveryCodeAction extends Action
 //            );
 
             if ($user->save(false, $attributes)) {
-                $response = \Yii::$app->getResponse()->setStatusCode(200, 'Recovery code was successfully sent');
+                $response = \Yii::$app->getResponse()->setStatusCode(200);
                 return $response->content = [
-                    'status' => $response->statusCode,
-                    'message' => Yii::t('app', 'Recovery code was successfully sent')
+                    'status'  => $response->statusCode,
+                    'message' => Yii::t('app', 'Код восстановления успешно отправлен.')
                 ];
 
             }
             throw new ServerErrorHttpException();
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Произошла ошибка при отправке кода восстановления!');
+            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
         }
     }
 }

@@ -68,6 +68,10 @@ class GetProfileAction extends Action
      *              }
      *         }
      *     ),
+     *     @SWG\Response(
+     *         response = 403,
+     *         description = "Forbidden"
+     *     ),
      *     @SWG\Response (
      *         response = 401,
      *         description = "Invalid credentials or Expired token"

@@ -88,7 +88,7 @@ class GenerateNewAccessTokenAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "New access token has been generated",
+     *              "message": "Сгенерирован новый токен.",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
@@ -135,10 +135,10 @@ class GenerateNewAccessTokenAction extends Action
         $restUser = new $this->modelClass();
         $responseData = $restUser->generateNewAccessToken();
 
-        $response = \Yii::$app->getResponse()->setStatusCode(201, 'New token is created');
+        $response = \Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => 'New token is created',
+            'message' => 'Сгенерирован новый токен.',
             'data'    => $responseData
         ];
     }

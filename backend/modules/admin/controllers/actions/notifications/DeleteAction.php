@@ -21,7 +21,7 @@ class DeleteAction extends Action
      */
     public function run($id)
     {
-        $notification = $this->controller->findNotification($id, Yii::$app->user->id);
+        $notification = $this->controller->findUserNotification($id, Yii::$app->user->id);
         if ($notification->delete()) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Notification successfully deleted.'));
         } else {

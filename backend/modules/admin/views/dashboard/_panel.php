@@ -288,22 +288,22 @@ use common\helpers\UrlHelper;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'read',
-                        'label' => 'Status',
-                        'filter' =>  (new UserNotifications)->getIsReadStatuses(),
-                        'value' => function (NotificationsEntity $notification) {
-                            return UserNotifications::getIsReadLabel($notification->userNotifications->is_read);
+                        'attribute' => 'is_read',
+                        'filter' => UserNotifications::getIsReadStatuses(),
+                        'value' => function (UserNotifications $userNotification) {
+                            return UserNotifications::getIsReadLabel($userNotification->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (NotificationsEntity $notification) {
-                            if ($notification->type = NotificationsEntity::TYPE_NEW_USER) {
-                                return StringHelper::truncate(Yii::t('app', $notification->text, [
-                                    'phone_number' => $notification->custom_data->phone_number ?? null
-                                ]), 40);
-                            }
-                            return null;
+                        'value' => function (UserNotifications $userNotification) {
+                            return StringHelper::truncate( Yii::t('app', $userNotification->notification->text, [
+                                'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
+                                'sum'      => $userNotification->notification->custom_data->sum ?? null,
+                                'currency' => $userNotification->notification->custom_data->currency ?? null,
+                                'wallet'   => $userNotification->notification->custom_data->wallet ?? null,
+                                'phone_number' => $userNotification->notification->custom_data->phone_number ?? null,
+                            ]), 40);
                         }
                     ],
                     [
@@ -326,10 +326,10 @@ use common\helpers\UrlHelper;
                         'class' => ActionColumn::class,
                         'template' => '{view}',
                         'buttons' => [
-                            'view' => function($url, $model) {
+                            'view' => function($url, $userNotification) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/notification/view/' . $model->id]),
+                                    Url::to(['/notifications/view/' , 'id' => $userNotification->notification_id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             }
