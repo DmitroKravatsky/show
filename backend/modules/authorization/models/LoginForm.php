@@ -2,7 +2,6 @@
 namespace backend\modules\authorization\models;
 
 use backend\models\BackendUser;
-use borales\extensions\phoneInput\PhoneInputValidator;
 use common\models\user\User;
 use yii\base\Model;
 use Yii;
@@ -19,6 +18,7 @@ class LoginForm extends Model
 
             [['email', 'password'], 'required'],
             [['email'], 'email',],
+            [['password'], 'validatePassword']
 
         ];
     }
@@ -26,7 +26,7 @@ class LoginForm extends Model
     public function attributeLabels()
     {
         return [
-            'email'             => Yii::t('app', 'Email'),
+            'email'             => Yii::t('app', 'E-mail'),
             'password'          => Yii::t('app', 'Password'),
             'rememberMe'        => Yii::t('app', 'Remember me'),
         ];
@@ -38,11 +38,8 @@ class LoginForm extends Model
      */
     public function login(): bool
     {
-        if ($this->validate()) {
-            $user = User::findByEmail($this->email);
-            if ($user && $this->validatePassword($this->password, $user->password)) {
-                return Yii::$app->user->login($user, $this->rememberMe ? Yii::$app->params['LoginDuration'] : 0);
-            }
+        if ($user = User::findByEmail($this->email)) {
+            return Yii::$app->user->login($user, $this->rememberMe ? Yii::$app->params['LoginDuration'] : 0);
         }
         return false;
     }
@@ -65,18 +62,11 @@ class LoginForm extends Model
 
     /**
      * Compares password from form with password from db
-     * @param $inputPassword
-     * @param $currentPassword
-     * @return bool
      */
-    public function validatePassword($inputPassword, $currentPassword): bool
+    public function validatePassword()
     {
-        if (\Yii::$app->security->validatePassword($inputPassword, $currentPassword)) {
-            return true;
-        } else {
-            $this->addError('password', \Yii::t('app', 'Incorrect email or password'));
-            return false;
+        if (!($user = User::findByEmail($this->email)) || !Yii::$app->security->validatePassword($this->password, $user->password)) {
+            $this->addError('password', Yii::t('app', 'Incorrect email or password.'));
         }
     }
-
 }
