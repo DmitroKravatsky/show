@@ -9,10 +9,7 @@ use common\models\{
     userNotifications\UserNotificationsEntity as Notification,
     userProfile\UserProfileEntity
 };
-use yii\{
-    behaviors\TimestampBehavior,
-    db\ActiveRecord
-};
+use yii\{behaviors\TimestampBehavior, db\ActiveRecord, helpers\ArrayHelper};
 use Yii;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use borales\extensions\phoneInput\PhoneInputValidator;
@@ -145,6 +142,17 @@ class BidEntity extends ActiveRecord
             self::STATUS_PAID_BY_US_DONE => Yii::t('app', 'Paid by us'),
             self::STATUS_REJECTED        => Yii::t('app', 'Rejected'),
         ];
+    }
+
+    /**
+     * @param string $status
+     * @return array
+     */
+    public static function getManagerAllowedStatusesWithOutCurrentStatus($status): array
+    {
+        $statuses = static::getManagerAllowedStatuses();
+        ArrayHelper::remove($statuses, $status);
+        return $statuses;
     }
 
     /**

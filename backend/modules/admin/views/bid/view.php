@@ -1,17 +1,13 @@
 <?php
 
-use yii\widgets\DetailView;
 use yiister\gentelella\widgets\Panel;
-use common\models\bid\BidEntity;
-use yii\{ helpers\Html, web\View, widgets\Pjax, helpers\Url };
+use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
+use yii\{ helpers\Html, web\View, widgets\Pjax, helpers\Url, widgets\DetailView };
 use backend\models\BackendUser;
-use common\models\bidHistory\BidHistorySearch;
 use kartik\{ grid\GridView, select2\Select2, daterange\DateRangePicker };
-use common\helpers\UrlHelper;
-use common\models\bidHistory\BidHistory;
 
 /* @var $this yii\web\View */
-/* @var $model BidEntity */
+/* @var $model Bid */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
 /** @var BidHistorySearch $searchModel */
 
@@ -47,34 +43,34 @@ $this->params['breadcrumbs'][] = $this->title;
                             'email:email:E-mail',
                             [
                                 'attribute'     => 'status',
-                                'filter'        => BidEntity::statusLabels(),
-                                'value'         => function (BidEntity $bid) {
-                                    return BidEntity::getStatusValue($bid->status);
+                                'filter'        => Bid::statusLabels(),
+                                'value'         => function (Bid $bid) {
+                                    return Bid::getStatusValue($bid->status);
                                 },
                                 'contentOptions' => ['id' => 'status'],
                             ],
                             [
                                 'attribute' => 'change_status',
                                 'label'     => Yii::t('app', 'Change Status'),
-                                'value'     => function (BidEntity $bid) {
+                                'value'     => function (Bid $bid) {
                                     return Select2::widget([
                                         'name'    => 'status',
-                                        'data'    => BidEntity::getManagerAllowedStatuses(),
+                                        'data'    => Bid::getManagerAllowedStatusesWithOutCurrentStatus($bid->status),
                                         'options' => [
                                             'class'       => 'status',
-                                            'disabled'    => !BidEntity::canUpdateStatus($bid->status),
+                                            'disabled'    => !Bid::canUpdateStatus($bid->status),
                                             'placeholder' => Yii::t('app', 'Select status')
                                         ],
                                     ]);
                                 },
                                 'format'    => 'raw',
-                                'filter'    => BidEntity::statusLabels()
+                                'filter'    => Bid::statusLabels()
                             ],
                             [
                                 'attribute'      => 'processed_by',
                                 'filter'         => BackendUser::getManagerNames(),
                                 'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
-                                'value'          => function (BidEntity $bid) {
+                                'value'          => function (Bid $bid) {
                                     return $bid->perfomer->fullName ?? null;
                                 },
                                 'contentOptions' => ['id' => 'processed-by'],
@@ -83,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute'      => 'in_progress_by_manager',
                                 'filter'         => BackendUser::getManagerNames(),
                                 'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
-                                'value'          => function (BidEntity $bid) {
+                                'value'          => function (Bid $bid) {
                                     return $bid->inProgressByManager->fullName ?? null;
                                 },
                                 'contentOptions' => ['id' => 'in-progress-by-column'],
@@ -91,28 +87,28 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'attribute' => 'from_payment_system',
                                 'label'     => Yii::t('app', 'Where Did The Money Come From'),
-                                'value'     => function (BidEntity $bid) {
-                                    return BidEntity::getPaymentSystemValue($bid->from_payment_system) . ' ' . $bid->from_wallet;
+                                'value'     => function (Bid $bid) {
+                                    return Bid::getPaymentSystemValue($bid->from_payment_system) . ' ' . $bid->from_wallet;
                                 }
                             ],
                             [
                                 'attribute' => 'to_payment_system',
                                 'label'     => Yii::t('app', 'Need To Transfer Money Here'),
-                                'value'     => function (BidEntity $bid) {
-                                    return BidEntity::getPaymentSystemValue($bid->to_payment_system) . ' ' . $bid->to_wallet;
+                                'value'     => function (Bid $bid) {
+                                    return Bid::getPaymentSystemValue($bid->to_payment_system) . ' ' . $bid->to_wallet;
                                 }
                             ],
                             [
                                 'attribute' => 'from_sum',
                                 'label'     => Yii::t('app', 'Amount From Customer'),
-                                'value'     => function (BidEntity $bid) {
+                                'value'     => function (Bid $bid) {
                                     return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
                                 }
                             ],
                             [
                                 'attribute' => 'to_sum',
                                 'label'     => Yii::t('app', 'Amount To Be Transferred'),
-                                'value'     => function (BidEntity $bid) {
+                                'value'     => function (Bid $bid) {
                                     return round($bid->to_sum, 2) . ' ' . $bid->to_currency;
                                 }
                             ],

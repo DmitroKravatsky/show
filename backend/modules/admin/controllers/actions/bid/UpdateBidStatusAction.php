@@ -4,13 +4,10 @@ namespace backend\modules\admin\controllers\actions\bid;
 
 use backend\models\BackendUser;
 use backend\modules\admin\controllers\BidController;
-use common\models\bid\BidEntity;
+use common\models\bid\BidEntity as Bid;
 use common\models\user\User;
-use yii\base\Action;
-use yii\helpers\Html;
-use yii\web\UnprocessableEntityHttpException;
+use yii\{ base\Action, helpers\Html, web\UnprocessableEntityHttpException, web\Response };
 use Yii;
-use yii\web\Response;
 
 /**
  * Class UpdateBidStatusAction
@@ -32,7 +29,7 @@ class UpdateBidStatusAction extends Action
         $bodyParams = \Yii::$app->request->getBodyParams();
         $id = $bodyParams['id'];
         $newStatus = $bodyParams['status'];
-        $language = $bodyParams['language'];
+        Yii::$app->language = $bodyParams['language'];
 
         Yii::$app->response->format = Response::FORMAT_JSON;
         $transaction = \Yii::$app->db->beginTransaction();
@@ -41,65 +38,64 @@ class UpdateBidStatusAction extends Action
 
             $bid->setScenario($bid::SCENARIO_UPDATE_BID_STATUS);
             $bid->status = $newStatus;
-            if (($newStatus == BidEntity::STATUS_PAID_BY_US_DONE) || ($newStatus == BidEntity::STATUS_REJECTED)) {
-                $bid->processed = BidEntity::PROCESSED_YES;
+            if (($newStatus == Bid::STATUS_PAID_BY_US_DONE) || ($newStatus == Bid::STATUS_REJECTED)) {
+                $bid->processed = Bid::PROCESSED_YES;
                 $bid->processed_by = Yii::$app->user->id;
                 $bid->in_progress_by_manager = null;
-            } elseif ($newStatus == BidEntity::STATUS_IN_PROGRESS) {
-                $bid->processed = BidEntity::PROCESSED_NO;
+            } elseif ($newStatus == Bid::STATUS_IN_PROGRESS) {
+                $bid->processed = Bid::PROCESSED_NO;
                 $bid->processed_by = null;
                 $bid->in_progress_by_manager = Yii::$app->user->id;
             }
 
-            if ($bid->getDirtyAttributes()) {
-                if (!$bid->validate()) {
-                    \Yii::$app->response->setStatusCode(422);
-                    throw new UnprocessableEntityHttpException();
+            if (!$bid->validate()) {
+                \Yii::$app->response->setStatusCode(422);
+                throw new UnprocessableEntityHttpException();
+            }
+            $user = User::findOne(['id' => $bid->created_by]);
+
+            $bidOldStatus = $bid->getOldAttribute('status');
+            if ($bid->save()) {
+                if ($user->email) {
+                    Yii::$app->sendMail->run(
+                        '@common/views/mail/sendBidStatus-html.php',
+                        ['email' => $user->email, 'status' => $bid->status, 'id' => $bid->id],
+                        \Yii::$app->params['supportEmail'], $user->email, 'status is change'
+                    );
+                    $transaction->commit();
+
+                } elseif ($user->phone_number) {
+                    //Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
+                    $transaction->commit();
                 }
-                $user = User::findOne(['id' => $bid->created_by]);
 
-                if ($bid->save()) {
-                    if ($user->email) {
-                        Yii::$app->sendMail->run(
-                            '@common/views/mail/sendBidStatus-html.php',
-                            ['email' => $user->email, 'status' => $bid->status, 'id' => $bid->id],
-                            \Yii::$app->params['supportEmail'], $user->email, 'status is change'
-                        );
-                        $transaction->commit();
-
-                    } elseif ($user->phone_number) {
-                        //Yii::$app->sendSms->run('Ваша заявка обрела статус' . $bid->status, $user->phone_number);
-                        $transaction->commit();
-                    }
-
-                    $noSetMsg = Html::tag('span', Yii::t('yii', '(not set)', [], $language), ['class' => 'not-set']);
-                    $processedBy = Yii::$app->user->identity->profile->name;
-                    $inProgressByManager = $noSetMsg;
-                    if ($bid->status == BidEntity::STATUS_IN_PROGRESS) {
-                        $processedBy = $noSetMsg;
-                        $inProgressByManager = Yii::$app->user->identity->profile->name;
-                    }
-
-                    return [
-                        'status'              => 200,
-                        'message'             => Yii::t('app', 'Status successfully updated.', [], $language),
-                        'isAdmin'             => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
-                        'bidStatus'           => Yii::t('app', BidEntity::statusLabels()[$bid->status], [], $language),
-                        'processedStatus'     => Yii::t('app', BidEntity::getProcessedStatuses()[$bid->processed], [], $language),
-                        'processedBy'         => $processedBy,
-                        'inProgressByManager' => $inProgressByManager,
-                    ];
+                $noSetMsg = Html::tag('span', Yii::t('yii', '(not set)'), ['class' => 'not-set']);
+                $processedBy = Yii::$app->user->identity->profile->name;
+                $inProgressByManager = $noSetMsg;
+                if ($bid->status == Bid::STATUS_IN_PROGRESS) {
+                    $processedBy = $noSetMsg;
+                    $inProgressByManager = Yii::$app->user->identity->profile->name;
                 }
-                Yii::$app->response->setStatusCode(500);
-                return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
+
+                return [
+                    'status'              => 200,
+                    'message'             => Yii::t('app', 'Status successfully updated.'),
+                    'isAdmin'             => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                    'bidStatus'           => Bid::getStatusValue($bid->status),
+                    'processedStatus'     => Bid::getProcessedStatusValue($bid->processed),
+                    'processedBy'         => $processedBy,
+                    'inProgressByManager' => $inProgressByManager,
+                    'bidOldStatusValue'   => $bidOldStatus,
+                    'bidOldStatusText'    => Bid::getStatusValue($bidOldStatus),
+                ];
             }
             Yii::$app->response->setStatusCode(500);
-            return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
+            return  ['message' => Yii::t('app', 'Something wrong, please try again later.')];
         } catch (\Exception $e) {
             $transaction->rollBack();
             Yii::error($e->getMessage());
             Yii::$app->response->setStatusCode(500);
-            return  ['message' => Yii::t('app', 'Something wrong, please try again later.', [], $language)];
+            return  ['message' => Yii::t('app', 'Something wrong, please try again later.')];
         }
     }
 }

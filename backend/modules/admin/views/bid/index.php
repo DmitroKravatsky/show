@@ -2,7 +2,7 @@
 
 use kartik\{ daterange\DateRangePicker, grid\GridView };
 use yii\helpers\{ Html, Url };
-use common\models\{ bid\BidEntity, user\User };
+use common\models\{ bid\BidEntity as Bid, user\User };
 use yii\widgets\Pjax;
 use common\helpers\UrlHelper;
 use yiister\gentelella\widgets\Panel;
@@ -56,8 +56,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type'    => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
-                'rowOptions'   => function (BidEntity $bid) {
-                    return $bid->status === BidEntity::STATUS_NEW ? ['class' => 'success'] : [];
+                'rowOptions'   => function (Bid $bid) {
+                    return $bid->status === Bid::STATUS_NEW ? ['class' => 'success'] : [];
                 },
                 'columns'      => [
                     [
@@ -69,28 +69,28 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute'      => 'status',
-                        'filter'         => BidEntity::statusLabels(),
-                        'value'          => function (BidEntity $bid) {
-                            return BidEntity::getStatusValue($bid->status);
+                        'filter'         => Bid::statusLabels(),
+                        'value'          => function (Bid $bid) {
+                            return Bid::getStatusValue($bid->status);
                         },
                         'contentOptions' => ['class' => 'status-column'],
                     ],
                     [
                         'attribute' => 'change_status',
                         'label'     => Yii::t('app', 'Change Status'),
-                        'value'     => function (BidEntity $bid) {
+                        'value'     => function (Bid $bid) {
                             return Select2::widget([
                                 'name'    => 'status',
-                                'data'    => BidEntity::getManagerAllowedStatuses(),
+                                'data'    => Bid::getManagerAllowedStatusesWithOutCurrentStatus($bid->status),
                                 'options' => [
                                     'class'       => 'status',
-                                    'disabled'    => !BidEntity::canUpdateStatus($bid->status),
+                                    'disabled'    => !Bid::canUpdateStatus($bid->status),
                                     'placeholder' => Yii::t('app', 'Select status')
                                 ],
                             ]);
                         },
                         'format'           => 'raw',
-                        'filter'           => BidEntity::statusLabels()
+                        'filter'           => Bid::statusLabels(),
                     ],
                     [
                         'attribute' => 'full_name',
@@ -107,7 +107,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'label'          => Yii::t('app', 'Bid Closed'),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
                         'format'         => 'raw',
-                        'filter'         => BidEntity::getProcessedStatusList(),
+                        'filter'         => Bid::getProcessedStatusList(),
                         'value'          => 'processedStatus',
                         'contentOptions' => ['class' => 'processed-column'],
                     ],
@@ -115,7 +115,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'processed_by',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'value'          => function (BidEntity $bid) {
+                        'value'          => function (Bid $bid) {
                             return $bid->perfomer->fullName ?? null;
                         },
                         'contentOptions' => ['class' => 'processed-by-column'],
@@ -124,7 +124,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'value'          => function (BidEntity $bid) {
+                        'value'          => function (Bid $bid) {
                             return $bid->inProgressByManager->fullName ?? null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
@@ -149,7 +149,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'from_wallet',
-                        'filter'    => BidEntity::paymentSystemLabels(),
+                        'filter'    => Bid::paymentSystemLabels(),
                         'format'    => 'raw',
                         'header'    => Yii::t('app', 'Where Did The Money Come From'),
                         'value'     => function ($model) {
@@ -158,7 +158,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'to_wallet',
-                        'filter'    => BidEntity::paymentSystemLabels(),
+                        'filter'    => Bid::paymentSystemLabels(),
                         'format'    => 'raw',
                         'header'    => Yii::t('app', 'Need To Transfer Money Here'),
                         'value'     => function ($model) {
