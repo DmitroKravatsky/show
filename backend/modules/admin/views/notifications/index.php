@@ -17,6 +17,8 @@ $this->title = Yii::t('app', 'Notifications');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="notifications-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Notifications'),

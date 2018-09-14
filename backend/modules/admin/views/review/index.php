@@ -22,11 +22,12 @@ $this->title = Yii::t('app', 'Reviews');
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="review-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Reviews'),
         'collapsable' => true,
-        'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
             <?= GridView::widget([
