@@ -192,12 +192,7 @@ class UserNotifications extends ActiveRecord
      */
     public static function getIsReadLabel($value)
     {
-        if ($value === self::STATUS_READ_NO) {
-            return Yii::t('app', 'Yes');
-        }
-        if ($value === self::STATUS_READ_NO) {
-            return Yii::t('app', 'No');
-        }
+        return $value === self::STATUS_READ_NO ? Yii::t('app', 'No') : Yii::t('app', 'Yes');
     }
 
 }
