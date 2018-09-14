@@ -5,9 +5,8 @@ namespace rest\modules\api\v1\review\controllers\actions;
 use common\models\review\ReviewEntity;
 use rest\modules\api\v1\review\controllers\ReviewController;
 use yii\rest\Action;
-use yii\web\ForbiddenHttpException;
-use yii\web\UnprocessableEntityHttpException;
-use yii\web\ServerErrorHttpException;
+use yii\web\{ ForbiddenHttpException, UnprocessableEntityHttpException, ServerErrorHttpException };
+use Yii;
 
 /**
  * Class CreateAction
@@ -85,22 +84,22 @@ class CreateAction extends Action
      *     )
      * )
      *
-     * @return array
+     * @return mixed
      *
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws ForbiddenHttpException
      */
-    public function run(): array
+    public function run()
     {
         try {
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
-            $reviewModel = $reviewModel->create(\Yii::$app->request->bodyParams);
-            $response = \Yii::$app->getResponse()->setStatusCode(201, \Yii::t('app', 'Review was successfully added'));
-            return [
+            $reviewModel = $reviewModel->create(Yii::$app->request->bodyParams);
+            $response = Yii::$app->getResponse()->setStatusCode(201);
+            $response->data = [
                 'status'  => $response->statusCode,
-                'message' => $response->statusText,
+                'message' => 'Отзыв успешно создан.',
                 'data'    => $reviewModel->getAttributes(['id', 'text'])
             ];
         } catch (UnprocessableEntityHttpException $e) {
@@ -108,8 +107,8 @@ class CreateAction extends Action
         } catch (ForbiddenHttpException $e) {
             throw new ForbiddenHttpException($e->getMessage());
         } catch (\Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при создании заявки.'));
+            Yii::error($e->getMessage());
+            throw new ServerErrorHttpException();
         }
     }
 }
