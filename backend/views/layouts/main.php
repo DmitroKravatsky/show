@@ -79,31 +79,24 @@ $this->title = Yii::t('app', 'Dashboard');
                                 <?= Menu::widget([
                                     'items' => [
                                         [
-                                            'label' => Yii::t('app', 'Management'),
-                                            'icon' => 'th',
-                                            'url' => '#',
-                                            'items' => [
-                                                [
-                                                    'label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/manager/index')],
-                                                    'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
-                                                ],
-                                                [
-                                                    'label' => Yii::t('app', 'Bids'),
-                                                    'url' => ['/bid/index'],
-                                                ],
-                                                [
-                                                    'label' => Yii::t('app', 'Notifications'),
-                                                    'url' => ['/notifications/index'],
-                                                ],
-                                                [
-                                                    'label' => Yii::t('app', 'Reviews'),
-                                                    'url' => ['/review/index'],
-                                                ],
-                                                [
-                                                    'label' => Yii::t('app', 'Reserves'),
-                                                    'url' => ['/reserve/index'],
-                                                ],
-                                            ],
+                                            'label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/manager/index')],
+                                            'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
+                                        ],
+                                        [
+                                            'label' => Yii::t('app', 'Bids'),
+                                            'url' => ['/bid/index'],
+                                        ],
+                                        [
+                                            'label' => Yii::t('app', 'Notifications'),
+                                            'url' => ['/notifications/index'],
+                                        ],
+                                        [
+                                            'label' => Yii::t('app', 'Reviews'),
+                                            'url' => ['/review/index'],
+                                        ],
+                                        [
+                                            'label' => Yii::t('app', 'Reserves'),
+                                            'url' => ['/reserve/index'],
                                         ],
                                     ],
                                 ]) ?>
