@@ -6,6 +6,7 @@
  */
 
 use backend\assets\AppAsset;
+use common\components\language\LanguageUrlManager;
 use common\models\userNotifications\NotificationsEntity;
 use common\models\userNotifications\UserNotifications;
 use yii\helpers\Html;
@@ -55,6 +56,7 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div class="clearfix"></div>
 
                         <!-- menu prile quick info -->
+                        <a href="<?= Yii::$app->urlManager->createUrl('/profile/index')?>">
                         <div class="profile">
                             <div class="profile_pic">
                                 <?= isset($user->profile) && $user->profile->avatar !== null
@@ -68,6 +70,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                 <h2><?= Html::encode($user->fullname ?? null) ?></h2>
                             </div>
                         </div>
+                        </a>
                         <!-- /menu prile quick info -->
 
                         <br />
