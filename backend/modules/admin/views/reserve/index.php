@@ -19,11 +19,12 @@ $this->title = Yii::t('app', 'Reserves');
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
+<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+
 <div class="reserve-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Reserves'),
         'collapsable' => true,
-        'removable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
             <?= GridView::widget([
