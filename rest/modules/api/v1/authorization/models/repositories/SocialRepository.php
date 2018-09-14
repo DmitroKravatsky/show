@@ -200,7 +200,7 @@ trait SocialRepository
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException($e->getMessage());
+            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
         }
 
     }
@@ -251,7 +251,7 @@ trait SocialRepository
             $userProfile = new UserProfileEntity();
             $userProfile->scenario = UserProfileEntity::SCENARIO_CREATE;
             $userProfile->setAttributes([
-                'name'      => $userData->name,
+                'name'      => $userData->given_name,
                 'last_name' => $userData->family_name,
                 'user_id'   => $user->id,
                 'avatar'    => $userData->picture
