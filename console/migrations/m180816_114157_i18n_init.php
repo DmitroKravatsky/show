@@ -167,6 +167,8 @@ class m180816_114157_i18n_init extends Migration
             [152, 'app', 'Logs'],
             [153, 'app', 'Reset Grid'],
             [154, 'app', 'In Progress By Manager'],
+            [155, 'app', 'Visible'],
+            [156, 'app', 'Invisible'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -324,6 +326,8 @@ class m180816_114157_i18n_init extends Migration
             [152, 'ru', 'Логи'],
             [153, 'ru', 'Сбросить таблицу'],
             [154, 'ru', 'Обрабатывается Менеджером'],
+            [155, 'ru', 'Видимое'],
+            [156, 'ru', 'Невидимое'],
         ]);
     }
 

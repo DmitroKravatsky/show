@@ -59,7 +59,7 @@ trait RestReserveRepository
     {
         $query = ReserveEntity::find()->select([
             'id', 'payment_system', 'currency', 'sum',
-        ]);
+        ])->where(['visible' => self::VISIBLE_YES]);
 
         if (isset($params['filter'])) {
             $query->andWhere(['currency' => $params['filter']]);

@@ -21,7 +21,7 @@ class ReserveEntitySearch extends ReserveEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'visible', 'created_at', 'updated_at'], 'integer'],
             [['payment_system', 'currency', 'createdDateRange', 'updatedDateRange',], 'safe'],
             [['sum'], 'number'],
         ];
@@ -57,9 +57,10 @@ class ReserveEntitySearch extends ReserveEntity
         }
 
         $query->andFilterWhere([
-            'sum' => $this->sum,
+            'sum'            => $this->sum,
             'payment_system' => $this->payment_system,
-            'currency' => $this->currency,
+            'currency'       => $this->currency,
+            'visible'        => $this->visible,
         ]);
 
         if (!empty($this->createdDateRange) && strpos($this->createdDateRange, '-') !== false) {
