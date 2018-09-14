@@ -2,7 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\notifications;
 
-use common\models\userNotifications\UserNotificationsEntity as Notification;
+use common\models\userNotifications\UserNotifications;
 use yii\base\Action;
 use Yii;
 use yii\helpers\Url;
@@ -18,7 +18,7 @@ class DeleteAllAction extends Action
     public function run()
     {
         try{
-            Notification::deleteAll(['recipient_id' => Yii::$app->user->id]);
+            UserNotifications::deleteAll(['user_id' => Yii::$app->user->id]);
             Yii::$app->session->setFlash('success', Yii::t('app', 'Notification successfully deleted.'));
             return $this->controller->redirect(Url::to(['notifications/index']));
         } catch (\Exception $e) {

@@ -2,11 +2,11 @@
 
 namespace common\models\userNotifications\repositories;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\NotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
 use yii\web\NotFoundHttpException;
-use common\models\userProfile\UserProfileEntity;
 use yii\web\ServerErrorHttpException;
 
 /**
@@ -26,17 +26,16 @@ trait RestUserNotificationsRepository
     public function getUserNotificationsByUser(array $params): ArrayDataProvider
     {
         try {
-            $userNotificationsModel = UserNotificationsEntity::find()
-                ->select(['text', 'created_at'])
-                ->where(['recipient_id' => \Yii::$app->user->id]);
-            if (isset($params['status'])) {
-                $userNotificationsModel->andWhere(['status' => $params['status']]);
+            $userNotificationsModel = UserNotifications::find()
+                ->joinWith('notification')
+                ->where(['user_notifications.user_id' => \Yii::$app->user->id]);
+            if (isset($params['read'])) {
+                $userNotificationsModel->andWhere(['is_read' => $params['read']]);
             }
-
             $page = isset($params['page']) ? $params['page'] - 1 : 0;
 
             $dataProvider = new ArrayDataProvider([
-                'allModels' => $userNotificationsModel->orderBy(['created_at' => SORT_DESC])->all(),
+                'allModels' => $userNotificationsModel->orderBy(['created_at' => SORT_DESC])->asArray()->all(),
                 'pagination' => [
                     'pageSize' => \Yii::$app->request->get('per-page') ?? 10,
                     'page' => $page
@@ -54,20 +53,42 @@ trait RestUserNotificationsRepository
     /**
      * Removes a notify by Notification id and User id
      *
-     * @param $id int
+     * @param $notificationId int
+     * @param $userId int
      *
      * @return bool
      *
      * @throws NotFoundHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteNotify(int $id): bool
+    public function deleteNotify(int $notificationId, int $userId): bool
     {
-        $userNotificationsModel = $this->findModel(['id' => $id, 'recipient_id' => \Yii::$app->user->id]);
-        if ($userNotificationsModel->delete()) {
+        $userNotification = UserNotifications::findModel([
+                'notification_id' => $notificationId,
+                'user_id' => $userId
+            ]);
+        if ($userNotification->delete()) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Finds a Notify by params
+     *
+     * @param $params array
+     *
+     * @return BaseActiveRecord
+     *
+     * @throws NotFoundHttpException
+     */
+    public function findUserNotificationModel(array $params): BaseActiveRecord
+    {
+        if (empty($userNotificationsModel = UserNotifications::findOne($params))) {
+            throw new NotFoundHttpException('Уведомление не найдено.');
+        }
+
+        return $userNotificationsModel;
     }
 
     /**
@@ -93,22 +114,53 @@ trait RestUserNotificationsRepository
      *
      * @param $type int
      * @param $text string
-     * @param $recipientId int
+     * @param $recipientId int|array
      * @param $customData string
      *
      * @return mixed
      */
-    public function addNotify($type, string $text, int $recipientId, $customData = null)
+    public function addNotify($type, string $text, $recipientId, $customData = null)
     {
-        $this->setAttributes([
-            'type'         => $type,
-            'text'         => $text,
-            'recipient_id' => $recipientId,
-            'custom_data'  => $customData
+        if ($recipientId === null) {
+            return true;
+        }
+        $notification = new NotificationsEntity();
+        $notification->setAttributes([
+            'type' => $type,
+            'text' => $text,
+            'custom_data' => $customData
         ]);
 
+        $notification->save();
+        $userNotificationRelation = new UserNotifications();
 
-        return $this->save();
+        if (is_array($recipientId)) {
+            foreach ($recipientId as $id) {
+                $data[] = [
+                    'user_id'          => $id,
+                    'notification_id ' => $notification->id,
+                    'is_read'          => UserNotifications::STATUS_READ_NO,
+                    'created_at'       => time(),
+                    'updated_at'       => time()
+                ];
+            }
+
+            return \Yii::$app->db->createCommand()
+                ->batchInsert(
+                   UserNotifications::tableName(),
+                   ['user_id', 'notification_id', 'is_read', 'created_at', 'updated_at'],
+                   $data
+                )
+                ->execute();
+
+        } elseif (is_int($recipientId)) {
+            $userNotificationRelation->user_id = $recipientId;
+            $userNotificationRelation->notification_id = $notification->id;
+            $userNotificationRelation->is_read = 0;
+
+            return $userNotificationRelation->save();
+        }
+        throw new \InvalidArgumentException('RecipientId must be array or integer');
     }
 
     /**

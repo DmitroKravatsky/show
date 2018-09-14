@@ -7,11 +7,14 @@ use yii\base\Model;
 use yii\data\ActiveDataProvider;
 
 /**
- * UserNotificationsSearch represents the model behind the search form of `common\models\userNotifications\UserNotificationsEntity`.
+ * UserNotificationsSearch represents the model behind
+ * the search form of `common\models\userNotifications\UserNotificationsEntity`.
  */
-class UserNotificationsSearch extends UserNotificationsEntity
+class UserNotificationsSearch extends UserNotifications
 {
     public $dateRange;
+    public $text;
+    public $full_name;
 
     /**
      * @return array
@@ -19,8 +22,8 @@ class UserNotificationsSearch extends UserNotificationsEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
-            [['status', 'text', 'dateRange', 'recipient_id',], 'safe'],
+            [['id', 'user_id', 'notification_id', 'created_at'], 'integer'],
+            [['is_read', 'text', 'full_name', 'dateRange'], 'safe'],
         ];
     }
 
@@ -41,12 +44,12 @@ class UserNotificationsSearch extends UserNotificationsEntity
      */
     public function search($params)
     {
-        $query = UserNotificationsEntity::find()
-            ->joinWith('recipientProfile')
-            ->where(['recipient_id' => Yii::$app->user->id]);
-
+        $query = UserNotifications::find()
+            ->joinWith('notification')
+            ->joinWith('userProfile')
+            ->where(['user_notifications.user_id' => Yii::$app->user->id]);
         $dataProvider = new ActiveDataProvider([
-            'query' => $query->orderBy(['status' => SORT_DESC, 'created_at' => SORT_DESC]),
+            'query' => $query->orderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]
@@ -58,19 +61,20 @@ class UserNotificationsSearch extends UserNotificationsEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['status' => $this->status])
-            ->andFilterWhere(['like', 'text', $this->text])
+        $query->andFilterWhere(['is_read' => $this->is_read])
+            ->andFilterWhere(['like', 'notifications.text', $this->text])
             ->andFilterWhere([
                 'or',
-                ['like', 'name', $this->recipient_id],
-                ['like', 'last_name', $this->recipient_id]
-            ]);;
+                ['like', 'user_profile.name', $this->full_name],
+                ['like', 'user_profile.last_name', $this->full_name]
+            ]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
-            $query->andFilterWhere(['between', 'user_notifications.created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', 'notifications.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;
     }
+
 }

@@ -6,7 +6,8 @@
  */
 
 use backend\assets\AppAsset;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\NotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\helpers\Html;
 use yii\widgets\Breadcrumbs;
 use yiister\gentelella\widgets\Menu;
@@ -165,16 +166,16 @@ $this->title = Yii::t('app', 'Dashboard');
                                     </ul>
                                 </li>
 
-                                <?php $notifications = UserNotificationsEntity::getUnreadUserNotifications(3) ?>
+                                <?php $userNotifications = UserNotifications::getUnreadUserNotifications(3) ?>
 
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-bell-o"></i>
-                                        <span class="badge bg-green"><?= UserNotificationsEntity::getCountUnreadNotificationsByRecipient() ?></span>
+                                        <span class="badge bg-green"><?= UserNotifications::getCountUnreadNotificationsByRecipient() ?></span>
                                     </a>
 
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
-                                        <?php if (empty($notifications)): ?>
+                                        <?php if (empty($userNotifications)): ?>
                                             <li>
                                                 <a>
                                                 <span class="message">
@@ -183,30 +184,31 @@ $this->title = Yii::t('app', 'Dashboard');
                                                 </a>
                                             </li>
                                         <?php else:?>
-                                            <?php foreach ($notifications as $notification): ?>
+                                            <?php foreach ($userNotifications as $userNotification): ?>
                                                 <li>
-                                                    <a href="<?= Url::to(["/notification/view/{$notification->id}"])?>">
+                                                    <a href="<?= Url::to(["/notification/view/{$userNotification->notification_id}"])?>">
                                                         <span class="image">
                                                             <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                         </span>
 
                                                         <span>
                                                             <span class="name">
-                                                                <?= $notification->userProfile->getUserFullName() ?? null; ?>
+                                                                <?= $userNotification->userProfile->getUserFullName() ?? null; ?>
                                                             </span>
-                                                            <span class="time"><?= date('d-m-y h:m', $notification->created_at) ?></span>
+                                                            <span class="time"><?= date('d-m-y h:m', $userNotification->notification->created_at) ?></span>
                                                         </span>
 
                                                         <span class="message">
-                                                            <?php if ($notification->type == UserNotificationsEntity::TYPE_NEW_USER): ?>
-                                                                <?= Yii::t('app', $notification->text, [
-                                                                    'phone_number' => $notification->custom_data->phone_number ?? null
+                                                            <?php if ($userNotification->notification->type == NotificationsEntity::TYPE_NEW_USER): ?>
+                                                                <?= Yii::t('app', $userNotification->notification->text, [
+                                                                    'phone_number' => $userNotification->notification->custom_data->phone_number ?? null
                                                                 ]) ?>
-                                                            <?php elseif ($notification->type == UserNotificationsEntity::TYPE_NEW_BID): ?>
-                                                                <?= Yii::t('app', $notification->text, [
-                                                                    'sum'      => $notification->custom_data->sum ?? null,
-                                                                    'currency' => $notification->custom_data->currency ?? null,
-                                                                    'wallet'   => $notification->custom_data->wallet ?? null,
+                                                            <?php elseif ($userNotification->notification->type == NotificationsEntity::TYPE_NEW_BID): ?>
+                                                                <?= Yii::t('app', $userNotification->notification->text, [
+                                                                    'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
+                                                                    'sum'      => $userNotification->notification->custom_data->sum ?? null,
+                                                                    'currency' => $userNotification->notification->custom_data->currency ?? null,
+                                                                    'wallet'   => $userNotification->notification->custom_data->wallet ?? null,
                                                                 ]) ?>
                                                             <?php endif; ?>
                                                         </span>

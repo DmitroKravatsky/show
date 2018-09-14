@@ -64,7 +64,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full Name'),
                         'value' => function (User $user) {
-                            return ($user->profile->name . ' ' . $user->profile->last_name) ?? null;
+                            return ($user->getFullName()) ?? null;
                         },
                     ],
                     'email:email:E-mail',

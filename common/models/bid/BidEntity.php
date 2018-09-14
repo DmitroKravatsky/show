@@ -6,7 +6,7 @@ use common\models\{
     bid\repositories\RestBidRepository,
     bidHistory\BidHistory,
     user\User,
-    userNotifications\UserNotificationsEntity as Notification,
+    userNotifications\NotificationsEntity,
     userProfile\UserProfileEntity
 };
 use yii\{behaviors\TimestampBehavior, db\ActiveRecord, helpers\ArrayHelper};
@@ -45,6 +45,7 @@ use borales\extensions\phoneInput\PhoneInputValidator;
  * @property User $processedBy
  * @property UserProfileEntity $processedByProfile
  * @property User $inProgressByManager
+ * @property UserProfileEntity $bidOwnerProfile
  * @property BidHistory[] $bidHistories
  */
 class BidEntity extends ActiveRecord
@@ -332,22 +333,6 @@ class BidEntity extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_DONE,
-                Notification::getMessageForDoneBid(),
-                $this->created_by,
-                Notification::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
-            );
-        } elseif ($this->status == self::STATUS_REJECTED) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_REJECTED,
-                Notification::getMessageForRejectedBid(),
-                $this->created_by,
-                Notification::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
-            );
-        }
-
         return parent::beforeSave($insert);
     }
 
@@ -357,8 +342,21 @@ class BidEntity extends ActiveRecord
         $bidHistory->bid_id = $this->id;
         $bidHistory->status = $this->status;
 
+        $bidOwnerFullName = $this->bidOwnerProfile ? $this->bidOwnerProfile->UserFullName : null;
+
         if ($insert) {
             $this->sendEmailToManagers($this);
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_NEW_BID,
+                NotificationsEntity::getMessageForNewBid(),
+                User::getAllOnlineManagersIds(),
+                NotificationsEntity::getCustomDataForNewBid(
+                    $bidOwnerFullName,
+                    $this->to_sum,
+                    $this->to_currency,
+                    $this->to_wallet
+                )
+            );
         } elseif (!$insert) {
             if ($this->status === self::STATUS_IN_PROGRESS) {
                 $bidHistory->in_progress_by_manager = Yii::$app->user->id;
@@ -369,28 +367,40 @@ class BidEntity extends ActiveRecord
         $bidHistory->save(false);
 
         if ($this->status === BidEntity::STATUS_PAID_BY_CLIENT) {
-            (new Notification())->addNotify(
-                Notification::TYPE_PAID_CLIENT,
-                Notification::getMessageForClientPaid(),
-                $this->created_by,
-                Notification::getCustomDataForClientPaid($this->from_sum, $this->from_currency, $this->to_wallet)
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_PAID_CLIENT,
+                NotificationsEntity::getMessageForClientPaid(),
+                User::getAllOnlineManagersIds(),
+                NotificationsEntity::getCustomDataForClientPaid(
+                    $bidOwnerFullName,
+                    $this->from_sum,
+                    $this->from_currency,
+                    $this->to_wallet
+                )
             );
         }
         if ($this->status === BidEntity::STATUS_IN_PROGRESS) {
-            (new Notification())->addNotify(
-                Notification::TYPE_BID_IN_PROGRESS,
-                Notification::getMessageForInProgress(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_IN_PROGRESS,
+                NotificationsEntity::getMessageForInProgress(),
                 $this->created_by,
-                Notification::getCustomDataForInProgress($this->id)
+                NotificationsEntity::getCustomDataForInProgress($this->id)
             );
         }
 
-        if ($insert && $this->created_by === Yii::$app->user->id) {
-            (new Notification())->addNotify(
-                Notification::TYPE_NEW_BID,
-                Notification::getMessageForNewBid(),
+        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_DONE,
+                NotificationsEntity::getMessageForDoneBid(),
                 $this->created_by,
-                Notification::getCustomDataForNewBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
+            );
+        } elseif ($this->status == self::STATUS_REJECTED) {
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_REJECTED,
+                NotificationsEntity::getMessageForRejectedBid(),
+                $this->created_by,
+                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
             );
         }
 
@@ -495,5 +505,14 @@ class BidEntity extends ActiveRecord
             return false;
         }
         return true;
+    }
+
+    /**
+     * Relates BidEntity with UserProfile
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBidOwnerProfile()
+    {
+        return $this->hasOne(UserProfileEntity::class, ['user_id' => 'created_by']);
     }
 }

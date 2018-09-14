@@ -1,11 +1,11 @@
 <?php
 
+use common\models\userNotifications\NotificationsEntity;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
-use common\models\userNotifications\UserNotificationsEntity as Notification;
 
 /** @var \yii\web\View $this */
-/** @var Notification $notification */
+/** @var NotificationsEntity $notification */
 
 $this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Notifications'), 'url' => ['index']];
@@ -26,25 +26,20 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     'id',
                     [
                         'attribute' => 'type',
-                        'value' => function (Notification $notification) {
-                            return ;
-                        }
-                    ],
-                    [
-                        'attribute' => 'recipient_id',
-                        'value' => function (Notification $notification) {
-                            return $notification->recipient->profile->name ?? null;
+                        'value' => function (NotificationsEntity $notification) {
+                            return $notification->type;
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (Notification $notification) {
-                            if ($notification->type = Notification::TYPE_NEW_USER) {
-                                return Yii::t('app', $notification->text, [
-                                    'phone_number' => $notification->custom_data->phone_number ?? null
-                                ]);
-                            }
-                            return null;
+                        'value' => function (NotificationsEntity $notification) {
+                            return Yii::t('app', $notification->text, [
+                                'full_name'=> $notification->custom_data->full_name ?? null,
+                                'sum'      => $notification->custom_data->sum ?? null,
+                                'currency' => $notification->custom_data->currency ?? null,
+                                'wallet'   => $notification->custom_data->wallet ?? null,
+                                'phone_number' => $notification->custom_data->phone_number ?? null,
+                            ]);
                         }
                     ],
                     'created_at:date',

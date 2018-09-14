@@ -4,10 +4,7 @@ use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
-    bid\BidEntity,
-    userNotifications\UserNotificationsEntity as Notification,
-    userNotifications\UserNotificationsSearch,
-    user\User
+    bid\BidEntity, userNotifications\NotificationsEntity, userNotifications\UserNotifications, userNotifications\NotificationsSearch, user\User
 };
 use yii\helpers\{
     Html,
@@ -26,7 +23,7 @@ use common\helpers\UrlHelper;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch UserNotificationsSearch */
+/* @var $notificationsSearch NotificationsSearch */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -291,26 +288,28 @@ use common\helpers\UrlHelper;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'status',
-                        'filter' => Notification::getStatusLabels(),
-                        'value' => function (Notification $notification) {
-                            return Notification::getStatusValue($notification->status);
+                        'attribute' => 'is_read',
+                        'filter' => UserNotifications::getIsReadStatuses(),
+                        'value' => function (UserNotifications $userNotification) {
+                            return UserNotifications::getIsReadLabel($userNotification->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (Notification $notification) {
-                            if ($notification->type = Notification::TYPE_NEW_USER) {
-                                return StringHelper::truncate(Yii::t('app', $notification->text, [
-                                    'phone_number' => $notification->custom_data->phone_number ?? null
-                                ]), 40);
-                            }
-                            return null;
+                        'value' => function (UserNotifications $userNotification) {
+                            return StringHelper::truncate( Yii::t('app', $userNotification->notification->text, [
+                                'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
+                                'sum'      => $userNotification->notification->custom_data->sum ?? null,
+                                'currency' => $userNotification->notification->custom_data->currency ?? null,
+                                'wallet'   => $userNotification->notification->custom_data->wallet ?? null,
+                                'phone_number' => $userNotification->notification->custom_data->phone_number ?? null,
+                            ]), 40);
                         }
                     ],
                     [
-                        'attribute' => 'created_at',
+                        'attribute' => 'dateRange',
                         'format' => 'date',
+                        'value' => 'created_at',
                         'filter' => DateRangePicker::widget([
                             'model' => $notificationsSearch,
                             'attribute' => 'dateRange',
@@ -327,10 +326,10 @@ use common\helpers\UrlHelper;
                         'class' => ActionColumn::class,
                         'template' => '{view}',
                         'buttons' => [
-                            'view' => function($url, $model) {
+                            'view' => function($url, $userNotification) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/notification/view/' . $model->id]),
+                                    Url::to(['/notifications/view/' , 'id' => $userNotification->notification_id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             }

@@ -9,7 +9,7 @@ use common\models\review\ReviewEntity;
 use common\models\review\ReviewSearch;
 use common\models\user\User;
 use common\models\user\UserSearch;
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use common\models\userNotifications\UserNotificationsSearch;
 use yii\base\Action;
 use yii\web\ForbiddenHttpException;
@@ -46,25 +46,25 @@ class IndexAction extends Action
         $reviewSearch = new ReviewSearch();
         $userSearch = new UserSearch();
         $userSearch->role = User::ROLE_MANAGER;
-        $notificationsSearch = new UserNotificationsSearch();
+        $userNotificationsSearch = new UserNotificationsSearch();
 
         $bidProvider = $bidSearch->search($params);
         $reviewProvider = $reviewSearch->search($params);
         $userProvider = $userSearch->search($params);
-        $notificationsProvider = $notificationsSearch->search($params);
+        $notificationsProvider = $userNotificationsSearch->search($params);
 
         return $this->controller->render('index', [
             'countBids'             => BidEntity::find()->count(),
             'countManagers'         => User::getCountManagers(),
             'countReviews'          => ReviewEntity::find()->count(),
-            'countNotifications'    => UserNotificationsEntity::getCountUnreadNotificationsByRecipient(),
+            'countNotifications'    => UserNotifications::getCountUnreadNotificationsByRecipient(),
             'bidSearch'             => $bidSearch,
             'bidProvider'           => $bidProvider,
             'reviewSearch'          => $reviewSearch,
             'reviewProvider'        => $reviewProvider,
             'userSearch'            => $userSearch,
             'userProvider'          => $userProvider,
-            'notificationsSearch'   => $notificationsSearch,
+            'notificationsSearch'   => $userNotificationsSearch,
             'notificationsProvider' => $notificationsProvider,
         ]);
     }

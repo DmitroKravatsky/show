@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\notifications;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\data\ArrayDataProvider;
 use yii\rest\Action;
 
@@ -41,14 +41,34 @@ class ListAction extends Action
      *        required = false,
      *        type = "integer"
      *      ),
+     *      @SWG\Parameter(
+     *        in = "formData",
+     *        name = "read",
+     *        description = "read status",
+     *        required = false,
+     *        type = "integer",
+     *        enum = {0,1}
+     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
      *         @SWG\Schema(
      *              type="object",
-     *              @SWG\Property(property="items", type="object",
-     *                   @SWG\Property(property="text", type="string", description="notification description"),
-     *                   @SWG\Property(property="created_at", type="integer", description="created at")
+     *              @SWG\Property(property="items",type="object",
+     *                   @SWG\Property(property="id", type="string", description="user_notification relation id"),
+     *                   @SWG\Property(property="user_id", type="string", description="user id"),
+     *                   @SWG\Property(property="notification_id", type="string", description="notification id"),
+     *                   @SWG\Property(property="is_read", type="string", description="read status"),
+     *                   @SWG\Property(property="created_at", type="string", description="created date"),
+     *                   @SWG\Property(property="updated_at", type="string", description="updated date"),
+     *                   @SWG\Property(property="notification",type="object",
+     *                      @SWG\Property(property="id", type="string", description="notification id"),
+     *                      @SWG\Property(property="type", type="string", description="notification type"),
+     *                      @SWG\Property(property="custom_data", type="string", description="notification data"),
+     *                      @SWG\Property(property="text", type="string", description="notification text"),
+     *                      @SWG\Property(property="created_at", type="string", description="created date"),
+     *                      @SWG\Property(property="updated_at", type="string", description="updated date"),
+     *                  ),
      *              ),
      *              @SWG\Property(property="_links", type="object",
      *                  @SWG\Property(property="self", type="object",
@@ -79,23 +99,31 @@ class ListAction extends Action
      *         examples = {
      *              "items": {
      *                  {
-     *                      "text": "Some text about notification",
-     *                      "created_at": "1231232321"
+     *                     "id": "21",
+     *                     "user_id": "193",
+     *                     "notification_id": "93",
+     *                     "is_read": "1",
+     *                     "created_at": "1536667120",
+     *                     "updated_at": "1536667120",
+     *                     "notification": {
+     *                         "id": "93",
+     *                         "type": "new_bid",
+     *                         "custom_data": "{full_name: Dmytro Krava, sum : 115, currency : usd, wallet : 918235401948147371623}",
+     *                         "text": "User {full_name} has created new bid. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.",
+     *                         "created_at": "1536667120",
+     *                         "updated_at": "1536667120"
+     *                     }
      *                  },
-     *                  {
-     *                      "text": "Some text about next notification",
-     *                      "created_at": "122423214"
-     *                  }
      *              },
      *              "_links": {
      *                   "self": {
-     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page=2&status=unread"
+     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page=2&read=0"
      *                   },
      *                   "first": {
-     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page&status=unread=1"
+     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page&read=0"
      *                   },
      *                   "prev": {
-     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page&status=unread=1"
+     *                   "href": "http://work.local/api/v1/user/notifications?per-page=2&page&read=0"
      *                   }
      *               },
      *               "_meta": {
@@ -122,7 +150,7 @@ class ListAction extends Action
      */
     public function run(): ArrayDataProvider
     {
-        /** @var UserNotificationsEntity $userNotifications */
+        /** @var UserNotifications $userNotifications */
         $userNotifications = new $this->modelClass;
         return $userNotifications->getUserNotificationsByUser(\Yii::$app->request->get());
     }

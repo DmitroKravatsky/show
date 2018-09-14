@@ -2,7 +2,8 @@
 
 namespace common\models\user;
 
-use common\models\userNotifications\UserNotificationsEntity as Notification;
+use common\models\userNotifications\NotificationsEntity;
+use common\models\userNotifications\repositories\RestUserNotificationsRepository;
 use common\models\userProfile\UserProfileEntity;
 use yii\base\NotSupportedException;
 use yii\behaviors\TimestampBehavior;
@@ -45,6 +46,8 @@ use Yii;
  */
 class User extends ActiveRecord implements IdentityInterface
 {
+    use RestUserNotificationsRepository;
+
     const ROLE_ADMIN   = 'admin';
     const ROLE_GUEST   = 'guest';
     const ROLE_MANAGER = 'manager';
@@ -241,10 +244,13 @@ class User extends ActiveRecord implements IdentityInterface
     /**
      * @return string
      */
-    public function getFullName(): string
+    public function getFullName()
     {
         /** @var UserProfileEntity $profile */
         $profile = $this->profile;
+        if (!$profile) {
+            return null;
+        }
         return $profile->name . ' ' . $profile->last_name;
     }
 
@@ -327,11 +333,11 @@ class User extends ActiveRecord implements IdentityInterface
     public function afterSave($insert, $changedAttributes)
     {
         if ($insert) {
-            (new Notification())->addNotify(
-                Notification::TYPE_NEW_USER,
-                Notification::getMessageForNewUser(),
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_NEW_USER,
+                NotificationsEntity::getMessageForNewUser(),
                 self::DEFAULT_ADMIN_ID,
-                Notification::getCustomDataForNewUser($this->phone_number)
+                NotificationsEntity::getCustomDataForNewUser($this->phone_number)
             );
         }
         return parent::afterSave($insert, $changedAttributes);
@@ -365,5 +371,21 @@ class User extends ActiveRecord implements IdentityInterface
     {
         $statuses = static::getAcceptInviteLabels();
         return $statuses[$status];
+    }
+
+    /**
+     * Returns ids list of all online managers
+     * @return mixed
+     */
+    public static function getAllOnlineManagersIds()
+    {
+        $managersIds =  static::find()
+            ->select('id')
+            ->leftJoin('auth_assignment', 'auth_assignment.user_id = id')
+            ->where(['user.status_online' => self::STATUS_ONLINE_YES])
+            ->andWhere(['auth_assignment.item_name' => self::ROLE_MANAGER])
+            ->column();
+
+        return $managersIds ?? null;
     }
 }
