@@ -12,7 +12,7 @@ use yii\rest\Action;
 class ListAction extends Action
 {
     /**
-     * @SWG\Get(path="/bid/list",
+     * @SWG\Get(path="/bid",
      *      tags={"Bid module"},
      *      summary="Bids list",
      *      description="Get user bids",
@@ -45,6 +45,14 @@ class ListAction extends Action
      *        required = false,
      *        type = "string",
      *        enum = {"week", "month"},
+     *      ),
+     *      @SWG\Parameter(
+     *        in = "query",
+     *        name = "excepted",
+     *        description = "show expected transactions",
+     *        required = false,
+     *        type = "string",
+     *        enum = {"0", "1"},
      *      ),
      *      @SWG\Response(
      *         response = 200,
@@ -142,13 +150,14 @@ class ListAction extends Action
      *     )
      * )
      *
+     * @param boolean $excepted
      * @return \yii\data\ArrayDataProvider
      */
-    public function run()
+    public function run($excepted = false)
     {
         /** @var BidEntity $bid */
         $bid = new $this->modelClass;
 
-        return $bid->getBids(\Yii::$app->request->queryParams);
+        return $bid->getBids(\Yii::$app->request->queryParams, $excepted);
     }
 }

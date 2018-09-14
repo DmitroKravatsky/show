@@ -11,7 +11,7 @@ return [
         'patterns'   => [
             'POST'        => 'create',
             'DELETE {id}' => 'delete',
-            'GET list'    => 'list',
+            'GET'         => 'list',
             'GET {id}'    => 'detail',
         ],
     ],
