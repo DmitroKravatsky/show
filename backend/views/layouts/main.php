@@ -6,6 +6,7 @@
  */
 
 use backend\assets\AppAsset;
+use common\components\language\LanguageUrlManager;
 use common\models\userNotifications\NotificationsEntity;
 use common\models\userNotifications\UserNotifications;
 use yii\helpers\Html;
@@ -55,19 +56,21 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div class="clearfix"></div>
 
                         <!-- menu prile quick info -->
-                        <div class="profile">
-                            <div class="profile_pic">
-                                <?= isset($user->profile) && $user->profile->avatar !== null
-                                    ? Html::img($user->profile->getImageUrl(), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
-                                    : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
-                                ?>
-                            </div>
+                        <a href="<?= Yii::$app->urlManager->createUrl('/profile/index')?>">
+                            <div class="profile">
+                                <div class="profile_pic">
+                                    <?= isset($user->profile) && $user->profile->avatar !== null
+                                        ? Html::img($user->profile->getImageUrl(), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
+                                        : Html::img(Yii::getAlias('@image.default.user.avatar'), ['class' => 'img-circle profile_img', 'style' => 'height:56px;'])
+                                    ?>
+                                </div>
 
-                            <div class="profile_info">
-                                <span><?= Yii::t('app', 'Welcome') ?>,</span>
-                                <h2><?= Html::encode($user->fullname ?? null) ?></h2>
+                                <div class="profile_info">
+                                    <span><?= Yii::t('app', 'Welcome') ?>,</span>
+                                    <h2><?= Html::encode($user->fullname ?? null) ?></h2>
+                                </div>
                             </div>
-                        </div>
+                        </a>
                         <!-- /menu prile quick info -->
 
                         <br />
