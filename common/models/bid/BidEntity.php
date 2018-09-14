@@ -324,22 +324,6 @@ class BidEntity extends ActiveRecord
      */
     public function beforeSave($insert)
     {
-        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
-            (new NotificationsEntity())->addNotify(
-                NotificationsEntity::TYPE_BID_DONE,
-                NotificationsEntity::getMessageForDoneBid(),
-                $this->created_by,
-                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
-            );
-        } elseif ($this->status == self::STATUS_REJECTED) {
-            (new NotificationsEntity())->addNotify(
-                NotificationsEntity::TYPE_BID_REJECTED,
-                NotificationsEntity::getMessageForRejectedBid(),
-                $this->created_by,
-                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
-            );
-        }
-
         return parent::beforeSave($insert);
     }
 
@@ -394,6 +378,23 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::getCustomDataForInProgress($this->id)
             );
         }
+
+        if ($this->status == self::STATUS_PAID_BY_US_DONE) {
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_DONE,
+                NotificationsEntity::getMessageForDoneBid(),
+                $this->created_by,
+                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
+            );
+        } elseif ($this->status == self::STATUS_REJECTED) {
+            (new NotificationsEntity())->addNotify(
+                NotificationsEntity::TYPE_BID_REJECTED,
+                NotificationsEntity::getMessageForRejectedBid(),
+                $this->created_by,
+                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
+            );
+        }
+
         return parent::afterSave($insert, $changedAttributes);
     }
 

@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\notifications;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use yii\data\ArrayDataProvider;
 use yii\rest\Action;
 
@@ -40,6 +40,14 @@ class ListAction extends Action
      *        description = "next page",
      *        required = false,
      *        type = "integer"
+     *      ),
+     *      @SWG\Parameter(
+     *        in = "formData",
+     *        name = "read",
+     *        description = "read status",
+     *        required = false,
+     *        type = "integer",
+     *        enum = {0,1}
      *      ),
      *      @SWG\Response(
      *         response = 200,
@@ -122,7 +130,7 @@ class ListAction extends Action
      */
     public function run(): ArrayDataProvider
     {
-        /** @var UserNotificationsEntity $userNotifications */
+        /** @var UserNotifications $userNotifications */
         $userNotifications = new $this->modelClass;
         return $userNotifications->getUserNotificationsByUser(\Yii::$app->request->get());
     }

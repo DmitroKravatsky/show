@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\notifications;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use rest\modules\api\v1\user\controllers\UserNotificationsController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
@@ -76,9 +76,9 @@ class DeleteAction extends Action
     public function run($id): array
     {
         try {
-            /** @var UserNotificationsEntity $userNotificationsModel */
+            /** @var UserNotifications $userNotificationsModel */
             $userNotificationsModel = new $this->modelClass;
-            if ($userNotificationsModel->deleteNotify($id)) {
+            if ($userNotificationsModel->deleteNotify($id, \Yii::$app->user->id)) {
                 $response = \Yii::$app->getResponse()
                     ->setStatusCode(200, \Yii::t('app', 'Notification was successfully deleted'));
                 return [

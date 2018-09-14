@@ -27,16 +27,15 @@ trait RestUserNotificationsRepository
     {
         try {
             $userNotificationsModel = UserNotifications::find()
-                ->select(['text', 'created_at'])
-                ->where(['recipient_id' => \Yii::$app->user->id]);
-            if (isset($params['status'])) {
-                $userNotificationsModel->andWhere(['status' => $params['status']]);
+                ->joinWith('notification')
+                ->where(['user_notifications.user_id' => \Yii::$app->user->id]);
+            if (isset($params['read'])) {
+                $userNotificationsModel->andWhere(['is_read' => $params['read']]);
             }
-
             $page = isset($params['page']) ? $params['page'] - 1 : 0;
 
             $dataProvider = new ArrayDataProvider([
-                'allModels' => $userNotificationsModel->orderBy(['created_at' => SORT_DESC])->all(),
+                'allModels' => $userNotificationsModel->orderBy(['created_at' => SORT_DESC])->asArray()->all(),
                 'pagination' => [
                     'pageSize' => \Yii::$app->request->get('per-page') ?? 10,
                     'page' => $page
@@ -54,20 +53,42 @@ trait RestUserNotificationsRepository
     /**
      * Removes a notify by Notification id and User id
      *
-     * @param $id int
+     * @param $notificationId int
+     * @param $userId int
      *
      * @return bool
      *
      * @throws NotFoundHttpException
      * @throws \yii\db\StaleObjectException
      */
-    public function deleteNotify(int $id): bool
+    public function deleteNotify(int $notificationId, int $userId): bool
     {
-        $userNotificationsModel = $this->findModel(['id' => $id, 'recipient_id' => \Yii::$app->user->id]);
-        if ($userNotificationsModel->delete()) {
+        $userNotification = UserNotifications::findModel([
+                'notification_id' => $notificationId,
+                'user_id' => $userId
+            ]);
+        if ($userNotification->delete()) {
             return true;
         }
         return false;
+    }
+
+    /**
+     * Finds a Notify by params
+     *
+     * @param $params array
+     *
+     * @return BaseActiveRecord
+     *
+     * @throws NotFoundHttpException
+     */
+    public function findUserNotificationModel(array $params): BaseActiveRecord
+    {
+        if (empty($userNotificationsModel = UserNotifications::findOne($params))) {
+            throw new NotFoundHttpException('Уведомление не найдено.');
+        }
+
+        return $userNotificationsModel;
     }
 
     /**

@@ -14,10 +14,6 @@ class m180907_102102_new_notifications_tables_structure extends Migration
      */
     public function safeUp()
     {
-        if ($this->db->getTableSchema($this->userNotificationsTable, true)) {
-            $this->dropTable($this->userNotificationsTable);
-        }
-
         $this->createTable($this->notificationsTable, [
             'id' => $this->primaryKey(),
             'type' => "ENUM('new_user', 'new_bid', 'paid_by_client', 'bid_in_progress', 'bid_done', 'bid_rejected')",

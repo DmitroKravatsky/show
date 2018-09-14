@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers;
 
-use common\models\userNotifications\UserNotificationsEntity;
+use common\models\userNotifications\UserNotifications;
 use rest\modules\api\v1\user\controllers\actions\notifications\DeleteAction;
 use rest\modules\api\v1\user\controllers\actions\notifications\ListAction;
 use yii\rest\Controller;
@@ -15,7 +15,7 @@ use yii\filters\VerbFilter;
  */
 class UserNotificationsController extends Controller
 {
-    public $modelClass = UserNotificationsEntity::class;
+    public $modelClass = UserNotifications::class;
 
     public $serializer = [
         'class' => 'yii\rest\Serializer',

@@ -152,7 +152,7 @@ class UserNotifications extends ActiveRecord
     public static function getUnreadUserNotifications($limit)
     {
         return self::find()
-            ->where(['is_read' => 0, 'user_id' => Yii::$app->user->id])
+            ->where(['is_read' => self::STATUS_READ_NO, 'user_id' => Yii::$app->user->id])
             ->with('notification')
             ->limit($limit)
             ->orderBy(['created_at' => SORT_DESC])
@@ -183,7 +183,7 @@ class UserNotifications extends ActiveRecord
      */
     public static function getIsReadStatuses()
     {
-        return [0 => Yii::t('app', 'No'), 1 => Yii::t('app', 'Yes')];
+        return [self::STATUS_READ_NO => Yii::t('app', 'No'), self::STATUS_READ_YES => Yii::t('app', 'Yes')];
     }
 
     /**
@@ -192,7 +192,12 @@ class UserNotifications extends ActiveRecord
      */
     public static function getIsReadLabel($value)
     {
-        return $value ? Yii::t('app', 'Yes') : Yii::t('app', 'No');
+        if ($value === self::STATUS_READ_NO) {
+            return Yii::t('app', 'Yes');
+        }
+        if ($value === self::STATUS_READ_NO) {
+            return Yii::t('app', 'No');
+        }
     }
 
 }
