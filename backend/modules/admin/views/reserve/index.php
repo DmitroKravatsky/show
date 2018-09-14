@@ -81,6 +81,13 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         ],
                     ],
                     [
+                        'attribute' => 'visible',
+                        'filter'    => Reserve::getVisibleStatuses(),
+                        'value'     => function (Reserve $reserve) {
+                            return Reserve::getVisibleValue($reserve->visible);
+                        }
+                    ],
+                    [
                         'attribute' => 'created_at',
                         'format'    => 'date',
                         'value'     => 'created_at',
@@ -97,30 +104,28 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         ]),
                     ],
                     [
-                        'attribute' => 'created_at',
-                        'format'    => 'date',
-                        'value'     => 'created_at',
-                        'filter'    => DateRangePicker::widget([
-                            'model'          => $searchModel,
-                            'attribute'      => 'updatedDateRange',
-                            'convertFormat'  => true,
-                            'pluginOptions'  => [
-                                'timePicker' => true,
-                                'locale'     => [
-                                    'format' => 'Y-m-d',
-                                ]
-                            ]
-                        ]),
-                    ],
-                    [
                         'class'    => ActionColumn::class,
-                        'template' => '{view} {update}',
+                        'template' => '{view} {visible} {update}',
                         'buttons'  => [
                             'view' => function ($url, Reserve $reserve) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/reserve/view/' . $reserve->id]),
                                     ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'visible' => function ($url, Reserve $reserve) {
+                                if ($reserve->visible) {
+                                    $options = ['title' => Yii::t('app', 'Invisible')];
+                                    $iconClass = 'glyphicon-check';
+                                } else {
+                                    $options = ['title' => Yii::t('app', 'Visible')];
+                                    $iconClass = 'glyphicon-unchecked';
+                                }
+                                return Html::a(
+                                    '<span class="glyphicon ' . $iconClass . '"></span>',
+                                    Url::to(['/reserve/toggle-visible/' . $reserve->id]),
+                                    $options
                                 );
                             },
                             'update' => function ($url, Reserve $reserve) {

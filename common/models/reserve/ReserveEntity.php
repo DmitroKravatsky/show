@@ -2,7 +2,9 @@
 
 namespace common\models\reserve;
 
+use common\interfaces\IVisible;
 use common\models\reserve\repositories\RestReserveRepository;
+use common\traits\VisibleTrait;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
@@ -18,12 +20,13 @@ use Yii;
  * @property string $payment_system
  * @property string $currency
  * @property float $sum
+ * @property boolean $visible
  * @property integer $created_at
  * @property integer $updated_at
  */
-class ReserveEntity extends ActiveRecord
+class ReserveEntity extends ActiveRecord implements IVisible
 {
-    use RestReserveRepository;
+    use RestReserveRepository, VisibleTrait;
 
     const YANDEX_MONEY = 'yandex_money';
     const WEB_MONEY    = 'web_money';
@@ -83,6 +86,7 @@ class ReserveEntity extends ActiveRecord
             'payment_system' => Yii::t('app', 'Payment System'),
             'currency'       => Yii::t('app', 'Currency'),
             'sum'            => Yii::t('app', 'Sum'),
+            'visible'        => Yii::t('app', 'Visible'),
             'created_at'     => Yii::t('app', 'Created At'),
             'updated_at'     => Yii::t('app', 'Updated At'),
         ];
@@ -104,6 +108,7 @@ class ReserveEntity extends ActiveRecord
             ],
             ['currency', 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]],
             [['created_at', 'updated_at'], 'safe'],
+            [['visible'], 'boolean'],
         ];
     }
 
@@ -116,6 +121,12 @@ class ReserveEntity extends ActiveRecord
             TimestampBehavior::class,
             ValidationExceptionFirstMessage::class,
         ];
+    }
+
+    public function toggleVisible(): bool
+    {
+        $this->visible = !$this->visible;
+        return $this->save(false, ['visible']);
     }
 
     /**
