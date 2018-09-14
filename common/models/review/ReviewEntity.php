@@ -19,7 +19,7 @@ use Yii;
  * @property integer $id
  * @property integer $created_by
  * @property string  $text
- * @property string  $terms_condition
+ * @property integer $terms_condition
  * @property integer $created_at
  * @property integer $updated_at
  *
@@ -29,6 +29,8 @@ use Yii;
 class ReviewEntity extends ActiveRecord
 {
     use RestReviewRepository;
+
+    public $terms_condition;
 
     /**
      * @return string
