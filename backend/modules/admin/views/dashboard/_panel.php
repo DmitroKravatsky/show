@@ -308,6 +308,7 @@ use common\helpers\UrlHelper;
                     ],
                     [
                         'attribute' => 'dateRange',
+                        'label' => Yii::t('app', 'Created At'),
                         'format' => 'date',
                         'value' => 'created_at',
                         'filter' => DateRangePicker::widget([
