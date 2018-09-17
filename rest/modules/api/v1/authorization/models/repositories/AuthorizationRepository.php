@@ -52,8 +52,6 @@ trait AuthorizationRepository
             $profile = $user->profile ?? new UserProfileEntity();
             $profile->setAttributes([
                 'user_id'   => $user->id,
-                'name'      => $params['name'],
-                'last_name' => $params['last_name'],
             ]);
             if (!$profile->save()) {
                 $this->throwModelException($profile->errors);

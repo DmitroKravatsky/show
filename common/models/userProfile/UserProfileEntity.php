@@ -64,7 +64,6 @@ class UserProfileEntity extends ActiveRecord
             [['id', 'user_id'], 'integer'],
             ['user_id', 'default', 'value' => \Yii::$app->user->id],
             [['name', 'last_name',], 'string', 'max' => 20],
-            [['name', 'last_name',], 'required'],
             ['avatar', 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
