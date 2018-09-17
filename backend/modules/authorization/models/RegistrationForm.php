@@ -56,7 +56,7 @@ class RegistrationForm extends Model
         return [
             'email'                 => Yii::t('app', 'E-mail'),
             'password'              => Yii::t('app', 'Password'),
-            'confirm_password'      => Yii::t('app', 'Password Confirm'),
+            'confirm_password'      => Yii::t('app', 'Repeat Password'),
             'created_at'            => Yii::t('app', 'Created At'),
             'updated_at'            => Yii::t('app', 'Updated At'),
             'name'                  => Yii::t('app', 'First Name'),

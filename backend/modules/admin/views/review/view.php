@@ -19,8 +19,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <div class="col-md-6">
             <?php Panel::begin([
                 'header' => Yii::t('app', 'Review'),
-                'collapsable' => true,
-                'removable' => true,
             ]) ?>
             <?= DetailView::widget([
                 'model' => $review,

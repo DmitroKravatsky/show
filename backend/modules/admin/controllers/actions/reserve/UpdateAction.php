@@ -19,6 +19,7 @@ class UpdateAction extends Action
      */
     public function run($id)
     {
+        Yii::$app->language = Yii::$app->session->get('language', Yii::$app->language);
         $reserve = $this->controller->findModel($id);
         if ($reserve->load(Yii::$app->request->post()) && $reserve->save()) {
             Yii::$app->session->setFlash('success', Yii::t('app', 'Reserve successfully updated.'));

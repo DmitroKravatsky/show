@@ -26,6 +26,8 @@ class InviteAction extends Action
     {
         $modelRegistration = new RegistrationForm();
 
+        Yii::$app->language = Yii::$app->session->get('language', Yii::$app->language);
+
         if (Yii::$app->request->isAjax && $modelRegistration->load(Yii::$app->request->post())) {
             Yii::$app->response->format = Response::FORMAT_JSON;
             return ActiveForm::validate($modelRegistration);
