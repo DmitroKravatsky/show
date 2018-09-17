@@ -1,18 +1,16 @@
 <?php
 
-use common\models\userNotifications\NotificationsEntity;
 use common\models\userNotifications\UserNotifications;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
-use yii\helpers\{ StringHelper, Html };
+use yii\helpers\{ StringHelper, Html, Url };
 use common\helpers\{ UrlHelper, Toolbar };
-use yii\helpers\Url;
 
 /** @var \yii\web\View $this */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
-/** @var \common\models\userNotifications\NotificationsSearch $searchModel */
+/** @var \common\models\userNotifications\UserNotificationsSearch $searchModel */
 
 $this->title = Yii::t('app', 'Notifications');
 $this->params['breadcrumbs'][] = $this->title;
@@ -28,10 +26,10 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::begin() ?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
-                'filterModel' => $searchModel,
-                'filterUrl' => UrlHelper::getFilterUrl(),
-                'hover' => true,
-                'toolbar' =>  [
+                'filterModel'  => $searchModel,
+                'filterUrl'    => UrlHelper::getFilterUrl(),
+                'hover'        => true,
+                'toolbar'      =>  [
                     ['content' =>
                         Toolbar::deleteButton('/notifications/delete-all', Yii::t('app', 'Delete all')) .
                         Toolbar::readAllButton('/notifications/read-all') .
@@ -40,54 +38,55 @@ $this->params['breadcrumbs'][] = $this->title;
                     '{export}',
                     '{toggleData}',
                 ],
-                'export' => [
+                'export'       => [
                     'fontAwesome' => true
                 ],
-                'panel' => [
-                    'type' => GridView::TYPE_DEFAULT,
+                'panel'        => [
+                    'type'    => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
-                'columns' => [
+                'columns'      => [
                     [
-                        'class' => 'kartik\grid\SerialColumn',
+                        'class'          => 'kartik\grid\SerialColumn',
                         'contentOptions' => ['class' => 'kartik-sheet-style'],
-                        'width' => '36px',
-                        'header' => '',
-                        'headerOptions' => ['class' => 'kartik-sheet-style']
+                        'width'          => '36px',
+                        'header'         => '',
+                        'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
                         'attribute' => 'full_name',
-                        'label' => Yii::t('app', 'Full name'),
-                        'value' => function (UserNotifications $userNotification) {
+                        'label'     => Yii::t('app', 'Full Name'),
+                        'value'     => function (UserNotifications $userNotification) {
                             return $userNotification->userProfile->userFullName ?? null;
                         }
                     ],
                     [
                         'attribute' => 'is_read',
-                        'filter' => UserNotifications::getIsReadStatuses(),
-                        'value' => function (UserNotifications $userNotification) {
+                        'filter'    => UserNotifications::getIsReadStatuses(),
+                        'value'     => function (UserNotifications $userNotification) {
                             return UserNotifications::getIsReadLabel($userNotification->is_read);
                         }
                     ],
                     [
                         'attribute' => 'text',
-                        'value' => function (UserNotifications $userNotification) {
+                        'value'     => function (UserNotifications $userNotification) {
                             return StringHelper::truncate( Yii::t('app', $userNotification->notification->text, [
-                                'full_name'=> $userNotification->notification->custom_data->full_name ?? null,
-                                'sum'      => $userNotification->notification->custom_data->sum ?? null,
-                                'currency' => $userNotification->notification->custom_data->currency ?? null,
-                                'wallet'   => $userNotification->notification->custom_data->wallet ?? null,
+                                'full_name'    => $userNotification->notification->custom_data->full_name ?? null,
+                                'sum'          => $userNotification->notification->custom_data->sum ?? null,
+                                'currency'     => $userNotification->notification->custom_data->currency ?? null,
+                                'wallet'       => $userNotification->notification->custom_data->wallet ?? null,
                                 'phone_number' => $userNotification->notification->custom_data->phone_number ?? null,
                             ]), 40);
                         }
                     ],
                     [
                         'attribute' => 'dateRange',
-                        'format' => 'date',
-                        'value' => 'notification.created_at',
-                        'filter' => DateRangePicker::widget([
-                            'model' => $searchModel,
-                            'attribute' => 'dateRange',
+                        'label'     => Yii::t('app', 'Created At'),
+                        'format'    => 'date',
+                        'value'     => 'notification.created_at',
+                        'filter'    => DateRangePicker::widget([
+                            'model'         => $searchModel,
+                            'attribute'     => 'dateRange',
                             'convertFormat' => true,
                             'pluginOptions' => [
                                 'timePicker' => true,
@@ -98,9 +97,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         ]),
                     ],
                     [
-                        'class' => \yii\grid\ActionColumn::class,
+                        'class'    => \yii\grid\ActionColumn::class,
                         'template' => '{view}&nbsp{delete}',
-                        'buttons' => [
+                        'buttons'  => [
                             'view' => function($url, UserNotifications $notification) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
@@ -122,4 +121,3 @@ $this->params['breadcrumbs'][] = $this->title;
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
 </div>
-

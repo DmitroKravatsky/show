@@ -169,6 +169,9 @@ class m180816_114157_i18n_init extends Migration
             [154, 'app', 'In Progress By Manager'],
             [155, 'app', 'Visible'],
             [156, 'app', 'Invisible'],
+            [157, 'app', 'Status updated successfully.'],
+            [158, 'app', 'Notifications successfully deleted.'],
+            [159, 'app', 'This phone number address has already been taken.'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -328,6 +331,9 @@ class m180816_114157_i18n_init extends Migration
             [154, 'ru', 'Обрабатывается Менеджером'],
             [155, 'ru', 'Видимое'],
             [156, 'ru', 'Невидимое'],
+            [157, 'ru', 'Статус успешно обновлен.'],
+            [158, 'ru', 'Уведомления успешно удалены.'],
+            [159, 'ru', 'Этот номер телефона уже занят.'],
         ]);
     }
 
