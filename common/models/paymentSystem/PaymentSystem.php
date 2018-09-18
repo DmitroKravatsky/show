@@ -1,0 +1,131 @@
+<?php
+
+namespace common\models\paymentSystem;
+
+use common\interfaces\IVisible;
+use common\traits\VisibleTrait;
+use Yii;
+use yii\behaviors\TimestampBehavior;
+use yii\db\ActiveRecord;
+use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
+
+/**
+ * This is the model class for table "payment_system".
+ *
+ * @property int $id
+ * @property string $name
+ * @property string $currency
+ * @property int $visible
+ * @property int $created_at
+ * @property int $updated_at
+ *
+ * @property Bid[] $bs
+ * @property Bid[] $bs0
+ * @property Reserve[] $reserves
+ */
+class PaymentSystem extends ActiveRecord implements IVisible
+{
+    use VisibleTrait;
+
+    const USD = 'usd';
+    const UAH = 'uah';
+    const RUB = 'rub';
+    const EUR = 'eur';
+    const WMX = 'wmx';
+
+    /**
+     * @return string
+     */
+    public static function tableName(): string
+    {
+        return 'payment_system';
+    }
+
+    /**
+     * @return array
+     */
+    public static function currencyLabels(): array
+    {
+        return [
+            self::USD => Yii::t('app', 'USD'),
+            self::UAH => Yii::t('app', 'UAH'),
+            self::RUB => Yii::t('app', 'RUB'),
+            self::EUR => Yii::t('app', 'EUR'),
+            self::WMX => Yii::t('app', 'WMX'),
+        ];
+    }
+
+    /**
+     * Returns currency label
+     * @param $currency
+     * @return string
+     */
+    public static function getCurrencyValue($currency): string
+    {
+        $currencies = static::currencyLabels();
+        return $currencies[$currency];
+    }
+
+    /**
+     * @return array
+     */
+    public function rules(): array
+    {
+        return [
+            [['name'], 'required'],
+            [['currency'], 'string'],
+            [['visible', 'created_at', 'updated_at'], 'integer'],
+            [['name'], 'string', 'max' => 50],
+            [['currency'], [['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],],
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function attributeLabels(): array
+    {
+        return [
+            'id'         => 'ID',
+            'name'       => Yii::t('app', 'Name'),
+            'currency'   => Yii::t('app', 'Currency'),
+            'visible'    => Yii::t('app', 'Visible'),
+            'created_at' => Yii::t('app', 'Created At'),
+            'updated_at' => Yii::t('app', 'Updated At'),
+        ];
+    }
+
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            TimestampBehavior::class,
+        ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBs()
+    {
+        return $this->hasMany(Bid::class, ['from_payment_system_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getBs0()
+    {
+        return $this->hasMany(Bid::class, ['to_payment_system_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReserves()
+    {
+        return $this->hasMany(Reserve::class, ['payment_system_id' => 'id']);
+    }
+}

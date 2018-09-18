@@ -13,6 +13,7 @@ use yii\{behaviors\TimestampBehavior, db\ActiveRecord, helpers\ArrayHelper};
 use Yii;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use borales\extensions\phoneInput\PhoneInputValidator;
+use common\models\paymentSystem\PaymentSystem;
 
 /**
  * Class BidEntity
@@ -22,17 +23,15 @@ use borales\extensions\phoneInput\PhoneInputValidator;
  *
  * @property integer $id
  * @property integer $created_by
+ * @property integer $from_payment_system_id
+ * @property integer $to_payment_system_id
  * @property string $name
  * @property string $last_name
  * @property string $phone_number
  * @property string $email
  * @property string $status
- * @property string $from_payment_system
- * @property string $to_payment_system
  * @property string $from_wallet
  * @property string $to_wallet
- * @property string $from_currency
- * @property string $to_currency
  * @property float $from_sum
  * @property float $to_sum
  * @property int $processed
@@ -47,26 +46,16 @@ use borales\extensions\phoneInput\PhoneInputValidator;
  * @property User $inProgressByManager
  * @property UserProfileEntity $bidOwnerProfile
  * @property BidHistory[] $bidHistories
+ * @property PaymentSystem $fromPaymentSystem
+ * @property PaymentSystem $toPaymentSystem
  */
 class BidEntity extends ActiveRecord
 {
     use RestBidRepository;
 
-    const SCENARIO_CREATE = 'create';
-    const SCENARIO_UPDATE = 'update';
+    const SCENARIO_CREATE            = 'create';
+    const SCENARIO_UPDATE            = 'update';
     const SCENARIO_UPDATE_BID_STATUS = 'update-bid-status';
-
-    const YANDEX_MONEY = 'yandex_money';
-    const WEB_MONEY    = 'web_money';
-    const TINCOFF      = 'tincoff';
-    const PRIVAT24     = 'privat24';
-    const SBERBANK     = 'sberbank';
-    const QIWI         = 'qiwi';
-
-    const USD = 'usd';
-    const UAH = 'uah';
-    const RUB = 'rub';
-    const EUR = 'eur';
 
     const STATUS_NEW             = 'new';
     const STATUS_PAID_BY_CLIENT  = 'paid_by_client';
@@ -87,8 +76,11 @@ class BidEntity extends ActiveRecord
      * @var bool
      */
     public $terms_confirm = false;
-
+    public $name;
+    public $last_name;
     public $full_name;
+    public $email;
+    public $phone_number;
 
     /**
      * @return string
@@ -157,57 +149,6 @@ class BidEntity extends ActiveRecord
     }
 
     /**
-     * Returns the name of payment systems
-     * @return array
-     */
-    public static function paymentSystemLabels(): array
-    {
-        return [
-            self::YANDEX_MONEY => Yii::t('app', 'Yandex Money'),
-            self::WEB_MONEY => Yii::t('app', 'Web Money'),
-            self::TINCOFF => Yii::t('app', 'Tincoff'),
-            self::PRIVAT24 => Yii::t('app', 'Privat24'),
-            self::SBERBANK => Yii::t('app', 'Sberbank'),
-            self::QIWI => Yii::t('app', 'Qiwi'),
-        ];
-    }
-
-    /**
-     * Returns the name of the payment system by system value
-     * @param string $system
-     * @return string
-     */
-    public static function getPaymentSystemValue($system): string
-    {
-        $systems = static::paymentSystemLabels();
-        return $systems[$system];
-    }
-
-    /**
-     * @return array
-     */
-    public static function currencyLabels(): array
-    {
-        return [
-            self::USD => Yii::t('app', 'USD'),
-            self::UAH => Yii::t('app', 'UAH'),
-            self::RUB => Yii::t('app', 'RUB'),
-            self::EUR => Yii::t('app', 'EUR'),
-        ];
-    }
-
-    /**
-     * Returns currency label
-     * @param $currency
-     * @return string
-     */
-    public static function getCurrencyValue($currency): string
-    {
-        $currencies = static::currencyLabels();
-        return $currencies[$currency];
-    }
-
-    /**
      * @return array
      */
     public function attributeLabels(): array
@@ -219,8 +160,8 @@ class BidEntity extends ActiveRecord
             'to_sum'                 => Yii::t('app', 'To Sum'),
             'from_wallet'            => Yii::t('app', 'From Wallet'),
             'to_wallet'              => Yii::t('app', 'To Wallet'),
-            'from_payment_system'    => Yii::t('app', 'From Payment System'),
-            'to_payment_system'      => Yii::t('app', 'To Payment System'),
+            'from_payment_system_id' => Yii::t('app', 'From Payment System'),
+            'to_payment_system_id'   => Yii::t('app', 'To Payment System'),
             'name'                   => Yii::t('app', 'First Name'),
             'last_name'              => Yii::t('app', 'Last Name'),
             'email'                  => Yii::t('app', 'Email'),
@@ -243,13 +184,13 @@ class BidEntity extends ActiveRecord
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_CREATE] = [
-            'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
-            'email', 'phone_number', 'from_sum', 'to_sum', 'terms_confirm', 'from_payment_system', 'to_payment_system',
+            'created_by', 'status', 'from_wallet', 'to_wallet', 'name', 'last_name', 'email', 'phone_number',
+            'from_sum', 'to_sum', 'terms_confirm', 'from_payment_system_id', 'to_payment_system_id',
         ];
 
         $scenarios[self::SCENARIO_UPDATE] = [
-            'created_by', 'status', 'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name',
-            'email', 'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system',
+            'created_by', 'status', 'from_wallet', 'to_wallet', 'name', 'last_name', 'email', 'phone_number',
+            'from_sum', 'to_sum', 'from_payment_system_id', 'to_payment_system_id',
         ];
         $scenarios[self::SCENARIO_UPDATE_BID_STATUS] = ['status', 'processed', 'processed_by'];
 
@@ -279,8 +220,8 @@ class BidEntity extends ActiveRecord
             ],
             [
                 [
-                    'from_wallet', 'to_wallet', 'from_currency', 'to_currency', 'name', 'last_name', 'email',
-                    'phone_number', 'from_sum', 'to_sum', 'from_payment_system', 'to_payment_system'
+                    'from_wallet', 'to_wallet', 'name', 'last_name', 'email',
+                    'phone_number', 'from_sum', 'to_sum', 'from_payment_system_id', 'to_payment_system_id'
                 ],
                 'required'
             ],
@@ -289,12 +230,6 @@ class BidEntity extends ActiveRecord
             [['from_wallet', 'to_wallet'], 'integer'],
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
             [['name', 'last_name'], 'string', 'min' => 2],
-            [
-                ['from_payment_system', 'to_payment_system'],
-                'in',
-                'range' => [self::PRIVAT24, self::SBERBANK, self::TINCOFF, self::WEB_MONEY, self::YANDEX_MONEY, self::QIWI]
-            ],
-            [['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR]],
             ['email', 'email'],
             [['from_sum', 'to_sum'], 'double', 'min' => 10],
             [['created_at', 'updated_at'], 'safe'],
@@ -353,7 +288,7 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::getCustomDataForNewBid(
                     $bidOwnerFullName,
                     $this->to_sum,
-                    $this->to_currency,
+                    $this->toPaymentSystem->currency,
                     $this->to_wallet
                 )
             );
@@ -374,7 +309,7 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::getCustomDataForClientPaid(
                     $bidOwnerFullName,
                     $this->from_sum,
-                    $this->from_currency,
+                    $this->fromPaymentSystem->currency,
                     $this->to_wallet
                 )
             );
@@ -393,14 +328,14 @@ class BidEntity extends ActiveRecord
                 NotificationsEntity::TYPE_BID_DONE,
                 NotificationsEntity::getMessageForDoneBid(),
                 $this->created_by,
-                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForDoneBid($this->to_sum, $this->toPaymentSystem->currency, $this->to_wallet)
             );
         } elseif ($this->status == self::STATUS_REJECTED) {
             (new NotificationsEntity())->addNotify(
                 NotificationsEntity::TYPE_BID_REJECTED,
                 NotificationsEntity::getMessageForRejectedBid(),
                 $this->created_by,
-                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->to_currency, $this->to_wallet)
+                NotificationsEntity::getCustomDataForRejectedBid($this->to_sum, $this->toPaymentSystem->currency, $this->to_wallet)
             );
         }
 
@@ -514,5 +449,21 @@ class BidEntity extends ActiveRecord
     public function getBidOwnerProfile()
     {
         return $this->hasOne(UserProfileEntity::class, ['user_id' => 'created_by']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getFromPaymentSystem()
+    {
+        return $this->hasOne(PaymentSystem::class, ['id' => 'from_payment_system_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getToPaymentSystem()
+    {
+        return $this->hasOne(PaymentSystem::class, ['id' => 'to_payment_system_id']);
     }
 }
