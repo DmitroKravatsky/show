@@ -25,12 +25,6 @@ $this->title = Yii::t('app', 'Reviews');
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
-<?php /*if ($message = Yii::$app->session->getFlash('error')): */?><!--
-    <div class="alert alert-danger">
-        <?/*= $message */?>
-    </div>
---><?php /*endif;*/?>
-
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 <div class="modal" tabindex="-1"  id="new-review-form" role="dialog" hidden="true">
     <div class="modal-dialog" role="document">
