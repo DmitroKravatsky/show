@@ -3,9 +3,7 @@
 namespace rest\modules\api\v1\reserve\controllers;
 
 use common\models\reserve\ReserveEntity;
-use rest\modules\api\v1\reserve\controllers\actions\CreateAction;
 use rest\modules\api\v1\reserve\controllers\actions\ListAction;
-use rest\modules\api\v1\reserve\controllers\actions\UpdateAction;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
 
@@ -35,8 +33,6 @@ class ReserveController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'update' => ['PUT'],
-                'create' => ['POST'],
                 'list'   => ['GET'],
             ]
         ];
@@ -52,14 +48,6 @@ class ReserveController extends Controller
         return [
             'list' => [
                 'class' => ListAction::class,
-                'modelClass' => $this->modelClass,
-            ],
-            'update' => [
-                'class' => UpdateAction::class,
-                'modelClass' => $this->modelClass,
-            ],
-            'create' => [
-                'class' => CreateAction::class,
                 'modelClass' => $this->modelClass,
             ],
         ];

@@ -100,8 +100,8 @@ class ListAction extends Action
      *                  {
      *                      "id": 12,
      *                      "status": "New",
-     *                      "from_payment_system": "Web Money",
-     *                      "to_payment_system": "Privat24",
+     *                      "from_payment_system": "web_money",
+     *                      "to_payment_system": "privat24",
      *                      "from_currency": "UAH",
      *                      "to_currency": "EUR",
      *                      "from_sum": 150,
@@ -110,8 +110,8 @@ class ListAction extends Action
      *                  {
      *                      "id": 12,
      *                      "status": "New",
-     *                      "from_payment_system": "Privat24",
-     *                      "to_payment_system": "Yandex Money",
+     *                      "from_payment_system": "privat24",
+     *                      "to_payment_system": "yandex_money",
      *                      "from_currency": "UAH",
      *                      "to_currency": "RUB",
      *                      "from_sum": 2142,
