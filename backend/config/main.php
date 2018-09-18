@@ -83,6 +83,7 @@ return [
                 'login'                                  => 'authorization/authorization/login',
                 'logout'                                 => 'authorization/authorization/logout',
                 'profile/<action:[\w-]+>'                => 'admin/profile/<action>',
+                'profile/<action:[\w-]+>/<id:\d+>'       => 'admin/profile/<action>/{id}',
                 'notifications/<action:[\w-]+>'          => 'admin/notifications/<action>',
                 'notifications/<action:[\w-]+>/<id:\d+>' => 'admin/notifications/<action>',
                 'review/index'                           => 'admin/review/index',
