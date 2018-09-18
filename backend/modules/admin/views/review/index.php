@@ -74,11 +74,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar' =>  [
                     ['content' =>
-                        Toolbar::createButtonWithProperties(
+                        (Yii::$app->user->can('admin')) ? Toolbar::createButtonWithProperties(
                             Url::to('/review/create'),
                             Yii::t('app', 'Create new review'),
                             ['id' => 'new-review-button']
-                        )
+                        ) : null
                         . Toolbar::resetButton()
                     ],
                     '{export}',
