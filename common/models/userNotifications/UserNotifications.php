@@ -59,12 +59,13 @@ class UserNotifications extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'           => '#',
-            'user_id'      => Yii::t('app', 'User id'),
+            'id'              => '#',
+            'user_id'         => Yii::t('app', 'User id'),
             'notification_id' => Yii::t('app', 'Text'),
-            'is_read'       => Yii::t('app', 'Read'),
-            'created_at'   => Yii::t('app', 'Created At'),
-            'updated_at'   => Yii::t('app', 'Updated At'),
+            'is_read'         => Yii::t('app', 'Read'),
+            'text'            => Yii::t('app', 'Text'),
+            'created_at'      => Yii::t('app', 'Created At'),
+            'updated_at'      => Yii::t('app', 'Updated At'),
         ];
     }
 

@@ -6,14 +6,10 @@
  */
 
 use backend\assets\AppAsset;
-use common\components\language\LanguageUrlManager;
-use common\models\userNotifications\NotificationsEntity;
-use common\models\userNotifications\UserNotifications;
-use yii\helpers\Html;
-use yii\widgets\Breadcrumbs;
+use common\models\userNotifications\{ NotificationsEntity, UserNotifications };
+use yii\{ helpers\Html, widgets\Breadcrumbs, helpers\Url };
 use yiister\gentelella\widgets\Menu;
 use common\models\user\User;
-use yii\helpers\Url;
 use dmstr\widgets\Alert;
 use common\models\language\Language;
 

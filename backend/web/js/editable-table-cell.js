@@ -55,7 +55,9 @@
                     '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                             '<span aria-hidden="true">×</span>' +
-                        '</button>' + result.message +
+                        '</button>'
+                        + '<i class="icon fa fa-check"></i>'
+                        + result.message +
                     '</div>'
                 );
             },
@@ -64,7 +66,9 @@
                     '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
                         '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
                             '<span aria-hidden="true">×</span>' +
-                        '</button>' + result.responseJSON.message +
+                        '</button>'
+                        + '<i class="icon fa fa-bun"></i>'
+                        + result.responseJSON.message +
                     '</div>'
                 );
             }

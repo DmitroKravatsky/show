@@ -1,6 +1,7 @@
 <?php
 
 use common\models\review\ReviewEntity;
+use common\models\user\User;
 use kartik\grid\GridView;
 use yii\bootstrap\ActiveForm;
 use yiister\gentelella\widgets\Panel;
@@ -24,11 +25,11 @@ $this->title = Yii::t('app', 'Reviews');
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
-<?php if ($message = Yii::$app->session->getFlash('fail')): ?>
+<?php /*if ($message = Yii::$app->session->getFlash('error')): */?><!--
     <div class="alert alert-danger">
-        <?= $message ?>
+        <?/*= $message */?>
     </div>
-<?php endif;?>
+--><?php /*endif;*/?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 <div class="modal" tabindex="-1"  id="new-review-form" role="dialog" hidden="true">
@@ -74,10 +75,9 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar' =>  [
                     ['content' =>
-                        (Yii::$app->user->can('admin')) ? Toolbar::createButtonWithProperties(
+                        (Yii::$app->user->can(User::ROLE_ADMIN)) ? Toolbar::createButtonWithProperties(
                             Url::to('/review/create'),
-                            Yii::t('app', 'Create new review'),
-                            ['id' => 'new-review-button']
+                            ['id' => 'new-review-button', 'type' => 'button', 'title' => Yii::t('app', 'Create new review'), 'class' => 'btn btn-success']
                         ) : null
                         . Toolbar::resetButton()
                     ],

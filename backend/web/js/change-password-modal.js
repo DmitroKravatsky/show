@@ -13,18 +13,22 @@ $(function () {
             success: function (result) {
                 $('#re-invite-success').html(
                     '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">×</span>' +
-                    '</button>' + result.message +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">×</span>' +
+                        '</button>'
+                        + '<i class="icon fa fa-check"></i>'
+                        + result.message +
                     '</div>'
                 );
             },
             error : function (result) {
                 $('#re-invite-error').html(
                     '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
-                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                    '<span aria-hidden="true">×</span>' +
-                    '</button>' + result.responseJSON.message +
+                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                            '<span aria-hidden="true">×</span>' +
+                        '</button>'
+                        + '<i class="icon fa fa-ban"></i>'
+                        + result.responseJSON.message +
                     '</div>'
                 );
             }

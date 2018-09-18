@@ -18,6 +18,9 @@ use kartik\select2\Select2;
 $this->title = Yii::t('app', 'Bids');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
+
+<?= Html::style('td span {line-height: 20px}') ?>
+
 <?php if ($message = Yii::$app->session->getFlash('delete-success')): ?>
     <div class="alert alert-success">
         <?= $message ?>
@@ -85,7 +88,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'options' => [
                                     'class'       => 'status',
                                     'disabled'    => !Bid::canUpdateStatus($bid->status),
-                                    'placeholder' => Yii::t('app', 'Select status')
+                                    'placeholder' => Yii::t('app', 'Select status'),
                                 ],
                             ]);
                         },
@@ -145,24 +148,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header'    => Yii::t('app', 'Amount To Be Transferred'),
                         'value'     => function($model) {
                             return $model->to_sum . ' ' . $model->to_currency;
-                        },
-                    ],
-                    [
-                        'attribute' => 'from_wallet',
-                        'filter'    => Bid::paymentSystemLabels(),
-                        'format'    => 'raw',
-                        'header'    => Yii::t('app', 'Where Did The Money Come From'),
-                        'value'     => function ($model) {
-                            return $model->from_wallet . ' (' . $model->from_payment_system . ')';
-                        },
-                    ],
-                    [
-                        'attribute' => 'to_wallet',
-                        'filter'    => Bid::paymentSystemLabels(),
-                        'format'    => 'raw',
-                        'header'    => Yii::t('app', 'Need To Transfer Money Here'),
-                        'value'     => function ($model) {
-                            return $model->to_wallet . ' (' . $model->to_payment_system . ')';
                         },
                     ],
                     [

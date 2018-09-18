@@ -16,7 +16,7 @@ $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['i
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+<?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
 
 <?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 

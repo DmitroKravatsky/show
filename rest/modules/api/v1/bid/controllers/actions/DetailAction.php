@@ -60,8 +60,8 @@ class DetailAction extends Action
      *              "data": {
      *                  "id" : 1,
      *                  "status": "New",
-     *                  "from_payment_system": "Yandex Money",
-     *                  "to_payment_system": "Privat24",
+     *                  "from_payment_system": "yandex_money",
+     *                  "to_payment_system": "privat24",
      *                  "from_wallet": "1234123412341234",
      *                  "to_wallet": "1234123412341234",
      *                  "from_currency": "RUB",

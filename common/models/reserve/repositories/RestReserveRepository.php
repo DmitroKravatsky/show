@@ -72,7 +72,7 @@ trait RestReserveRepository
             /** @var ReserveEntity $reserve */
             $result[] = [
                 'id'             => $reserve->id,
-                'payment_system' => static::getPaymentSystemValue($reserve->payment_system),
+                'payment_system' => $reserve->payment_system,
                 'currency'       => static::getCurrencyValue($reserve->currency),
                 'sum'            => round($reserve->sum, 2),
             ];

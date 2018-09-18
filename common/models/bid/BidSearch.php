@@ -6,6 +6,7 @@ use backend\models\BackendUser;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
+use yii\db\Expression;
 
 /**
  * BidSearch represents the model behind the search form of `common\models\bid\BidEntity`.
@@ -59,8 +60,18 @@ class BidSearch extends BidEntity
     {
         $query = BidEntity::find()->joinWith(['managerProfile'])->with('processedByProfile');
 
+        $expression = 'FIELD ('
+            . self::tableName() . '.status,"'
+            . self::STATUS_NEW . '","'
+            . self::STATUS_IN_PROGRESS . '","'
+            . self::STATUS_PAID_BY_CLIENT . '","'
+            . self::STATUS_PAID_BY_US_DONE . '","'
+            . self::STATUS_REJECTED
+        . '")';
+
         $dataProvider = new ActiveDataProvider([
-            'query' => $query->orderBy(['created_at' => SORT_DESC]),
+            'query' => $query->orderBy([new Expression($expression)])
+                ->addOrderBy(['created_at' => SORT_DESC]),
             'pagination' => [
                 'pageSize' => $params['pageSize'] ?? Yii::$app->params['pageSize'],
             ]

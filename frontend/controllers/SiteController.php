@@ -80,8 +80,6 @@ class SiteController extends Controller
                     // Bid module
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions'),
                     // Reserve module
-                    Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/CreateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/UpdateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/ListAction.php'),
                     // Review module
                     Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/CreateAction.php'),
