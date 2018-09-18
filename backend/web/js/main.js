@@ -22,7 +22,6 @@ $(document).ready(function () {
 
     $('#new-review-button').on('click', function (event) {
         event.preventDefault();
-        // alert(1);
         $('#new-review-form').modal("show");
     });
 });

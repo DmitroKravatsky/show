@@ -25,7 +25,7 @@ class ReviewController extends Controller
                     [
                         'allow'   => true,
                         'actions' => ['index', 'view',],
-                        'roles'   => ['admin', 'manager', 'create']
+                        'roles'   => ['admin', 'manager']
                     ],
                     [
                         'allow'   => true,

@@ -58,9 +58,9 @@ class Toolbar
         }
 
         return Html::a(
-                '<i class="glyphicon glyphicon-plus"></i>',
-                Url::to([$url]),
-                $propertiesList
-            ) . ' ';
+            '<i class="glyphicon glyphicon-plus"></i>',
+            Url::to([$url]),
+            $propertiesList
+        ) . ' ';
     }
 }
