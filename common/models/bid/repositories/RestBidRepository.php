@@ -56,8 +56,8 @@ trait RestBidRepository
             $result[] = [
                 'id'                  => $bid->id,
                 'status'              => BidEntity::getStatusValue($bid->status),
-                'from_payment_system' => BidEntity::getPaymentSystemValue($bid->from_payment_system),
-                'to_payment_system'   => BidEntity::getPaymentSystemValue($bid->to_payment_system),
+                'from_payment_system' => $bid->from_payment_system,
+                'to_payment_system'   => $bid->to_payment_system,
                 'from_currency'       => BidEntity::getCurrencyValue($bid->from_currency),
                 'to_currency'         => BidEntity::getCurrencyValue($bid->to_currency),
                 'from_sum'            => round($bid->from_sum, 2),
@@ -96,13 +96,11 @@ trait RestBidRepository
                 'from_currency', 'to_currency', 'from_sum', 'to_sum'
             ]);
 
-            $attributes['status'] = static::getStatusValue($attributes['status']);
-            $attributes['from_payment_system'] = static::getPaymentSystemValue($attributes['from_payment_system']);
-            $attributes['to_payment_system'] = static::getPaymentSystemValue($attributes['to_payment_system']);
+            $attributes['status']        = static::getStatusValue($attributes['status']);
             $attributes['from_currency'] = static::getCurrencyValue($attributes['from_currency']);
-            $attributes['to_currency'] = static::getCurrencyValue($attributes['to_currency']);
-            $attributes['from_sum'] = round($attributes['from_sum'], 2);
-            $attributes['to_sum'] = round($attributes['to_sum'], 2);
+            $attributes['to_currency']   = static::getCurrencyValue($attributes['to_currency']);
+            $attributes['from_sum']      = round($attributes['from_sum'], 2);
+            $attributes['to_sum']        = round($attributes['to_sum'], 2);
 
             return $attributes;
 
