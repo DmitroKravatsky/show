@@ -169,6 +169,9 @@ class m180816_114157_i18n_init extends Migration
             [154, 'app', 'In Progress By Manager'],
             [155, 'app', 'Visible'],
             [156, 'app', 'Invisible'],
+            [157, 'app', 'Create new review'],
+            [158, 'app', 'Review text'],
+            [159, 'app', 'Review was successfully created.'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -328,6 +331,9 @@ class m180816_114157_i18n_init extends Migration
             [154, 'ru', 'Обрабатывается Менеджером'],
             [155, 'ru', 'Видимое'],
             [156, 'ru', 'Невидимое'],
+            [157, 'ru', 'Создать новый отзыв'],
+            [158, 'ru', 'Текст отзыва'],
+            [159, 'ru', 'Отзыв успешно создан.'],
         ]);
     }
 

@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\review;
 
+use common\models\review\ReviewEntity;
 use common\models\review\ReviewSearch;
 use yii\base\Action;
 use Yii;
@@ -14,12 +15,14 @@ class IndexAction extends Action
      */
     public function run(): string
     {
+        $newReviewModel = new ReviewEntity();
         $searchModel = new ReviewSearch();
         $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
 
         return $this->controller->render('index', [
             'searchModel' => $searchModel,
             'dataProvider' => $dataProvider,
+            'newReviewModel' => $newReviewModel,
         ]);
     }
 }
