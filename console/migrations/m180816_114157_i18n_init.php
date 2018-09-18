@@ -172,6 +172,9 @@ class m180816_114157_i18n_init extends Migration
             [157, 'app', 'Status updated successfully.'],
             [158, 'app', 'Notifications successfully deleted.'],
             [159, 'app', 'This phone number address has already been taken.'],
+            [160, 'app', 'Create new review'],
+            [161, 'app', 'Review text'],
+            [162, 'app', 'Review was successfully created.'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -334,6 +337,9 @@ class m180816_114157_i18n_init extends Migration
             [157, 'ru', 'Статус успешно обновлен.'],
             [158, 'ru', 'Уведомления успешно удалены.'],
             [159, 'ru', 'Этот номер телефона уже занят.'],
+            [160, 'ru', 'Создать новый отзыв'],
+            [161, 'ru', 'Текст отзыва'],
+            [162, 'ru', 'Отзыв успешно создан.'],
         ]);
     }
 
