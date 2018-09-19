@@ -11,6 +11,7 @@ class m180918_115823_payment_system extends Migration
     private $reserveTable = '{{%reserve}}';
     private $bidTable = '{{%bid}}';
     private $bidHistory = '{{%bid_history}}';
+    private $walletTable = '{{%wallet}}';
 
     /**
      * {@inheritdoc}
@@ -105,6 +106,19 @@ class m180918_115823_payment_system extends Migration
             'RESTRICT'
         );
         $this->db->createCommand()->checkIntegrity()->execute();
+
+        //wallet table
+        $this->dropColumn($this->walletTable, 'payment_system');
+        $this->addColumn($this->walletTable, 'payment_system_id', $this->integer()->notNull()->after('created_by'));
+        $this->addForeignKey(
+            'fk-wallet-payment_system_id',
+            $this->walletTable,
+            'payment_system_id',
+            $this->paymentSystemTable,
+            'id',
+            'CASCADE',
+            'RESTRICT'
+        );
     }
 
     /**
@@ -131,6 +145,11 @@ class m180918_115823_payment_system extends Migration
         $this->addColumn($this->bidTable,  'to_payment_system', "ENUM('yandex_money', 'web_money', 'tincoff', 'privat24', 'sberbank', 'qiwi')");
         $this->addColumn($this->bidTable,  'from_currency', "ENUM('usd', 'uah', 'rub', 'eur')");
         $this->addColumn($this->bidTable,  'to_currency', "ENUM('usd', 'uah', 'rub', 'eur')");
+
+        // wallet table
+        $this->dropForeignKey('fk-wallet-payment_system_id', $this->walletTable);
+        $this->dropColumn($this->walletTable, 'payment_system_id');
+        $this->addColumn($this->walletTable, 'payment_system', "ENUM('yandex_money', 'web_money', 'tincoff', 'privat24', 'sberbank', 'qiwi')");
 
         // payment_system table
         $this->dropTable($this->paymentSystemTable);

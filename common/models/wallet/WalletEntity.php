@@ -7,6 +7,8 @@ use rest\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\behaviors\TimestampBehavior;
 use Yii;
+use common\models\paymentSystem\PaymentSystem;
+use common\models\user\User;
 
 /**
  * Class WalletEntity
@@ -18,20 +20,16 @@ use Yii;
  * @property integer $created_by
  * @property string $name
  * @property string $number
- * @property string $payment_system
+ * @property string $payment_system_id
  * @property integer $created_at
  * @property integer $updated_at
+ *
+ * @property PaymentSystem $paymentSystem
+ * @property User $createdBy
  */
 class WalletEntity extends \yii\db\ActiveRecord
 {
     use RestWalletRepository;
-
-    const YANDEX_MONEY = 'yandex_money';
-    const WEB_MONEY    = 'web_money';
-    const TINCOFF      = 'tincoff';
-    const PRIVAT24     = 'privat24';
-    const SBERBANK     = 'sberbank';
-    const QIWI         = 'qiwi';
 
     /**
      * @return string
@@ -58,13 +56,13 @@ class WalletEntity extends \yii\db\ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'             => '#',
-            'name'           => Yii::t('app', 'Name'),
-            'payment_system' => Yii::t('app', 'Payment System'),
-            'created_by'     => Yii::t('app', 'Created By'),
-            'number'         => Yii::t('app', 'Wallet Number'),
-            'created_at'     => Yii::t('app', 'Created At'),
-            'updated_at'     => Yii::t('app', 'Updated At')
+            'id'                => '#',
+            'name'              => Yii::t('app', 'Name'),
+            'payment_system_id' => Yii::t('app', 'Payment System'),
+            'created_by'        => Yii::t('app', 'Created By'),
+            'number'            => Yii::t('app', 'Wallet Number'),
+            'created_at'        => Yii::t('app', 'Created At'),
+            'updated_at'        => Yii::t('app', 'Updated At')
         ];
     }
 
@@ -74,7 +72,7 @@ class WalletEntity extends \yii\db\ActiveRecord
     public function rules(): array
     {
         return [
-            [['name', 'number', 'payment_system'], 'required'],
+            [['name', 'number', 'payment_system_id'], 'required'],
             ['created_by', 'default', 'value' => \Yii::$app->user->id],
             [
                 'created_by',
@@ -86,12 +84,28 @@ class WalletEntity extends \yii\db\ActiveRecord
             ['name', 'string', 'max' => 64],
             ['number', 'string', 'max' => 32],
             [
-                'payment_system',
-                'in',
-                'range' => [
-                    self::PRIVAT24, self::QIWI, self::YANDEX_MONEY, self::WEB_MONEY, self::SBERBANK, self::TINCOFF
-                ]
-            ]
+                ['payment_system_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => PaymentSystem::class,
+                'targetAttribute' => ['payment_system_id' => 'id']
+            ],
         ];
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getPaymentSystem()
+    {
+        return $this->hasOne(PaymentSystem::class, ['id' => 'payment_system_id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getCreatedBy()
+    {
+        return $this->hasOne(User::class, ['id' => 'created_by']);
     }
 }
