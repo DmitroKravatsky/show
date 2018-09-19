@@ -2,11 +2,8 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\profile\{UpdateAction,
-    UpdatePasswordAction,
-    IndexAction,
-    UpdateAvatarAction,
-    VerifyAction
+use backend\modules\admin\controllers\actions\profile\{
+    UpdateAction, UpdatePasswordAction, IndexAction, UpdateAvatarAction, VerifyAction, ViewAction
 };
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -24,7 +21,7 @@ class ProfileController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'update', 'update-password', 'update-avatar', 'verify',],
+                        'actions' => ['index', 'update', 'update-password', 'update-avatar', 'verify', 'view'],
                         'roles'   => ['admin', 'manager',]
                     ],
                 ],
@@ -52,6 +49,9 @@ class ProfileController extends Controller
             ],
             'verify' => [
                 'class' => VerifyAction::class,
+            ],
+            'view' => [
+                'class' => ViewAction::class,
             ],
         ];
     }

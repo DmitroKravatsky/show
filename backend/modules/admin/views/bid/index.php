@@ -118,8 +118,9 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'processed_by',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'format'         => 'raw',
                         'value'          => function (Bid $bid) {
-                            return $bid->perfomer->fullName ?? null;
+                            return Html::a($bid->perfomer->fullName ?? null, [Url::to('/admin/profile/view'), 'id' => $bid->processed_by]);
                         },
                         'contentOptions' => ['class' => 'processed-by-column'],
                     ],
