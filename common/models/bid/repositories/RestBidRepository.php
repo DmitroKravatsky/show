@@ -4,6 +4,7 @@ namespace common\models\bid\repositories;
 
 use common\components\SendSms;
 use common\models\bid\BidEntity;
+use common\models\paymentSystem\PaymentSystem;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
@@ -31,9 +32,14 @@ trait RestBidRepository
     public function getBids(array $params, $excepted): ArrayDataProvider
     {
         $query = BidEntity::find()
+            ->joinWith('fromPaymentSystem as from_payment_system')
+            ->joinWith('toPaymentSystem as to_payment_system')
             ->select([
-                'id', 'status', 'from_payment_system', 'to_payment_system',
-                'from_currency', 'to_currency', 'from_sum', 'to_sum'
+                self::tableName() . '.id', 'status', 'from_payment_system.name as from_payment_system',
+                'from_payment_system_id', 'to_payment_system_id',
+                'to_payment_system.name as to_payment_system',
+                'from_payment_system.currency as from_currency', 'to_payment_system.currency as to_currency',
+                'from_sum', 'to_sum'
             ])->where(['created_by' => \Yii::$app->user->id]);
 
         if ((bool) $excepted) {
@@ -43,12 +49,12 @@ trait RestBidRepository
         }
 
         if (isset($params['sort']) && $params['sort'] === self::SORT_WEEK) {
-            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_WEEK)]);
+            $query->andWhere(['>=', self::tableName() . '.created_at', time() - (self::SECONDS_IN_WEEK)]);
         } elseif (isset($params['sort']) && $params['sort'] === self::SORT_MONTH) {
-            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_MONTH)]);
+            $query->andWhere(['>=', self::tableName() . '.created_at', time() - (self::SECONDS_IN_MONTH)]);
         }
 
-        $bids = $query->orderBy(['created_at' => SORT_DESC])->all();
+        $bids = $query->orderBy([self::tableName() . '.created_at' => SORT_DESC])->all();
 
         $result = [];
         foreach ($bids as $bid) {
@@ -56,10 +62,10 @@ trait RestBidRepository
             $result[] = [
                 'id'                  => $bid->id,
                 'status'              => BidEntity::getStatusValue($bid->status),
-                'from_payment_system' => $bid->from_payment_system,
-                'to_payment_system'   => $bid->to_payment_system,
-                'from_currency'       => BidEntity::getCurrencyValue($bid->from_currency),
-                'to_currency'         => BidEntity::getCurrencyValue($bid->to_currency),
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
                 'from_sum'            => round($bid->from_sum, 2),
                 'to_sum'              => round($bid->to_sum, 2),
             ];
