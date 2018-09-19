@@ -23,13 +23,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
             <?= DetailView::widget([
                 'model' => $notification,
                 'attributes' => [
-                    'id',
-                    [
-                        'attribute' => 'type',
-                        'value' => function (NotificationsEntity $notification) {
-                            return $notification->type;
-                        }
-                    ],
                     [
                         'attribute' => 'text',
                         'value' => function (NotificationsEntity $notification) {
