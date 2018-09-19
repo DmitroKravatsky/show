@@ -95,24 +95,24 @@ trait RestBidRepository
     public function getBidDetails($id)
     {
         try{
-            $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
+            $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
 
-            $attributes = $bid->getAttributes([
-                'id', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet',
-                'from_currency', 'to_currency', 'from_sum', 'to_sum'
-            ]);
-
-            $attributes['status']        = static::getStatusValue($attributes['status']);
-            $attributes['from_currency'] = static::getCurrencyValue($attributes['from_currency']);
-            $attributes['to_currency']   = static::getCurrencyValue($attributes['to_currency']);
-            $attributes['from_sum']      = round($attributes['from_sum'], 2);
-            $attributes['to_sum']        = round($attributes['to_sum'], 2);
-
-            return $attributes;
+            return [
+                'id'                  => $bid->id,
+                'status'              => static::getStatusValue($bid->status),
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_wallet'         => $bid->from_wallet,
+                'to_wallet'           => $bid->to_wallet,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'            => round($bid->from_sum, 2),
+                'to_sum'              => round($bid->to_sum, 2),
+            ];
 
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
+        } catch (\Exception $e) {
             throw new ServerErrorHttpException('Server error occurred , please try later');
         }
 
@@ -288,11 +288,11 @@ MES;
      *
      * @param $params array
      *
-     * @return BaseActiveRecord
+     * @return BidEntity
      *
      * @throws NotFoundHttpException if there is no such bid
      */
-    protected function findModel(array $params): BaseActiveRecord
+    protected function findModel(array $params): BidEntity
     {
         if (empty($bidModel = self::findOne($params))) {
             throw new NotFoundHttpException('Bid is not found');
