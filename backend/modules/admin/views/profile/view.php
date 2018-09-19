@@ -8,12 +8,10 @@ use yii\{ helpers\Html, web\View, widgets\Pjax, helpers\Url, widgets\DetailView 
 use backend\models\BackendUser;
 use kartik\{ grid\GridView, select2\Select2, daterange\DateRangePicker };
 
-/* @var $this yii\web\View */
-/* @var $profileModel UserProfileEntity */
-/** @var \yii\data\ActiveDataProvider $dataProvider */
-/** @var BidHistorySearch $searchModel */
+/** @var $this yii\web\View */
+/** @var $profileModel UserProfileEntity */
 
-$this->title = Yii::t('app', 'Bid') . ' №' . $profileModel->name;
+$this->title = Yii::t('app', 'Manager') . ' ' . $profileModel->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['index']];
 ?>
 
