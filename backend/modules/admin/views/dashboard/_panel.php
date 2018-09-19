@@ -17,7 +17,7 @@ use yii\grid\ActionColumn;
 use common\helpers\UrlHelper;
 
 /** @var \yii\web\View $this */
-/* @var $bidSearch \common\models\bid\BidSearch */
+/* @var $bidSearch \common\models\bid\PaymentSystemSearch */
 /* @var $bidProvider ActiveDataProvider */
 /* @var $reviewSearch \common\models\review\ReviewSearch */
 /* @var $reviewProvider ActiveDataProvider */

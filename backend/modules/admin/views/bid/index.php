@@ -13,7 +13,7 @@ use kartik\select2\Select2;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
-/* @var $searchModel \common\models\bid\BidSearch */
+/* @var $searchModel \common\models\bid\PaymentSystemSearch */
 
 $this->title = Yii::t('app', 'Bids');
 $this->params['breadcrumbs'][] = $this->title;

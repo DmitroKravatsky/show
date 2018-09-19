@@ -76,7 +76,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
             [['currency'], 'string'],
             [['visible', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 50],
-            [['currency'], [['from_currency', 'to_currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],],
+            [['currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],
         ];
     }
 
@@ -103,6 +103,12 @@ class PaymentSystem extends ActiveRecord implements IVisible
         return [
             TimestampBehavior::class,
         ];
+    }
+
+    public function toggleVisible(): bool
+    {
+        $this->visible = !$this->visible;
+        return $this->save(false, ['visible']);
     }
 
     /**
