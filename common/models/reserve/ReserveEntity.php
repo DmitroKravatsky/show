@@ -60,7 +60,7 @@ class ReserveEntity extends ActiveRecord implements IVisible
     {
         return [
             ['id', 'integer'],
-            [['payment_system_id', 'currency', 'sum'], 'required'],
+            [['payment_system_id', 'sum'], 'required'],
             ['sum', 'double'],
             [['payment_system_id'], 'exist', 'skipOnError' => true, 'targetClass' => PaymentSystem::class, 'targetAttribute' => ['payment_system_id' => 'id']],
             [['created_at', 'updated_at'], 'safe'],

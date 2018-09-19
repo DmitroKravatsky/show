@@ -10,6 +10,7 @@ use yii\helpers\Url;
 use common\models\reserve\ReserveEntity as Reserve;
 use common\helpers\UrlHelper;
 use common\helpers\Toolbar;
+use common\models\paymentSystem\PaymentSystem;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\reserve\ReserveEntitySearch $searchModel */
@@ -55,16 +56,8 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'attribute' => 'payment_system',
-                        'filter' => Reserve::paymentSystemLabels(),
-                        'value' => function (Reserve $reserve) {
-                            return Reserve::getPaymentSystemValue($reserve->payment_system);
-                        }
-                    ],
-                    [
-                        'attribute' => 'currency',
-                        'filter'    => Reserve::currencyLabels(),
                         'value'     => function (Reserve $reserve) {
-                            return Reserve::getCurrencyValue($reserve->currency);
+                            return $reserve->paymentSystem->name;
                         }
                     ],
                     [
@@ -79,6 +72,13 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 'pluginOptions' => ['min' => 0, 'max' => 100000]
                             ]
                         ],
+                    ],
+                    [
+                        'attribute' => 'currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (Reserve $reserve) {
+                            return PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency);
+                        }
                     ],
                     [
                         'attribute' => 'visible',

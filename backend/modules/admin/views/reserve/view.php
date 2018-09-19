@@ -2,12 +2,13 @@
 
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
-use common\models\reserve\ReserveEntity;
+use common\models\reserve\ReserveEntity as Reserve;
+use common\models\paymentSystem\PaymentSystem;
 
 /** @var \yii\web\View $this */
-/** @var ReserveEntity $reserve */
+/** @var Reserve $reserve */
 
-$this->title = Yii::t('app', 'Reserve') . ': ' . ReserveEntity::getPaymentSystemValue($reserve->payment_system);
+$this->title = Yii::t('app', 'Reserve') . ': ' . $reserve->paymentSystem->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reserves'), 'url' => ['index']];
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
@@ -19,30 +20,27 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <div class="col-md-6">
             <?php Panel::begin([
                 'header' => Yii::t('app', 'Reserve'),
-                'collapsable' => true,
-                'removable' => true,
             ]) ?>
             <?= DetailView::widget([
                 'model' => $reserve,
                 'attributes' => [
                     [
                         'attribute' => 'payment_system',
-                        'filter' => ReserveEntity::paymentSystemLabels(),
-                        'value' => function (ReserveEntity $reserve) {
-                            return ReserveEntity::getPaymentSystemValue($reserve->payment_system);
-                        }
-                    ],
-                    [
-                        'attribute' => 'currency',
-                        'filter' => ReserveEntity::currencyLabels(),
-                        'value' => function (ReserveEntity $reserve) {
-                            return ReserveEntity::getCurrencyValue($reserve->currency);
+                        'value'     => function (Reserve $reserve) {
+                            return $reserve->paymentSystem->name;
                         }
                     ],
                     [
                         'attribute' => 'sum',
-                        'value' => function (ReserveEntity $reserve) {
+                        'value' => function (Reserve $reserve) {
                             return round($reserve->sum, 2);
+                        }
+                    ],
+                    [
+                        'attribute' => 'currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (Reserve $reserve) {
+                            return PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency);
                         }
                     ],
                     'created_at:date',
