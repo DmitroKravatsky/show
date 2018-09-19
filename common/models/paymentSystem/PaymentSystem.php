@@ -134,4 +134,17 @@ class PaymentSystem extends ActiveRecord implements IVisible
     {
         return $this->hasMany(Reserve::class, ['payment_system_id' => 'id']);
     }
+
+    public static function getList($onlyVisible = true)
+    {
+        $query = static::find()->select([
+            'id', 'name', 'currency',
+        ]);
+
+        if ($onlyVisible) {
+            $query->where(['visible' => self::VISIBLE_YES]);
+        }
+
+        return $query->orderBy(['created_at' => SORT_DESC])->all();
+    }
 }

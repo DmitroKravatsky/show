@@ -38,6 +38,9 @@ return [
                         'wallet' => [
                             'class' => 'rest\modules\api\v1\wallet\Module'
                         ],
+                        'payment-system' => [
+                            'class' => 'rest\modules\api\v1\paymentSystem\Module'
+                        ],
                     ],
                 ],
             ],
