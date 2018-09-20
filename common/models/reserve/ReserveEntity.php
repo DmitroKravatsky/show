@@ -92,4 +92,18 @@ class ReserveEntity extends ActiveRecord implements IVisible
     {
         return $this->hasOne(PaymentSystem::class, ['id' => 'payment_system_id']);
     }
+
+    public static function getPaymentSystems($used = true)
+    {
+        $reserveTable = ReserveEntity::tableName();
+        $query = PaymentSystem::find()
+            ->alias('system')
+            ->select(['system.name', 'system.id', 'payment_system_id'])
+            ->leftJoin($reserveTable, 'system.id=' . $reserveTable . '.payment_system_id');
+        if ($used) {
+           $query->andWhere(['not in', 'system.id', static::find()->select('payment_system_id')->column()]);
+        }
+
+        return $query->indexBy('id')->column();
+    }
 }

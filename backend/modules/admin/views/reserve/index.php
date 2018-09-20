@@ -34,6 +34,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar'      =>  [
                     ['content' =>
+                        Toolbar::createButton(Url::to('/reserve/create'), Yii::t('app', 'Create Reserve')) .
                         Toolbar::resetButton()
                     ],
                     '{export}',
