@@ -8,7 +8,6 @@ use common\models\paymentSystem\PaymentSystem;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
-use yii\db\BaseActiveRecord;
 use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -166,13 +165,13 @@ trait RestBidRepository
      *
      * @param $postData array of the POST data
      *
-     * @return BidEntity whether the attributes are valid and the record is inserted successfully
+     * @return array
 
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function createBid(array $postData): BidEntity
+    public function createBid(array $postData): array
     {
         $bid = new BidEntity();
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
@@ -190,6 +189,23 @@ trait RestBidRepository
                 $this->createOrUpdateUserByBid($bid);
             }
             $transaction->commit();
+
+            return [
+                'id'                  => $bid->id,
+                'created_by'          => $bid->created_by,
+                'name'                => $bid->author->profile->name,
+                'last_name'           => $bid->author->profile->last_name,
+                'phone_number'        => $bid->author->phone_number,
+                'email'               => $bid->author->email,
+                'status'              => $bid->status,
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'            => round($bid->from_sum, 2),
+                'to_sum'              => round($bid->to_sum, 2),
+                'crated_at'           => $bid->created_at,
+            ];
         } catch (UnprocessableEntityHttpException $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
             $transaction->rollBack();
@@ -199,8 +215,6 @@ trait RestBidRepository
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
         }
-
-        return $bid;
     }
 
     /**

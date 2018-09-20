@@ -247,6 +247,20 @@ class BidEntity extends ActiveRecord
                 return $bid->processed;
             }],
             [['phone_number'], PhoneInputValidator::class],
+            [
+                ['from_payment_system_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => PaymentSystem::class,
+                'targetAttribute' => ['from_payment_system_id' => 'id']
+            ],
+            [
+                ['to_payment_system_id'],
+                'exist',
+                'skipOnError' => true,
+                'targetClass' => PaymentSystem::class,
+                'targetAttribute' => ['to_payment_system_id' => 'id']
+            ],
 
         ];
     }

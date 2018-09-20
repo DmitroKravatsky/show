@@ -36,35 +36,17 @@ class CreateAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "from_payment_system",
-     *          description = "from payment system",
+     *          name = "from_payment_system_id",
+     *          description = "from payment system id",
      *          required = true,
-     *          type = "string",
-     *          enum = {"yandex_money", "web_money", "tincoff", "privat24", "sberbank", "qiwi"}
+     *          type = "integer",
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "to_payment_system",
-     *          description = "to payment system",
+     *          name = "to_payment_system_id",
+     *          description = "to payment system id",
      *          required = true,
-     *          type = "string",
-     *          enum = {"yandex_money", "web_money", "tincoff", "privat24", "sberbank", "qiwi"}
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
-     *          name = "from_currency",
-     *          description = "from currency",
-     *          required = true,
-     *          type = "string",
-     *          enum = {"usd", "rub", "uah", "eur"}
-     *      ),
-     *      @SWG\Parameter(
-     *          in = "formData",
-     *          name = "to_currency",
-     *          description = "to currency",
-     *          required = true,
-     *          type = "string",
-     *          enum = {"usd", "rub", "uah", "eur"}
+     *          type = "integer",
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
@@ -153,8 +135,7 @@ class CreateAction extends Action
      *                  @SWG\Property(property="to_currency", type="string", description="to currency"),
      *                  @SWG\Property(property="from_sum", type="integer", description="from sum"),
      *                  @SWG\Property(property="to_sum", type="integer", description="to sum"),
-     *                  @SWG\Property(property="created_at", type="integer", description="created at"),
-     *                  @SWG\Property(property="updated_at", type="integer", description="updated at")
+     *                  @SWG\Property(property="created_at", type="integer", description="created at")
      *              ),
      *         ),
      *         examples = {
@@ -168,16 +149,15 @@ class CreateAction extends Action
      *                  "phone_number": "+79787979879",
      *                  "email": "smith@gmail.com",
      *                  "status": null,
-     *                  "from_payment_system": "yandex_money",
-     *                  "to_payment_system": "privat24",
+     *                  "from_payment_system": "Webmoney USD",
+     *                  "to_payment_system": "Webmoney RUB",
      *                  "from_wallet": "1234123412341234",
      *                  "to_wallet": "1234123412341234",
-     *                  "from_currency": "rub",
-     *                  "to_currency": "usd",
+     *                  "from_currency": "USD",
+     *                  "to_currency": "RUB",
      *                  "from_sum": "123",
      *                  "to_sum": "123.5",
      *                  "created_at": 1520246365,
-     *                  "updated_at": 1520246365
      *              }
      *         }
      *     ),
@@ -204,13 +184,13 @@ class CreateAction extends Action
         try {
             /** @var BidEntity $bid */
             $bid = new $this->modelClass;
-            $bid = $bid->createBid(Yii::$app->request->bodyParams);
+            $dataResult = $bid->createBid(Yii::$app->request->bodyParams);
 
             Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
             return [
                 'status'  => Yii::$app->response->statusCode,
                 'message' => Yii::t('app', 'Your bid was successfully granted'),
-                'data'    => $bid->getAttributes()
+                'data'    => $dataResult
             ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
