@@ -350,10 +350,10 @@ MES;
                     'to_sum' => $params->to_sum,
                     'from_wallet' => $params->from_wallet,
                     'to_wallet' => $params->to_wallet,
-                    'from_payment_system' => $params->from_payment_system,
-                    'to_payment_system' => $params->to_payment_system,
-                    'from_currency' => $params->from_currency,
-                    'to_currency' => $params->to_currency,
+                    'from_payment_system' => $params->fromPaymentSystem->name,
+                    'to_payment_system'   => $params->toPaymentSystem->name,
+                    'from_currency'       => PaymentSystem::getCurrencyValue($params->fromPaymentSystem->currency),
+                    'to_currency'         => PaymentSystem::getCurrencyValue($params->toPaymentSystem->currency),
                 ],
                 \Yii::$app->params['supportEmail'], $recipients, 'New Bid'
             );
