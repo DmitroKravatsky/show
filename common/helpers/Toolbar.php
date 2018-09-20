@@ -43,4 +43,18 @@ class Toolbar
                 ['data-pjax' => 0, 'class' => 'btn btn-primary', 'title' => Yii::t('app', 'Read all')]
         ) . ' ';
     }
+
+    /**
+     * @param $url string Direction link
+     * @param array $properties Array of actual tag properties
+     * @return string
+     */
+    public static function createButtonWithProperties($url, array $propertiesList): string
+    {
+        return Html::a(
+            '<i class="glyphicon glyphicon-plus"></i>',
+            Url::to([$url]),
+            $propertiesList
+        ) . ' ';
+    }
 }

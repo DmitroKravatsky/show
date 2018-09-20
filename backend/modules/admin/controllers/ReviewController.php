@@ -6,8 +6,7 @@ use common\models\review\ReviewEntity;
 use yii\web\Controller;
 use yii\filters\AccessControl;
 use backend\modules\admin\controllers\actions\review\{
-    IndexAction,
-    ViewAction
+    CreateAction, IndexAction, ViewAction
 };
 use yii\web\NotFoundHttpException;
 use Yii;
@@ -26,7 +25,12 @@ class ReviewController extends Controller
                     [
                         'allow'   => true,
                         'actions' => ['index', 'view',],
-                        'roles'   => ['admin', 'manager',]
+                        'roles'   => ['admin', 'manager']
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['create'],
+                        'roles'   => ['admin']
                     ],
                 ],
             ],
@@ -44,6 +48,9 @@ class ReviewController extends Controller
             ],
             'view' => [
                 'class' => ViewAction::class,
+            ],
+            'create' => [
+                'class' => CreateAction::class,
             ],
         ];
     }

@@ -19,4 +19,9 @@ $(document).ready(function () {
             data: {'inviteCode': code},
         });
     });
+
+    $('#new-review-button').on('click', function (event) {
+        event.preventDefault();
+        $('#new-review-form').modal("show");
+    });
 });
