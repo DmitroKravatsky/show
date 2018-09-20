@@ -55,7 +55,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'full_name',
-                        'label'     => Yii::t('app', 'Full Name'),
+                        'label'     => Yii::t('app', 'Recipient'),
                         'value'     => function (UserNotifications $userNotification) {
                             return $userNotification->userProfile->userFullName ?? null;
                         }
