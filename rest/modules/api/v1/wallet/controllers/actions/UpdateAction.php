@@ -41,11 +41,10 @@ class UpdateAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "payment_system",
-     *          description = "payment system",
+     *          name = "payment_system_id",
+     *          description = "payment system id",
      *          required = false,
-     *          type = "string",
-     *          enum = {"yandex_money", "web_money", "tincoff", "privat24", "sberbank", "qiwi"}
+     *          type = "integer"
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
@@ -119,12 +118,14 @@ class UpdateAction extends Action
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
             $walletModel = $walletModel->updateWallet($id, \Yii::$app->request->bodyParams);
-            
-            return $this->controller->setResponse(
-                200,
-                'Шаблон кошелька успешно изменён.',
-                $walletModel->getAttributes(['id', 'name', 'number', 'payment_system', 'created_at'])
-            );
+
+            \Yii::$app->getResponse()->setStatusCode(200);
+
+            return [
+                'status'  => \Yii::$app->response->statusCode,
+                'message' => 'Шаблон кошелька успешно изменён.',
+                'data'    => $walletModel->getAttributes(['id', 'name', 'number', 'payment_system_id', 'created_at'])
+            ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {

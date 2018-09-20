@@ -34,11 +34,10 @@ class CreateAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "payment_system",
-     *          description = "payment system",
+     *          name = "payment_system_id",
+     *          description = "payment system id",
      *          required = true,
-     *          type = "string",
-     *          enum = {"yandex_money", "web_money", "tincoff", "privat24", "sberbank", "qiwi"}
+     *          type = "integer",
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
@@ -106,11 +105,13 @@ class CreateAction extends Action
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
             $walletModel = $walletModel->createWallet(\Yii::$app->request->bodyParams);
-            return $this->controller->setResponse(
-                201,
-                'Шаблон кошелька успешно создан.',
-                $walletModel->getAttributes(['id', 'name', 'number', 'payment_system', 'created_at'])
-            );
+
+            \Yii::$app->getResponse()->setStatusCode(201);
+            return [
+                'status'  => \Yii::$app->response->statusCode,
+                'message' => 'Шаблон кошелька успешно создан.',
+                'data'    => $walletModel->getAttributes(['id', 'name', 'number', 'payment_system_id', 'created_at'])
+            ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {

@@ -45,18 +45,33 @@ class ListAction extends Action
      *              ),
      *         ),
      *         examples = {
-     *              "status": 200,
-     *              "message": "",
-     *              "data": {
-     *                  "id": 6,
-     *                  "created_by": 2,
-     *                  "name": "Мой первый шалон",
-     *                  "number": "1234123412341234",
-     *                  "payment_system": "yandex_money",
-     *                  "created_at": 1520246365,
-     *                  "updated_at": 1520246365
-     *              }
-     *         }
+     *            "items": {
+                      {
+     *                  "status": 200,
+     *                  "message": "",
+     *                  "data": {
+     *                     "id": 6,
+     *                     "created_by": 2,
+     *                     "name": "Мой первый шалон",
+     *                     "number": "1234123412341234",
+     *                     "payment_system": "yandex_money",
+     *                     "created_at": 1520246365,
+     *                     "updated_at": 1520246365
+     *                  }
+     *                }
+     *           },
+     *           "_links": {
+     *               "self": {
+     *                   "href": "http://ex.local.com/api/v1/wallet/list?page=1&per-page=10"
+     *               }
+     *           },
+     *           "_meta": {
+     *               "totalCount": 1,
+     *               "pageCount": 1,
+     *               "currentPage": 1,
+     *               "perPage": 10
+     *           }
+     *        }
      *     )
      * )
      *

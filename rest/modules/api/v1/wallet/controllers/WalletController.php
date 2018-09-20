@@ -2,7 +2,6 @@
 
 namespace rest\modules\api\v1\wallet\controllers;
 
-use rest\behaviors\ResponseBehavior;
 use rest\modules\api\v1\wallet\controllers\actions\DeleteAction;
 use rest\modules\api\v1\wallet\controllers\actions\ListAction;
 use rest\modules\api\v1\wallet\controllers\actions\UpdateAction;
@@ -16,8 +15,7 @@ use yii\rest\Controller;
 /**
  * Class WalletController
  * @package rest\modules\api\v1\wallet\controllers
- * 
- * @mixin ResponseBehavior
+ *
  */
 class WalletController extends Controller
 {
@@ -25,6 +23,11 @@ class WalletController extends Controller
      * @var WalletEntity $modelClass
      */
     public $modelClass = WalletEntity::class;
+
+    public $serializer = [
+        'class' => 'yii\rest\Serializer',
+        'collectionEnvelope' => 'items'
+    ];
 
     /**
      * @return array
@@ -56,8 +59,6 @@ class WalletController extends Controller
                 ],
             ],
         ];
-        
-        $behaviors['responseBehavior'] = ResponseBehavior::class;
 
         return $behaviors;
     }
