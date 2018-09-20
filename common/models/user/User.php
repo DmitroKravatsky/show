@@ -332,7 +332,7 @@ class User extends ActiveRecord implements IdentityInterface
      */
     public function afterSave($insert, $changedAttributes)
     {
-        if ($insert) {
+        if ($insert && !Yii::$app->user->can(User::ROLE_ADMIN)) {
             (new NotificationsEntity())->addNotify(
                 NotificationsEntity::TYPE_NEW_USER,
                 NotificationsEntity::getMessageForNewUser(),
