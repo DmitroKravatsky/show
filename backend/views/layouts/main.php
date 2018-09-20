@@ -81,22 +81,27 @@ $this->title = Yii::t('app', 'Dashboard');
                                         [
                                             'label' => Yii::t('app', 'Managers'), 'url' => [Url::to('/manager/index')],
                                             'visible' => Yii::$app->user->can(User::ROLE_ADMIN),
+                                            'icon' => 'group'
                                         ],
                                         [
                                             'label' => Yii::t('app', 'Bids'),
                                             'url' => ['/bid/index'],
+                                            'icon' => 'file'
                                         ],
                                         [
                                             'label' => Yii::t('app', 'Notifications'),
                                             'url' => ['/notifications/index'],
+                                            'icon' => 'bell'
                                         ],
                                         [
                                             'label' => Yii::t('app', 'Reviews'),
                                             'url' => ['/review/index'],
+                                            'icon' => 'comment-o'
                                         ],
                                         [
                                             'label' => Yii::t('app', 'Reserves'),
                                             'url' => ['/reserve/index'],
+                                            'icon' => 'bank'
                                         ],
                                         [
                                             'label' => Yii::t('app', 'Payment Systems'),
