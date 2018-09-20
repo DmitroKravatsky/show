@@ -106,6 +106,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         [
                                             'label' => Yii::t('app', 'Payment Systems'),
                                             'url' => ['/payment-system/index'],
+                                            'icon' => 'calculator'
                                         ],
                                     ],
                                 ]) ?>
