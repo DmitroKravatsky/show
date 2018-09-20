@@ -2,6 +2,7 @@
 
 namespace common\models\reserve\repositories;
 
+use common\models\paymentSystem\PaymentSystem;
 use common\models\reserve\ReserveEntity;
 use yii\data\ArrayDataProvider;
 use yii\web\NotFoundHttpException;
@@ -57,23 +58,24 @@ trait RestReserveRepository
 
     public function getList($params)
     {
-        $query = ReserveEntity::find()->select([
-            'id', 'payment_system', 'currency', 'sum',
-        ])->where(['visible' => self::VISIBLE_YES]);
+        $query = ReserveEntity::find()
+            ->joinWith('paymentSystem')
+            ->select([static::tableName() . '.id', 'currency', 'sum', 'name', 'payment_system_id'])
+            ->where([static::tableName() . '.visible' => self::VISIBLE_YES]);
 
         if (isset($params['filter'])) {
             $query->andWhere(['currency' => $params['filter']]);
         }
 
-        $reserves = $query->all();
+        $reserves = $query->orderBy([self::tableName() . '.created_at' => SORT_DESC])->all();
 
         $result = [];
         foreach ($reserves as $reserve) {
             /** @var ReserveEntity $reserve */
             $result[] = [
                 'id'             => $reserve->id,
-                'payment_system' => $reserve->payment_system,
-                'currency'       => static::getCurrencyValue($reserve->currency),
+                'payment_system' => $reserve->paymentSystem->name,
+                'currency'       => PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency),
                 'sum'            => round($reserve->sum, 2),
             ];
         }

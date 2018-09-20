@@ -14,6 +14,8 @@ class ReserveEntitySearch extends ReserveEntity
 {
     public $createdDateRange;
     public $updatedDateRange;
+    public $payment_system;
+    public $currency;
 
     /**
      * @return array
@@ -22,7 +24,7 @@ class ReserveEntitySearch extends ReserveEntity
     {
         return [
             [['id', 'visible', 'created_at', 'updated_at'], 'integer'],
-            [['payment_system', 'currency', 'createdDateRange', 'updatedDateRange',], 'safe'],
+            [['createdDateRange', 'updatedDateRange', 'payment_system', 'currency',], 'safe'],
             [['sum'], 'number'],
         ];
     }
@@ -44,7 +46,7 @@ class ReserveEntitySearch extends ReserveEntity
      */
     public function search($params)
     {
-        $query = ReserveEntity::find();
+        $query = ReserveEntity::find()->joinWith('paymentSystem');
 
         $dataProvider = new ActiveDataProvider([
             'query' => $query,
@@ -57,20 +59,21 @@ class ReserveEntitySearch extends ReserveEntity
         }
 
         $query->andFilterWhere([
-            'sum'            => $this->sum,
-            'payment_system' => $this->payment_system,
-            'currency'       => $this->currency,
-            'visible'        => $this->visible,
+            'sum'                            => $this->sum,
+            static::tableName() . '.visible' => $this->visible,
+            'currency'                       => $this->currency,
         ]);
+
+        $query->andFilterWhere(['like', 'name', $this->payment_system]);
 
         if (!empty($this->createdDateRange) && strpos($this->createdDateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->createdDateRange);
-            $query->andFilterWhere(['between', 'created_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', static::tableName() . '.created_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         if (!empty($this->updatedDateRange) && strpos($this->updatedDateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->updatedDateRange);
-            $query->andFilterWhere(['between', 'updated_at', strtotime($fromDate), strtotime($toDate)]);
+            $query->andFilterWhere(['between', static::tableName() . '.updated_at', strtotime($fromDate), strtotime($toDate)]);
         }
 
         return $dataProvider;

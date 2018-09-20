@@ -4,10 +4,10 @@ namespace common\models\bid\repositories;
 
 use common\components\SendSms;
 use common\models\bid\BidEntity;
+use common\models\paymentSystem\PaymentSystem;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
-use yii\db\BaseActiveRecord;
 use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -31,9 +31,14 @@ trait RestBidRepository
     public function getBids(array $params, $excepted): ArrayDataProvider
     {
         $query = BidEntity::find()
+            ->joinWith('fromPaymentSystem as from_payment_system')
+            ->joinWith('toPaymentSystem as to_payment_system')
             ->select([
-                'id', 'status', 'from_payment_system', 'to_payment_system',
-                'from_currency', 'to_currency', 'from_sum', 'to_sum'
+                self::tableName() . '.id', 'status', 'from_payment_system.name as from_payment_system',
+                'from_payment_system_id', 'to_payment_system_id',
+                'to_payment_system.name as to_payment_system',
+                'from_payment_system.currency as from_currency', 'to_payment_system.currency as to_currency',
+                'from_sum', 'to_sum'
             ])->where(['created_by' => \Yii::$app->user->id]);
 
         if ((bool) $excepted) {
@@ -43,12 +48,12 @@ trait RestBidRepository
         }
 
         if (isset($params['sort']) && $params['sort'] === self::SORT_WEEK) {
-            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_WEEK)]);
+            $query->andWhere(['>=', self::tableName() . '.created_at', time() - (self::SECONDS_IN_WEEK)]);
         } elseif (isset($params['sort']) && $params['sort'] === self::SORT_MONTH) {
-            $query->andWhere(['>=', 'created_at', time() - (self::SECONDS_IN_MONTH)]);
+            $query->andWhere(['>=', self::tableName() . '.created_at', time() - (self::SECONDS_IN_MONTH)]);
         }
 
-        $bids = $query->orderBy(['created_at' => SORT_DESC])->all();
+        $bids = $query->orderBy([self::tableName() . '.created_at' => SORT_DESC])->all();
 
         $result = [];
         foreach ($bids as $bid) {
@@ -56,10 +61,10 @@ trait RestBidRepository
             $result[] = [
                 'id'                  => $bid->id,
                 'status'              => BidEntity::getStatusValue($bid->status),
-                'from_payment_system' => $bid->from_payment_system,
-                'to_payment_system'   => $bid->to_payment_system,
-                'from_currency'       => BidEntity::getCurrencyValue($bid->from_currency),
-                'to_currency'         => BidEntity::getCurrencyValue($bid->to_currency),
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
                 'from_sum'            => round($bid->from_sum, 2),
                 'to_sum'              => round($bid->to_sum, 2),
             ];
@@ -89,24 +94,24 @@ trait RestBidRepository
     public function getBidDetails($id)
     {
         try{
-            $bid = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
+            $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
 
-            $attributes = $bid->getAttributes([
-                'id', 'status', 'from_payment_system', 'to_payment_system', 'from_wallet', 'to_wallet',
-                'from_currency', 'to_currency', 'from_sum', 'to_sum'
-            ]);
-
-            $attributes['status']        = static::getStatusValue($attributes['status']);
-            $attributes['from_currency'] = static::getCurrencyValue($attributes['from_currency']);
-            $attributes['to_currency']   = static::getCurrencyValue($attributes['to_currency']);
-            $attributes['from_sum']      = round($attributes['from_sum'], 2);
-            $attributes['to_sum']        = round($attributes['to_sum'], 2);
-
-            return $attributes;
+            return [
+                'id'                  => $bid->id,
+                'status'              => static::getStatusValue($bid->status),
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_wallet'         => $bid->from_wallet,
+                'to_wallet'           => $bid->to_wallet,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'            => round($bid->from_sum, 2),
+                'to_sum'              => round($bid->to_sum, 2),
+            ];
 
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
+        } catch (\Exception $e) {
             throw new ServerErrorHttpException('Server error occurred , please try later');
         }
 
@@ -160,13 +165,13 @@ trait RestBidRepository
      *
      * @param $postData array of the POST data
      *
-     * @return BidEntity whether the attributes are valid and the record is inserted successfully
+     * @return array
 
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
      */
-    public function createBid(array $postData): BidEntity
+    public function createBid(array $postData): array
     {
         $bid = new BidEntity();
         $bid->setScenario(BidEntity::SCENARIO_CREATE);
@@ -184,6 +189,23 @@ trait RestBidRepository
                 $this->createOrUpdateUserByBid($bid);
             }
             $transaction->commit();
+
+            return [
+                'id'                  => $bid->id,
+                'created_by'          => $bid->created_by,
+                'name'                => $bid->author->profile->name,
+                'last_name'           => $bid->author->profile->last_name,
+                'phone_number'        => $bid->author->phone_number,
+                'email'               => $bid->author->email,
+                'status'              => $bid->status,
+                'from_payment_system' => $bid->fromPaymentSystem->name,
+                'to_payment_system'   => $bid->toPaymentSystem->name,
+                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'            => round($bid->from_sum, 2),
+                'to_sum'              => round($bid->to_sum, 2),
+                'crated_at'           => $bid->created_at,
+            ];
         } catch (UnprocessableEntityHttpException $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
             $transaction->rollBack();
@@ -193,8 +215,6 @@ trait RestBidRepository
             $transaction->rollBack();
             throw new ServerErrorHttpException($e->getMessage());
         }
-
-        return $bid;
     }
 
     /**
@@ -282,11 +302,11 @@ MES;
      *
      * @param $params array
      *
-     * @return BaseActiveRecord
+     * @return BidEntity
      *
      * @throws NotFoundHttpException if there is no such bid
      */
-    protected function findModel(array $params): BaseActiveRecord
+    protected function findModel(array $params): BidEntity
     {
         if (empty($bidModel = self::findOne($params))) {
             throw new NotFoundHttpException('Bid is not found');

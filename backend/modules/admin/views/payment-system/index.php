@@ -2,21 +2,17 @@
 
 use kartik\grid\GridView;
 use yiister\gentelella\widgets\Panel;
-use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
-use yii\helpers\Html;
+use yii\{ helpers\Html, widgets\Pjax, helpers\Url };
 use yii\grid\ActionColumn;
-use yii\helpers\Url;
-use common\models\reserve\ReserveEntity as Reserve;
-use common\helpers\UrlHelper;
-use common\helpers\Toolbar;
+use common\helpers\{ UrlHelper, Toolbar };
 use common\models\paymentSystem\PaymentSystem;
 
 /** @var \yii\web\View $this */
-/** @var \common\models\reserve\ReserveEntitySearch $searchModel */
+/** @var \common\models\paymentSystem\PaymentSystemSearch $searchModel */
 /** @var \yii\data\ActiveDataProvider $dataProvider */
 
-$this->title = Yii::t('app', 'Reserves');
+$this->title = Yii::t('app', 'Payment Systems');
 $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
@@ -24,7 +20,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
 
 <div class="reserve-index">
     <?php Panel::begin([
-        'header' => Yii::t('app', 'Reserves'),
+        'header' => Yii::t('app', 'Payment Systems'),
         'collapsable' => true,
     ]) ?>
         <?php Pjax::begin() ?>
@@ -34,6 +30,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar'      =>  [
                     ['content' =>
+                        Toolbar::createButton(Url::to('/payment-system/create'), Yii::t('app', 'Create Payment System')) .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -54,37 +51,19 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'header'         => '',
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
-                    [
-                        'attribute' => 'payment_system',
-                        'value'     => function (Reserve $reserve) {
-                            return $reserve->paymentSystem->name;
-                        }
-                    ],
-                    [
-                        'attribute'       => 'sum',
-                        'class'           => 'kartik\grid\EditableColumn',
-                        'value'           => function (Reserve $reserve) {
-                            return round($reserve->sum, 2);
-                        },
-                        'editableOptions' => [
-                            'header'    => Yii::t('app', 'Sum'),
-                            'options'   => [
-                                'pluginOptions' => ['min' => 0, 'max' => 100000]
-                            ]
-                        ],
-                    ],
+                    'name',
                     [
                         'attribute' => 'currency',
                         'filter'    => PaymentSystem::currencyLabels(),
-                        'value'     => function (Reserve $reserve) {
-                            return PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency);
+                        'value'     => function (PaymentSystem $reserve) {
+                            return PaymentSystem::getCurrencyValue($reserve->currency);
                         }
                     ],
                     [
                         'attribute' => 'visible',
-                        'filter'    => Reserve::getVisibleStatuses(),
-                        'value'     => function (Reserve $reserve) {
-                            return Reserve::getVisibleValue($reserve->visible);
+                        'filter'    => PaymentSystem::getVisibleStatuses(),
+                        'value'     => function (PaymentSystem $paymentSystem) {
+                            return PaymentSystem::getVisibleValue($paymentSystem->visible);
                         }
                     ],
                     [
@@ -93,7 +72,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'value'     => 'created_at',
                         'filter'    => DateRangePicker::widget([
                             'model'          => $searchModel,
-                            'attribute'      => 'createdDateRange',
+                            'attribute'      => 'dateRange',
                             'convertFormat'  => true,
                             'pluginOptions'  => [
                                 'timePicker' => true,
@@ -107,15 +86,15 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'class'    => ActionColumn::class,
                         'template' => '{view} {visible} {update}',
                         'buttons'  => [
-                            'view' => function ($url, Reserve $reserve) {
+                            'view' => function ($url, PaymentSystem $paymentSystem) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/reserve/view/' . $reserve->id]),
+                                    Url::to(['/payment-system/view/' . $paymentSystem->id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             },
-                            'visible' => function ($url, Reserve $reserve) {
-                                if ($reserve->visible) {
+                            'visible' => function ($url, PaymentSystem $paymentSystem) {
+                                if ($paymentSystem->visible) {
                                     $options = ['title' => Yii::t('app', 'Invisible')];
                                     $iconClass = 'glyphicon-check';
                                 } else {
@@ -124,14 +103,14 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 }
                                 return Html::a(
                                     '<span class="glyphicon ' . $iconClass . '"></span>',
-                                    Url::to(['/reserve/toggle-visible/' . $reserve->id]),
+                                    Url::to(['/payment-system/toggle-visible/' . $paymentSystem->id]),
                                     $options
                                 );
                             },
-                            'update' => function ($url, Reserve $reserve) {
+                            'update' => function ($url, PaymentSystem $paymentSystem) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-pencil"></span>',
-                                    Url::to(['/reserve/update/' . $reserve->id]),
+                                    Url::to(['/payment-system/update/' . $paymentSystem->id]),
                                     ['title' => Yii::t('app', 'Edit')]
                                 );
                             }

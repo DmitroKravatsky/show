@@ -113,4 +113,15 @@ return [
             'GET'         => 'list'
         ],
     ],
+    /** Payment System Module */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'payment-system' => 'api/v1/payment-system/payment-system',
+        ],
+        'patterns'   => [
+            'GET' => 'list',
+        ],
+    ],
 ];

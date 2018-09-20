@@ -175,6 +175,10 @@ class m180816_114157_i18n_init extends Migration
             [160, 'app', 'Create new review'],
             [161, 'app', 'Review text'],
             [162, 'app', 'Review was successfully created.'],
+            [163, 'app', 'Payment Systems'],
+            [164, 'app', 'Create Payment System'],
+            [165, 'app', 'Payment System successfully updated.'],
+            [166, 'app', 'Update Payment System'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -340,6 +344,10 @@ class m180816_114157_i18n_init extends Migration
             [160, 'ru', 'Создать новый отзыв'],
             [161, 'ru', 'Текст отзыва'],
             [162, 'ru', 'Отзыв успешно создан.'],
+            [163, 'ru', 'Платежные Системы'],
+            [164, 'ru', 'Создать Платежные Систему'],
+            [165, 'ru', 'Платежная Система успешно обновлена.'],
+            [166, 'ru', 'Обновить Платежные Систему'],
         ]);
     }
 

@@ -5,7 +5,7 @@ use common\models\reserve\ReserveEntity;
 /** @var \yii\web\View $this */
 /* @var ReserveEntity $reserve */
 
-$this->title = Yii::t('app', 'Reserve') . ' ' . ReserveEntity::getPaymentSystemValue($reserve->payment_system);
+$this->title = Yii::t('app', 'Reserve') . ' ' . $reserve->paymentSystem->name;
 $this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reserves'), 'url' => ['index']];
 $this->params['breadcrumbs'][] = $this->title;
 ?>

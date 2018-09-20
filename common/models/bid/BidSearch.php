@@ -3,6 +3,7 @@
 namespace common\models\bid;
 
 use backend\models\BackendUser;
+use common\models\userProfile\UserProfileEntity as UserProfile;
 use Yii;
 use yii\base\Model;
 use yii\data\ActiveDataProvider;
@@ -92,18 +93,20 @@ class BidSearch extends BidEntity
             'inProgressByManager' => function ($query) {
                 $query->from(['m' => BackendUser::tableName()]);
             },
+        ])->joinWith([
+            'author' => function ($query) {
+                $query->from(['author' => BackendUser::tableName()]);
+            },
         ]);
 
-        $query->andFilterWhere(['like', 'name', $this->name])
-            ->andFilterWhere(['like', 'last_name', $this->last_name])
-            ->andFilterWhere(['like', 'bid.phone_number', $this->phone_number])
-            ->andFilterWhere(['like', 'bid.email', $this->email])
+        $query->andFilterWhere(['like', 'author.phone_number', $this->phone_number])
+            ->andFilterWhere(['like', 'author.email', $this->email])
             ->andFilterWhere(['like', 'from_payment_system', $this->from_wallet])
             ->andFilterWhere(['like', 'to_payment_system', $this->to_wallet])
             ->andFilterWhere([
                 'or',
-                ['like', 'bid.name', $this->full_name],
-                ['like', 'bid.last_name', $this->full_name]
+                ['like', UserProfile::tableName() . '.name', $this->full_name],
+                ['like', UserProfile::tableName() . '.last_name', $this->full_name]
             ]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {

@@ -10,6 +10,7 @@ use common\helpers\Toolbar;
 use backend\models\BackendUser;
 use yii\web\View;
 use kartik\select2\Select2;
+use common\models\paymentSystem\PaymentSystem;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -92,19 +93,30 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                             ]);
                         },
-                        'format'           => 'raw',
-                        'filter'           => Bid::statusLabels(),
+                        'format'          => 'raw',
+                        'filter'          => Bid::statusLabels(),
                     ],
                     [
                         'attribute' => 'full_name',
                         'label'     => Yii::t('app', 'Full Name'),
                         'format'    => 'raw',
-                        'value'     => function ($model) {
-                            return $model->last_name . ' ' . $model->name;
+                        'value'     => function (Bid $bid) {
+                            return $bid->author->getFullName();
                         }
                     ],
-                    'email:email:E-mail',
-                    'phone_number',
+                    [
+                        'attribute' => 'email',
+                        'label'     => 'E-mail',
+                        'value'     => function (Bid $bid) {
+                            return $bid->author->email;
+                        }
+                    ],
+                    [
+                        'attribute' => 'phone_number',
+                        'value'     => function (Bid $bid) {
+                            return $bid->author->phone_number;
+                        }
+                    ],
                     [
                         'attribute'      => 'processed',
                         'label'          => Yii::t('app', 'Bid Closed'),
@@ -138,8 +150,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter'    => false,
                         'format'    => 'raw',
                         'header'    => Yii::t('app', 'Amount From Customer'),
-                        'value'     => function ($model) {
-                            return $model->from_sum . ' ' . $model->from_currency;
+                        'value'     => function (Bid $bid) {
+                            return $bid->from_sum . ' ' . PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency);
                         },
                     ],
                     [
@@ -147,8 +159,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter'    => false,
                         'format'    => 'raw',
                         'header'    => Yii::t('app', 'Amount To Be Transferred'),
-                        'value'     => function($model) {
-                            return $model->to_sum . ' ' . $model->to_currency;
+                        'value'     => function(Bid $bid) {
+                            return $bid->to_sum . ' ' . PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency);
                         },
                     ],
                     [

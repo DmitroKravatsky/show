@@ -98,6 +98,10 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'label' => Yii::t('app', 'Reserves'),
                                             'url' => ['/reserve/index'],
                                         ],
+                                        [
+                                            'label' => Yii::t('app', 'Payment Systems'),
+                                            'url' => ['/payment-system/index'],
+                                        ],
                                     ],
                                 ]) ?>
                             </div>

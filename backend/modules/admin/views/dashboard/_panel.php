@@ -4,7 +4,7 @@ use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
-    bid\BidEntity, userNotifications\NotificationsEntity, userNotifications\UserNotifications, userNotifications\NotificationsSearch, user\User
+    bid\BidEntity, userNotifications\UserNotifications, user\User
 };
 use yii\helpers\{
     Html,
@@ -15,6 +15,8 @@ use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
 use yii\grid\ActionColumn;
 use common\helpers\UrlHelper;
+use common\models\paymentSystem\PaymentSystem;
+use common\models\review\ReviewEntity;
 
 /** @var \yii\web\View $this */
 /* @var $bidSearch \common\models\bid\BidSearch */
@@ -23,7 +25,7 @@ use common\helpers\UrlHelper;
 /* @var $reviewProvider ActiveDataProvider */
 /* @var $userSearch \common\models\user\UserSearch */
 /* @var $userProvider ActiveDataProvider */
-/* @var $notificationsSearch NotificationsSearch */
+/* @var $notificationsSearch \common\models\userNotifications\UserNotificationsSearch */
 /* @var $notificationsProvider ActiveDataProvider */
 ?>
 
@@ -53,19 +55,25 @@ use common\helpers\UrlHelper;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-                    'email:email',
+                    [
+                        'attribute' => 'email',
+                        'label'     => 'E-mail',
+                        'value'     => function (BidEntity $bid) {
+                            return $bid->author->email;
+                        }
+                    ],
                     [
                         'attribute' => 'from_sum',
                         'label' => Yii::t('app', 'Amount From Customer'),
                         'value' => function (BidEntity $bid) {
-                            return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
+                            return round($bid->from_sum, 2) . ' ' .  PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency);
                         }
                     ],
                     [
                         'attribute' => 'to_sum',
                         'label' => Yii::t('app', 'Amount To Be Transferred'),
                         'value' => function (BidEntity $bid) {
-                            return round($bid->to_sum, 2) . ' ' . $bid->to_currency;
+                            return round($bid->to_sum, 2) . ' ' . PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency);
                         }
                     ],
                     [
@@ -135,7 +143,12 @@ use common\helpers\UrlHelper;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
-                    'created_by',
+                    [
+                        'attribute' => 'created_by',
+                        'value' => function (ReviewEntity $review) {
+                            return $review->createdBy->profile->getUserFullName() ?? null;
+                        }
+                    ],
                     'text:ntext',
                     [
                         'attribute' => 'created_at',
