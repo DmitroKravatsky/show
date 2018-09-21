@@ -13,7 +13,7 @@ return [
     'id' => 'app-backend',
     'name' => 'Exchanger',
     'sourceLanguage' => 'en',
-    'language' => 'en',
+    'language' => 'ru',
     'basePath' => dirname(__DIR__),
     'controllerNamespace' => 'backend\controllers',
     'bootstrap' => ['log'],
