@@ -37,10 +37,33 @@ $this->params['breadcrumbs'][] = $this->title;
                         'model'      => $model,
                         'template'   => '<tr data-key="' . $model->id . '"><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>',
                         'attributes' => [
-                            'name:raw:' . Yii::t('app', 'Client First Name'),
-                            'last_name:raw:' . Yii::t('app', 'Client Last Name'),
-                            'phone_number',
-                            'email:email:E-mail',
+                            [
+                                'attribute' => 'name',
+                                'label'     => Yii::t('app', 'Client First Name'),
+                                'value'     => function (Bid $bid) {
+                                    return $bid->author->profile->name;
+                                }
+                            ],
+                            [
+                                'attribute' => 'name',
+                                'label'     => Yii::t('app', Yii::t('app', 'Client Last Name')),
+                                'value'     => function (Bid $bid) {
+                                    return $bid->author->profile->last_name;
+                                }
+                            ],
+                            [
+                                'attribute' => 'email',
+                                'label'     => 'E-mail',
+                                'value'     => function (Bid $bid) {
+                                    return $bid->author->email;
+                                }
+                            ],
+                            [
+                                'attribute' => 'phone_number',
+                                'value'     => function (Bid $bid) {
+                                    return $bid->author->phone_number;
+                                }
+                            ],
                             [
                                 'attribute'     => 'status',
                                 'filter'        => Bid::statusLabels(),
@@ -88,28 +111,28 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'attribute' => 'from_payment_system',
                                 'label'     => Yii::t('app', 'Where Did The Money Come From'),
                                 'value'     => function (Bid $bid) {
-                                    return Bid::getPaymentSystemValue($bid->from_payment_system) . ' ' . $bid->from_wallet;
+                                    return $bid->fromPaymentSystem->name . ' ' . $bid->from_wallet;
                                 }
                             ],
                             [
                                 'attribute' => 'to_payment_system',
                                 'label'     => Yii::t('app', 'Need To Transfer Money Here'),
                                 'value'     => function (Bid $bid) {
-                                    return Bid::getPaymentSystemValue($bid->to_payment_system) . ' ' . $bid->to_wallet;
+                                    return $bid->toPaymentSystem->name . ' ' . $bid->to_wallet;
                                 }
                             ],
                             [
                                 'attribute' => 'from_sum',
                                 'label'     => Yii::t('app', 'Amount From Customer'),
                                 'value'     => function (Bid $bid) {
-                                    return round($bid->from_sum, 2) . ' ' . $bid->from_currency;
+                                    return round($bid->from_sum, 2) . ' ' . $bid->fromPaymentSystem->currency;
                                 }
                             ],
                             [
                                 'attribute' => 'to_sum',
                                 'label'     => Yii::t('app', 'Amount To Be Transferred'),
                                 'value'     => function (Bid $bid) {
-                                    return round($bid->to_sum, 2) . ' ' . $bid->to_currency;
+                                    return round($bid->to_sum, 2) . ' ' . $bid->toPaymentSystem->currency;
                                 }
                             ],
                             'created_at:datetime',
