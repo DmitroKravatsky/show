@@ -179,6 +179,7 @@ class m180816_114157_i18n_init extends Migration
             [164, 'app', 'Create Payment System'],
             [165, 'app', 'Payment System successfully updated.'],
             [166, 'app', 'Update Payment System'],
+            [167, 'app', 'Bid Created At'],
         ]);
 
         $this->batchInsert('{{%message}}', ['id', 'language', 'translation'], [
@@ -348,6 +349,7 @@ class m180816_114157_i18n_init extends Migration
             [164, 'ru', 'Создать Платежные Систему'],
             [165, 'ru', 'Платежная Система успешно обновлена.'],
             [166, 'ru', 'Обновить Платежные Систему'],
+            [167, 'ru', 'Дата Создания Заявки'],
         ]);
     }
 
