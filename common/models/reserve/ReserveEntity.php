@@ -45,6 +45,7 @@ class ReserveEntity extends ActiveRecord implements IVisible
         return [
             'id'                => '#',
             'payment_system_id' => Yii::t('app', 'Payment System'),
+            'payment_system'    => Yii::t('app', 'Payment System'),
             'currency'          => Yii::t('app', 'Currency'),
             'sum'               => Yii::t('app', 'Sum'),
             'visible'           => Yii::t('app', 'Visible'),
