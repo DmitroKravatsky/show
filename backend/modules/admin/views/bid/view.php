@@ -2,9 +2,9 @@
 
 use yiister\gentelella\widgets\Panel;
 use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
-use yii\{ helpers\Html, web\View, widgets\Pjax, helpers\Url, widgets\DetailView };
+use yii\{ helpers\Html, web\View, widgets\Pjax, widgets\DetailView };
 use backend\models\BackendUser;
-use kartik\{ grid\GridView, select2\Select2, daterange\DateRangePicker };
+use kartik\{ grid\GridView, select2\Select2 };
 
 /* @var $this yii\web\View */
 /* @var $model Bid */
@@ -151,16 +151,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         <?= GridView::widget([
                             'dataProvider' => $dataProvider,
                             'filterModel'  => $searchModel,
-                            'filterUrl'    => Url::current(),
                             'hover'        => true,
                             'toolbar'      =>  [
-                                ['content' =>
-                                    Html::a(
-                                        '<i class="glyphicon glyphicon-repeat"></i>',
-                                        Url::to(['/bid/view/' . $model->id]),
-                                        ['data-pjax' => 0, 'class' => 'btn btn-default', 'title' => Yii::t('app', 'Reset Grid')]
-                                    ),
-                                ],
                                 '{export}',
                                 '{toggleData}',
                             ],
@@ -181,22 +173,37 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 [
                                     'attribute' => 'created_by',
-                                    'label' => Yii::t('app', 'Created By'),
-                                    'format' => 'html',
-                                    'value' => function (BidHistory $bidHistory) {
+                                    'filter'    => false,
+                                    'label'     => Yii::t('app', 'Created By'),
+                                    'format'    => 'html',
+                                    'value'     => function (BidHistory $bidHistory) {
                                         return $bidHistory->bid->author->fullName ?? null;
                                     }
                                 ],
                                 [
+                                    'attribute' => 'email',
+                                    'label'     => 'E-mail',
+                                    'value'     => function (BidHistory $bidHistory) {
+                                        return $bidHistory->bid->author->email;
+                                    }
+                                ],
+                                [
+                                    'attribute' => 'phone_number',
+                                    'label'     => Yii::t('app', 'Phone Number'),
+                                    'value'     => function (BidHistory $bidHistory) {
+                                        return $bidHistory->bid->author->phone_number;
+                                    }
+                                ],
+                                [
                                     'attribute' => 'status',
-                                    'filter'    => BidHistory::statusLabels(),
+                                    'filter'    => false,
                                     'value'     => function (BidHistory $bidHistory) {
                                         return BidHistory::getStatusValue($bidHistory->status);
                                     }
                                 ],
                                 [
                                     'attribute' => 'processed_by',
-                                    'filter'    => BackendUser::getManagerNames(),
+                                    'filter'    => false,
                                     'visible'   => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                                     'value'     => function (BidHistory $bidHistory) {
                                         return $bidHistory->processedByProfile->userFullName ?? null;
@@ -204,7 +211,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 [
                                     'attribute'      => 'in_progress_by_manager',
-                                    'filter'         => BackendUser::getManagerNames(),
+                                    'filter'         => false,
                                     'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                                     'value'          => function (BidHistory $bidHistory) {
                                         return $bidHistory->inProgressByManager->fullName ?? null;
@@ -213,18 +220,15 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ],
                                 [
                                     'attribute' => 'time',
+                                    'filter'    => false,
                                     'format'    => 'datetime',
-                                    'filter'    => DateRangePicker::widget([
-                                        'model'          => $searchModel,
-                                        'attribute'      => 'time_range',
-                                        'convertFormat'  => true,
-                                        'pluginOptions'  => [
-                                            'timePicker' => true,
-                                            'locale'     => [
-                                                'format' => 'Y-m-d H:i:s',
-                                            ]
-                                        ]
-                                    ]),
+                                ],
+                                [
+                                    'attribute' => 'created_at',
+                                    'label'     => Yii::t('app', 'Bid Created At'),
+                                    'value'     => function (BidHistory $bidHistory) {
+                                        return Yii::$app->formatter->asDatetime($bidHistory->bid->created_at);
+                                    },
                                 ],
                             ],
                         ]) ?>

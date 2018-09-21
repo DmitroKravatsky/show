@@ -96,11 +96,12 @@ class BidHistory extends ActiveRecord
     public function attributeLabels(): array
     {
         return [
-            'id'           => 'ID',
-            'bid_id'       => Yii::t('app', 'Bid'),
-            'processed_by' => Yii::t('app', 'Processed By'),
-            'status'       => Yii::t('app', 'Status'),
-            'time'         => Yii::t('app', 'Time'),
+            'id'                     => 'ID',
+            'bid_id'                 => Yii::t('app', 'Bid'),
+            'processed_by'           => Yii::t('app', 'Processed By'),
+            'in_progress_by_manager' => Yii::t('app', 'In Progress By Manager'),
+            'status'                 => Yii::t('app', 'Status'),
+            'time'                   => Yii::t('app', 'Time'),
         ];
     }
 
