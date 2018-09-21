@@ -1,16 +1,16 @@
 <?php
 return [
-    'aliases' => [
+    'aliases'    => [
         '@bower' => '@vendor/bower-asset',
         '@npm'   => '@vendor/npm-asset',
     ],
     'vendorPath' => dirname(dirname(__DIR__)) . '/vendor',
     'components' => [
-        'cache' => [
+        'cache'       => [
             'class' => 'yii\caching\FileCache',
         ],
-        'sendSms' => ['class' => 'common\components\SendSms'],
-        'sendMail' => ['class' => 'common\components\SendMail'],
+        'sendSms'     => ['class' => 'common\components\SendSms'],
+        'sendMail'    => ['class' => 'common\components\SendMail'],
         'authManager' => [
             'class' => 'yii\rbac\DbManager',
         ],
@@ -24,12 +24,11 @@ return [
             'defaultBucket' => 'bigbizbucket',
             'defaultAcl'    => 'public-read'
         ],
-        'i18n' => [
+        'i18n'        => [
             'translations' => [
                 'app*' => [
-                    'class' => 'yii\i18n\DbMessageSource',
-                    'sourceMessageTable' => '{{%source_message}}',
-                    'messageTable' => '{{%message}}',
+                    'basePath' => '@messages',
+                    'class'    => 'yii\i18n\PhpMessageSource',
                 ],
             ],
         ],
