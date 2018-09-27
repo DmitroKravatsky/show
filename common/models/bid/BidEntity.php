@@ -480,4 +480,14 @@ class BidEntity extends ActiveRecord
     {
         return $this->hasOne(PaymentSystem::class, ['id' => 'to_payment_system_id']);
     }
+
+    /**
+     * @param string $status
+     * @return bool
+     */
+    public static function isExcepted($status): bool
+    {
+        $exceptedStatuses = [self::STATUS_NEW, self::STATUS_IN_PROGRESS, self::STATUS_PAID_BY_CLIENT];
+        return in_array($status, $exceptedStatuses);
+    }
 }
