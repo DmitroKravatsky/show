@@ -73,10 +73,11 @@ trait RestReserveRepository
         foreach ($reserves as $reserve) {
             /** @var ReserveEntity $reserve */
             $result[] = [
-                'id'             => $reserve->id,
-                'payment_system' => $reserve->paymentSystem->name,
-                'currency'       => PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency),
-                'sum'            => round($reserve->sum, 2),
+                'id'                => $reserve->id,
+                'payment_system'    => $reserve->paymentSystem->name,
+                'payment_system_id' => $reserve->paymentSystem->id,
+                'currency'          => PaymentSystem::getCurrencyValue($reserve->paymentSystem->currency),
+                'sum'               => round($reserve->sum, 2),
             ];
         }
 

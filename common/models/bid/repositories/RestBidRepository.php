@@ -24,11 +24,10 @@ trait RestBidRepository
      * Method of getting user's bids by User id
      *
      * @param $params array of the POST data
-     * @param boolean $excepted
      *
      * @return ArrayDataProvider
      */
-    public function getBids(array $params, $excepted): ArrayDataProvider
+    public function getBids(array $params): ArrayDataProvider
     {
         $query = BidEntity::find()
             ->joinWith('fromPaymentSystem as from_payment_system')
@@ -40,12 +39,6 @@ trait RestBidRepository
                 'from_payment_system.currency as from_currency', 'to_payment_system.currency as to_currency',
                 'from_sum', 'to_sum'
             ])->where(['created_by' => \Yii::$app->user->id]);
-
-        if ((bool) $excepted) {
-            $query->andWhere(['status' => [self::STATUS_NEW, self::STATUS_IN_PROGRESS, self::STATUS_PAID_BY_CLIENT]]);
-        } else {
-            $query->andWhere(['status' => [self::STATUS_PAID_BY_US_DONE, self::STATUS_REJECTED]]);
-        }
 
         if (isset($params['sort']) && $params['sort'] === self::SORT_WEEK) {
             $query->andWhere(['>=', self::tableName() . '.created_at', time() - (self::SECONDS_IN_WEEK)]);

@@ -62,18 +62,21 @@ class ListAction extends Action
      *                  {
      *                      "id": 1,
      *                      "payment_system": "yandex_money",
+     *                      "payment_system_id": 3,
      *                      "currency": "RUB",
      *                      "sum": 1234.23
      *                  },
      *                  {
      *                      "id": 2,
      *                      "payment_system": "privat24",
+     *                      "payment_system_id": 4,
      *                      "currency": "UAH",
      *                      "sum": 23456.7
      *                  },
      *                  {
      *                      "id": 3,
      *                      "payment_system": "web_money",
+     *                      "payment_system_id": 5,
      *                      "currency": "USD",
      *                      "sum": 2455
      *                  },

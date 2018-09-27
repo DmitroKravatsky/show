@@ -46,14 +46,6 @@ class ListAction extends Action
      *        type = "string",
      *        enum = {"week", "month"},
      *      ),
-     *      @SWG\Parameter(
-     *        in = "query",
-     *        name = "excepted",
-     *        description = "show expected transactions",
-     *        required = false,
-     *        type = "string",
-     *        enum = {"0", "1"},
-     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -159,14 +151,13 @@ class ListAction extends Action
      *     )
      * )
      *
-     * @param boolean $excepted
      * @return \yii\data\ArrayDataProvider
      */
-    public function run($excepted = false)
+    public function run()
     {
         /** @var BidEntity $bid */
         $bid = new $this->modelClass;
 
-        return $bid->getBids(\Yii::$app->request->queryParams, $excepted);
+        return $bid->getBids(\Yii::$app->request->queryParams);
     }
 }
