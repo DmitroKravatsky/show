@@ -59,14 +59,17 @@ trait RestBidRepository
         foreach ($bids as $bid) {
             /** @var BidEntity $bid */
             $result[] = [
-                'id'                  => $bid->id,
-                'status'              => BidEntity::getStatusValue($bid->status),
-                'from_payment_system' => $bid->fromPaymentSystem->name,
-                'to_payment_system'   => $bid->toPaymentSystem->name,
-                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
-                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
-                'from_sum'            => round($bid->from_sum, 2),
-                'to_sum'              => round($bid->to_sum, 2),
+                'id'                     => $bid->id,
+                'status'                 => BidEntity::getStatusValue($bid->status),
+                'excepted'               => BidEntity::isExcepted($bid->status),
+                'from_payment_system'    => $bid->fromPaymentSystem->name,
+                'from_payment_system_id' => $bid->fromPaymentSystem->id,
+                'to_payment_system'      => $bid->toPaymentSystem->name,
+                'to_payment_system_id'   => $bid->toPaymentSystem->id,
+                'from_currency'          => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'            => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'               => round($bid->from_sum, 2),
+                'to_sum'                 => round($bid->to_sum, 2),
             ];
         }
 
