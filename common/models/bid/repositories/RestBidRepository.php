@@ -93,16 +93,19 @@ trait RestBidRepository
             $bid = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
 
             return [
-                'id'                  => $bid->id,
-                'status'              => static::getStatusValue($bid->status),
-                'from_payment_system' => $bid->fromPaymentSystem->name,
-                'to_payment_system'   => $bid->toPaymentSystem->name,
-                'from_wallet'         => $bid->from_wallet,
-                'to_wallet'           => $bid->to_wallet,
-                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
-                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
-                'from_sum'            => round($bid->from_sum, 2),
-                'to_sum'              => round($bid->to_sum, 2),
+                'id'                     => $bid->id,
+                'status'                 => static::getStatusValue($bid->status),
+                'excepted'               => BidEntity::isExcepted($bid->status),
+                'from_payment_system'    => $bid->fromPaymentSystem->name,
+                'from_payment_system_id' => $bid->from_payment_system_id,
+                'to_payment_system'      => $bid->toPaymentSystem->name,
+                'to_payment_system_id'   => $bid->to_payment_system_id,
+                'from_wallet'            => $bid->from_wallet,
+                'to_wallet'              => $bid->to_wallet,
+                'from_currency'          => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency'            => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum'               => round($bid->from_sum, 2),
+                'to_sum'                 => round($bid->to_sum, 2),
             ];
 
         } catch (NotFoundHttpException $e) {
