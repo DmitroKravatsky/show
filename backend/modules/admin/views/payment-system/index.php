@@ -54,7 +54,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     'name',
                     [
                         'attribute' => 'payment_system_type',
-                        'filter'    => PaymentSystem::paymentSystemTypeLabel(),
+                        'filter'    => PaymentSystem::paymentSystemTypeLabels(),
                         'value'     => function (PaymentSystem $reserve) {
                             return PaymentSystem::getPaymentSystemTypeValue($reserve->payment_system_type);
                         }

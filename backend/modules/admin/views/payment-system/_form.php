@@ -25,7 +25,7 @@ use common\models\paymentSystem\PaymentSystem;
                     <?= $form->field($paymentSystem, 'visible')->dropDownList(PaymentSystem::getVisibleStatuses()) ?>
 
                     <?= $form->field($paymentSystem, 'payment_system_type')
-                        ->dropDownList(PaymentSystem::paymentSystemTypeLabel())
+                        ->dropDownList(PaymentSystem::paymentSystemTypeLabels())
                     ?>
 
                     <?= Html::submitButton($paymentSystem->isNewRecord ? Yii::t('app', 'Create') : Yii::t('app', 'Update'), [

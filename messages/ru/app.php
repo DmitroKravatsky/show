@@ -167,4 +167,7 @@ return [
     'Update Payment System' => 'Обновить Платежные Систему',
     'Bid Created At' => 'Дата Создания Заявки',
     'Payment systems' => 'Платежные системы',
+    'Payment system type' => 'Тип платежной системы',
+    'Online wallet' => 'Онлайн кошелек',
+    'Credit card' => 'Крединая карта',
 ];

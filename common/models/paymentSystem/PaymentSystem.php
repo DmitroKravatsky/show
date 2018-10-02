@@ -61,11 +61,11 @@ class PaymentSystem extends ActiveRecord implements IVisible
     /**
      * @return array
      */
-    public static function paymentSystemTypeLabel(): array
+    public static function paymentSystemTypeLabels(): array
     {
         return [
-            self::ONLINE_WALLET => Yii::t('app', 'Online Wallet'),
-            self::CREDIT_CARD => Yii::t('app', 'Credit Card'),
+            self::ONLINE_WALLET => Yii::t('app', 'Online wallet'),
+            self::CREDIT_CARD => Yii::t('app', 'Credit card'),
         ];
     }
 
@@ -76,7 +76,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
      */
     public static function getPaymentSystemTypeValue($type): string
     {
-        $paymentSystems = static::paymentSystemTypeLabel();
+        $paymentSystems = static::paymentSystemTypeLabels();
         return $paymentSystems[$type];
     }
 
@@ -112,12 +112,13 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function attributeLabels(): array
     {
         return [
-            'id'         => 'ID',
-            'name'       => Yii::t('app', 'Name'),
-            'currency'   => Yii::t('app', 'Currency'),
-            'visible'    => Yii::t('app', 'Visible'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'id'                  => 'ID',
+            'name'                => Yii::t('app', 'Name'),
+            'currency'            => Yii::t('app', 'Currency'),
+            'visible'             => Yii::t('app', 'Visible'),
+            'payment_system_type' => Yii::t('app', 'Payment system type'),
+            'created_at'          => Yii::t('app', 'Created At'),
+            'updated_at'          => Yii::t('app', 'Updated At'),
         ];
     }
 
