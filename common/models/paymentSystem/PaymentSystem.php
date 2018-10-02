@@ -16,6 +16,7 @@ use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
  * @property string $name
  * @property string $currency
  * @property int $visible
+ * @property string $payment_system_type
  * @property int $created_at
  * @property int $updated_at
  *
@@ -32,6 +33,8 @@ class PaymentSystem extends ActiveRecord implements IVisible
     const RUB = 'rub';
     const EUR = 'eur';
     const WMX = 'wmx';
+    const ONLINE_WALLET = 'online_wallet';
+    const CREDIT_CARD   = 'credit_card';
 
     /**
      * @return string
@@ -56,6 +59,28 @@ class PaymentSystem extends ActiveRecord implements IVisible
     }
 
     /**
+     * @return array
+     */
+    public static function paymentSystemTypeLabels(): array
+    {
+        return [
+            self::ONLINE_WALLET => Yii::t('app', 'Online wallet'),
+            self::CREDIT_CARD => Yii::t('app', 'Credit card'),
+        ];
+    }
+
+    /**
+     * Returns payment system type label
+     * @param $type
+     * @return string
+     */
+    public static function getPaymentSystemTypeValue($type): string
+    {
+        $paymentSystems = static::paymentSystemTypeLabels();
+        return $paymentSystems[$type];
+    }
+
+    /**
      * Returns currency label
      * @param $currency
      * @return string
@@ -76,6 +101,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
             [['currency'], 'string'],
             [['visible', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 50],
+            [['payment_system_type'],  'in', 'range' => [self::ONLINE_WALLET, self::CREDIT_CARD]],
             [['currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],
         ];
     }
@@ -86,12 +112,13 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function attributeLabels(): array
     {
         return [
-            'id'         => 'ID',
-            'name'       => Yii::t('app', 'Name'),
-            'currency'   => Yii::t('app', 'Currency'),
-            'visible'    => Yii::t('app', 'Visible'),
-            'created_at' => Yii::t('app', 'Created At'),
-            'updated_at' => Yii::t('app', 'Updated At'),
+            'id'                  => 'ID',
+            'name'                => Yii::t('app', 'Name'),
+            'currency'            => Yii::t('app', 'Currency'),
+            'visible'             => Yii::t('app', 'Visible'),
+            'payment_system_type' => Yii::t('app', 'Payment system type'),
+            'created_at'          => Yii::t('app', 'Created At'),
+            'updated_at'          => Yii::t('app', 'Updated At'),
         ];
     }
 
@@ -138,7 +165,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public static function getList($onlyVisible = true)
     {
         $query = static::find()->select([
-            'id', 'name', 'currency',
+            'id', 'name', 'currency', 'payment_system_type'
         ]);
 
         if ($onlyVisible) {

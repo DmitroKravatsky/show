@@ -23,6 +23,7 @@ class ListAction extends Action
      *                   @SWG\Property(property="id", type="integer", description="Payment System id"),
      *                   @SWG\Property(property="name", type="string", description="Payment System name"),
      *                   @SWG\Property(property="currency", type="string", description="Payment System currency"),
+     *                   @SWG\Property(property="payment_system_type", type="string", description="Payment System Type"),
      *              ),
      *         ),
      *         examples = {
@@ -30,16 +31,19 @@ class ListAction extends Action
      *                 "id": 2,
      *                 "name": "Webmoney RUB",
      *                 "currency": "rub",
+     *                 "payment_system_type": "online_wallet",
      *             },
      *             {
      *                 "id": 3,
      *                 "name": "ВТБ 24 RUB",
      *                 "currency": "rub",
+     *                 "payment_system_type": "credit_card",
      *             },
      *             {
      *                 "id": 4,
      *                 "name": "Приват24 UAH",
      *                 "currency": "uah",
+     *                 "payment_system_type": "credit_card",
      *             }
      *         }
      *     ),
