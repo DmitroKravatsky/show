@@ -16,6 +16,7 @@ use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
  * @property string $name
  * @property string $currency
  * @property int $visible
+ * @property string $payment_system_type
  * @property int $created_at
  * @property int $updated_at
  *
@@ -32,6 +33,8 @@ class PaymentSystem extends ActiveRecord implements IVisible
     const RUB = 'rub';
     const EUR = 'eur';
     const WMX = 'wmx';
+    const ONLINE_WALLET = 'online_wallet';
+    const CREDIT_CARD   = 'credit_card';
 
     /**
      * @return string
@@ -56,6 +59,28 @@ class PaymentSystem extends ActiveRecord implements IVisible
     }
 
     /**
+     * @return array
+     */
+    public static function paymentSystemTypeLabel(): array
+    {
+        return [
+            self::ONLINE_WALLET => Yii::t('app', 'Online Wallet'),
+            self::CREDIT_CARD => Yii::t('app', 'Credit Card'),
+        ];
+    }
+
+    /**
+     * Returns payment system type label
+     * @param $type
+     * @return string
+     */
+    public static function getPaymentSystemTypeValue($type): string
+    {
+        $paymentSystems = static::paymentSystemTypeLabel();
+        return $paymentSystems[$type];
+    }
+
+    /**
      * Returns currency label
      * @param $currency
      * @return string
@@ -76,6 +101,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
             [['currency'], 'string'],
             [['visible', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 50],
+            [['payment_system_type'],  'in', 'range' => [self::ONLINE_WALLET, self::CREDIT_CARD]],
             [['currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],
         ];
     }
@@ -138,7 +164,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public static function getList($onlyVisible = true)
     {
         $query = static::find()->select([
-            'id', 'name', 'currency',
+            'id', 'name', 'currency', 'payment_system_type'
         ]);
 
         if ($onlyVisible) {
