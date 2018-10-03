@@ -227,7 +227,6 @@ class BidEntity extends ActiveRecord
             ],
             [['email'], 'string', 'max' => 255],
             [['from_wallet', 'to_wallet'], 'string', 'max' => 32, 'min' => 12],
-            [['from_wallet', 'to_wallet'], 'integer'],
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
             [['name', 'last_name'], 'string', 'min' => 2],
             ['email', 'email'],
