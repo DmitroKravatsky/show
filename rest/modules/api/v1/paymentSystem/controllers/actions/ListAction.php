@@ -55,6 +55,6 @@ class ListAction extends Action
     {
         /** @var PaymentSystem $paymentSystem */
         $paymentSystem = $this->modelClass;
-        return $paymentSystem::getList();
+        return $paymentSystem::getList(false);
     }
 }
