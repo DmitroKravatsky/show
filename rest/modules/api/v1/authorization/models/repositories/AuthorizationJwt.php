@@ -213,7 +213,7 @@ trait AuthorizationJwt
      */
     public static function isRefreshTokenExpired($createdRefreshToken): bool
     {
-        if (($createdRefreshToken + Yii::$app->params['refreshTokenExpireDays'] * 3600 * 24) < time()) {
+        if (($createdRefreshToken + static::getRefreshTokenExpire()) > time()) {
            return true;
         }
 
