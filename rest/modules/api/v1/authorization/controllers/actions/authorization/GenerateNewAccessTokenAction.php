@@ -108,6 +108,10 @@ class GenerateNewAccessTokenAction extends Action
      *         description = "Parameter required"
      *     ),
      *     @SWG\Response(
+     *         response = 401,
+     *         description = "Refresh token was expired"
+     *     ),
+     *     @SWG\Response(
      *         response = 404,
      *         description = "User not found"
      *     ),
