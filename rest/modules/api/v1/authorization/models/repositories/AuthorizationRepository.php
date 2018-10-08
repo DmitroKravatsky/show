@@ -208,10 +208,6 @@ trait AuthorizationRepository
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
                 throw new UnauthorizedHttpException('Refresh token was expired');
             }
-            // todo мне кажеться это лишняя проверка? Что скажешь?
-            if ($user->refresh_token !== $currentRefreshToken) {
-                throw new UnprocessableEntityHttpException('Refresh token is invalid');
-            }
 
             $newAccessToken = $user->getJWT(['user_id' => $user->id]);
             $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
