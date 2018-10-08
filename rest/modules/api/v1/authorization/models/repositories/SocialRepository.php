@@ -335,7 +335,9 @@ trait SocialRepository
                         ->orWhere(['email' => $userData->email])
                         ->one();
                     if ($existedUser) {
-                        return $this->fbLogin($existedUser);
+                        $user = $this->fbLogin($existedUser);
+                        $transaction->commit();
+                        return $user;
                     }
 
                     $newUser = $this->fbRegister($userData, $params['terms_condition']);
