@@ -213,7 +213,7 @@ trait AuthorizationJwt
      */
     public static function isRefreshTokenExpired($createdRefreshToken): bool
     {
-        if (($createdRefreshToken + static::getRefreshTokenExpire()) > time()) {
+        if (($createdRefreshToken + static::getRefreshTokenExpire()) < time()) {
            return true;
         }
 
