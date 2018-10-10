@@ -41,7 +41,6 @@ use common\models\userSocial\UserSocial;
  * @property integer $last_login
  * @property integer $accept_invite
  * @property integer $register_by_bid
- * @property integer $is_deleted
  *
  * @property UserProfileEntity $profile
  * @property UserSocial[] $userSocials
@@ -61,6 +60,7 @@ class User extends ActiveRecord implements IdentityInterface
     const STATUS_UNVERIFIED = 'UNVERIFIED';
     const STATUS_VERIFIED   = 'VERIFIED';
     const STATUS_BANNED     = 'BANNED';
+    const STATUS_DELETED    = 'DELETED';
 
     const STATUS_INVITE_ACTIVE = 'ACTIVE';
     const STATUS_INVITE_INACTIVE = 'INACTIVE';

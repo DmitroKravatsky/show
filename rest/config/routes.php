@@ -26,6 +26,8 @@ return [
             'PUT'                 => 'update',
             'GET'                 => 'get-profile',
             'PUT update-password' => 'update-password',
+            'POST bind-gmail'     => 'bind-gmail',
+            'POST bind-fb'        => 'bind-fb',
         ],
     ],
     [

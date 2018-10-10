@@ -90,6 +90,8 @@ class SiteController extends Controller
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/GetProfileAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdateAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdatePasswordAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/BindFbAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/BindGmailAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/ListAction.php'),
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/DeleteAction.php'),
                     // Wallet module

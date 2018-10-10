@@ -40,15 +40,11 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
- * @property integer $is_deleted
  */
 
 class RestUserEntity extends User
 {
     use SocialRepository, AuthorizationJwt, AuthorizationRepository;
-
-    const ROLE_USER  = 'user';
-    const ROLE_GUEST = 'guest';
 
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_REGISTER_BY_BID = 'register-by-bid';
@@ -57,10 +53,6 @@ class RestUserEntity extends User
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
     const SCENARIO_LOGIN           = 'login';
     const SCENARIO_VERIFY_PROFILE  = 'verify';
-
-    const STATUS_UNVERIFIED = 'UNVERIFIED';
-    const STATUS_VERIFIED   = 'VERIFIED';
-    const STATUS_BANNED     = 'BANNED';
 
     const SOCIAL = 'social';
     const NATIVE = 'native';

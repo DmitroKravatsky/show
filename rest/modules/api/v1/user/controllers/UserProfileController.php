@@ -3,9 +3,10 @@
 namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
+use common\models\userSocial\UserSocial;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    GetProfileAction, UpdateAction, UpdatePasswordAction
+    BindFbAction, GetProfileAction, UpdateAction, UpdatePasswordAction, BindGmailAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -39,6 +40,8 @@ class UserProfileController extends Controller
                 'update'          => ['PUT'],
                 'get-profile'     => ['GET'],
                 'update-password' => ['PUT'],
+                'bind-gmail'      => ['POST'],
+                'bind-fb'         => ['POST'],
             ]
         ];
 
@@ -75,6 +78,16 @@ class UserProfileController extends Controller
         $actions['update-password'] = [
             'class'      => UpdatePasswordAction::class,
             'modelClass' => RestUserEntity::class
+        ];
+
+        $actions['bind-gmail'] = [
+            'class'      => BindGmailAction::class,
+            'modelClass' => UserSocial::class,
+        ];
+
+        $actions['bind-fb'] = [
+            'class'      => BindFbAction::class,
+            'modelClass' => UserSocial::class,
         ];
         
         return $actions;

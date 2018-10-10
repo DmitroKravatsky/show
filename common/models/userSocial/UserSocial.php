@@ -2,6 +2,7 @@
 
 namespace common\models\userSocial;
 
+use common\models\userSocial\repositories\RestUserSocialRepository;
 use Yii;
 use common\models\user\User;
 use yii\behaviors\TimestampBehavior;
@@ -21,6 +22,8 @@ use yii\db\ActiveRecord;
  */
 class UserSocial extends ActiveRecord
 {
+    use RestUserSocialRepository;
+
     const SOURCE_FB = 'fb';
     const SOURCE_GMAIL = 'gmail';
 
@@ -39,6 +42,7 @@ class UserSocial extends ActiveRecord
     {
         return [
             [['user_id', 'source_id'], 'required'],
+            [['source_id'], 'unique'],
             [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['source_name'], 'string'],
             [['source_id'], 'string', 'max' => 255],
