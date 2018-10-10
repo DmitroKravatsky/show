@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models\repositories;
 
 use common\models\userProfile\UserProfileEntity;
+use common\models\userSocial\UserSocial;
 use GuzzleHttp\Client;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\ErrorHandler;
@@ -178,11 +179,14 @@ trait SocialRepository
                 }
                 if (isset($userData->id)) {
                     $existedUser = RestUserEntity::find()
+                        ->joinWith('userSocials')
                         ->where(['source_id' => $userData->id])
                         ->orWhere(['email' => $userData->email])
                         ->one();
                     if ($existedUser) {
-                        return $this->gmailLogin($existedUser);
+                        $user = $this->gmailLogin($existedUser);
+                        $transaction->commit();
+                        return $user;
                     }
                     $newUser = $this->gmailRegister($userData, $params['terms_condition']);
 
@@ -221,8 +225,7 @@ trait SocialRepository
 
         try {
             $data = [
-                'source'           => self::GMAIL,
-                'source_id'        => $userData->id,
+                'source'           => self::SOCIAL,
                 'terms_condition'  => $termsCondition,
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             ];
@@ -237,8 +240,8 @@ trait SocialRepository
             $user->scenario = self::SCENARIO_SOCIAL_REGISTER;
             $user->setAttributes($data);
 
-            if (!$user->save(false)) {
-                throw new ServerErrorHttpException($user->errors);
+            if (!$user->save()) {
+                $this->throwModelException($user->errors);
             }
             $viewPath = '@common/views/mail/sendPassword-html.php';
             if (!empty($userData->email)) {
@@ -257,13 +260,22 @@ trait SocialRepository
                 'avatar'    => $userData->picture
             ]);
 
-            if (!$userProfile->save(false)) {
-                throw new ServerErrorHttpException($user->errors);
+            if (!$userProfile->save()) {
+                $this->throwModelException($userProfile->errors);
             }
 
             $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
             $user->created_refresh_token = time();
             $user->save(false, ['refresh_token', 'created_refresh_token']);
+
+            $userSocial = new UserSocial();
+            $userSocial->setAttributes([
+                'user_id' => $user->id,
+                'source_id' => $userData->id,
+                'source_name' => UserSocial::SOURCE_GMAIL,
+            ]);
+            $userSocial->save();
+
             $transaction->commit();
 
             return $user;
@@ -331,6 +343,7 @@ trait SocialRepository
 
                 if (isset($userData->id)) {
                     $existedUser = RestUserEntity::find()
+                        ->joinWith('userSocials')
                         ->where(['source_id' => $userData->id])
                         ->orWhere(['email' => $userData->email])
                         ->one();
@@ -395,8 +408,7 @@ trait SocialRepository
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $data = [
-                'source'           => self::FB,
-                'source_id'        => $userData->id,
+                'source'           => self::SOCIAL,
                 'terms_condition'  => $termsCondition,
                 'password'         => $pass = \Yii::$app->security->generateRandomString(10),
             ];
@@ -411,7 +423,7 @@ trait SocialRepository
             $user->scenario = self::SCENARIO_SOCIAL_REGISTER;
             $user->setAttributes($data);
 
-            if (!$user->save(false)) {
+            if (!$user->save()) {
                 $this->throwModelException($user->errors);
             }
 
@@ -438,6 +450,15 @@ trait SocialRepository
             $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
             $user->created_refresh_token = time();
             $user->save(false, ['refresh_token', 'created_refresh_token']);
+
+            $userSocial = new UserSocial();
+            $userSocial->setAttributes([
+                'user_id' => $user->id,
+                'source_id' => $userData->id,
+                'source_name' => UserSocial::SOURCE_FB,
+            ]);
+            $userSocial->save();
+
             $transaction->commit();
 
             return $user;
