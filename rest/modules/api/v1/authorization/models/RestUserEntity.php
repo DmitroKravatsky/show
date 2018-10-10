@@ -30,7 +30,6 @@ use yii\web\UnprocessableEntityHttpException;
  * @property string $email
  * @property string $auth_key
  * @property string $source
- * @property string $source_id
  * @property string $phone_number
  * @property integer $terms_condition
  * @property string $refresh_token
@@ -41,6 +40,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
+ * @property integer $is_deleted
  */
 
 class RestUserEntity extends User
@@ -62,8 +62,7 @@ class RestUserEntity extends User
     const STATUS_VERIFIED   = 'VERIFIED';
     const STATUS_BANNED     = 'BANNED';
 
-    const FB     = 'fb';
-    const GMAIL  = 'gmail';
+    const SOCIAL = 'social';
     const NATIVE = 'native';
 
     const REGISTER_BY_BID_NO = 0;
@@ -73,6 +72,7 @@ class RestUserEntity extends User
     public $current_password;
     public $new_password;
     public $role;
+    public $terms_condition;
     
     /**
      * @return string
@@ -92,7 +92,6 @@ class RestUserEntity extends User
             'email'                 => 'Email',
             'phone_number'          => 'Номер телефона',
             'source'                => 'Социальная сеть',
-            'source_id'             => 'Пользователь в социальной сети',
             'terms_condition'       => 'Пользовательское соглашение',
             'password'              => 'Пароль',
             'confirm_password'      => 'Подтверждение пароля',
@@ -117,14 +116,14 @@ class RestUserEntity extends User
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'confirm_password', 'role',
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'confirm_password', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
         $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
 
         $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
-            'email', 'password', 'phone_number', 'terms_condition', 'source', 'source_id', 'role',
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
         ];
 
@@ -160,7 +159,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['verification_code', 'register_by_bid',], 'integer'],
+            [['verification_code', 'register_by_bid', 'is_deleted',], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [
                 'phone_number',
@@ -217,8 +216,8 @@ class RestUserEntity extends User
                     ]
 
             ],
-            [['source', 'source_id', 'phone_number'], 'string'],
-            ['source', 'in', 'range' => [self::FB, self::GMAIL, self::NATIVE]],
+            [['source', 'phone_number'], 'string'],
+            ['source', 'in', 'range' => [self::SOCIAL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],

@@ -11,6 +11,7 @@ use yii\db\ActiveQuery;
 use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use Yii;
+use common\models\userSocial\UserSocial;
 
 /**
  * User model
@@ -22,7 +23,6 @@ use Yii;
  * @property string $email
  * @property string $auth_key
  * @property string $source
- * @property string $source_id
  * @property string $phone_number
  * @property integer $terms_condition
  * @property string $refresh_token
@@ -41,8 +41,10 @@ use Yii;
  * @property integer $last_login
  * @property integer $accept_invite
  * @property integer $register_by_bid
+ * @property integer $is_deleted
  *
  * @property UserProfileEntity $profile
+ * @property UserSocial[] $userSocials
  */
 class User extends ActiveRecord implements IdentityInterface
 {
@@ -387,5 +389,13 @@ class User extends ActiveRecord implements IdentityInterface
             ->column();
 
         return $managersIds ?? null;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserSocials()
+    {
+        return $this->hasMany(UserSocial::className(), ['user_id' => 'id']);
     }
 }
