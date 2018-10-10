@@ -23,11 +23,12 @@ return [
             'user/profile' => 'api/v1/user/user-profile',
         ],
         'patterns'   => [
-            'PUT'                 => 'update',
-            'GET'                 => 'get-profile',
-            'PUT update-password' => 'update-password',
-            'POST bind-gmail'     => 'bind-gmail',
-            'POST bind-fb'        => 'bind-fb',
+            'PUT'                        => 'update',
+            'GET'                        => 'get-profile',
+            'PUT update-password'        => 'update-password',
+            'POST bind-gmail'            => 'bind-gmail',
+            'POST bind-fb'               => 'bind-fb',
+            'POST unbind-social-network' => 'unbind-social-network',
         ],
     ],
     [

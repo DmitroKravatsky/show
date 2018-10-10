@@ -6,6 +6,7 @@ use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use GuzzleHttp\Client;
 use yii\web\BadRequestHttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
@@ -131,6 +132,31 @@ trait RestUserSocialRepository
     }
 
     /**
+     * @param string $sourceName
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function unbindSocialNetwork($sourceName)
+    {
+       $userSocial = UserSocial::find()->where(['user_id' => Yii::$app->user->id, 'source_name' => $sourceName])->one();
+       if (empty($userSocial)) {
+           throw new NotFoundHttpException('Социальная сеть не найдена.');
+       }
+       try {
+           $userSocial->delete();
+           $user = RestUserEntity::findOne(Yii::$app->user->id);
+           if ($user->source == RestUserEntity::SOCIAL && !static::isExistBindNetworksToCurrentUser()) {
+               $user->status = RestUserEntity::STATUS_DELETED;
+               $user->save(false, ['status']);
+           }
+           return true;
+       } catch (\Exception $e) {
+           throw new ServerErrorHttpException('Произошла ошибка при отвязывании социальной сети.');
+       }
+    }
+
+    /**
      * @param null $firstName
      * @param null $lastName
      * @param null $avatar
@@ -159,6 +185,14 @@ trait RestUserSocialRepository
     public static function isNetworkBindToCurrentUser($source, $sourceId)
     {
         return !empty(UserSocial::find()->where(['user_id' => Yii::$app->user->id, 'source_name' => $source, 'source_id' => $sourceId])->one());
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isExistBindNetworksToCurrentUser()
+    {
+        return !empty(UserSocial::find()->where(['user_id' => Yii::$app->user->id])->all());
     }
 }
 

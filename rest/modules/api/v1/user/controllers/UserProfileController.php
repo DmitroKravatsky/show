@@ -6,7 +6,7 @@ use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    BindFbAction, GetProfileAction, UpdateAction, UpdatePasswordAction, BindGmailAction
+    BindFbAction, GetProfileAction, UnbindSocialNetworkAction, UpdateAction, UpdatePasswordAction, BindGmailAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -87,6 +87,11 @@ class UserProfileController extends Controller
 
         $actions['bind-fb'] = [
             'class'      => BindFbAction::class,
+            'modelClass' => UserSocial::class,
+        ];
+
+        $actions['unbind-social-network'] = [
+            'class'      => UnbindSocialNetworkAction::class,
             'modelClass' => UserSocial::class,
         ];
         
