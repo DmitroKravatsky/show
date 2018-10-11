@@ -3,7 +3,7 @@
 use yiister\gentelella\widgets\Panel;
 use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
 use yii\{
-    helpers\Html, helpers\Url, web\View, widgets\Pjax, widgets\DetailView
+    helpers\Html, web\View, widgets\Pjax, widgets\DetailView
 };
 use backend\models\BackendUser;
 use kartik\{ grid\GridView, select2\Select2 };
