@@ -151,7 +151,7 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['verification_code', 'register_by_bid', 'is_deleted',], 'integer'],
+            [['verification_code', 'register_by_bid',], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [
                 'phone_number',
