@@ -170,4 +170,5 @@ return [
     'Payment system type' => 'Тип платежной системы',
     'Online wallet' => 'Онлайн кошелек',
     'Credit card' => 'Крединая карта',
+    'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
 ];
