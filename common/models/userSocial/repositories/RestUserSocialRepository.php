@@ -57,6 +57,11 @@ trait RestUserSocialRepository
                 if (!static::updateUserProfileBySocialNetwork($userData->given_name, $userData->family_name, $userData->picture)) {
                     throw new ServerErrorHttpException();
                 }
+
+                $user = RestUserEntity::findOne(Yii::$app->user->id);
+                $user->status = RestUserEntity::STATUS_VERIFIED;
+                $user->save(false, ['status']);
+
                 $transaction->commit();
 
                 return true;
@@ -117,6 +122,11 @@ trait RestUserSocialRepository
                 if (!static::updateUserProfileBySocialNetwork($userData->first_name, $userData->last_name, $userData->picture->data->url)) {
                     throw new ServerErrorHttpException();
                 }
+
+                $user = RestUserEntity::findOne(Yii::$app->user->id);
+                $user->status = RestUserEntity::STATUS_VERIFIED;
+                $user->save(false, ['status']);
+
                 $transaction->commit();
 
                 return true;

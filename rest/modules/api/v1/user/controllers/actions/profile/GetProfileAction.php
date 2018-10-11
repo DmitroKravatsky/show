@@ -92,6 +92,12 @@ class GetProfileAction extends Action
     {
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;
-        return $model->getProfile();
+        $response = \Yii::$app->getResponse()->setStatusCode(200);
+
+        return [
+            'status'  => $response->statusCode,
+            'message' => \Yii::t('app', 'User profile information.'),
+            'data'    => $model->getProfile()
+        ];
     }
 }

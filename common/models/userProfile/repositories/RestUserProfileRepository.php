@@ -3,6 +3,7 @@
 namespace common\models\userProfile\repositories;
 
 use common\models\userProfile\UserProfileEntity;
+use common\models\userSocial\UserSocial;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -29,6 +30,7 @@ trait RestUserProfileRepository
                 ->select(['user_profile.user_id', 'user_profile.name', 'user_profile.last_name', 'user_profile.avatar',
                     'user.email', 'user.phone_number', 'user.source'])
                 ->joinWith('user', false)
+                ->with('userSocials')
                 ->where(['user_profile.user_id' => \Yii::$app->user->id])
                 ->asArray()
                 ->one();
@@ -37,7 +39,15 @@ trait RestUserProfileRepository
                 throw new NotFoundHttpException();
             }
 
-            return $this->getSocialService($userProfile);
+            $userProfile['is_gmail_auth'] = false;
+            $userProfile['is_fb_auth'] = false;
+
+            if (!empty($userProfile['userSocials'])) {
+                return $this->getSocialService($userProfile);
+            }
+            unset($userProfile['userSocials'], $userProfile['source']);
+
+            return $userProfile;
 
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException('User profile is not found');
@@ -109,27 +119,19 @@ trait RestUserProfileRepository
      * Adds a field that marks a social network binded with a user
      *
      * @param array $userModel
-     * @return array|bool
+     * @return array
      */
     public function getSocialService(array $userModel)
     {
-        if (!$userModel['source'] || $userModel['source'] === 'native') {
-            return $userModel;
+        foreach ($userModel['userSocials'] as $item) {
+            if ($item['source_name'] == UserSocial::SOURCE_FB) {
+                $userModel['is_fb_auth'] = true;
+            }
+            if ($item['source_name'] == UserSocial::SOURCE_GMAIL) {
+                $userModel['is_gmail_auth'] = true;
+            }
         }
-
-        if ($userModel['source'] === RestUserEntity::FB) {
-            $userModel['is_fb_auth'] = true;
-            $userModel['is_gmail_auth'] = false;
-            unset($userModel['source']);
-            return $userModel;
-        }
-
-        if ($userModel['source'] === RestUserEntity::GMAIL) {
-            $userModel['is_gmail_auth'] = true;
-            $userModel['is_fb_auth'] = false;
-            unset($userModel['source']);
-            return $userModel;
-        }
+        unset($userModel['userSocials'], $userModel['source']);
 
         return $userModel;
     }

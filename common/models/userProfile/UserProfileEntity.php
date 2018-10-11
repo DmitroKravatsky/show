@@ -9,6 +9,7 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
 use Yii;
+use common\models\userSocial\UserSocial;
 
 /**
  * Class UserProfileEntity
@@ -23,6 +24,7 @@ use Yii;
  * @property string $avatar
  * @property integer $created_at
  * @property integer $updated_at
+ * @property UserSocial[] $userSocials
  */
 class UserProfileEntity extends ActiveRecord
 {
@@ -114,5 +116,13 @@ class UserProfileEntity extends ActiveRecord
     public function getUserFullName()
     {
         return $this->name . ' ' . $this->last_name;
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getUserSocials()
+    {
+        return $this->hasMany(UserSocial::className(), ['user_id' => 'user_id']);
     }
 }
