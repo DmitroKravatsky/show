@@ -143,7 +143,7 @@ class BidHistory extends ActiveRecord
      * @param $status
      * @return string
      */
-    public static function getStatusValue($status): string
+    public static function getStatusValue($status):string
     {
         $statuses = static::statusLabels();
         return $statuses[$status];
