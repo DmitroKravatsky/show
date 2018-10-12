@@ -7,13 +7,37 @@ use rest\modules\api\v1\review\controllers\ReviewController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class DeleteAction
  * @package rest\modules\api\v1\review\controllers\actions
+ * @mixin AccessUserStatusBehavior
  */
 class DeleteAction extends Action
 {
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
+
     /** @var  ReviewController */
     public $controller;
 
@@ -61,6 +85,10 @@ class DeleteAction extends Action
      *     @SWG\Response (
      *         response = 404,
      *         description = "Review not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response (
      *         response = 401,

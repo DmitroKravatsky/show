@@ -7,11 +7,39 @@ use rest\modules\api\v1\user\controllers\UserNotificationsController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use common\behaviors\AccessUserStatusBehavior;
 
+/**
+ * Class DeleteAction
+ * @package rest\modules\api\v1\user\controllers\actions\notifications
+ * @mixin AccessUserStatusBehavior
+ */
 class DeleteAction extends Action
 {
     /** @var  UserNotificationsController */
     public $controller;
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
 
     /**
      * Deletes an existing UserNotificationsEntity
@@ -61,6 +89,10 @@ class DeleteAction extends Action
      *     @SWG\Response (
      *         response = 404,
      *         description = "Notification not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response(
      *         response = 500,

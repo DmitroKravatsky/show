@@ -87,7 +87,7 @@ class UpdateAction extends Action
      *              }
      *         }
      *     ),
-     *      @SWG\Response (
+     *     @SWG\Response (
      *         response = 404,
      *         description = "Wallet not found"
      *     ),
@@ -98,6 +98,10 @@ class UpdateAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
+     *     ),
+     *      @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response(
      *         response = 500,

@@ -7,15 +7,39 @@ use rest\modules\api\v1\review\controllers\ReviewController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class UpdateAction
  * @package rest\modules\api\v1\review\controllers\actions
+ * @mixin AccessUserStatusBehavior
  */
 class UpdateAction extends Action
 {
     /** @var  ReviewController */
     public $controller;
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
 
     /**
      * Updates an existing Review model
@@ -78,6 +102,10 @@ class UpdateAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response(
      *         response = 500,

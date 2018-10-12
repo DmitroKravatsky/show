@@ -5,15 +5,39 @@ namespace rest\modules\api\v1\user\controllers\actions\profile;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class UpdatePasswordAction
  * @package rest\modules\api\v1\user\controllers\actions\profile
+ * @mixin AccessUserStatusBehavior
  */
 class UpdatePasswordAction extends Action
 {
     /** @var  UserProfileController */
     public $controller;
+
+    /**
+     * @return array
+     */
+    public function behaviors(): array
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @return bool
+     */
+    protected function beforeRun(): bool
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
 
     /**
      * Updates User password
@@ -71,6 +95,10 @@ class UpdatePasswordAction extends Action
      *     @SWG\Response (
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     )
      * )
      *
