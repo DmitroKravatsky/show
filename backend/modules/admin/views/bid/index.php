@@ -133,7 +133,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'         => 'raw',
                         'value'          => function (Bid $bid) {
                             return Html::a($bid->perfomer->fullName ?? null,
-                                Url::to("/admin/profile/view/{$bid->processed_by}")
+                                Url::to("/admin/manager/view/{$bid->processed_by}")
                             );
                         },
                         'contentOptions' => ['class' => 'processed-by-column'],
