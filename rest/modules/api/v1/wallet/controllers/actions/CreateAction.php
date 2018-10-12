@@ -88,6 +88,10 @@ class CreateAction extends Action
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
      *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
+     *     ),
      *     @SWG\Response(
      *         response = 500,
      *         description = "Internal Server Error"

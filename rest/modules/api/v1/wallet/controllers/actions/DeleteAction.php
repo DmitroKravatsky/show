@@ -57,6 +57,22 @@ class DeleteAction extends Action
      *                  "id": 6
      *              }
      *         }
+     *     ),
+     *     @SWG\Response (
+     *         response = 401,
+     *         description = "Invalid credentials or Expired token"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
+     *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "Not found"
+     *     ),
+     *     @SWG\Response(
+     *         response = 500,
+     *         description = "Internal Server Error"
      *     )
      * )
      * @param $id

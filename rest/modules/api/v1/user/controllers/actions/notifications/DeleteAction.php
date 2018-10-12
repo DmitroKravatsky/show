@@ -8,6 +8,10 @@ use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 
+/**
+ * Class DeleteAction
+ * @package rest\modules\api\v1\user\controllers\actions\notifications
+ */
 class DeleteAction extends Action
 {
     /** @var  UserNotificationsController */
@@ -61,6 +65,10 @@ class DeleteAction extends Action
      *     @SWG\Response (
      *         response = 404,
      *         description = "Notification not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 403,
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response(
      *         response = 500,

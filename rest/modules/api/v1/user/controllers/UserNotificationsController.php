@@ -8,10 +8,12 @@ use rest\modules\api\v1\user\controllers\actions\notifications\ListAction;
 use yii\rest\Controller;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\VerbFilter;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class UserNotificationsController
  * @package rest\modules\api\v1\user\controllers
+ * @mixin AccessUserStatusBehavior
  */
 class UserNotificationsController extends Controller
 {
@@ -39,8 +41,25 @@ class UserNotificationsController extends Controller
                 'delete' => ['DELETE'],
             ]
         ];
-        
+
+        $behaviors['accessUserStatus'] = [
+            'class'   => AccessUserStatusBehavior::class,
+            'message' => 'Доступ запрещён.'
+        ];
+
         return $behaviors;
+    }
+
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     */
+    public function beforeAction($action): bool
+    {
+        parent::beforeAction($action);
+        $this->checkUserRole();
+
+        return true;
     }
 
     /**

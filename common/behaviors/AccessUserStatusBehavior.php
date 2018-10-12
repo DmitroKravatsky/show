@@ -25,8 +25,9 @@ class AccessUserStatusBehavior extends Behavior
     public function checkUserRole()
     {
         $user = RestUserEntity::findOne(['id' => Yii::$app->user->identity->getId()]);
-        if (!$user
-            || in_array($user->status, [RestUserEntity::STATUS_UNVERIFIED, RestUserEntity::STATUS_BANNED])) {
+        $statuses = [RestUserEntity::STATUS_UNVERIFIED, RestUserEntity::STATUS_BANNED, RestUserEntity::STATUS_DELETED];
+
+        if (!$user || in_array($user->status, $statuses)) {
             throw new HttpException(403, $this->message);
         }
     }

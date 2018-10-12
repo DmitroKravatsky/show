@@ -7,15 +7,39 @@ use rest\modules\api\v1\review\controllers\ReviewController;
 use yii\rest\Action;
 use yii\web\{ ForbiddenHttpException, UnprocessableEntityHttpException, ServerErrorHttpException };
 use Yii;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class CreateAction
  * @package rest\modules\api\v1\review\controllers\actions
+ * @mixin AccessUserStatusBehavior
  */
 class CreateAction extends Action
 {
     /** @var  ReviewController */
     public $controller;
+
+    /**
+     * @return array
+     */
+    public function behaviors()
+    {
+        return [
+            [
+                'class'   => AccessUserStatusBehavior::class,
+                'message' => 'Доступ запрещён.'
+            ]
+        ];
+    }
+
+    /**
+     * @inheritdoc
+     */
+    protected function beforeRun()
+    {
+        $this->checkUserRole();
+        return parent::beforeRun();
+    }
 
     /**
      * @SWG\Post(path="/review",
@@ -76,7 +100,7 @@ class CreateAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 403,
-     *         description = "You must have at least one bid to write a review"
+     *         description = "Forbidden"
      *     ),
      *     @SWG\Response(
      *         response = 500,

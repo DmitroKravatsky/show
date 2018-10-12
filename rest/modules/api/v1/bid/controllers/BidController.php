@@ -4,15 +4,17 @@ namespace rest\modules\api\v1\bid\controllers;
 
 use common\models\bid\BidEntity;
 use rest\modules\api\v1\bid\controllers\actions\{
-    ListAction, CreateAction, DeleteAction, UpdateAction, DetailAction
+    ListAction, CreateAction, DeleteAction, DetailAction
 };
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class BidController
  * @package rest\modules\api\v1\bid\controllers
+ * @mixin AccessUserStatusBehavior
  *
  */
 class BidController extends Controller
@@ -46,7 +48,24 @@ class BidController extends Controller
             ]
         ];
 
+        $behaviors['accessUserStatus'] = [
+            'class'   => AccessUserStatusBehavior::class,
+            'message' => 'Доступ запрещён.'
+        ];
+
         return $behaviors;
+    }
+
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     */
+    public function beforeAction($action): bool
+    {
+        parent::beforeAction($action);
+        $this->checkUserRole();
+
+        return true;
     }
 
     /**

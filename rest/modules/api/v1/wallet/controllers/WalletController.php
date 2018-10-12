@@ -11,11 +11,12 @@ use yii\filters\auth\HttpBearerAuth;
 use common\models\wallet\WalletEntity;
 use rest\modules\api\v1\wallet\controllers\actions\CreateAction;
 use yii\rest\Controller;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class WalletController
  * @package rest\modules\api\v1\wallet\controllers
- *
+ * @mixin AccessUserStatusBehavior
  */
 class WalletController extends Controller
 {
@@ -60,7 +61,24 @@ class WalletController extends Controller
             ],
         ];
 
+        $behaviors['accessUserStatus'] = [
+            'class'   => AccessUserStatusBehavior::class,
+            'message' => 'Доступ запрещён.'
+        ];
+
         return $behaviors;
+    }
+
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     */
+    public function beforeAction($action): bool
+    {
+        parent::beforeAction($action);
+        $this->checkUserRole();
+
+        return true;
     }
 
     /**
