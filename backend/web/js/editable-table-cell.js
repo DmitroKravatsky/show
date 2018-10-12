@@ -80,6 +80,7 @@ $(document).ready(function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
         var tableRow = $('tr[data-key="' + fieldId + '"]');
+        var selectId = $(this).attr('id');
         var STATUS_DELETED = 'DELETED';
         var STATUS_BANNED = 'BANNED';
 
@@ -90,6 +91,8 @@ $(document).ready(function () {
             success: function (result) {
                 var isAdmin = result.isAdmin;
                 var userStatus = result.userStatus;
+                var userOldStatusText = result.userOldStatusText;
+                var userOldStatusValue = result.userOldStatusValue;
 
                 $('#user-status-success').html(
                     '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
@@ -103,6 +106,12 @@ $(document).ready(function () {
 
 
                 tableRow.find('.status-column').html(userStatus);
+                $('#' + selectId + ' option:selected').remove();
+                $('#' + selectId).append(
+                    $('<option></option>')
+                        .attr('value', userOldStatusValue)
+                        .text(userOldStatusText)
+                );
 
                 if (!isAdmin && (userStatus === STATUS_DELETED || userStatus === STATUS_BANNED)) {
                     $('.user-status').prop('disabled', true);

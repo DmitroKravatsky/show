@@ -29,12 +29,15 @@ class UpdateStatusAction extends Action
         $user = $this->controller->findModel($id);
 
         $user->status = $status;
+        $userOldStatus = $user->getOldAttribute('status');
         if ($user->save(true, ['status'])) {
             return [
                 'status' => 200,
                 'message' => Yii::t('app', 'Status successfully updated.'),
                 'isAdmin' => Yii::$app->user->can(User::ROLE_ADMIN),
                 'userStatus' => User::getStatusValue($user->status),
+                'userOldStatusValue' => $userOldStatus,
+                'userOldStatusText' => User::getStatusValue($userOldStatus),
             ];
         }
 
