@@ -70,9 +70,45 @@ class UnbindSocialNetworkAction extends Action
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
+     *         @SWG\Schema(
+     *              type="object",
+     *              @SWG\Property(property="status", type="integer", description="Status code"),
+     *              @SWG\Property(property="message", type="string", description="Status message"),
+     *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="integer", description="User Profile id"),
+     *                  @SWG\Property(property="name", type="string", description="User name"),
+     *                  @SWG\Property(property="last_name", type="string", description="User last name"),
+     *                  @SWG\Property(property="avatar", type="string", description="User avatar"),
+     *                  @SWG\Property(property="email", type="string", description="User email"),
+     *                  @SWG\Property(property="phone_number", type="string", description="User phone number"),
+     *                  @SWG\Property(property="source", type="string", description="User social network"),
+     *                  @SWG\Property(property="is_deleted", type="boolean", description="Is user deleted"),
+     *                  @SWG\Property(
+     *                      property="is_fb_auth",
+     *                      type="boolean",
+     *                      description="Marks if user is social auth"
+     *                  ),
+     *                  @SWG\Property(
+     *                      property="is_gmail_auth",
+     *                      type="boolean",
+     *                      description="Marks if user is social auth"
+     *                  )
+     *              ),
+     *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Социальная сеть успешно отвязана."
+     *              "message": "Социальная сеть успешно отвязана.",
+     *              "data": {
+     *                  "id": 6,
+     *                  "name": "John",
+     *                  "last_name": "Smith",
+     *                  "avatar": null,
+     *                  "email": "smith@gmail.com",
+     *                  "phone_number": null,
+     *                  "is_fb_auth": true,
+     *                  "is_gmail_auth": false,
+     *                  "is_deleted": false
+     *              }
      *         }
      *     ),
      *     @SWG\Response (
@@ -99,12 +135,13 @@ class UnbindSocialNetworkAction extends Action
     {
         /** @var UserSocial $model */
         $model = new $this->modelClass;
-        $model->unbindSocialNetwork(Yii::$app->request->post('source_name'));
+        $result = $model->unbindSocialNetwork(Yii::$app->request->post('source_name'));
         $response = \Yii::$app->getResponse()->setStatusCode(200);
 
         return [
             'status'  => $response->statusCode,
             'message' => \Yii::t('app', 'Социальная сеть успешно отвязана.'),
+            'data'    => $result
         ];
     }
 }
