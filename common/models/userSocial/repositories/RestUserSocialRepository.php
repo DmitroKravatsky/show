@@ -2,6 +2,7 @@
 
 namespace common\models\userSocial\repositories;
 
+use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use GuzzleHttp\Client;
@@ -15,7 +16,7 @@ trait RestUserSocialRepository
 {
     /**
      * @param string $token
-     * @return bool
+     * @return array
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      */
@@ -64,7 +65,7 @@ trait RestUserSocialRepository
 
                 $transaction->commit();
 
-                return true;
+                return $user->profile->getProfile();
             }
             throw new ServerErrorHttpException();
         } catch (BadRequestHttpException $e) {
@@ -78,7 +79,7 @@ trait RestUserSocialRepository
 
     /**
      * @param string $token
-     * @return bool
+     * @return array
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      */
@@ -129,7 +130,7 @@ trait RestUserSocialRepository
 
                 $transaction->commit();
 
-                return true;
+                return $user->profile->getProfile();
             }
             throw new ServerErrorHttpException();
         } catch (BadRequestHttpException $e) {
@@ -143,7 +144,7 @@ trait RestUserSocialRepository
 
     /**
      * @param string $sourceName
-     * @return bool
+     * @return array
      * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      */
@@ -160,7 +161,7 @@ trait RestUserSocialRepository
                $user->status = RestUserEntity::STATUS_DELETED;
                $user->save(false, ['status']);
            }
-           return true;
+           return array_merge($user->profile->getProfile(), ['is_deleted' => User::isUserDeleted($user->id)]);
        } catch (\Exception $e) {
            throw new ServerErrorHttpException('Произошла ошибка при отвязывании социальной сети.');
        }

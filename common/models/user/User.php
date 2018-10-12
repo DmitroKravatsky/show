@@ -398,4 +398,13 @@ class User extends ActiveRecord implements IdentityInterface
     {
         return $this->hasMany(UserSocial::className(), ['user_id' => 'id']);
     }
+
+    /**
+     * @param integer $id
+     * @return bool
+     */
+    public static function isUserDeleted($id): bool
+    {
+        return static::findOne($id)->status === self::STATUS_DELETED;
+    }
 }
