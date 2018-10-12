@@ -105,6 +105,20 @@ class BackendUser extends User
     }
 
     /**
+     * @param User $user
+     * @return bool
+     */
+    public function toggleVerifiedStatus(User $user)
+    {
+        if ($user->status === User::STATUS_VERIFIED) {
+            $user->status = User::STATUS_UNVERIFIED;
+        } else {
+            $user->status = User::STATUS_VERIFIED;
+        }
+        return $user->save(false, ['status']);
+    }
+
+    /**
      * @return array
      */
     public static function getManagerNames(): array

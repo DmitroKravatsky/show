@@ -1,4 +1,4 @@
-
+$(document).ready(function () {
     $('body').on('change', '.status', function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
@@ -8,10 +8,10 @@
         var selectId = $(this).attr('id');
 
         $.ajax({
-            url : '/admin/admin/bid/update-bid-status',
-            type : "POST",
-            data: {'status' : newStatus, 'id' : fieldId, 'language' : language},
-            success : function (result) { console.log(selectId)
+            url: '/admin/admin/bid/update-bid-status',
+            type: "POST",
+            data: {'status': newStatus, 'id': fieldId, 'language': language},
+            success: function (result) {
                 var isAdmin = result.isAdmin;
                 var processedStatus = result.processedStatus;
                 var processedBy = result.processedBy;
@@ -53,27 +53,70 @@
 
                 $('#bid-status-success').html(
                     '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">×</span>' +
-                        '</button>'
-                        + '<i class="icon fa fa-check"></i>'
-                        + result.message +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>'
+                    + '<i class="icon fa fa-check"></i>'
+                    + result.message +
                     '</div>'
                 );
             },
-            error : function (result) {
+            error: function (result) {
                 $('#bid-status-error').html(
                     '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
-                        '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
-                            '<span aria-hidden="true">×</span>' +
-                        '</button>'
-                        + '<i class="icon fa fa-bun"></i>'
-                        + result.responseJSON.message +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>'
+                    + '<i class="icon fa fa-bun"></i>'
+                    + result.responseJSON.message +
                     '</div>'
                 );
             }
         });
 
+    });
+
+    $('body').on('change', '.user-status', function () {
+        var newStatus = this.value;
+        var fieldId = $(this).parent().parent().data('key');
+        var STATUS_DELETED = 'DELETED';
+        var STATUS_BANNED = 'BANNED';
+
+        $.ajax({
+            url: '/admin/admin/user/update-status',
+            type: "POST",
+            data: {'status': newStatus, 'id': fieldId, 'language': language},
+            success: function (result) {
+                var isAdmin = result.isAdmin;
+                var userStatus = result.userStatus;
+
+                $('#user-status-success').html(
+                    '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>'
+                    + '<i class="icon fa fa-check"></i>'
+                    + result.message +
+                    '</div>'
+                );
+
+                $('.status-column').html(userStatus);
+                if (!isAdmin && (userStatus === STATUS_DELETED || userStatus === STATUS_BANNED)) {
+                    $('.user-status').prop('disabled', true);
+                }
+            },
+            error: function (result) {
+                $('#user-status-error').html(
+                    '<div class="alert alert-error alert-dismissible fade in" role="alert">' +
+                    '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
+                    '<span aria-hidden="true">×</span>' +
+                    '</button>'
+                    + '<i class="icon fa fa-bun"></i>'
+                    + result.responseJSON.message +
+                    '</div>'
+                );
+            }
+        });
     });
 
     $(document).on({
@@ -85,4 +128,6 @@
             $('#loader').hide();
         }
     });
+});
+
 

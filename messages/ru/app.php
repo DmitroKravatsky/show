@@ -171,4 +171,9 @@ return [
     'Online wallet' => 'Онлайн кошелек',
     'Credit card' => 'Крединая карта',
     'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
+    'User bids' => 'Заявки пользователя',
+    'Verified' => 'Верифицирован',
+    'Unverified' => 'Неверифицирован',
+    'Banned' => 'Забанен',
+    'Deleted' => 'Удалён',
 ];
