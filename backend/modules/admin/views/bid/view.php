@@ -2,7 +2,9 @@
 
 use yiister\gentelella\widgets\Panel;
 use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
-use yii\{ helpers\Html, web\View, widgets\Pjax, widgets\DetailView };
+use yii\{
+    helpers\Html, web\View, widgets\Pjax, widgets\DetailView
+};
 use backend\models\BackendUser;
 use kartik\{ grid\GridView, select2\Select2 };
 
@@ -92,9 +94,12 @@ $this->params['breadcrumbs'][] = $this->title;
                             [
                                 'attribute'      => 'processed_by',
                                 'filter'         => BackendUser::getManagerNames(),
+                                'format'         => 'raw',
                                 'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                                 'value'          => function (Bid $bid) {
-                                    return $bid->perfomer->fullName ?? null;
+                                    return Html::a($bid->perfomer->fullName ?? null,
+                                        Yii::$app->urlManager->createUrl("manager/view/{$bid->processed_by}")
+                                    );
                                 },
                                 'contentOptions' => ['id' => 'processed-by'],
                             ],
