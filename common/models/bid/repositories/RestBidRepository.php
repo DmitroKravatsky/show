@@ -178,6 +178,7 @@ trait RestBidRepository
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $bid->setAttributes($postData);
+            $bid->status = BidEntity::STATUS_NEW;
             if (!$bid->validate()) {
                 $this->throwModelException($bid->errors);
             }
