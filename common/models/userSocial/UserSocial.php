@@ -7,9 +7,12 @@ use Yii;
 use common\models\user\User;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
+use common\behaviors\ValidationExceptionFirstMessage;
 
 /**
  * This is the model class for table "user_social".
+ *
+ * @mixin ValidationExceptionFirstMessage
  *
  * @property int $id
  * @property int $user_id
@@ -42,7 +45,7 @@ class UserSocial extends ActiveRecord
     {
         return [
             [['user_id', 'source_id'], 'required'],
-            [['source_id'], 'unique'],
+            [['source_id'], 'unique', 'message' => 'Этот аккаунт уже привязан к другому пользователю.'],
             [['user_id', 'created_at', 'updated_at'], 'integer'],
             [['source_name'], 'string'],
             [['source_id'], 'string', 'max' => 255],
@@ -69,6 +72,7 @@ class UserSocial extends ActiveRecord
     {
         return [
             TimestampBehavior::class,
+            ValidationExceptionFirstMessage::class,
         ];
     }
 

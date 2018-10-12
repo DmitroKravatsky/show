@@ -11,12 +11,14 @@ use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
+use yii\web\UnprocessableEntityHttpException;
 
 trait RestUserSocialRepository
 {
     /**
      * @param string $token
      * @return array
+     * @throws UnprocessableEntityHttpException
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      */
@@ -52,7 +54,7 @@ trait RestUserSocialRepository
                 ]);
 
                 if (!$userSocial->save()) {
-                    throw new ServerErrorHttpException();
+                    $this->throwModelException($userSocial->errors);
                 }
 
                 if (!static::updateUserProfileBySocialNetwork($userData->given_name, $userData->family_name, $userData->picture)) {
@@ -60,14 +62,21 @@ trait RestUserSocialRepository
                 }
 
                 $user = RestUserEntity::findOne(Yii::$app->user->id);
+                if (isset($userData->email) && empty($user->email)) {
+                    $user->email = $userData->email;
+                }
                 $user->status = RestUserEntity::STATUS_VERIFIED;
-                $user->save(false, ['status']);
+                if (!$user->save()) {
+                    $this->throwModelException($user->errors);
+                }
 
                 $transaction->commit();
 
                 return $user->profile->getProfile();
             }
             throw new ServerErrorHttpException();
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (BadRequestHttpException $e) {
             throw new BadRequestHttpException($e->getMessage());
         } catch (\Exception $e) {
@@ -80,6 +89,7 @@ trait RestUserSocialRepository
     /**
      * @param string $token
      * @return array
+     * @throws UnprocessableEntityHttpException
      * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      */
@@ -94,8 +104,8 @@ trait RestUserSocialRepository
                 [
                     'query' => [
                         'access_token' => $token,
-                        'fields'       => 'id, first_name, last_name, picture.type(large), email',
-                        'v'            => '2.12'
+                        'fields' => 'id, first_name, last_name, picture.type(large), email',
+                        'v' => '2.12'
                     ]
                 ]
             );
@@ -117,7 +127,7 @@ trait RestUserSocialRepository
                 ]);
 
                 if (!$userSocial->save()) {
-                    throw new ServerErrorHttpException();
+                    $this->throwModelException($userSocial->errors);
                 }
 
                 if (!static::updateUserProfileBySocialNetwork($userData->first_name, $userData->last_name, $userData->picture->data->url)) {
@@ -125,14 +135,21 @@ trait RestUserSocialRepository
                 }
 
                 $user = RestUserEntity::findOne(Yii::$app->user->id);
+                if (isset($userData->email) && empty($user->email)) {
+                    $user->email = $userData->email;
+                }
                 $user->status = RestUserEntity::STATUS_VERIFIED;
-                $user->save(false, ['status']);
+                if (!$user->save()) {
+                    $this->throwModelException($user->errors);
+                }
 
                 $transaction->commit();
 
                 return $user->profile->getProfile();
             }
             throw new ServerErrorHttpException();
+        } catch (UnprocessableEntityHttpException $e) {
+                throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (BadRequestHttpException $e) {
             throw new BadRequestHttpException($e->getMessage());
         } catch (\Exception $e) {

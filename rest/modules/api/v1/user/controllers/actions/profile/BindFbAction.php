@@ -112,6 +112,10 @@ class BindFbAction extends Action
      *         response = 400,
      *         description = "Bad request"
      *     ),
+     *     @SWG\Response (
+     *         response = 422,
+     *         description = "Validation Error"
+     *     ),
      *     @SWG\Response(
      *         response = 500,
      *         description = "Internal Server Error"
