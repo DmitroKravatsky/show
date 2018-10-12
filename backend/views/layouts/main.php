@@ -84,6 +84,10 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'icon' => 'group'
                                         ],
                                         [
+                                            'label' => Yii::t('app', 'Users'), 'url' => [Url::to('/user/index')],
+                                            'icon' => 'user'
+                                        ],
+                                        [
                                             'label' => Yii::t('app', 'Bids'),
                                             'url' => ['/bid/index'],
                                             'icon' => 'file'

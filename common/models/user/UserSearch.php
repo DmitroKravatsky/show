@@ -28,7 +28,7 @@ class UserSearch extends User
     {
         return [
             [['id', 'created_at', 'status_online', 'accept_invite',], 'integer'],
-            [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status', 'lastLoginRange',], 'safe'],
+            [['email', 'phone_number', 'full_name', 'dateRange', 'invite_code_status', 'lastLoginRange', 'status',], 'safe'],
         ];
     }
 

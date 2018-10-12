@@ -12,6 +12,7 @@ use yii\db\ActiveRecord;
 use yii\web\IdentityInterface;
 use Yii;
 use common\models\userSocial\UserSocial;
+use yii\helpers\ArrayHelper;
 
 /**
  * User model
@@ -400,11 +401,79 @@ class User extends ActiveRecord implements IdentityInterface
     }
 
     /**
+     * @return array
+     */
+    public static function statusLabels(): array
+    {
+        return [
+            self::STATUS_VERIFIED => Yii::t('app', 'Verified'),
+            self::STATUS_UNVERIFIED => Yii::t('app', 'Unverified'),
+            self::STATUS_BANNED => Yii::t('app', 'Banned'),
+            self::STATUS_DELETED => Yii::t('app', 'Deleted'),
+        ];
+    }
+
+    /**
+     * @param string $status
+     * @return string
+     */
+    public static function getStatusValue($status): string
+    {
+        return static::statusLabels()[$status];
+    }
+
+    /**
      * @param integer $id
      * @return bool
      */
     public static function isUserDeleted($id): bool
     {
         return static::findOne($id)->status === self::STATUS_DELETED;
+    }
+
+    /**
+     * @return array
+     */
+    public static function getManagerAllowedToUpdateStatuses(): array
+    {
+        return [
+            self::STATUS_VERIFIED => Yii::t('app', 'Verified'),
+            self::STATUS_UNVERIFIED => Yii::t('app', 'Unverified'),
+        ];
+    }
+
+    /**
+     * @param string $status
+     * @return array
+     */
+    public static function getAllUserStatusesWithOutCurrentStatus($status): array
+    {
+        $statuses = static::statusLabels();
+        ArrayHelper::remove($statuses, $status);
+        return $statuses;
+    }
+
+    /**
+     * @param string $status
+     * @return array
+     */
+    public static function getManagerAllowedToUpdateStatusesWithOutCurrentStatus($status): array
+    {
+        $statuses = static::getManagerAllowedToUpdateStatuses();
+        ArrayHelper::remove($statuses, $status);
+        return $statuses;
+    }
+
+    /**
+     * @param string $status
+     * @return bool
+     */
+    public static function canUpdateStatus($status): bool
+    {
+        $statuses = [self::STATUS_DELETED, self::STATUS_BANNED];
+        if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($status, $statuses)) {
+            return false;
+        }
+        return true;
     }
 }

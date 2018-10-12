@@ -89,6 +89,7 @@ class BidSearch extends BidEntity
             'user_profile.user_id' => $this->processed_by,
             'm.id'                 => $this->in_progress_by_manager,
             'bid.status'           => $this->status,
+            'created_by'           => $this->created_by,
         ])->joinWith([
             'inProgressByManager' => function ($query) {
                 $query->from(['m' => BackendUser::tableName()]);
