@@ -115,6 +115,10 @@ class UnbindSocialNetworkAction extends Action
      *         response = 400,
      *         description = "Bad request"
      *     ),
+     *     @SWG\Response(
+     *         response = 403,
+     *         description = "Forbidden"
+     *     ),
      *     @SWG\Response (
      *         response = 404,
      *         description = "Not found"

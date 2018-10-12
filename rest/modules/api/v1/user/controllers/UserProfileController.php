@@ -12,11 +12,12 @@ use yii\rest\Controller;
 use yii\filters\VerbFilter;
 use yii\filters\auth\HttpBearerAuth;
 use yii\filters\AccessControl;
+use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class UserProfileController
  * @package rest\modules\api\v1\user\controllers
- *
+ * @mixin AccessUserStatusBehavior
  */
 class UserProfileController extends Controller
 {
@@ -54,8 +55,25 @@ class UserProfileController extends Controller
                 ],
             ],
         ];
+
+        $behaviors['accessUserStatus'] = [
+            'class'   => AccessUserStatusBehavior::class,
+            'message' => 'Доступ запрещён.'
+        ];
         
         return $behaviors;
+    }
+
+    /**
+     * @param \yii\base\Action $action
+     * @return bool
+     */
+    public function beforeAction($action): bool
+    {
+        parent::beforeAction($action);
+        $this->checkUserRole();
+
+        return true;
     }
 
     /**

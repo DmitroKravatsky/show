@@ -4,37 +4,13 @@ namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\models\userProfile\UserProfileEntity;
 use yii\rest\Action;
-use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class GetProfileAction
  * @package rest\modules\api\v1\user\controllers\actions\profile
- * @mixin AccessUserStatusBehavior
  */
 class GetProfileAction extends Action
 {
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class'   => AccessUserStatusBehavior::class,
-                'message' => 'Доступ запрещён.'
-            ]
-        ];
-    }
-
-    /**
-     * @return bool
-     */
-    protected function beforeRun(): bool
-    {
-        $this->checkUserRole();
-        return parent::beforeRun();
-    }
-
     /**
      * Returns a user profile
      * 

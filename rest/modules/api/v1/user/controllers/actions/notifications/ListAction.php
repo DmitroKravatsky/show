@@ -5,37 +5,13 @@ namespace rest\modules\api\v1\user\controllers\actions\notifications;
 use common\models\userNotifications\UserNotifications;
 use yii\data\ArrayDataProvider;
 use yii\rest\Action;
-use common\behaviors\AccessUserStatusBehavior;
 
 /**
  * Class ListAction
  * @package rest\modules\api\v1\user\controllers\actions\notifications
- * @mixin AccessUserStatusBehavior
  */
 class ListAction extends Action
 {
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            [
-                'class'   => AccessUserStatusBehavior::class,
-                'message' => 'Доступ запрещён.'
-            ]
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    protected function beforeRun(): bool
-    {
-        $this->checkUserRole();
-        return parent::beforeRun();
-    }
-
     /**
      * Returns list of user notifications
      * 
