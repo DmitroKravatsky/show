@@ -79,6 +79,7 @@ $(document).ready(function () {
     $('body').on('change', '.user-status', function () {
         var newStatus = this.value;
         var fieldId = $(this).parent().parent().data('key');
+        var tableRow = $('tr[data-key="' + fieldId + '"]');
         var STATUS_DELETED = 'DELETED';
         var STATUS_BANNED = 'BANNED';
 
@@ -100,7 +101,9 @@ $(document).ready(function () {
                     '</div>'
                 );
 
-                $('.status-column').html(userStatus);
+
+                tableRow.find('.status-column').html(userStatus);
+
                 if (!isAdmin && (userStatus === STATUS_DELETED || userStatus === STATUS_BANNED)) {
                     $('.user-status').prop('disabled', true);
                 }
