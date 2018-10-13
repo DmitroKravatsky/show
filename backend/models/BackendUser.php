@@ -10,9 +10,11 @@ class BackendUser extends User
 {
     const SCENARIO_REGISTER = 1;
     const SCENARIO_UPDATE_PASSWORD = 2;
+    const SCENARIO_UPDATE_PASSWORD_BY_ADMIN = 3;
 
     public $repeatPassword;
     public $currentPassword;
+    public $newPassword;
 
     /**
      * @return array
@@ -25,7 +27,18 @@ class BackendUser extends User
             [['email'], 'checkEmailExistence'],
             [['verification_token'], 'string', 'max' => 255],
             [['password', 'repeatPassword'], 'string', 'min' => 6],
-            [['repeatPassword'], 'compare', 'compareAttribute' => 'password'],
+            [
+                ['repeatPassword'],
+                'compare',
+                'compareAttribute' => 'password',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
+            [
+                'repeatPassword',
+                'compare',
+                'compareAttribute' => 'newPassword',
+                'on' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN
+            ],
+            [['newPassword', 'repeatPassword'], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN]],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
@@ -40,6 +53,7 @@ class BackendUser extends User
     {
         return [
             'password'         => Yii::t('app', 'Password'),
+            'newPassword'         => Yii::t('app', 'New Password'),
             'currentPassword'  => Yii::t('app', 'Current Password'),
             'repeatPassword'   => Yii::t('app', 'Repeat Password'),
             'phone_number'     => Yii::t('app', 'Phone Number'),

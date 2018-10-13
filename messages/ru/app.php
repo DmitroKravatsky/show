@@ -171,4 +171,6 @@ return [
     'Online wallet' => 'Онлайн кошелек',
     'Credit card' => 'Крединая карта',
     'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
+    'Change Password' => 'Сменить Пароль',
+    'New Password' => 'Новый Пароль',
 ];

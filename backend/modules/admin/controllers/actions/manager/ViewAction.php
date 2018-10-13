@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\manager;
 
+use backend\models\BackendUser;
 use backend\modules\admin\controllers\ManagerController;
 use yii\base\Action;
 
@@ -20,6 +21,7 @@ class ViewAction extends Action
     public function run($id): string
     {
         $manager = $this->controller->findModel($id);
+        $manager->setScenario(BackendUser::SCENARIO_UPDATE_PASSWORD_BY_ADMIN);
 
         return $this->controller->render('view', [
             'manager' => $manager,

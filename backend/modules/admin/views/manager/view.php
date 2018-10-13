@@ -1,5 +1,6 @@
 <?php
 
+use yii\widgets\ActiveForm;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 use backend\models\BackendUser;
@@ -14,6 +15,41 @@ $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+<div class="modal" tabindex="-1"  id="update-manager-password-form" role="dialog" hidden="true">
+    <div class="modal-dialog" role="document">
+        <div class="modal-content">
+            <div class="modal-header">
+                <h5 class="modal-title"><?= Yii::t('app', 'Change Password') ?></h5>
+            </div>
+            <div class="x_content">
+                <div id="alerts"></div>
+                <div class="form-group">
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Password'); ?></label>
+                    <?php $form = ActiveForm::begin([
+                        'action'  => '/admin/manager/update-password',
+                    ]); ?>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <?= $form->field($manager, 'newPassword', ['enableClientValidation' => true])->passwordInput([
+                            'autofocus'   => true,
+                        ])->label(false) ?>
+                    </div>
+                    <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Repeat Password'); ?></label>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
+                        <?= $form->field($manager, 'repeatPassword', ['enableClientValidation' => true])->passwordInput([
+                        ])->label(false) ?>
+                    </div>
+                </div>
+            </div>
+            <div class="modal-footer">
+                <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
+                    'class' => 'btn btn-primary',
+                ]) ?>
+                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
+            </div>
+            <?php $form = ActiveForm::end(); ?>
+        </div>
+    </div>
+</div>
 
 <div class="manager-view">
     <div class="row">
@@ -58,6 +94,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'last_login:datetime:' . Yii::t('app', 'Last Login'),
                     ],
                 ]) ?>
+                <div class="form-group">
+                    <div class="col-md-9 col-sm-9 col-xs-12 col-md-offset-3">
+                        <button id="update-manager-password-button" type="submit" class="btn btn-success"><?=Yii::t('app', 'Change Password')?></button>
+                    </div>
+                </div>
             <?php Panel::end() ?>
         </div>
     </div>

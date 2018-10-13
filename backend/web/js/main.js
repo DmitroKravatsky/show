@@ -24,4 +24,9 @@ $(document).ready(function () {
         event.preventDefault();
         $('#new-review-form').modal("show");
     });
+
+    $('#update-manager-password-button').on('click', function (event) {
+        event.preventDefault();
+        $('#update-manager-password-form').modal("show");
+    });
 });
