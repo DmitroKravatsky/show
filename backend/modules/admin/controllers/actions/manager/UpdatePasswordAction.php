@@ -35,8 +35,6 @@ class UpdatePasswordAction extends Action
             $managerModel->load(Yii::$app->request->post());
             $managerModel->save();
             Yii::$app->session->setFlash('success', Yii::t('app', 'Password was successfully updated.'));
-        } catch (UnprocessableEntityHttpException $e) {
-            return $managerModel->errors;
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
             Yii::$app->session->setFlash('error', Yii::t('app', 'Something wrong, please try again later.'));
