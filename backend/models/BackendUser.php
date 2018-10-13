@@ -22,11 +22,11 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password', 'email', 'phone_number',], 'required'],
+            [['password', 'email', 'phone_number',], 'required', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
             [['email', 'new_email',], 'email'],
-            [['email'], 'checkEmailExistence'],
+            [['email'], 'checkEmailExistence', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
             [['verification_token'], 'string', 'max' => 255],
-            [['password', 'repeatPassword'], 'string', 'min' => 6],
+            [['password', 'repeatPassword', 'newPassword'], 'string', 'min' => 6],
             [
                 ['repeatPassword'],
                 'compare',
@@ -45,7 +45,7 @@ class BackendUser extends User
             [['currentPassword'], 'checkCurrentPassword'],
             [['verification_code', 'status_online', 'last_login', 'accept_invite',], 'integer'],
             ['phone_number', PhoneInputValidator::class],
-            ['phone_number', 'checkPhoneNumberExistence'],
+            ['phone_number', 'checkPhoneNumberExistence', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
         ];
     }
 
@@ -72,9 +72,14 @@ class BackendUser extends User
             return false;
         }
 
-        if (self::SCENARIO_UPDATE_PASSWORD == $this->scenario) {
+        if ($this->scenario === self::SCENARIO_UPDATE_PASSWORD) {
             $this->password = Yii::$app->security->generatePasswordHash($this->password);
         }
+
+        if ($this->scenario === self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN) {
+            $this->password = Yii::$app->security->generatePasswordHash($this->newPassword);
+        }
+
         return true;
     }
 

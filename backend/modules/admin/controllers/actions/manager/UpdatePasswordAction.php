@@ -29,10 +29,17 @@ class UpdatePasswordAction extends Action
      */
     public function run()
     {
-        $managerModel = new BackendUser();
+        $params = Yii::$app->request->post()['BackendUser'];
+        $managerModel = BackendUser::findByEmail($params['email']);
+        $managerModel->setScenario(BackendUser::SCENARIO_UPDATE_PASSWORD_BY_ADMIN);
 
         try {
-            $managerModel->load(Yii::$app->request->post());
+            $managerModel->setAttributes(
+                [
+                    'newPassword' => $params['newPassword'],
+                    'repeatPassword' => $params['repeatPassword'],
+                ]
+            );
             $managerModel->save();
             Yii::$app->session->setFlash('success', Yii::t('app', 'Password was successfully updated.'));
         } catch (\Exception $e) {

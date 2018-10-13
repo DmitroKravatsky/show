@@ -21,6 +21,7 @@ class ViewAction extends Action
     public function run($id): string
     {
         $manager = $this->controller->findModel($id);
+        // For updating password from manager info view
         $manager->setScenario(BackendUser::SCENARIO_UPDATE_PASSWORD_BY_ADMIN);
 
         return $this->controller->render('view', [

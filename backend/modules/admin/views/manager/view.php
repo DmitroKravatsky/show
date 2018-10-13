@@ -29,6 +29,10 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'action'  => '/admin/manager/update-password',
                     ]); ?>
                     <div class="col-md-9 col-sm-9 col-xs-12">
+                        <?= $form->field($manager, 'email', ['enableClientValidation' => true])->hiddenInput([
+                        ])->label(false) ?>
+                    </div>
+                    <div class="col-md-9 col-sm-9 col-xs-12">
                         <?= $form->field($manager, 'newPassword', ['enableClientValidation' => true])->passwordInput([
                             'autofocus'   => true,
                         ])->label(false) ?>
