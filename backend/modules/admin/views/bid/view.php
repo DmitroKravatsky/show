@@ -175,10 +175,8 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'created_by',
                         'filter'    => false,
-                        'label'     => Yii::t('app', 'Operator'),
-                        'format'    => 'raw',
                         'value'     => function (BidHistory $bidHistory) {
-                            return Html::a($bidHistory->bid->author->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']) ?? null;
+                            return $bidHistory->bid->author->fullName ?? null;
                         }
                     ],
                     [
@@ -206,16 +204,24 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute' => 'processed_by',
                         'filter'    => false,
                         'visible'   => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                        'format'    => 'raw',
                         'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->processedByProfile->userFullName ?? null;
+                            if (isset($bidHistory->processedByProfile)) {
+                                return Html::a($bidHistory->processedByProfile->userFullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                            }
+                            return null;
                         }
                     ],
                     [
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => false,
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                        'format'    => 'raw',
                         'value'          => function (BidHistory $bidHistory) {
-                            return $bidHistory->inProgressByManager->fullName ?? null;
+                            if (isset($bidHistory->inProgressByManager)) {
+                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                            }
+                            return null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
                     ],
