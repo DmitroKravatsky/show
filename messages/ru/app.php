@@ -177,4 +177,6 @@ return [
     'Banned' => 'Забанен',
     'Deleted' => 'Удалён',
     'Minimum Transaction Sum' => 'Минимальная Сумма Транзакции',
+    'Statistics' => 'Статистика',
+    'Operator' => 'Оператор',
 ];
