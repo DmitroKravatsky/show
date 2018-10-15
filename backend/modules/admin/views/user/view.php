@@ -19,7 +19,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 
-<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
+<?php $this->registerJs('var language = "' . Yii::$app->language . '"; addEventListener("popstate",function(e){location.reload();},false);', View::POS_HEAD) ?>
 
 <div class="manager-view">
     <div class="row">

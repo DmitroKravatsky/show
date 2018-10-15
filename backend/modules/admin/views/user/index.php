@@ -131,7 +131,7 @@ $this->params['breadcrumbs'][] = $this->title;
                             'bid-list' => function($url, User $user) {
                                 $url = Url::to(['/bid/index', 'BidSearch' => ['created_by' => $user->id]]);
                                 return Html::a('<span class="glyphicon glyphicon-list"></span>', $url, [
-                                    'title' => Yii::t('app', 'Bids'),
+                                    'title' => Yii::t('app', 'Bids'), 'onclick' => 'location.reload()'
                                 ]);
                             },
                         ]

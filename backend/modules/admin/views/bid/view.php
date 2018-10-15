@@ -20,7 +20,7 @@ $this->params['breadcrumbs'][] = $this->title;
 
 <?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
 
-<?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
+<?php $this->registerJs('var language = "' . Yii::$app->language . '";  addEventListener("popstate",function(e){location.reload();},false);', View::POS_HEAD) ?>
 
 <div class="bid-entity-view">
     <div class="row">
