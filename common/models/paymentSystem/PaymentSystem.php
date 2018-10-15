@@ -162,11 +162,15 @@ class PaymentSystem extends ActiveRecord implements IVisible
         return $this->hasMany(Reserve::class, ['payment_system_id' => 'id']);
     }
 
-    public static function getList($onlyVisible = true)
+    public static function getList($params ,$onlyVisible = true)
     {
         $query = static::find()->select([
             'id', 'name', 'currency', 'payment_system_type'
         ]);
+
+        if (isset($params['filter'])) {
+            $query->andWhere(['currency' => $params['filter']]);
+        }
 
         if ($onlyVisible) {
             $query->where(['visible' => self::VISIBLE_YES]);

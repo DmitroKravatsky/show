@@ -41,7 +41,7 @@ class ListAction extends Action
      *        description = "filter by currencies",
      *        required = false,
      *        type = "string",
-     *        enum = {"uah", "rub", "usd"},
+     *        enum = {"uah", "rub", "usd", "eur", "wmx"},
      *      ),
      *      @SWG\Response(
      *         response = 200,
