@@ -20,7 +20,8 @@ class PaymentSystemSearch extends PaymentSystem
     {
         return [
             [['id', 'visible', 'created_at', 'updated_at',], 'integer'],
-            [['name', 'currency', 'payment_system_type'], 'safe'],
+            [['name', 'currency', 'payment_system_type',], 'safe'],
+            [['min_transaction_sum'], 'double'],
         ];
     }
 
@@ -59,6 +60,7 @@ class PaymentSystemSearch extends PaymentSystem
         $query->andFilterWhere([
             'visible'  => $this->visible,
             'currency' => $this->currency,
+            'min_transaction_sum' => $this->min_transaction_sum,
         ]);
 
         $query->andFilterWhere(['like', 'name', $this->name]);
