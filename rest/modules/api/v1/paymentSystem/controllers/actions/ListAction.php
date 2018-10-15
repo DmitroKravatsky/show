@@ -14,6 +14,14 @@ class ListAction extends Action
      *      summary="Payment systems list",
      *      description="Get payment systems",
      *      produces={"application/json"},
+     *     @SWG\Parameter(
+     *        in = "query",
+     *        name = "filter",
+     *        description = "filter by currencies",
+     *        required = false,
+     *        type = "string",
+     *        enum = {"uah", "rub", "usd", "eur", "wmx"},
+     *      ),
      *      @SWG\Response(
      *         response = 200,
      *         description = "success",
@@ -55,6 +63,6 @@ class ListAction extends Action
     {
         /** @var PaymentSystem $paymentSystem */
         $paymentSystem = $this->modelClass;
-        return $paymentSystem::getList(false);
+        return $paymentSystem::getList(Yii::$app->request->queryParams, false);
     }
 }
