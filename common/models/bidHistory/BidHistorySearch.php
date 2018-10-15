@@ -54,7 +54,7 @@ class BidHistorySearch extends BidHistory
         }
 
         $dataProvider = new ActiveDataProvider([
-            'query' => $query,
+            'query' => $query->orderBy(['time' => SORT_DESC]),
         ]);
 
         $this->load($params);

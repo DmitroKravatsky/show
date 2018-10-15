@@ -7,7 +7,9 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use Yii;
-use backend\modules\admin\controllers\actions\manager\{ ViewAction, DeleteAction, IndexAction, InviteAction, ReInviteAction };
+use backend\modules\admin\controllers\actions\manager\{
+    StatisticsAction, ViewAction, DeleteAction, IndexAction, InviteAction, ReInviteAction
+};
 
 class ManagerController extends Controller
 {
@@ -22,7 +24,7 @@ class ManagerController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'delete', 'invite', 're-invite',],
+                        'actions' => ['index', 'view', 'delete', 'invite', 're-invite', 'statistics',],
                         'roles'   => ['admin',]
                     ],
                 ],
@@ -50,6 +52,9 @@ class ManagerController extends Controller
             ],
             're-invite' => [
                 'class' => ReInviteAction::class,
+            ],
+            'statistics' => [
+                'class' => StatisticsAction::class,
             ],
         ];
     }
