@@ -169,7 +169,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public static function getList($params ,$onlyVisible = true)
     {
         $query = static::find()->select([
-            'id', 'name', 'currency', 'payment_system_type'
+            'id', 'name', 'currency', 'payment_system_type', 'min_transaction_sum'
         ]);
 
         if (isset($params['filter'])) {

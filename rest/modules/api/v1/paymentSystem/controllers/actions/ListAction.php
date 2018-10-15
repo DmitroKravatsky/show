@@ -32,6 +32,7 @@ class ListAction extends Action
      *                   @SWG\Property(property="name", type="string", description="Payment System name"),
      *                   @SWG\Property(property="currency", type="string", description="Payment System currency"),
      *                   @SWG\Property(property="payment_system_type", type="string", description="Payment System Type"),
+     *                   @SWG\Property(property="min_transaction_sum", type="integer", description="Minimum Transaction Amount"),
      *              ),
      *         ),
      *         examples = {
@@ -40,18 +41,21 @@ class ListAction extends Action
      *                 "name": "Webmoney RUB",
      *                 "currency": "rub",
      *                 "payment_system_type": "online_wallet",
+     *                 "min_transaction_sum": 200
      *             },
      *             {
      *                 "id": 3,
      *                 "name": "ВТБ 24 RUB",
      *                 "currency": "rub",
      *                 "payment_system_type": "credit_card",
+     *                 "min_transaction_sum": 300
      *             },
      *             {
      *                 "id": 4,
      *                 "name": "Приват24 UAH",
      *                 "currency": "uah",
      *                 "payment_system_type": "credit_card",
+     *                 "min_transaction_sum": 100
      *             }
      *         }
      *     ),
