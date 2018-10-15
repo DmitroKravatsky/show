@@ -17,6 +17,7 @@ use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
  * @property string $currency
  * @property int $visible
  * @property string $payment_system_type
+ * @property float $min_transaction_sum
  * @property int $created_at
  * @property int $updated_at
  *
@@ -33,6 +34,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
     const RUB = 'rub';
     const EUR = 'eur';
     const WMX = 'wmx';
+
     const ONLINE_WALLET = 'online_wallet';
     const CREDIT_CARD   = 'credit_card';
 
@@ -97,7 +99,8 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function rules(): array
     {
         return [
-            [['name'], 'required'],
+            [['name', 'min_transaction_sum',], 'required'],
+            [['min_transaction_sum'], 'double', 'min' => 10],
             [['currency'], 'string'],
             [['visible', 'created_at', 'updated_at'], 'integer'],
             [['name'], 'string', 'max' => 50],
@@ -117,6 +120,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
             'currency'            => Yii::t('app', 'Currency'),
             'visible'             => Yii::t('app', 'Visible'),
             'payment_system_type' => Yii::t('app', 'Payment system type'),
+            'min_transaction_sum' => Yii::t('app', 'Minimum Transaction Sum'),
             'created_at'          => Yii::t('app', 'Created At'),
             'updated_at'          => Yii::t('app', 'Updated At'),
         ];

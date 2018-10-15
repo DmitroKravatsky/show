@@ -176,4 +176,5 @@ return [
     'Unverified' => 'Неверифицирован',
     'Banned' => 'Забанен',
     'Deleted' => 'Удалён',
+    'Minimum Transaction Sum' => 'Минимальная Сумма Транзакции',
 ];
