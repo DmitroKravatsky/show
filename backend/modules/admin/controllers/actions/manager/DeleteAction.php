@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers\actions\manager;
 
+use backend\models\BackendUser;
 use backend\modules\admin\controllers\ManagerController;
 use yii\base\Action;
 use yii\helpers\Url;
@@ -28,6 +29,13 @@ class DeleteAction extends Action
      */
     public function run($userId)
     {
+        if(BackendUser::managerHasInprogressBid($userId)) {
+            Yii::$app->session->setFlash('error',
+                Yii::t('app', 'Manager has at least one bid in process. Deletion is not allowed')
+            );
+            return $this->controller->redirect(Url::to(\Yii::$app->request->referrer));
+        }
+
         $user = $this->controller->findModel($userId);
         try {
             $user->delete();

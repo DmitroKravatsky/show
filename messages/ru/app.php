@@ -182,5 +182,6 @@ return [
     'Statistics' => 'Статистика',
     'Operator' => 'Оператор',
     'Reserve successfully deleted.' => 'Резерв усешно удален',
-    'Review successfully deleted.' => 'Отзыв успешно удален.'
+    'Review successfully deleted.' => 'Отзыв успешно удален.',
+    'Manager has at least one bid in process. Deletion is not allowed' => 'За менеджером закреплены необработанные заявки. Удаление временно невозможно',
 ];
