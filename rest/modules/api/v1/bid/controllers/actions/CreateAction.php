@@ -6,6 +6,7 @@ use common\models\bid\BidEntity;
 use rest\modules\api\v1\bid\controllers\BidController;
 use yii\base\ErrorHandler;
 use yii\rest\Action;
+use yii\web\BadRequestHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
 use Yii;
@@ -169,6 +170,10 @@ class CreateAction extends Action
      *         response = 401,
      *         description = "Invalid credentials or Expired token"
      *     ),
+     *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
+     *     ),
      *     @SWG\Response(
      *         response = 500,
      *         description = "Internal Server Error"
@@ -176,6 +181,7 @@ class CreateAction extends Action
      * )
      *
      * @return array
+     * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      */
@@ -188,9 +194,16 @@ class CreateAction extends Action
 
             Yii::$app->getResponse()->setStatusCode(201, 'Your bid was successfully granted');
             return [
-                'status'  => Yii::$app->response->statusCode,
+                'status' => Yii::$app->response->statusCode,
                 'message' => Yii::t('app', 'Your bid was successfully granted'),
-                'data'    => $dataResult
+                'data' => $dataResult
+            ];
+        } catch (BadRequestHttpException $e) {
+            Yii::$app->getResponse()->setStatusCode($e->statusCode);
+            return [
+                'status' => Yii::$app->response->statusCode,
+                'message' => Yii::t('app', $e->getMessage()),
+                'data' => ['user_exist' => true]
             ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());

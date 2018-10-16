@@ -8,6 +8,7 @@ use common\models\paymentSystem\PaymentSystem;
 use common\models\userProfile\UserProfileEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
+use yii\web\BadRequestHttpException;
 use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
@@ -165,7 +166,8 @@ trait RestBidRepository
      * @param $postData array of the POST data
      *
      * @return array
-
+     *
+     * @throws BadRequestHttpException
      * @throws ServerErrorHttpException
      * @throws UnprocessableEntityHttpException
      * @throws \yii\db\Exception
@@ -178,34 +180,49 @@ trait RestBidRepository
         $transaction = Yii::$app->db->beginTransaction();
         try {
             $bid->setAttributes($postData);
+
+            if (
+                Yii::$app->user->can(RestUserEntity::ROLE_GUEST)
+                && (RestUserEntity::findByEmail($bid->email) || RestUserEntity::findByPhoneNumber($bid->phone_number))
+            ) {
+                throw new BadRequestHttpException('Пользователь с таким "E-mail" или "Номером телефона" уже существует. Пожалуйста авторизуйтесь.');
+            }
+
             $bid->status = BidEntity::STATUS_NEW;
             if (!$bid->validate()) {
                 $this->throwModelException($bid->errors);
             }
+
+            if (Yii::$app->user->can(RestUserEntity::ROLE_GUEST)) {
+                $bid->created_by = $this->registerUserByBid($bid);
+            } else {
+                $this->updateUserByBid($bid);
+            }
+
             if (!$bid->save(false)) {
                 throw new ServerErrorHttpException();
             }
-            if (Yii::$app->user->can(RestUserEntity::ROLE_GUEST)) {
-                $this->createOrUpdateUserByBid($bid);
-            }
+
             $transaction->commit();
 
             return [
-                'id'                  => $bid->id,
-                'created_by'          => $bid->created_by,
-                'name'                => $bid->author->profile->name,
-                'last_name'           => $bid->author->profile->last_name,
-                'phone_number'        => $bid->author->phone_number,
-                'email'               => $bid->author->email,
-                'status'              => $bid->status,
+                'id' => $bid->id,
+                'created_by' => $bid->created_by,
+                'name' => $bid->author->profile->name,
+                'last_name' => $bid->author->profile->last_name,
+                'phone_number' => $bid->author->phone_number,
+                'email' => $bid->author->email,
+                'status' => $bid->status,
                 'from_payment_system' => $bid->fromPaymentSystem->name,
-                'to_payment_system'   => $bid->toPaymentSystem->name,
-                'from_currency'       => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
-                'to_currency'         => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
-                'from_sum'            => round($bid->from_sum, 2),
-                'to_sum'              => round($bid->to_sum, 2),
-                'crated_at'           => $bid->created_at,
+                'to_payment_system' => $bid->toPaymentSystem->name,
+                'from_currency' => PaymentSystem::getCurrencyValue($bid->fromPaymentSystem->currency),
+                'to_currency' => PaymentSystem::getCurrencyValue($bid->toPaymentSystem->currency),
+                'from_sum' => round($bid->from_sum, 2),
+                'to_sum' => round($bid->to_sum, 2),
+                'crated_at' => $bid->created_at,
             ];
+        } catch (BadRequestHttpException $e) {
+            throw new BadRequestHttpException($e->getMessage());
         } catch (UnprocessableEntityHttpException $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
             $transaction->rollBack();
@@ -219,38 +236,46 @@ trait RestBidRepository
 
     /**
      * @param BidEntity $bid
-     * @throws \yii\base\Exception
      */
-    protected function createOrUpdateUserByBid(BidEntity $bid)
+    protected function updateUserByBid(BidEntity $bid)
     {
-        if (($user = RestUserEntity::findByEmail($bid->email)) || ($user = RestUserEntity::findByPhoneNumber($bid->phone_number))) {
-            if ($user->email != $bid->email) {
-                $user->email = $bid->email;
-                if (!$user->save(true, ['email'])) {
-                    $this->throwModelException($user->errors);
-                }
-            }
-            if ($user->phone_number != $bid->phone_number) {
-                $user->phone_number = $bid->phone_number;
-                if (!$user->save(true, ['phone_number'])) {
-                    $this->throwModelException($user->errors);
-                }
-            }
+        $user = RestUserEntity::findOne(Yii::$app->user->id);
+        $user->setScenario(RestUserEntity::SCENARIO_UPDATE_BY_BID);
 
-            $profile = $user->profile;
-            if ($profile->name != $bid->name) {
-                $profile->name = $bid->name;
+        if ($user->email != $bid->email) {
+            $user->email = $bid->email;
+            if (!$user->save(true, ['email'])) {
+                $this->throwModelException($user->errors);
             }
-            if ($profile->last_name != $bid->last_name) {
-                $profile->last_name = $bid->last_name;
-            }
-            if (!$profile->save(true, ['name', 'last_name'])) {
-                $this->throwModelException($profile->errors);
-            }
-            return;
         }
 
+        if ($user->phone_number != $bid->phone_number) {
+            $user->phone_number = $bid->phone_number;
+            if (!$user->save(true, ['phone_number'])) {
+                $this->throwModelException($user->errors);
+            }
+        }
 
+        $profile = $user->profile;
+        if ($profile->name != $bid->name) {
+            $profile->name = $bid->name;
+        }
+
+        if ($profile->last_name != $bid->last_name) {
+            $profile->last_name = $bid->last_name;
+        }
+
+        if (!$profile->save(true, ['name', 'last_name'])) {
+            $this->throwModelException($profile->errors);
+        }
+    }
+
+    /**
+     * @param BidEntity $bid
+     * @return int
+     */
+    protected function registerUserByBid(BidEntity $bid)
+    {
         $userAttributes = ['email' => $bid->email, 'phone_number' => $bid->phone_number];
         $password = Yii::$app->security->generateRandomString(12);
         $user = new RestUserEntity(['scenario' => RestUserEntity::SCENARIO_REGISTER_BY_BID]);
@@ -279,6 +304,8 @@ trait RestBidRepository
         /** @var SendSms $smsComponent */
         $smsComponent = Yii::$app->sendSms;
         //$smsComponent->run($this->getMessageForRegistrationByPhoneNumber($user, $password), $user->phone_number);
+
+        return $user->id;
     }
 
     /**

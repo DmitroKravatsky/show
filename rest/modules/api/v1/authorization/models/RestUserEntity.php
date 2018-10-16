@@ -48,6 +48,7 @@ class RestUserEntity extends User
 
     const SCENARIO_REGISTER        = 'register';
     const SCENARIO_REGISTER_BY_BID = 'register-by-bid';
+    const SCENARIO_UPDATE_BY_BID   = 'update-by-bid';
     const SCENARIO_SOCIAL_REGISTER = 'social_register';
     const SCENARIO_RECOVERY_PWD    = 'recovery-password';
     const SCENARIO_UPDATE_PASSWORD = 'update-password';
@@ -113,6 +114,8 @@ class RestUserEntity extends User
         ];
 
         $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
+
+        $scenarios[self::SCENARIO_UPDATE_BY_BID] = ['email', 'phone_number',];
 
         $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'role',
@@ -218,7 +221,9 @@ class RestUserEntity extends User
             [
                 ['phone_number', 'email',],
                 'unique',
-                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID]
+                'on' => [
+                    self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID, self::SCENARIO_UPDATE_BY_BID
+                ]
             ],
         ];
     }
