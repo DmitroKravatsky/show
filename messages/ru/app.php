@@ -181,5 +181,6 @@ return [
     'Minimum Transaction Sum' => 'Минимальная Сумма Транзакции',
     'Statistics' => 'Статистика',
     'Operator' => 'Оператор',
+    'Reserve successfully deleted.' => 'Резерв усешно удален',
     'Review successfully deleted.' => 'Отзыв успешно удален.'
 ];

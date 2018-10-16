@@ -2,7 +2,9 @@
 
 namespace backend\modules\admin\controllers;
 
-use backend\modules\admin\controllers\actions\reserve\{IndexAction, ToggleVisibleAction, CreateAction, UpdateAction, ViewAction};
+use backend\modules\admin\controllers\actions\reserve\{
+    IndexAction, ToggleVisibleAction, CreateAction, UpdateAction, ViewAction, DeleteAction
+};
 use common\models\reserve\ReserveEntity;
 use yii\web\Controller;
 use yii\filters\AccessControl;
@@ -22,7 +24,7 @@ class ReserveController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'toggle-visible',],
+                        'actions' => ['index', 'view', 'create', 'update', 'toggle-visible', 'delete'],
                         'roles'   => ['admin', 'manager',]
                     ],
                 ],
@@ -50,6 +52,9 @@ class ReserveController extends Controller
             ],
             'toggle-visible' => [
                 'class' => ToggleVisibleAction::class
+            ],
+            'delete' => [
+                'class' => DeleteAction::class
             ],
         ];
     }
