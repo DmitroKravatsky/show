@@ -75,7 +75,7 @@ $this->title = Yii::t('app', 'Dashboard');
                         <div id="sidebar-menu" class="main_menu_side hidden-print main_menu">
 
                             <div class="menu_section">
-                                &nbsp;
+                                <?php $unreadNotificationsNumber = UserNotifications::getCountUnreadNotificationsByRecipient(); ?>
                                 <?= Menu::widget([
                                     'items' => [
                                         [
@@ -93,7 +93,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'icon' => 'file'
                                         ],
                                         [
-                                            'label' => Yii::t('app', 'Notifications'),
+                                            'label' => Yii::t('app', 'Notifications') . " ({$unreadNotificationsNumber})",
                                             'url' => ['/notifications/index'],
                                             'icon' => 'bell'
                                         ],
@@ -177,7 +177,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                 <li role="presentation" class="dropdown">
                                     <a href="javascript:;" class="dropdown-toggle info-number" data-toggle="dropdown" aria-expanded="false">
                                         <i class="fa fa-bell-o"></i>
-                                        <span class="badge bg-green"><?= UserNotifications::getCountUnreadNotificationsByRecipient() ?></span>
+                                        <span class="badge bg-green"><?= $unreadNotificationsNumber ?></span>
                                     </a>
 
                                     <ul id="menu1" class="dropdown-menu list-unstyled msg_list" role="menu">
