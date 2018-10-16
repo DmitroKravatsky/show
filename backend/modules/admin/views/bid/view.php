@@ -207,8 +207,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'visible'   => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'format'    => 'raw',
                         'value'     => function (BidHistory $bidHistory) {
-                            if (isset($bidHistory->processedByProfile)) {
-                                return Html::a($bidHistory->processedByProfile->userFullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                            if (isset($bidHistory->processedBy)) {
+                                return Html::a($bidHistory->processedBy->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         }
@@ -220,7 +220,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'    => 'raw',
                         'value'          => function (BidHistory $bidHistory) {
                             if (isset($bidHistory->inProgressByManager)) {
-                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->inProgressByManager->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         },
