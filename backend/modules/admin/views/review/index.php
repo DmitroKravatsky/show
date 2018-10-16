@@ -122,7 +122,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'class' => ActionColumn::class,
-                        'template' => '{view}',
+                        'template' => '{view} {delete}',
                         'buttons' => [
                             'view' => function($url, $model) {
                                 return Html::a(
@@ -130,7 +130,14 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                     Url::to(['/review/view/' . $model->id]),
                                     ['title' => Yii::t('app', 'View')]
                                 );
-                            }
+                            },
+                            'delete' => function($url, ReviewEntity $model) {
+                                $customUrl = Url::to(['/review/delete', 'id' => $model->id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
                         ],
                     ],
                 ],
