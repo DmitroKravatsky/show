@@ -174,6 +174,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'created_by',
+                        'label'     => Yii::t('app', 'Created By'),
                         'filter'    => false,
                         'value'     => function (BidHistory $bidHistory) {
                             return $bidHistory->bid->author->fullName ?? null;
