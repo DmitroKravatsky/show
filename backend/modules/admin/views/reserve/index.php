@@ -106,7 +106,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'class'    => ActionColumn::class,
-                        'template' => '{view} {visible} {update}',
+                        'template' => '{view} {visible} {update} {delete}',
                         'buttons'  => [
                             'view' => function ($url, Reserve $reserve) {
                                 return Html::a(
@@ -135,7 +135,17 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                     Url::to(['/reserve/update/' . $reserve->id]),
                                     ['title' => Yii::t('app', 'Edit')]
                                 );
-                            }
+                            },
+                            'delete' => function($url, Reserve $reserve) {
+                                $customUrl = Url::to([
+                                    'reserve/delete',
+                                    'id' => $reserve['id']
+                                ]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => \Yii::t('app', 'Delete'),
+                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
                         ],
                     ],
                 ],
