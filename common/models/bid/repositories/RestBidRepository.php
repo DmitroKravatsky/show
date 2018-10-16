@@ -242,14 +242,14 @@ trait RestBidRepository
         $user = RestUserEntity::findOne(Yii::$app->user->id);
         $user->setScenario(RestUserEntity::SCENARIO_UPDATE_BY_BID);
 
-        if ($user->email != $bid->email) {
+        if (!$user->email) {
             $user->email = $bid->email;
             if (!$user->save(true, ['email'])) {
                 $this->throwModelException($user->errors);
             }
         }
 
-        if ($user->phone_number != $bid->phone_number) {
+        if (!$user->phone_number) {
             $user->phone_number = $bid->phone_number;
             if (!$user->save(true, ['phone_number'])) {
                 $this->throwModelException($user->errors);
@@ -257,11 +257,11 @@ trait RestBidRepository
         }
 
         $profile = $user->profile;
-        if ($profile->name != $bid->name) {
+        if (!$profile->name) {
             $profile->name = $bid->name;
         }
 
-        if ($profile->last_name != $bid->last_name) {
+        if (!$profile->last_name) {
             $profile->last_name = $bid->last_name;
         }
 
