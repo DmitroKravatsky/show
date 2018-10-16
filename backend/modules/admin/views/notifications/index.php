@@ -5,7 +5,7 @@ use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
-use yii\helpers\{ StringHelper, Html, Url };
+use yii\helpers\{ Html, Url };
 use common\helpers\{ UrlHelper, Toolbar };
 
 /** @var \yii\web\View $this */
@@ -45,6 +45,9 @@ $this->params['breadcrumbs'][] = $this->title;
                     'type'    => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
+                'rowOptions'   => function (UserNotifications $userNotifications) {
+                    return $userNotifications->is_read === UserNotifications::STATUS_READ_NO ? ['class' => 'success'] : [];
+                },
                 'columns'      => [
                     [
                         'class'          => 'kartik\grid\SerialColumn',
@@ -70,13 +73,13 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute' => 'text',
                         'value'     => function (UserNotifications $userNotification) {
-                            return StringHelper::truncate( Yii::t('app', $userNotification->notification->text, [
+                            return Yii::t('app', $userNotification->notification->text, [
                                 'full_name'    => $userNotification->notification->custom_data->full_name ?? null,
                                 'sum'          => $userNotification->notification->custom_data->sum ?? null,
                                 'currency'     => $userNotification->notification->custom_data->currency ?? null,
                                 'wallet'       => $userNotification->notification->custom_data->wallet ?? null,
                                 'phone_number' => $userNotification->notification->custom_data->phone_number ?? null,
-                            ]), 40);
+                            ]);
                         }
                     ],
                     [
