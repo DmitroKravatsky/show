@@ -173,4 +173,12 @@ return [
     'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
     'Change Password' => 'Сменить Пароль',
     'New Password' => 'Новый Пароль',
+    'User bids' => 'Заявки пользователя',
+    'Verified' => 'Верифицирован',
+    'Unverified' => 'Неверифицирован',
+    'Banned' => 'Забанен',
+    'Deleted' => 'Удалён',
+    'Minimum Transaction Sum' => 'Минимальная Сумма Транзакции',
+    'Statistics' => 'Статистика',
+    'Operator' => 'Оператор',
 ];

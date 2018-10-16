@@ -116,13 +116,27 @@ class ImageBehavior extends Behavior
      */
     public function getImageUrl(): string
     {
+        $url = $this->owner->getAttribute($this->attributeName);
+        if ($this->isAbsoluteUrl()) {
+            return $url;
+        }
+
         return Yii::getAlias('@web')
             . DIRECTORY_SEPARATOR
             . $this->savePath
             . DIRECTORY_SEPARATOR
             . $this->owner->getPrimaryKey()
             . DIRECTORY_SEPARATOR
-            . $this->owner->getAttribute($this->attributeName);
+            . $url;
+    }
+
+    /**
+     * @return int
+     */
+    protected function isAbsoluteUrl(): int
+    {
+        $url = $this->owner->getAttribute($this->attributeName);
+        return preg_match('~^(https|http):~', $url);
     }
 
     /**

@@ -60,6 +60,12 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         }
                     ],
                     [
+                        'attribute' => 'min_transaction_sum',
+                        'value'     => function (PaymentSystem $paymentSystem) {
+                            return round($paymentSystem->min_transaction_sum, 2);
+                        }
+                    ],
+                    [
                         'attribute' => 'currency',
                         'filter'    => PaymentSystem::currencyLabels(),
                         'value'     => function (PaymentSystem $reserve) {

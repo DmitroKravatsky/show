@@ -93,6 +93,7 @@ return [
                 'invite/<action:[\w-]+>'                  => 'admin/invite/<action>',
                 'reserve/<action:[\w-]+>'                 => 'admin/reserve/<action>',
                 'reserve/<action:[\w-]+>/<id:\d+>'        => 'admin/reserve/<action>',
+                'user/<action:[\w-]+>'                    => 'admin/user/<action>',
             ],
         ],
         'view' => [

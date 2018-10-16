@@ -230,7 +230,8 @@ class BidEntity extends ActiveRecord
             [['name', 'last_name', 'phone_number'], 'string', 'max' => 20],
             [['name', 'last_name'], 'string', 'min' => 2],
             ['email', 'email'],
-            [['from_sum', 'to_sum'], 'double', 'min' => 10],
+            [['from_sum', 'to_sum'], 'double',],
+            [['from_sum'], 'checkMinTransactionSum',],
             [['created_at', 'updated_at'], 'safe'],
             ['terms_confirm', 'boolean', 'on' => self::SCENARIO_CREATE],
             [
@@ -353,6 +354,14 @@ class BidEntity extends ActiveRecord
         }
 
         return parent::afterSave($insert, $changedAttributes);
+    }
+
+    public function checkMinTransactionSum()
+    {
+        $paymentSystem = PaymentSystem::findOne($this->from_payment_system_id);
+        if ($paymentSystem && $paymentSystem->min_transaction_sum > $this->from_sum) {
+            $this->addError($this->from_sum, 'Минимальная сумма ' . $paymentSystem->min_transaction_sum . ' ' . PaymentSystem::getCurrencyValue($paymentSystem->currency));
+        }
     }
 
     /**

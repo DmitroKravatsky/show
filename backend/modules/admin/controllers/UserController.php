@@ -7,11 +7,11 @@ use yii\web\Controller;
 use yii\filters\AccessControl;
 use yii\web\NotFoundHttpException;
 use Yii;
-use backend\modules\admin\controllers\actions\manager\{
-    StatisticsAction, ViewAction, DeleteAction, IndexAction, InviteAction, ReInviteAction, UpdatePasswordAction
+use backend\modules\admin\controllers\actions\user\{
+    IndexAction, UpdateStatusAction, ViewAction
 };
 
-class ManagerController extends Controller
+class UserController extends Controller
 {
     /**
      * @return array
@@ -24,8 +24,8 @@ class ManagerController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'delete', 'invite', 're-invite', 'statistics', 'update-password'],
-                        'roles'   => ['admin',]
+                        'actions' => ['index', 'view', 'update-status',],
+                        'roles'   => ['admin', 'manager']
                     ],
                 ],
             ],
@@ -44,20 +44,8 @@ class ManagerController extends Controller
             'view' => [
                 'class' => ViewAction::class,
             ],
-            'delete' => [
-                'class' => DeleteAction::class,
-            ],
-            'invite' => [
-                'class' => InviteAction::class,
-            ],
-            're-invite' => [
-                'class' => ReInviteAction::class,
-            ],
-            'statistics' => [
-                'class' => StatisticsAction::class,
-            ],
-            'update-password' => [
-                'class' => UpdatePasswordAction::class,
+            'update-status' => [
+                'class' => UpdateStatusAction::class,
             ],
         ];
     }

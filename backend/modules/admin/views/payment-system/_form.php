@@ -20,6 +20,8 @@ use common\models\paymentSystem\PaymentSystem;
                 <?php $form = ActiveForm::begin() ?>
                     <?= $form->field($paymentSystem, 'name')->textInput(['maxlength' => true]) ?>
 
+                    <?= $form->field($paymentSystem, 'min_transaction_sum')->textInput(['maxlength' => true]) ?>
+
                     <?= $form->field($paymentSystem, 'currency')->dropDownList(PaymentSystem::currencyLabels()) ?>
 
                     <?= $form->field($paymentSystem, 'visible')->dropDownList(PaymentSystem::getVisibleStatuses()) ?>
