@@ -20,15 +20,15 @@ class DeleteAction extends Action
 
     /**
      * Delete manager
-     * @param $reviewId integer Review id that will be deleted
+     * @param $id integer Review id that will be deleted
      * @return \yii\web\Response
      * @throws ServerErrorHttpException
      * @throws \Throwable
      * @throws \yii\web\NotFoundHttpException
      */
-    public function run($reviewId)
+    public function run($id)
     {
-        $review = $this->controller->findModel($reviewId);
+        $review = $this->controller->findModel($id);
         try {
             $review->delete();
             Yii::$app->session->setFlash('success', Yii::t('app', 'Review successfully deleted.'));
