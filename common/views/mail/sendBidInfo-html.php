@@ -14,6 +14,4 @@
     <p> На счет: <?= $to_wallet ?> </p>
     <p> Из платежной системы: <?= $from_payment_system ?> </p>
     <p> На платежную систему: <?= $to_payment_system ?> </p>
-    <p> Из валюты: <?= $from_currency ?> </p>
-    <p> В валюту: <?= $to_currency ?> </p>
 </div>
