@@ -19,7 +19,7 @@ class DeleteAction extends Action
     public $controller;
 
     /**
-     * Delete manager
+     * Delete review
      * @param $id integer Review id that will be deleted
      * @return \yii\web\Response
      * @throws ServerErrorHttpException
