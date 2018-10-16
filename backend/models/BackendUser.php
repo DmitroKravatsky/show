@@ -10,9 +10,11 @@ class BackendUser extends User
 {
     const SCENARIO_REGISTER = 1;
     const SCENARIO_UPDATE_PASSWORD = 2;
+    const SCENARIO_UPDATE_PASSWORD_BY_ADMIN = 3;
 
     public $repeatPassword;
     public $currentPassword;
+    public $newPassword;
 
     /**
      * @return array
@@ -20,19 +22,30 @@ class BackendUser extends User
     public function rules(): array
     {
         return [
-            [['password', 'email', 'phone_number',], 'required'],
+            [['password', 'email', 'phone_number',], 'required', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
             [['email', 'new_email',], 'email'],
-            [['email'], 'checkEmailExistence'],
+            [['email'], 'checkEmailExistence', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
             [['verification_token'], 'string', 'max' => 255],
-            [['password', 'repeatPassword'], 'string', 'min' => 6],
-            [['repeatPassword'], 'compare', 'compareAttribute' => 'password'],
+            [['password', 'repeatPassword', 'newPassword'], 'string', 'min' => 6],
+            [
+                ['repeatPassword'],
+                'compare',
+                'compareAttribute' => 'password',
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
+            [
+                'repeatPassword',
+                'compare',
+                'compareAttribute' => 'newPassword',
+                'on' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN
+            ],
+            [['newPassword', 'repeatPassword'], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN]],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             [['repeatPassword',], 'required', 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword',], 'required', 'on' => [self::SCENARIO_UPDATE_PASSWORD]],
             [['currentPassword'], 'checkCurrentPassword'],
             [['verification_code', 'status_online', 'last_login', 'accept_invite',], 'integer'],
             ['phone_number', PhoneInputValidator::class],
-            ['phone_number', 'checkPhoneNumberExistence'],
+            ['phone_number', 'checkPhoneNumberExistence', 'except' => self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN],
         ];
     }
 
@@ -40,6 +53,7 @@ class BackendUser extends User
     {
         return [
             'password'         => Yii::t('app', 'Password'),
+            'newPassword'         => Yii::t('app', 'New Password'),
             'currentPassword'  => Yii::t('app', 'Current Password'),
             'repeatPassword'   => Yii::t('app', 'Repeat Password'),
             'phone_number'     => Yii::t('app', 'Phone Number'),
@@ -58,9 +72,14 @@ class BackendUser extends User
             return false;
         }
 
-        if (self::SCENARIO_UPDATE_PASSWORD == $this->scenario) {
+        if ($this->scenario === self::SCENARIO_UPDATE_PASSWORD) {
             $this->password = Yii::$app->security->generatePasswordHash($this->password);
         }
+
+        if ($this->scenario === self::SCENARIO_UPDATE_PASSWORD_BY_ADMIN) {
+            $this->password = Yii::$app->security->generatePasswordHash($this->newPassword);
+        }
+
         return true;
     }
 

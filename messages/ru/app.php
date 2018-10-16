@@ -171,6 +171,8 @@ return [
     'Online wallet' => 'Онлайн кошелек',
     'Credit card' => 'Крединая карта',
     'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
+    'Change Password' => 'Сменить Пароль',
+    'New Password' => 'Новый Пароль',
     'User bids' => 'Заявки пользователя',
     'Verified' => 'Верифицирован',
     'Unverified' => 'Неверифицирован',
