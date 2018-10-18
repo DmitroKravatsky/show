@@ -173,28 +173,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'created_by',
-                        'label'     => Yii::t('app', 'Created By'),
-                        'filter'    => false,
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->fullName ?? null;
-                        }
-                    ],
-                    [
-                        'attribute' => 'email',
-                        'label'     => 'E-mail',
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->email;
-                        }
-                    ],
-                    [
-                        'attribute' => 'phone_number',
-                        'label'     => Yii::t('app', 'Phone Number'),
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->phone_number;
-                        }
-                    ],
-                    [
                         'attribute' => 'status',
                         'filter'    => false,
                         'value'     => function (BidHistory $bidHistory) {
@@ -225,6 +203,13 @@ $this->params['breadcrumbs'][] = $this->title;
                             return null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
+                    ],
+                    [
+                        'attribute' => 'message',
+                        'label' => Yii::t('app', 'Message'),
+                        'value' => function (BidHistory $bidHistory) {
+                            return BidHistory::getMessageByBid($bidHistory);
+                        }
                     ],
                     [
                         'attribute' => 'time',
