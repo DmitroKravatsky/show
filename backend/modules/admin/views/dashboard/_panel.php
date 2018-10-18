@@ -4,12 +4,10 @@ use yii\widgets\Pjax;
 use yiister\gentelella\widgets\Panel;
 use kartik\grid\GridView;
 use common\models\{
-    bid\BidEntity, userNotifications\UserNotifications, user\User
+    bid\BidEntity, user\User
 };
 use yii\helpers\{
-    Html,
-    Url,
-    StringHelper
+    Html, Url
 };
 use yii\data\ActiveDataProvider;
 use kartik\daterange\DateRangePicker;
@@ -44,6 +42,9 @@ use common\models\review\ReviewEntity;
                     'type' => GridView::TYPE_DEFAULT,
                     'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
+                'rowOptions'   => function (BidEntity $bid) {
+                    return $bid->status === BidEntity::STATUS_NEW ? ['class' => 'success'] : [];
+                },
                 'toolbar' => '',
                 'hover' => true,
                 'summary' => '',
@@ -106,7 +107,7 @@ use common\models\review\ReviewEntity;
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
                                 );
                             }
                         ],
