@@ -50,7 +50,6 @@ $(document).ready(function () {
                     });
                 }
 
-
                 $('#bid-status-success').html(
                     '<div class="alert alert-success alert-dismissible fade in" role="alert">' +
                     '<button type="button" class="close" data-dismiss="alert" aria-label="Close">' +
@@ -83,6 +82,7 @@ $(document).ready(function () {
         var selectId = $(this).attr('id');
         var STATUS_DELETED = 'DELETED';
         var STATUS_BANNED = 'BANNED';
+        var ACTION_ID = 'view';
 
         $.ajax({
             url: '/admin/admin/user/update-status',
@@ -104,15 +104,18 @@ $(document).ready(function () {
                     '</div>'
                 );
 
+                if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
+                    $('.status-column').html(userStatus);
+                } else {
+                    tableRow.find('.status-column').html(userStatus);
+                }
 
-                tableRow.find('.status-column').html(userStatus);
                 $('#' + selectId + ' option:selected').remove();
                 $('#' + selectId).append(
                     $('<option></option>')
                         .attr('value', userOldStatusValue)
                         .text(userOldStatusText)
                 );
-
                 if (!isAdmin && (userStatus === STATUS_DELETED || userStatus === STATUS_BANNED)) {
                     $('.user-status').prop('disabled', true);
                 }
