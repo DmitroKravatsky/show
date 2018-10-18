@@ -186,4 +186,10 @@ return [
     'Registration Method' => 'Способ Регистрации',
     'Social Network' => 'Социальная Сеть',
     'Application' => 'Приложение',
+    'Message' => 'Сообщение',
+    'A new application has been created by' => 'Была создана новая заявка пользователем',
+    'The bid was processed by' => 'Заявка была взята в обработку',
+    'The bid has been paid by client' => 'Заявка была оплачена клиентом',
+    'The bid has been paid by us' => 'Заявка была оплачена нами',
+    'The bid was rejected by' => 'Заявка была отклонена',
 ];
