@@ -172,4 +172,16 @@ class BackendUser extends User
             self::STATUS_VERIFIED   => Yii::t('app', 'Verified'),
         ];
     }
+
+    /**
+     * @param $source
+     * @return string
+     */
+    public static function getRegistrationMethodLabel($source): string
+    {
+        if ($source === self::SOCIAL) {
+            return Yii::t('app', 'Social Network');
+        }
+        return Yii::t('app', 'Application');
+    }
 }

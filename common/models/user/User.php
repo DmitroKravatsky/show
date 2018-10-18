@@ -72,6 +72,9 @@ class User extends ActiveRecord implements IdentityInterface
     const ACCEPT_INVITE_NO  = 0;
     const ACCEPT_INVITE_YES = 1;
 
+    const SOCIAL = 'social';
+    const NATIVE = 'native';
+
     /**
      * @inheritdoc
      */
