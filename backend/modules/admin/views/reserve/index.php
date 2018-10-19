@@ -56,6 +56,50 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class'    => ActionColumn::class,
+                        'template' => '{view} {visible} {update} {delete}',
+                        'buttons'  => [
+                            'view' => function ($url, Reserve $reserve) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/reserve/view/' . $reserve->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'visible' => function ($url, Reserve $reserve) {
+                                if ($reserve->visible) {
+                                    $options = ['title' => Yii::t('app', 'Invisible')];
+                                    $iconClass = 'glyphicon-check';
+                                } else {
+                                    $options = ['title' => Yii::t('app', 'Visible')];
+                                    $iconClass = 'glyphicon-unchecked';
+                                }
+                                return Html::a(
+                                    '<span class="glyphicon ' . $iconClass . '"></span>',
+                                    Url::to(['/reserve/toggle-visible/' . $reserve->id]),
+                                    $options
+                                );
+                            },
+                            'update' => function ($url, Reserve $reserve) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-pencil"></span>',
+                                    Url::to(['/reserve/update/' . $reserve->id]),
+                                    ['title' => Yii::t('app', 'Edit')]
+                                );
+                            },
+                            'delete' => function($url, Reserve $reserve) {
+                                $customUrl = Url::to([
+                                    'reserve/delete',
+                                    'id' => $reserve['id']
+                                ]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => \Yii::t('app', 'Delete'),
+                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ],
+                    ],
+                    [
                         'attribute' => 'payment_system',
                         'value'     => function (Reserve $reserve) {
                             return $reserve->paymentSystem->name;
@@ -103,50 +147,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 ]
                             ]
                         ]),
-                    ],
-                    [
-                        'class'    => ActionColumn::class,
-                        'template' => '{view} {visible} {update} {delete}',
-                        'buttons'  => [
-                            'view' => function ($url, Reserve $reserve) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/reserve/view/' . $reserve->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
-                            'visible' => function ($url, Reserve $reserve) {
-                                if ($reserve->visible) {
-                                    $options = ['title' => Yii::t('app', 'Invisible')];
-                                    $iconClass = 'glyphicon-check';
-                                } else {
-                                    $options = ['title' => Yii::t('app', 'Visible')];
-                                    $iconClass = 'glyphicon-unchecked';
-                                }
-                                return Html::a(
-                                    '<span class="glyphicon ' . $iconClass . '"></span>',
-                                    Url::to(['/reserve/toggle-visible/' . $reserve->id]),
-                                    $options
-                                );
-                            },
-                            'update' => function ($url, Reserve $reserve) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-pencil"></span>',
-                                    Url::to(['/reserve/update/' . $reserve->id]),
-                                    ['title' => Yii::t('app', 'Edit')]
-                                );
-                            },
-                            'delete' => function($url, Reserve $reserve) {
-                                $customUrl = Url::to([
-                                    'reserve/delete',
-                                    'id' => $reserve['id']
-                                ]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => \Yii::t('app', 'Delete'),
-                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ],
                     ],
                 ],
             ]) ?>

@@ -57,6 +57,19 @@ use common\models\review\ReviewEntity;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => ActionColumn::class,
+                        'template' => '{view}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/bid/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                );
+                            }
+                        ],
+                    ],
+                    [
                         'attribute' => 'email',
                         'label'     => 'E-mail',
                         'value'     => function (BidEntity $bid) {
@@ -99,19 +112,6 @@ use common\models\review\ReviewEntity;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => ActionColumn::class,
-                        'template' => '{view}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
-                                );
-                            }
-                        ],
-                    ],
                 ],
             ]) ?>
         <?php Pjax::end() ?>
@@ -145,6 +145,19 @@ use common\models\review\ReviewEntity;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => ActionColumn::class,
+                        'template' => '{view}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/review/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            }
+                        ],
+                    ],
+                    [
                         'attribute' => 'created_by',
                         'value' => function (ReviewEntity $review) {
                             return $review->createdBy->profile->getUserFullName() ?? null;
@@ -165,19 +178,6 @@ use common\models\review\ReviewEntity;
                                 ]
                             ]
                         ]),
-                    ],
-                    [
-                        'class' => ActionColumn::class,
-                        'template' => '{view}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/review/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            }
-                        ],
                     ],
                 ],
             ]) ?>
@@ -213,6 +213,19 @@ use common\models\review\ReviewEntity;
                             'width' => '36px',
                             'header' => '',
                             'headerOptions' => ['class' => 'kartik-sheet-style']
+                        ],
+                        [
+                            'class' => ActionColumn::class,
+                            'template' => '{view}',
+                            'buttons' => [
+                                'view' => function($url, $model) {
+                                    return Html::a(
+                                        '<span class="glyphicon glyphicon-eye-open"></span>',
+                                        Url::to(['/manager/view/' . $model->id]),
+                                        ['title' => Yii::t('app', 'View')]
+                                    );
+                                }
+                            ],
                         ],
                         'email:email:E-mail',
                         [
@@ -254,19 +267,6 @@ use common\models\review\ReviewEntity;
                                     ]
                                 ]
                             ]),
-                        ],
-                        [
-                            'class' => ActionColumn::class,
-                            'template' => '{view}',
-                            'buttons' => [
-                                'view' => function($url, $model) {
-                                    return Html::a(
-                                        '<span class="glyphicon glyphicon-eye-open"></span>',
-                                        Url::to(['/manager/view/' . $model->id]),
-                                        ['title' => Yii::t('app', 'View')]
-                                    );
-                                }
-                            ],
                         ],
                     ],
                 ]) ?>

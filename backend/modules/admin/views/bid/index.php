@@ -72,6 +72,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => \yii\grid\ActionColumn::class,
+                        'template' => '{view} {delete}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/bid/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                );
+                            },
+                            'delete' => function($url, $model) {
+                                $customUrl = Url::to([
+                                    'bid/delete',
+                                    'id' => $model['id']
+                                ]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => \Yii::t('app', 'Delete'),
+                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ]
+                    ],
+                    [
                         'attribute'      => 'status',
                         'filter'         => Bid::statusLabels(),
                         'value'          => function (Bid $bid) {
@@ -181,29 +204,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {delete}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
-                                );
-                            },
-                            'delete' => function($url, $model) {
-                                $customUrl = Url::to([
-                                    'bid/delete',
-                                    'id' => $model['id']
-                                ]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => \Yii::t('app', 'Delete'),
-                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ]
-                    ]
                 ]
 
             ])?>

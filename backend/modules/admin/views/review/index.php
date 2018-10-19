@@ -94,6 +94,26 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => ActionColumn::class,
+                        'template' => '{view} {delete}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/review/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'delete' => function($url, ReviewEntity $model) {
+                                $customUrl = Url::to(['/review/delete', 'id' => $model->id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ],
+                    ],
+                    [
                         'attribute' => 'created_by',
                         'value' => function (ReviewEntity $review) {
                             return $review->createdBy->profile->getUserFullName() ?? null;
@@ -119,26 +139,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 ]
                             ]
                         ]),
-                    ],
-                    [
-                        'class' => ActionColumn::class,
-                        'template' => '{view} {delete}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/review/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
-                            'delete' => function($url, ReviewEntity $model) {
-                                $customUrl = Url::to(['/review/delete', 'id' => $model->id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ],
                     ],
                 ],
             ]) ?>
