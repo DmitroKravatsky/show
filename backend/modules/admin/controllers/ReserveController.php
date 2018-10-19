@@ -24,8 +24,13 @@ class ReserveController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'toggle-visible', 'delete'],
+                        'actions' => ['index', 'view', 'toggle-visible', 'update',],
                         'roles'   => ['admin', 'manager',]
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['create', 'delete'],
+                        'roles'   => ['admin', ]
                     ],
                 ],
             ],
