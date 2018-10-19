@@ -72,6 +72,9 @@ class BidEntity extends ActiveRecord
     const SECONDS_IN_WEEK  = 3600 * 24 * 7;
     const SECONDS_IN_MONTH = 3600 * 24 * 30;
 
+    const MANAGER_BID_NO = 0;
+    const MANAGER_BID_YES = 1;
+
     /**
      * @var bool
      */
@@ -497,5 +500,16 @@ class BidEntity extends ActiveRecord
     {
         $exceptedStatuses = [self::STATUS_NEW, self::STATUS_IN_PROGRESS, self::STATUS_PAID_BY_CLIENT];
         return in_array($status, $exceptedStatuses);
+    }
+
+    /**
+     * @return array
+     */
+    public static function getManagerBidStatuses(): array
+    {
+        return [
+            self::MANAGER_BID_NO => Yii::t('app', 'No'),
+            self::MANAGER_BID_YES => Yii::t('app', 'Yes')
+        ];
     }
 }
