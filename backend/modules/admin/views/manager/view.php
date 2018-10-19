@@ -169,7 +169,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                             'header' => '',
                             'headerOptions' => ['class' => 'kartik-sheet-style']
                         ],
-                        'id:raw:#',
                         [
                             'attribute' => 'full_name',
                             'label' => Yii::t('app', 'Full Name'),
