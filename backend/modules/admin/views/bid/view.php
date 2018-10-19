@@ -186,7 +186,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'    => 'raw',
                         'value'     => function (BidHistory $bidHistory) {
                             if (isset($bidHistory->processedBy)) {
-                                return Html::a($bidHistory->processedBy->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                                return Html::a($bidHistory->processedBy->fullName, Url::to(['/manager/view', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('yii', 'View'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         }
@@ -198,7 +198,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'    => 'raw',
                         'value'          => function (BidHistory $bidHistory) {
                             if (isset($bidHistory->inProgressByManager)) {
-                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->inProgressByManager->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/view', 'id' => $bidHistory->inProgressByManager->id]), ['title' => Yii::t('yii', 'View'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         },
