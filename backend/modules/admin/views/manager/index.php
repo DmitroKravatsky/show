@@ -59,6 +59,34 @@ $this->params['breadcrumbs'][] = $this->title;
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
+                    [
+                        'class' => \yii\grid\ActionColumn::class,
+                        'template' => '{view} {delete} {reInvite}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/manager/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'delete' => function($url, User $model) {
+                                $customUrl = Url::to(['/manager/delete', 'userId' => $model->id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                            'reInvite' => function($url, User $model) {
+                                return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
+                                    'reInviteUrl' => Url::to(['/manager/re-invite', 'userId' => $model->id,]),
+                                    'title' => Yii::t('app', 'Re-invite'),
+                                    'class' => 'ajaxReInviteMessage',
+                                    'method' => 'post'
+                                ]);
+                            }
+                        ]
+                    ],
                     'id:raw:#',
                     [
                         'attribute' => 'full_name',
@@ -125,34 +153,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {delete} {reInvite}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/manager/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
-                            'delete' => function($url, User $model) {
-                                $customUrl = Url::to(['/manager/delete', 'userId' => $model->id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                    ]);
-                            },
-                            'reInvite' => function($url, User $model) {
-                                return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
-                                    'reInviteUrl' => Url::to(['/manager/re-invite', 'userId' => $model->id,]),
-                                    'title' => Yii::t('app', 'Re-invite'),
-                                    'class' => 'ajaxReInviteMessage',
-                                    'method' => 'post'
-                                ]);
-                            }
-                        ]
-                    ]
                 ]
             ]) ?>
         <?php Pjax::end(); ?>

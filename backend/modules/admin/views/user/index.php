@@ -60,6 +60,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions' => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => \yii\grid\ActionColumn::class,
+                        'template' => '{view} {bid-list}',
+                        'buttons' => [
+                            'view' => function($url, User $user) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/user/view/', 'id' => $user->id]),
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                );
+                            },
+                            'bid-list' => function($url, User $user) {
+                                $url = Url::to(['/bid/index', 'BidSearch' => ['created_by' => $user->id]]);
+                                return Html::a('<span class="glyphicon glyphicon-list"></span>', $url, [
+                                    'title' => Yii::t('app', 'Bids'), 'onclick' => 'location.reload()'
+                                ]);
+                            },
+                        ]
+                    ],
+                    [
                         'attribute' => 'full_name',
                         'label' => Yii::t('app', 'Full Name'),
                         'value' => function (User $user) {
@@ -117,25 +136,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {bid-list}',
-                        'buttons' => [
-                            'view' => function($url, User $user) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/user/view/', 'id' => $user->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
-                                );
-                            },
-                            'bid-list' => function($url, User $user) {
-                                $url = Url::to(['/bid/index', 'BidSearch' => ['created_by' => $user->id]]);
-                                return Html::a('<span class="glyphicon glyphicon-list"></span>', $url, [
-                                    'title' => Yii::t('app', 'Bids'), 'onclick' => 'location.reload()'
-                                ]);
-                            },
-                        ]
-                    ]
                 ]
             ]) ?>
         <?php Pjax::end(); ?>
