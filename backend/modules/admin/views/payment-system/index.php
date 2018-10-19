@@ -7,6 +7,7 @@ use yii\{ helpers\Html, widgets\Pjax, helpers\Url };
 use yii\grid\ActionColumn;
 use common\helpers\{ UrlHelper, Toolbar };
 use common\models\paymentSystem\PaymentSystem;
+use backend\models\BackendUser;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\paymentSystem\PaymentSystemSearch $searchModel */
@@ -30,7 +31,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar'      =>  [
                     ['content' =>
-                        Toolbar::createButton(Url::to('/payment-system/create'), Yii::t('app', 'Create Payment System')) .
+                        Yii::$app->user->can(BackendUser::ROLE_ADMIN) ? Toolbar::createButton(Url::to('/payment-system/create'), Yii::t('app', 'Create Payment System')) : '' .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -91,6 +92,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 ]);
                             },
                         ],
+                        'visibleButtons' => [
+                            'delete' => function () {
+                                return Yii::$app->user->can(BackendUser::ROLE_ADMIN);
+                            },
+                        ]
                     ],
                     'name',
                     [

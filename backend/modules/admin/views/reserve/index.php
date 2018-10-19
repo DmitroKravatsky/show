@@ -11,6 +11,7 @@ use common\models\reserve\ReserveEntity as Reserve;
 use common\helpers\UrlHelper;
 use common\helpers\Toolbar;
 use common\models\paymentSystem\PaymentSystem;
+use backend\models\BackendUser;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\reserve\ReserveEntitySearch $searchModel */
@@ -34,7 +35,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar'      =>  [
                     ['content' =>
-                        Toolbar::createButton(Url::to('/reserve/create'), Yii::t('app', 'Create Reserve')) .
+                        Yii::$app->user->can(BackendUser::ROLE_ADMIN) ? Toolbar::createButton(Url::to('/reserve/create'), Yii::t('app', 'Create Reserve')) : '' .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -98,6 +99,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 ]);
                             },
                         ],
+                        'visibleButtons' => [
+                            'delete' => function () {
+                                return Yii::$app->user->can(BackendUser::ROLE_ADMIN);
+                            },
+                        ]
                     ],
                     [
                         'attribute' => 'payment_system',
