@@ -192,4 +192,5 @@ return [
     'The bid has been paid by client' => 'Заявка была оплачена клиентом',
     'The bid has been paid by us' => 'Заявка была оплачена нами',
     'The bid was rejected by' => 'Заявка была отклонена',
+    'My Bid' => 'Мои Заявка',
 ];

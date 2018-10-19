@@ -15,6 +15,7 @@ use yii\db\Expression;
 class BidSearch extends BidEntity
 {
     public $dateRange;
+    public $myBid;
 
     /**
      * String  of $name and $last_name
@@ -28,7 +29,7 @@ class BidSearch extends BidEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_by', 'created_at', 'updated_at', 'in_progress_by_manager',], 'integer'],
+            [['id', 'created_by', 'created_at', 'updated_at', 'in_progress_by_manager', 'myBid',], 'integer'],
             [['processed_by'], 'string'],
             [
                 [
@@ -109,6 +110,10 @@ class BidSearch extends BidEntity
                 ['like', UserProfile::tableName() . '.name', $this->full_name],
                 ['like', UserProfile::tableName() . '.last_name', $this->full_name]
             ]);
+
+        if ($this->myBid == BidEntity::MANAGER_BID_YES) {
+            $query->andFilterWhere(['or', ['processed_by' => Yii::$app->user->id], ['in_progress_by_manager' => Yii::$app->user->id]]);
+        }
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);

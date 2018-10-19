@@ -120,6 +120,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         'filter'          => Bid::statusLabels(),
                     ],
                     [
+                        'attribute' => 'myBid',
+                        'label'     => Yii::t('app', 'My Bid'),
+                        'filter'    => Bid::getManagerBidStatuses(),
+                        'value'     => function (Bid $bid) {
+                            if ($bid->processed_by == Yii::$app->user->id || $bid->in_progress_by_manager == Yii::$app->user->id) {
+                                return Yii::t('app', 'Yes');
+                            }
+                            return Yii::t('app', 'No');
+                        }
+                    ],
+                    [
                         'attribute' => 'full_name',
                         'label'     => Yii::t('app', 'Full Name'),
                         'format'    => 'raw',
