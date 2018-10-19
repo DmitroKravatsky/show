@@ -153,11 +153,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'processed_by',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'format'         => 'raw',
+                        'format'         => 'html',
                         'value'          => function (Bid $bid) {
-                            return Html::a($bid->perfomer->fullName ?? null,
-                                Url::to("/admin/manager/view/{$bid->processed_by}")
-                            );
+                            if (isset($bid->perfomer)) {
+                                return Html::a(
+                                    $bid->perfomer->fullName,
+                                    Url::to(["/manager/view/{$bid->processed_by}"]),
+                                    ['title' => Yii::t('yii', 'View')]
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['class' => 'processed-by-column'],
                     ],
@@ -165,8 +170,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'format'         => 'html',
                         'value'          => function (Bid $bid) {
-                            return $bid->inProgressByManager->fullName ?? null;
+                            if (isset($bid->inProgressByManager)) {
+                                return Html::a(
+                                    $bid->inProgressByManager->fullName,
+                                    Url::to(["/manager/view/{$bid->in_progress_by_manager}"]),
+                                    ['title' => Yii::t('yii', 'View')]
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
                     ],

@@ -24,9 +24,6 @@ $this->params['breadcrumbs'][] = $this->title;
 <?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
 <div class="manager-index">
-    <div id="re-invite-success"></div>
-    <div id="re-invite-error"></div>
-
     <?php Panel::begin([
         'header' => Yii::t('app', 'Managers'),
         'collapsable' => true,
@@ -61,7 +58,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {delete} {reInvite}',
+                        'template' => '{view}',
                         'buttons' => [
                             'view' => function($url, $model) {
                                 return Html::a(
@@ -70,21 +67,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                     ['title' => Yii::t('app', 'View')]
                                 );
                             },
-                            'delete' => function($url, User $model) {
-                                $customUrl = Url::to(['/manager/delete', 'userId' => $model->id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                            'reInvite' => function($url, User $model) {
-                                return Html::a('<span class="glyphicon glyphicon-envelope"></span>', false, [
-                                    'reInviteUrl' => Url::to(['/manager/re-invite', 'userId' => $model->id,]),
-                                    'title' => Yii::t('app', 'Re-invite'),
-                                    'class' => 'ajaxReInviteMessage',
-                                    'method' => 'post'
-                                ]);
-                            }
                         ]
                     ],
                     'id:raw:#',
