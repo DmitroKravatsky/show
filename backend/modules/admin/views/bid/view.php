@@ -103,8 +103,11 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                        'format'         => 'raw',
                         'value'          => function (Bid $bid) {
-                            return $bid->inProgressByManager->fullName ?? null;
+                            return Html::a($bid->inProgressByManager->fullName ?? null,
+                                Yii::$app->urlManager->createUrl("manager/view/{$bid->inProgressByManager->id}")
+                            );
                         },
                         'contentOptions' => ['id' => 'in-progress-by-column'],
                     ],
