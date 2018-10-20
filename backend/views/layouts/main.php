@@ -76,6 +76,7 @@ $this->title = Yii::t('app', 'Dashboard');
 
                             <div class="menu_section">
                                 <?php $unreadNotificationsNumber = UserNotifications::getCountUnreadNotificationsByRecipient(); ?>
+                                &nbsp;
                                 <?= Menu::widget([
                                     'items' => [
                                         [
