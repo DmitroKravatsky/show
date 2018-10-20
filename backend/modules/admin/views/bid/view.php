@@ -93,9 +93,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'         => 'raw',
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'value'          => function (Bid $bid) {
-                            return Html::a($bid->perfomer->fullName ?? null,
-                                Yii::$app->urlManager->createUrl("manager/view/{$bid->processed_by}")
-                            );
+                            if (isset($bid->processed_by)) {
+                                return Html::a($bid->perfomer->fullName ?? null,
+                                    Yii::$app->urlManager->createUrl("manager/view/{$bid->processed_by}")
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['id' => 'processed-by'],
                     ],
@@ -105,9 +108,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'format'         => 'raw',
                         'value'          => function (Bid $bid) {
-                            return Html::a($bid->inProgressByManager->fullName ?? null,
-                                Yii::$app->urlManager->createUrl("manager/view/{$bid->inProgressByManager->id}")
-                            );
+                            if (isset($bid->inProgressByManager->id)) {
+                                return Html::a($bid->inProgressByManager->fullName ?? null,
+                                    Yii::$app->urlManager->createUrl("manager/view/{$bid->inProgressByManager->id}")
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['id' => 'in-progress-by-column'],
                     ],
