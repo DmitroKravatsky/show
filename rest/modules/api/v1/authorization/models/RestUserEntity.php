@@ -55,9 +55,6 @@ class RestUserEntity extends User
     const SCENARIO_LOGIN           = 'login';
     const SCENARIO_VERIFY_PROFILE  = 'verify';
 
-    const SOCIAL = 'social';
-    const NATIVE = 'native';
-
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
 

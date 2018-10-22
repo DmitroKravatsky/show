@@ -93,9 +93,12 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'         => 'raw',
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'value'          => function (Bid $bid) {
-                            return Html::a($bid->perfomer->fullName ?? null,
-                                Yii::$app->urlManager->createUrl("manager/view/{$bid->processed_by}")
-                            );
+                            if (isset($bid->processed_by)) {
+                                return Html::a($bid->perfomer->fullName ?? null,
+                                    Yii::$app->urlManager->createUrl("manager/view/{$bid->processed_by}")
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['id' => 'processed-by'],
                     ],
@@ -103,8 +106,14 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
+                        'format'         => 'raw',
                         'value'          => function (Bid $bid) {
-                            return $bid->inProgressByManager->fullName ?? null;
+                            if (isset($bid->inProgressByManager->id)) {
+                                return Html::a($bid->inProgressByManager->fullName ?? null,
+                                    Yii::$app->urlManager->createUrl("manager/view/{$bid->inProgressByManager->id}")
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['id' => 'in-progress-by-column'],
                     ],
@@ -173,28 +182,6 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
-                        'attribute' => 'created_by',
-                        'label'     => Yii::t('app', 'Created By'),
-                        'filter'    => false,
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->fullName ?? null;
-                        }
-                    ],
-                    [
-                        'attribute' => 'email',
-                        'label'     => 'E-mail',
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->email;
-                        }
-                    ],
-                    [
-                        'attribute' => 'phone_number',
-                        'label'     => Yii::t('app', 'Phone Number'),
-                        'value'     => function (BidHistory $bidHistory) {
-                            return $bidHistory->bid->author->phone_number;
-                        }
-                    ],
-                    [
                         'attribute' => 'status',
                         'filter'    => false,
                         'value'     => function (BidHistory $bidHistory) {
@@ -207,8 +194,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         'visible'   => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'format'    => 'raw',
                         'value'     => function (BidHistory $bidHistory) {
-                            if (isset($bidHistory->processedByProfile)) {
-                                return Html::a($bidHistory->processedByProfile->userFullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                            if (isset($bidHistory->processedBy)) {
+                                return Html::a($bidHistory->processedBy->fullName, Url::to(['/manager/view', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('yii', 'View'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         }
@@ -220,11 +207,18 @@ $this->params['breadcrumbs'][] = $this->title;
                         'format'    => 'raw',
                         'value'          => function (BidHistory $bidHistory) {
                             if (isset($bidHistory->inProgressByManager)) {
-                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/statistics', 'id' => $bidHistory->processedBy->id]), ['title' => Yii::t('app', 'Statistics'), 'onclick' => 'location.reload()']);
+                                return Html::a($bidHistory->inProgressByManager->fullName, Url::to(['/manager/view', 'id' => $bidHistory->inProgressByManager->id]), ['title' => Yii::t('yii', 'View'), 'onclick' => 'location.reload()']);
                             }
                             return null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
+                    ],
+                    [
+                        'attribute' => 'message',
+                        'label' => Yii::t('app', 'Message'),
+                        'value' => function (BidHistory $bidHistory) {
+                            return BidHistory::getMessageByBid($bidHistory);
+                        }
                     ],
                     [
                         'attribute' => 'time',

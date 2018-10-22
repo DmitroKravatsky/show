@@ -148,4 +148,22 @@ class BidHistory extends ActiveRecord
         $statuses = static::statusLabels();
         return $statuses[$status];
     }
+
+    /**
+     * Returns a message by a BidHistory model
+     * @param BidHistory $bidHistory
+     * @return mixed
+     */
+    public static function getMessageByBid(BidHistory $bidHistory)
+    {
+        $messages = [
+            self::STATUS_NEW             => Yii::t('app', 'A new application has been created by') . ' ' . $bidHistory->bid->author->fullName,
+            self::STATUS_IN_PROGRESS     => isset($bidHistory->inProgressByManager) ? Yii::t('app', 'The bid was processed by') . ' ' . $bidHistory->inProgressByManager->fullName : null,
+            self::STATUS_PAID_BY_CLIENT  => isset($bidHistory->bid->author) ? Yii::t('app', 'The bid has been paid by client') . ' ' . $bidHistory->bid->author->fullName : null,
+            self::STATUS_PAID_BY_US_DONE => isset($bidHistory->processedBy) ? Yii::t('app', 'The bid has been paid by us') . ' (' . $bidHistory->processedBy->fullName . ')' : null,
+            self::STATUS_REJECTED        => isset($bidHistory->processedBy) ? Yii::t('app', 'The bid was rejected by') . ' (' . $bidHistory->processedBy->fullName . ')' : null,
+        ];
+
+        return $messages[$bidHistory->status];
+    }
 }

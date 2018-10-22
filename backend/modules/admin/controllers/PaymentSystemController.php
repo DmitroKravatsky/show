@@ -24,8 +24,13 @@ class PaymentSystemController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'create', 'update', 'delete', 'toggle-visible',],
+                        'actions' => ['index', 'view', 'toggle-visible', 'update',],
                         'roles'   => ['admin', 'manager',]
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['create', 'delete',],
+                        'roles'   => ['admin',]
                     ],
                 ],
             ],

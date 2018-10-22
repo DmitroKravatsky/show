@@ -72,6 +72,29 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class' => \yii\grid\ActionColumn::class,
+                        'template' => '{view} {delete}',
+                        'buttons' => [
+                            'view' => function($url, $model) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/bid/view/' . $model->id]),
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                );
+                            },
+                            'delete' => function($url, $model) {
+                                $customUrl = Url::to([
+                                    'bid/delete',
+                                    'id' => $model['id']
+                                ]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => \Yii::t('app', 'Delete'),
+                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ]
+                    ],
+                    [
                         'attribute'      => 'status',
                         'filter'         => Bid::statusLabels(),
                         'value'          => function (Bid $bid) {
@@ -95,6 +118,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         },
                         'format'          => 'raw',
                         'filter'          => Bid::statusLabels(),
+                    ],
+                    [
+                        'attribute' => 'myBid',
+                        'label'     => Yii::t('app', 'My Bid'),
+                        'filter'    => Bid::getManagerBidStatuses(),
+                        'value'     => function (Bid $bid) {
+                            if ($bid->processed_by == Yii::$app->user->id || $bid->in_progress_by_manager == Yii::$app->user->id) {
+                                return Yii::t('app', 'Yes');
+                            }
+                            return Yii::t('app', 'No');
+                        }
                     ],
                     [
                         'attribute' => 'full_name',
@@ -130,11 +164,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'processed_by',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
-                        'format'         => 'raw',
+                        'format'         => 'html',
                         'value'          => function (Bid $bid) {
-                            return Html::a($bid->perfomer->fullName ?? null,
-                                Url::to("/admin/manager/view/{$bid->processed_by}")
-                            );
+                            if (isset($bid->perfomer)) {
+                                return Html::a(
+                                    $bid->perfomer->fullName,
+                                    Url::to(["/manager/view/{$bid->processed_by}"]),
+                                    ['title' => Yii::t('yii', 'View')]
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['class' => 'processed-by-column'],
                     ],
@@ -142,8 +181,16 @@ $this->params['breadcrumbs'][] = $this->title;
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
                         'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
+                        'format'         => 'html',
                         'value'          => function (Bid $bid) {
-                            return $bid->inProgressByManager->fullName ?? null;
+                            if (isset($bid->inProgressByManager)) {
+                                return Html::a(
+                                    $bid->inProgressByManager->fullName,
+                                    Url::to(["/manager/view/{$bid->in_progress_by_manager}"]),
+                                    ['title' => Yii::t('yii', 'View')]
+                                );
+                            }
+                            return null;
                         },
                         'contentOptions' => ['class' => 'in-progress-by-column'],
                     ],
@@ -181,29 +228,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {delete}',
-                        'buttons' => [
-                            'view' => function($url, $model) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
-                                );
-                            },
-                            'delete' => function($url, $model) {
-                                $customUrl = Url::to([
-                                    'bid/delete',
-                                    'id' => $model['id']
-                                ]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => \Yii::t('app', 'Delete'),
-                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ]
-                    ]
                 ]
 
             ])?>

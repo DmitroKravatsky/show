@@ -20,7 +20,7 @@ $this->title = Yii::t('app', 'Users');
 $this->params['breadcrumbs'][] = $this->title;
 ?>
 
-<?= Html::style('.collapse-link {margin-left: 46px;}') ?>
+<?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
 
 <?php $this->registerJs('var language = "' . Yii::$app->language . '"', View::POS_HEAD) ?>
 
@@ -58,6 +58,25 @@ $this->params['breadcrumbs'][] = $this->title;
                         'width' => '36px',
                         'header' => '',
                         'headerOptions' => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
+                        'class' => \yii\grid\ActionColumn::class,
+                        'template' => '{view} {bid-list}',
+                        'buttons' => [
+                            'view' => function($url, User $user) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/user/view/', 'id' => $user->id]),
+                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                );
+                            },
+                            'bid-list' => function($url, User $user) {
+                                $url = Url::to(['/bid/index', 'BidSearch' => ['created_by' => $user->id]]);
+                                return Html::a('<span class="glyphicon glyphicon-list"></span>', $url, [
+                                    'title' => Yii::t('app', 'Bids'), 'onclick' => 'location.reload()'
+                                ]);
+                            },
+                        ]
                     ],
                     [
                         'attribute' => 'full_name',
@@ -117,25 +136,6 @@ $this->params['breadcrumbs'][] = $this->title;
                             ]
                         ]),
                     ],
-                    [
-                        'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {bid-list}',
-                        'buttons' => [
-                            'view' => function($url, User $user) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/user/view/', 'id' => $user->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
-                                );
-                            },
-                            'bid-list' => function($url, User $user) {
-                                $url = Url::to(['/bid/index', 'BidSearch' => ['created_by' => $user->id]]);
-                                return Html::a('<span class="glyphicon glyphicon-list"></span>', $url, [
-                                    'title' => Yii::t('app', 'Bids'), 'onclick' => 'location.reload()'
-                                ]);
-                            },
-                        ]
-                    ]
                 ]
             ]) ?>
         <?php Pjax::end(); ?>

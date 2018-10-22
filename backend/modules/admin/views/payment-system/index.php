@@ -7,6 +7,7 @@ use yii\{ helpers\Html, widgets\Pjax, helpers\Url };
 use yii\grid\ActionColumn;
 use common\helpers\{ UrlHelper, Toolbar };
 use common\models\paymentSystem\PaymentSystem;
+use backend\models\BackendUser;
 
 /** @var \yii\web\View $this */
 /** @var \common\models\paymentSystem\PaymentSystemSearch $searchModel */
@@ -30,7 +31,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'dataProvider' => $dataProvider,
                 'toolbar'      =>  [
                     ['content' =>
-                        Toolbar::createButton(Url::to('/payment-system/create'), Yii::t('app', 'Create Payment System')) .
+                        Yii::$app->user->can(BackendUser::ROLE_ADMIN) ? Toolbar::createButton(Url::to('/payment-system/create'), Yii::t('app', 'Create Payment System')) : '' .
                         Toolbar::resetButton()
                     ],
                     '{export}',
@@ -50,6 +51,52 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'width'          => '36px',
                         'header'         => '',
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
+                    ],
+                    [
+                        'class'    => ActionColumn::class,
+                        'template' => '{view} {visible} {update} {delete}',
+                        'buttons'  => [
+                            'view' => function ($url, PaymentSystem $paymentSystem) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/payment-system/view/' . $paymentSystem->id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'visible' => function ($url, PaymentSystem $paymentSystem) {
+                                if ($paymentSystem->visible) {
+                                    $options = ['title' => Yii::t('app', 'Invisible')];
+                                    $iconClass = 'glyphicon-check';
+                                } else {
+                                    $options = ['title' => Yii::t('app', 'Visible')];
+                                    $iconClass = 'glyphicon-unchecked';
+                                }
+                                return Html::a(
+                                    '<span class="glyphicon ' . $iconClass . '"></span>',
+                                    Url::to(['/payment-system/toggle-visible/' . $paymentSystem->id]),
+                                    $options
+                                );
+                            },
+                            'update' => function ($url, PaymentSystem $paymentSystem) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-pencil"></span>',
+                                    Url::to(['/payment-system/update/' . $paymentSystem->id]),
+                                    ['title' => Yii::t('app', 'Edit')]
+                                );
+                            },
+                            'delete' => function($url, PaymentSystem $paymentSystem) {
+                                $customUrl = Url::to(['/payment-system/delete', 'id' => $paymentSystem->id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ],
+                        'visibleButtons' => [
+                            'delete' => function () {
+                                return Yii::$app->user->can(BackendUser::ROLE_ADMIN);
+                            },
+                        ]
                     ],
                     'name',
                     [
@@ -94,47 +141,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                 ]
                             ]
                         ]),
-                    ],
-                    [
-                        'class'    => ActionColumn::class,
-                        'template' => '{view} {visible} {update} {delete}',
-                        'buttons'  => [
-                            'view' => function ($url, PaymentSystem $paymentSystem) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/payment-system/view/' . $paymentSystem->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
-                            'visible' => function ($url, PaymentSystem $paymentSystem) {
-                                if ($paymentSystem->visible) {
-                                    $options = ['title' => Yii::t('app', 'Invisible')];
-                                    $iconClass = 'glyphicon-check';
-                                } else {
-                                    $options = ['title' => Yii::t('app', 'Visible')];
-                                    $iconClass = 'glyphicon-unchecked';
-                                }
-                                return Html::a(
-                                    '<span class="glyphicon ' . $iconClass . '"></span>',
-                                    Url::to(['/payment-system/toggle-visible/' . $paymentSystem->id]),
-                                    $options
-                                );
-                            },
-                            'update' => function ($url, PaymentSystem $paymentSystem) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-pencil"></span>',
-                                    Url::to(['/payment-system/update/' . $paymentSystem->id]),
-                                    ['title' => Yii::t('app', 'Edit')]
-                                );
-                            },
-                            'delete' => function($url, PaymentSystem $paymentSystem) {
-                                $customUrl = Url::to(['/payment-system/delete', 'id' => $paymentSystem->id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ],
                     ],
                 ],
             ]) ?>

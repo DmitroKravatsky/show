@@ -5,6 +5,8 @@ namespace backend\modules\admin\controllers\actions\manager;
 use backend\models\BackendUser;
 use backend\modules\admin\controllers\ManagerController;
 use yii\base\Action;
+use yii\data\ActiveDataProvider;
+use common\models\user\UserSearch;
 
 class ViewAction extends Action
 {
@@ -26,6 +28,10 @@ class ViewAction extends Action
 
         return $this->controller->render('view', [
             'manager' => $manager,
+            'searchModel' => new UserSearch(),
+            'dataProvider' => new ActiveDataProvider([
+                'query' => BackendUser::find()->where(['id' => null])
+            ]),
         ]);
     }
 }

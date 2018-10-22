@@ -57,6 +57,26 @@ $this->params['breadcrumbs'][] = $this->title;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'class'    => \yii\grid\ActionColumn::class,
+                        'template' => '{view}&nbsp{delete}',
+                        'buttons'  => [
+                            'view' => function($url, UserNotifications $notification) {
+                                return Html::a(
+                                    '<span class="glyphicon glyphicon-eye-open"></span>',
+                                    Url::to(['/notifications/view', 'id' => $notification->notification_id]),
+                                    ['title' => Yii::t('app', 'View')]
+                                );
+                            },
+                            'delete' => function($url, UserNotifications $notification) {
+                                $url = Url::to(['/notifications/delete', 'id' => $notification->notification_id]);
+                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                ]);
+                            },
+                        ]
+                    ],
+                    [
                         'attribute' => 'full_name',
                         'label'     => Yii::t('app', 'Recipient'),
                         'value'     => function (UserNotifications $userNotification) {
@@ -98,26 +118,6 @@ $this->params['breadcrumbs'][] = $this->title;
                                 ]
                             ]
                         ]),
-                    ],
-                    [
-                        'class'    => \yii\grid\ActionColumn::class,
-                        'template' => '{view}&nbsp{delete}',
-                        'buttons'  => [
-                            'view' => function($url, UserNotifications $notification) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/notifications/view', 'id' => $notification->notification_id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
-                            'delete' => function($url, UserNotifications $notification) {
-                                $url = Url::to(['/notifications/delete', 'id' => $notification->notification_id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
-                            },
-                        ]
                     ],
                 ],
             ]) ?>

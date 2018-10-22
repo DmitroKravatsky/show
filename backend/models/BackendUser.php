@@ -175,6 +175,18 @@ class BackendUser extends User
     }
 
     /**
+     * @param $source
+     * @return string
+     */
+    public static function getRegistrationMethodLabel($source): string
+    {
+        if ($source === self::SOCIAL) {
+            return Yii::t('app', 'Social Network');
+        }
+        return Yii::t('app', 'Application');
+    }
+
+    /**
      * Checks if manager has at least one bid in progress
      * @param $managerId
      * @return bool
