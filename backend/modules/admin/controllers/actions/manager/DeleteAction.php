@@ -29,7 +29,7 @@ class DeleteAction extends Action
      */
     public function run($userId)
     {
-        if(BackendUser::managerHasInprogressBid($userId)) {
+        if(BackendUser::managerHasBidInProgress($userId)) {
             Yii::$app->session->setFlash('error',
                 Yii::t('app', 'Manager has at least one bid in process. Deletion is not allowed')
             );

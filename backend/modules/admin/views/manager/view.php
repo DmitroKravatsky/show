@@ -91,11 +91,16 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'id' => 'update-manager-password-button'
                     ]) ?>
 
-                    <?= Html::a('<span class="glyphicon glyphicon-trash"></span>',Url::to(['/manager/delete', 'userId' => $manager->id]), [
-                        'title' => Yii::t('app', 'Delete'),
-                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                        'class' => 'btn btn-danger'
-                    ]) ?>
+                    <?php if (!BackendUser::managerHasBidInProgress($manager->id)) :?>
+                        <?= Html::a('<span class="glyphicon glyphicon-trash"></span>',
+                                Url::to(['/manager/delete', 'userId' => $manager->id]),
+                                    [
+                                        'title' => Yii::t('app', 'Delete'),
+                                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                        'class' => 'btn btn-danger'
+                                    ]
+                            ); ?>
+                    <?php endif; ?>
                 </div>
 
                 <?= DetailView::widget([

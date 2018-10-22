@@ -191,7 +191,7 @@ class BackendUser extends User
      * @param $managerId
      * @return bool
      */
-    public static function managerHasInprogressBid($managerId):bool
+    public static function managerHasBidInProgress($managerId):bool
     {
         return BidEntity::find()->where(['in_progress_by_manager' => $managerId])->exists();
     }
