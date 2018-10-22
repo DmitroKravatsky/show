@@ -99,7 +99,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                                         'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
                                         'class' => 'btn btn-danger'
                                     ]
-                            ); ?>
+                        ); ?>
                     <?php endif; ?>
                 </div>
 
