@@ -193,4 +193,5 @@ return [
     'The bid has been paid by us' => 'Заявка была оплачена нами',
     'The bid was rejected by' => 'Заявка была отклонена',
     'My Bid' => 'Мои Заявка',
+    'Manager has at least one bid in process. Deletion is not allowed' => 'За менеджером закреплены необработанные заявки. Удаление временно невозможно',
 ];

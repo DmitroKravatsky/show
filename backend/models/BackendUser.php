@@ -2,6 +2,7 @@
 
 namespace backend\models;
 
+use common\models\bid\BidEntity;
 use common\models\user\User;
 use Yii;
 use borales\extensions\phoneInput\PhoneInputValidator;
@@ -183,5 +184,15 @@ class BackendUser extends User
             return Yii::t('app', 'Social Network');
         }
         return Yii::t('app', 'Application');
+    }
+
+    /**
+     * Checks if manager has at least one bid in progress
+     * @param $managerId
+     * @return bool
+     */
+    public static function managerHasBidInProgress($managerId):bool
+    {
+        return BidEntity::find()->where(['in_progress_by_manager' => $managerId])->exists();
     }
 }
