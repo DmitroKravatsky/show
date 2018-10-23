@@ -15,17 +15,18 @@ $(document).ready(function () {
                 var isAdmin = result.isAdmin;
                 var processedStatus = result.processedStatus;
                 var processedBy = result.processedBy;
-                var bidStatus = result.bidStatus;
+                var bidStatusValue = result.bidStatusValue;
+                var bidStatusText = result.bidStatusText;
                 var inProgressByManager = result.inProgressByManager;
                 var tableRow = $('tr[data-key="' + fieldId + '"]');
                 var bidOldStatusValue = result.bidOldStatusValue;
                 var bidOldStatusText = result.bidOldStatusText;
 
                 if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
-                    $('#status').html(bidStatus);
+                    $('#status').html(bidStatusText);
                     $('#in-progress-by-column').html(inProgressByManager);
                     $('#processed-by').html(processedBy);
-                    if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
+                    if (!isAdmin && (bidStatusValue === STATUS_PAID_BY_US_DONE || bidStatusValue === STATUS_REJECTED)) {
                         $('.status').prop('disabled', true);
                     }
                     location.reload()
@@ -39,12 +40,12 @@ $(document).ready(function () {
                     );
 
                     tableRow.each(function () {
-                        $(this).find('.status-column').html(bidStatus);
+                        $(this).find('.status-column').html(bidStatusText);
                         $(this).find('.processed-column').html(processedStatus);
                         $(this).find('.processed-by-column').html(processedBy);
                         $(this).find('.in-progress-by-column').html(inProgressByManager);
 
-                        if (!isAdmin && (bidStatus === STATUS_PAID_BY_US_DONE || bidStatus === STATUS_REJECTED)) {
+                        if (!isAdmin && (bidStatusValue === STATUS_PAID_BY_US_DONE || bidStatusValue === STATUS_REJECTED)) {
                             $(this).find('.status').prop('disabled', true);
                         }
                     });

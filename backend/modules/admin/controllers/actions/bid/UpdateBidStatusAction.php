@@ -5,6 +5,7 @@ namespace backend\modules\admin\controllers\actions\bid;
 use backend\models\BackendUser;
 use backend\modules\admin\controllers\BidController;
 use common\models\bid\BidEntity as Bid;
+use common\models\bid\BidEntity;
 use common\models\user\User;
 use yii\{ base\Action, helpers\Html, web\UnprocessableEntityHttpException, web\Response };
 use Yii;
@@ -81,7 +82,8 @@ class UpdateBidStatusAction extends Action
                     'status'              => 200,
                     'message'             => Yii::t('app', 'Status successfully updated.'),
                     'isAdmin'             => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
-                    'bidStatus'           => Bid::getStatusValue($bid->status),
+                    'bidStatusValue'      => $bid->status,
+                    'bidStatusText'       => BidEntity::getStatusValue($bid->status),
                     'processedStatus'     => Bid::getProcessedStatusValue($bid->processed),
                     'processedBy'         => $processedBy,
                     'inProgressByManager' => $inProgressByManager,

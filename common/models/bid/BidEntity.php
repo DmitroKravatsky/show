@@ -468,6 +468,15 @@ class BidEntity extends ActiveRecord
     }
 
     /**
+     * @param BidEntity $bid
+     * @return bool
+     */
+    public static function isProcessedByAnotherManager(BidEntity $bid): bool
+    {
+        return $bid->status == self::STATUS_IN_PROGRESS && $bid->in_progress_by_manager != Yii::$app->user->id;
+    }
+
+    /**
      * Relates BidEntity with UserProfile
      * @return \yii\db\ActiveQuery
      */

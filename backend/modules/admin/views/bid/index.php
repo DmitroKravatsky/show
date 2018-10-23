@@ -111,7 +111,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 'data'    => Bid::getManagerAllowedStatusesWithOutCurrentStatus($bid->status),
                                 'options' => [
                                     'class'       => 'status',
-                                    'disabled'    => !Bid::canUpdateStatus($bid->status),
+                                    'disabled'    => !Bid::canUpdateStatus($bid->status) || (Yii::$app->user->can(BackendUser::ROLE_MANAGER) && Bid::isProcessedByAnotherManager($bid)),
                                     'placeholder' => Yii::t('app', 'Select status'),
                                 ],
                             ]);
