@@ -455,16 +455,19 @@ class BidEntity extends ActiveRecord
     }
 
     /**
-     * @param string $status
+     * @param BidEntity $bid
      * @return bool
      */
-    public static function canUpdateStatus($status): bool
+    public static function canUpdateStatus(BidEntity $bid): bool
     {
         $statuses = [self::STATUS_PAID_BY_US_DONE, self::STATUS_REJECTED];
-        if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($status, $statuses)) {
+        if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($bid->status, $statuses)) {
             return false;
+        } elseif (Yii::$app->user->can(User::ROLE_MANAGER) && static::isProcessedByAnotherManager($bid)) {
+            return false;
+        } else {
+            return true;
         }
-        return true;
     }
 
     /**
