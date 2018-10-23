@@ -105,7 +105,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
-                        'visible'        => Yii::$app->user->can(BackendUser::ROLE_ADMIN),
                         'format'         => 'raw',
                         'value'          => function (Bid $bid) {
                             if (isset($bid->inProgressByManager->id)) {
