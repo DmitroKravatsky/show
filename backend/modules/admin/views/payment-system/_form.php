@@ -24,6 +24,8 @@ use common\models\paymentSystem\PaymentSystem;
 
                     <?= $form->field($paymentSystem, 'currency')->dropDownList(PaymentSystem::currencyLabels()) ?>
 
+                    <?= $form->field($paymentSystem, 'currency_code')->textInput(['maxlength' => true])->label(Yii::t('app', 'Currency Code')) ?>
+
                     <?= $form->field($paymentSystem, 'visible')->dropDownList(PaymentSystem::getVisibleStatuses()) ?>
 
                     <?= $form->field($paymentSystem, 'payment_system_type')

@@ -35,6 +35,7 @@ $this->params['breadcrumbs'][] = $this->title;
                 'toolbar'      =>  [
                     ['content' =>
                         Toolbar::resetButton()
+                        . Html::button('<i class="glyphicon glyphicon-export"></i>', ['class' => 'btn btn-success', 'title' => Yii::t('app', 'Unload')])
                     ],
                     '{export}',
                     '{toggleData}',

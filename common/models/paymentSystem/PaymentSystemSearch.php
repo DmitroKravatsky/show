@@ -20,7 +20,7 @@ class PaymentSystemSearch extends PaymentSystem
     {
         return [
             [['id', 'visible', 'created_at', 'updated_at',], 'integer'],
-            [['name', 'currency', 'payment_system_type',], 'safe'],
+            [['name', 'currency', 'payment_system_type', 'currency_code',], 'safe'],
             [['min_transaction_sum'], 'double'],
         ];
     }
@@ -65,6 +65,7 @@ class PaymentSystemSearch extends PaymentSystem
 
         $query->andFilterWhere(['like', 'name', $this->name]);
         $query->andFilterWhere(['like', 'payment_system_type', $this->payment_system_type]);
+        $query->andFilterWhere(['like', 'currency_code', $this->currency_code]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);
