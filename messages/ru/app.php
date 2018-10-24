@@ -194,4 +194,8 @@ return [
     'The bid was rejected by' => 'Заявка была отклонена',
     'My Bid' => 'Мои Заявка',
     'Manager has at least one bid in process. Deletion is not allowed' => 'За менеджером закреплены необработанные заявки. Удаление временно невозможно',
+    'Exchange Rates' => 'Обменные Курсы',
+    'From Payment System' => 'Из Платёжной Системы',
+    'To Payment System' => 'В Платёжную Систему',
+    'Value' => 'Значение',
 ];

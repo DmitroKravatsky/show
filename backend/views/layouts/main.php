@@ -113,6 +113,11 @@ $this->title = Yii::t('app', 'Dashboard');
                                             'url' => ['/payment-system/index'],
                                             'icon' => 'calculator'
                                         ],
+                                        [
+                                            'label' => Yii::t('app', 'Exchange Rates'),
+                                            'url' => ['/exchange-rates/index'],
+                                            'icon' => 'bitcoin'
+                                        ],
                                     ],
                                 ]) ?>
                             </div>
