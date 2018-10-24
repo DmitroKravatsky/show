@@ -94,6 +94,7 @@ return [
                 'reserve/<action:[\w-]+>'                 => 'admin/reserve/<action>',
                 'reserve/<action:[\w-]+>/<id:\d+>'        => 'admin/reserve/<action>',
                 'user/<action:[\w-]+>'                    => 'admin/user/<action>',
+                'exchange-rates/<action:[\w-]+>'          => 'admin/exchange-rates/<action>',
             ],
         ],
         'view' => [
