@@ -79,7 +79,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View'), 'onclick' => 'location.reload()']
+                                    ['title' => Yii::t('app', 'View')]
                                 );
                             },
                             'delete' => function($url, $model) {
