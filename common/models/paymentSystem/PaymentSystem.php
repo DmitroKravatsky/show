@@ -25,6 +25,7 @@ use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
  * @property Bid[] $bs
  * @property Bid[] $bs0
  * @property Reserve[] $reserves
+ * @property Reserve $reserve
  */
 class PaymentSystem extends ActiveRecord implements IVisible
 {
@@ -166,6 +167,14 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function getReserves()
     {
         return $this->hasMany(Reserve::class, ['payment_system_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReserve()
+    {
+        return $this->hasOne(Reserve::class, ['payment_system_id' => 'id']);
     }
 
     public static function getList($params ,$onlyVisible = true)
