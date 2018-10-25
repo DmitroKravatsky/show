@@ -104,6 +104,7 @@ class SiteController extends Controller
                     Yii::getAlias('@rest/modules/api/v1/paymentSystem/controllers/actions/ListAction.php'),
                     // Exchange Rates Module
                     Yii::getAlias('@rest/modules/api/v1/exchangeRates/controllers/actions/ListAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/exchangeRates/controllers/actions/CalculateAmountAction.php'),
                 ],
             ],
 
