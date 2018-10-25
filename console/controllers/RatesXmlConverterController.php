@@ -35,7 +35,7 @@ class RatesXmlConverterController extends Controller
                     'to'        => $rate->toPaymentSystem->currency_code,
                     'in'        => 1,
                     'out'       => $rate->value,
-                    'amount'    => $rate->toPaymentSystem->reserve->sum,
+                    'amount'    => $rate->toPaymentSystem->reserve->sum ?? 0,
                     'minamount' => $rate->fromPaymentSystem->min_transaction_sum
                         . ' ' . PaymentSystem::getCurrencyValue($rate->fromPaymentSystem->currency),
                 ];
