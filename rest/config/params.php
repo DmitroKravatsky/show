@@ -8,4 +8,5 @@ return [
     'guest-email' => 'guest@gmail.com',
     'guest-password' => 'guestPassword',
     'posts-per-page' => 5,
+    'rates-xml-file' => Yii::getAlias('@frontend/web/xml/rates.xml'),
 ];

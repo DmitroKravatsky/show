@@ -127,4 +127,15 @@ return [
             'GET' => 'list',
         ],
     ],
+    /** ExchangeRates Module */
+    [
+        'class'      => 'yii\rest\UrlRule',
+        'prefix'     => 'api/v1/',
+        'controller' => [
+            'exchange-rates' => 'api/v1/exchange-rates/exchange-rates',
+        ],
+        'patterns' => [
+            'GET' => 'list',
+        ],
+    ],
 ];

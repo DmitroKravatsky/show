@@ -41,6 +41,9 @@ return [
                         'payment-system' => [
                             'class' => 'rest\modules\api\v1\paymentSystem\Module'
                         ],
+                        'exchange-rates' => [
+                            'class' => 'rest\modules\api\v1\exchangeRates\Module'
+                        ],
                     ],
                 ],
             ],
