@@ -113,6 +113,13 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         }
                     ],
                     [
+                        'attribute' => 'currency_code',
+                        'value'     => function (PaymentSystem $paymentSystem) {
+                            return $paymentSystem->currency_code;
+                        },
+                        'label'     => Yii::t('app', 'Currency Code')
+                    ],
+                    [
                         'attribute' => 'currency',
                         'filter'    => PaymentSystem::currencyLabels(),
                         'value'     => function (PaymentSystem $reserve) {

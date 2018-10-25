@@ -7,6 +7,7 @@ use common\helpers\UrlHelper;
 use yiister\gentelella\widgets\Panel;
 use common\helpers\Toolbar;
 use common\models\exchangeRates\ExchangeRates;
+use yii\helpers\Url;
 
 /* @var $this yii\web\View */
 /* @var $dataProvider yii\data\ActiveDataProvider */
@@ -35,6 +36,16 @@ $this->params['breadcrumbs'][] = $this->title;
                 'toolbar'      =>  [
                     ['content' =>
                         Toolbar::resetButton()
+                        . Html::a(
+                            '<i class="glyphicon glyphicon-export"></i>',
+                            Url::to(['/exchange-rates/export']),
+                            ['class' => 'btn btn-success', 'title' => Yii::t('app', 'Unload')]
+                        )
+                        . Html::a(
+                            '<i class="glyphicon glyphicon-eye-open"></i>',
+                            Url::to('/xml/rates.xml'),
+                            ['data-pjax' => 0, 'target' => '_blank', 'class' => 'btn btn-info', 'title' => Yii::t('app', 'View')]
+                        )
                     ],
                     '{export}',
                     '{toggleData}',

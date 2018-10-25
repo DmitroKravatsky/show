@@ -198,4 +198,7 @@ return [
     'From Payment System' => 'Из Платёжной Системы',
     'To Payment System' => 'В Платёжную Систему',
     'Value' => 'Значение',
+    'Unload' => 'Выгрузить',
+    'Currency Code' => 'Код Валюты',
+    'File successfully generated.' => 'Файл успешно сгенерирован.'
 ];

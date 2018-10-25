@@ -2,6 +2,7 @@
 
 namespace backend\modules\admin\controllers;
 
+use backend\modules\admin\controllers\actions\exchangeRates\ExportAction;
 use yii\filters\AccessControl;
 use yii\web\Controller;
 use backend\modules\admin\controllers\actions\exchangeRates\IndexAction;
@@ -19,7 +20,7 @@ class ExchangeRatesController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index',],
+                        'actions' => ['index', 'export',],
                         'roles'   => ['admin', 'manager',]
                     ],
                 ],
@@ -32,6 +33,9 @@ class ExchangeRatesController extends Controller
         return [
             'index'  => [
                 'class' => IndexAction::class
+            ],
+            'export'  => [
+                'class' => ExportAction::class
             ],
         ];
     }

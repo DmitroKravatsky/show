@@ -18,12 +18,14 @@ use common\models\{ bid\BidEntity as Bid, reserve\ReserveEntity as Reserve };
  * @property int $visible
  * @property string $payment_system_type
  * @property float $min_transaction_sum
+ * @property string $currency_code
  * @property int $created_at
  * @property int $updated_at
  *
  * @property Bid[] $bs
  * @property Bid[] $bs0
  * @property Reserve[] $reserves
+ * @property Reserve $reserve
  */
 class PaymentSystem extends ActiveRecord implements IVisible
 {
@@ -99,11 +101,11 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function rules(): array
     {
         return [
-            [['name', 'min_transaction_sum',], 'required'],
+            [['name', 'min_transaction_sum', 'currency_code',], 'required'],
             [['min_transaction_sum'], 'double', 'min' => 10],
             [['currency'], 'string'],
             [['visible', 'created_at', 'updated_at'], 'integer'],
-            [['name'], 'string', 'max' => 50],
+            [['name', 'currency_code',], 'string', 'max' => 50],
             [['payment_system_type'],  'in', 'range' => [self::ONLINE_WALLET, self::CREDIT_CARD]],
             [['currency'], 'in', 'range' => [self::RUB, self::UAH, self::USD, self::EUR, self::WMX]],
         ];
@@ -121,6 +123,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
             'visible'             => Yii::t('app', 'Visible'),
             'payment_system_type' => Yii::t('app', 'Payment system type'),
             'min_transaction_sum' => Yii::t('app', 'Minimum Transaction Sum'),
+            'Currency Code'       => Yii::t('app', 'Currency Code'),
             'created_at'          => Yii::t('app', 'Created At'),
             'updated_at'          => Yii::t('app', 'Updated At'),
         ];
@@ -164,6 +167,14 @@ class PaymentSystem extends ActiveRecord implements IVisible
     public function getReserves()
     {
         return $this->hasMany(Reserve::class, ['payment_system_id' => 'id']);
+    }
+
+    /**
+     * @return \yii\db\ActiveQuery
+     */
+    public function getReserve()
+    {
+        return $this->hasOne(Reserve::class, ['payment_system_id' => 'id']);
     }
 
     public static function getList($params ,$onlyVisible = true)
