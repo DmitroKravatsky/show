@@ -77,32 +77,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         </div>
                     </div>
 
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                            <?= Yii::t('app', 'Password') ?><span class="required">*</span>
-                        </label>
-
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <?= $formRegistration->field($modelRegistration, 'password')
-                                ->passwordInput(['placeholder' => Yii::t('app', 'Password')])
-                                ->label(false)
-                            ?>
-                        </div>
-                    </div>
-
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12">
-                            <?= Yii::t('app', 'Password Again') ?><span class="required">*</span>
-                        </label>
-
-                        <div class="col-md-6 col-sm-6 col-xs-12">
-                            <?= $formRegistration->field($modelRegistration, 'confirm_password')
-                                ->passwordInput(['placeholder' => Yii::t('app', 'Repeat Password')])
-                                ->label(false)
-                            ?>
-                        </div>
-                    </div>
-
                     <div class="ln_solid"></div>
 
                     <div class="form-group">

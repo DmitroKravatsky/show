@@ -25,6 +25,7 @@ class InviteAction extends Action
     public function run()
     {
         $modelRegistration = new RegistrationForm();
+        $modelRegistration->setScenario(RegistrationForm::SCENARIO_MANAGER_CREATE);
 
         Yii::$app->language = Yii::$app->session->get('language', Yii::$app->language);
 
