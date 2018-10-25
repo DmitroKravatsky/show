@@ -200,5 +200,6 @@ return [
     'Value' => 'Значение',
     'Unload' => 'Выгрузить',
     'Currency Code' => 'Код Валюты',
-    'File successfully generated.' => 'Файл успешно сгенерирован.'
+    'File successfully generated.' => 'Файл успешно сгенерирован.',
+    'New review' => 'Новый отзыв'
 ];

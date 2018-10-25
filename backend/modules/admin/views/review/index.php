@@ -106,10 +106,14 @@ $this->params['breadcrumbs']['title'] = $this->title;
                             },
                             'delete' => function($url, ReviewEntity $model) {
                                 $customUrl = Url::to(['/review/delete', 'id' => $model->id]);
-                                return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
-                                ]);
+                                return Yii::$app->user->can(User::ROLE_ADMIN) ? Html::a(
+                                    '<span class="glyphicon glyphicon-trash"></span>',
+                                    $customUrl,
+                                    [
+                                        'title' => Yii::t('app', 'Delete'),
+                                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    ]
+                                ) : '';
                             },
                         ],
                     ],
