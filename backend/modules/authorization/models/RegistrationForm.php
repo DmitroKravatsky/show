@@ -29,13 +29,16 @@ class RegistrationForm extends Model
         $scenarios[self::SCENARIO_PASSWORD_CREATE] = [
             'password', 'confirm_password'
         ];
+        $scenarios[self::SCENARIO_MANAGER_CREATE] = [
+            'email', 'name', 'last_name', 'phone_number'
+        ];
         return $scenarios;
     }
 
     public function rules()
     {
         return [
-            [['email', 'name', 'last_name', 'password', 'confirm_password', 'phone_number'], 'required' ],
+            [['email', 'name', 'last_name', 'phone_number'], 'required', 'on' => self::SCENARIO_MANAGER_CREATE ],
             ['phone_number', PhoneInputValidator::class],
             [['email'], 'email'],
             ['email', 'unique', 'targetClass' => User::class, 'message' => Yii::t('app', 'This email address has already been taken.')],
