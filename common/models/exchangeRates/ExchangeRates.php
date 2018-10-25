@@ -5,6 +5,7 @@ namespace common\models\exchangeRates;
 use Yii;
 use common\models\paymentSystem\PaymentSystem;
 use yii\db\ActiveRecord;
+use yii\web\NotFoundHttpException;
 
 /**
  * This is the model class for table "exchange_rates".
@@ -72,5 +73,22 @@ class ExchangeRates extends ActiveRecord
     public function getToPaymentSystem()
     {
         return $this->hasOne(PaymentSystem::class, ['id' => 'to_payment_system_id']);
+    }
+
+    /**
+     * @param $fromPaymentSystem
+     * @param $toPaymentSystem
+     * @param $fromAmount
+     * @return float
+     * @throws NotFoundHttpException
+     */
+    public function calculateAmountByRate($fromPaymentSystem, $toPaymentSystem, $fromAmount)
+    {
+        $exchangeRates = static::findOne(['from_payment_system_id' => $fromPaymentSystem, 'to_payment_system_id' => $toPaymentSystem]);
+        if (!$exchangeRates) {
+            throw new NotFoundHttpException();
+        }
+
+        return round($fromAmount * $exchangeRates->value, 2);
     }
 }

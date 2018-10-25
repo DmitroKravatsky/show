@@ -135,7 +135,8 @@ return [
             'exchange-rates' => 'api/v1/exchange-rates/exchange-rates',
         ],
         'patterns' => [
-            'GET' => 'list',
+            'GET'                  => 'list',
+            'POST calculate-amount' => 'calculate-amount',
         ],
     ],
 ];
