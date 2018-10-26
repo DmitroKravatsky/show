@@ -72,7 +72,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         (Yii::$app->user->can(User::ROLE_ADMIN)) ? Toolbar::createButtonWithProperties(
                             Url::to('/review/create'),
                             ['id' => 'new-review-button', 'type' => 'button', 'title' => Yii::t('app', 'Create new review'), 'class' => 'btn btn-success']
-                        ) : null
+                        ) . Toolbar::resetButton() : ''
                         . Toolbar::resetButton()
                     ],
                     '{export}',
