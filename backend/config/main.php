@@ -89,7 +89,7 @@ return [
                 'notifications/<action:[\w-]+>'           => 'admin/notifications/<action>',
                 'notifications/<action:[\w-]+>/<id:\d+>'  => 'admin/notifications/<action>',
                 'review/<action:[\w-]+>'                  => 'admin/review/<action>',
-                'review/<action:[\w-]+>/<id:\d+>'         => 'admin/review/<action>/{id}',
+                'review/<action:[\w-]+>/<id:\d+>'         => 'admin/review/<action>',
                 'invite/<action:[\w-]+>'                  => 'admin/invite/<action>',
                 'reserve/<action:[\w-]+>'                 => 'admin/reserve/<action>',
                 'reserve/<action:[\w-]+>/<id:\d+>'        => 'admin/reserve/<action>',
