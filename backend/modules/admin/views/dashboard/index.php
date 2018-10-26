@@ -35,7 +35,7 @@ $this->title = Yii::t('app', 'My Yii Application');
                     'action' => 'update-manager-password',
                     'id' => 'password-reset-form'
                 ]); ?>
-                    <div class="modal-body" style="padding: 0px">
+                    <div class="x_content">
                         <div class="col-xs-12">
                             <div class="input-field col-md-12">
                                 <?= $formRegistration->field($passwordUpdateModel, 'password', [
@@ -55,19 +55,16 @@ $this->title = Yii::t('app', 'My Yii Application');
 
                             <div class="result"></div>
                         </div>
+                    </div>
 
-                        <div class="modal-footer">
-                            <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
-                                'id' => 'submit',
-                                'class' => 'btn btn-primary',
-                            ]) ?>
-                        </div>
+                    <div class="modal-footer">
+                        <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
+                            'id' => 'submit',
+                            'class' => 'btn btn-primary',
+                        ]) ?>
+                        <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
                     </div>
                 <?php ActiveForm::end(); ?>
-
-                <div class="modal-footer">
-                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
-                </div>
             </div>
         </div>
     </div>
