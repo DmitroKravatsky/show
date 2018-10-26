@@ -17,13 +17,17 @@ class Toolbar
         ) . ' ';
     }
 
-    public static function deleteButton($url, $title = '')
+    public static function deleteButton($url, $title = '', $disabled = false)
     {
+        $class = 'btn btn-danger';
+        if ($disabled) {
+            $class .= ' no-link';
+        }
         return Html::a(
-            '<i class="glyphicon glyphicon-trash"></i>',
-            Url::to([$url]),
-            ['type' => 'button', 'title' => $title, 'class' => 'btn btn-danger']
-        ) . ' ';
+                '<i class="glyphicon glyphicon-trash"></i>',
+                Url::to([$url]),
+                ['type' => 'button', 'title' => $title, 'class' => $class, 'disabled' => $disabled,]
+            ) . ' ';
     }
 
     public static function resetButton()
@@ -35,12 +39,17 @@ class Toolbar
         ) . ' ';
     }
 
-    public static function readAllButton($url)
+    public static function readAllButton($url, $disabled = false)
     {
+        $class = 'btn btn-primary';
+        if ($disabled) {
+            $class .= ' no-link';
+        }
+
         return Html::a(
                 '<i class="glyphicon glyphicon-eye-open"></i>',
                 Url::to([$url]),
-                ['data-pjax' => 0, 'class' => 'btn btn-primary', 'title' => Yii::t('app', 'Read all')]
+                ['data-pjax' => 0, 'class' => $class, 'title' => Yii::t('app', 'Read all'), 'disabled' => $disabled,]
         ) . ' ';
     }
 
