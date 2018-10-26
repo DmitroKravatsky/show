@@ -31,7 +31,7 @@ $this->params['breadcrumbs'][] = $this->title;
         'header' => Yii::t('app', 'User Report'),
         'collapsable' => true,
     ]) ?>
-        <div class="col-md-3 col-sm-3 col-xs-12 profile_left">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-5 profile_left">
             <?php $form = ActiveForm::begin([
                 'action' => Url::to(['profile/update-avatar']),
                 'options' => [
@@ -53,7 +53,7 @@ $this->params['breadcrumbs'][] = $this->title;
             <?php ActiveForm::end() ?>
         </div>
 
-        <div class="col-md-9 col-sm-9 col-xs-12">
+        <div class="col-md-12 col-sm-12 col-xs-12 col-lg-7">
             <?= Tabs::widget([
                 'options' => ['class' => 'nav nav-tabs bar_tabs'],
                 'items' => [
