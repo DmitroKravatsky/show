@@ -169,7 +169,7 @@ return [
     'Payment systems' => 'Платежные системы',
     'Payment system type' => 'Тип платежной системы',
     'Online wallet' => 'Онлайн кошелек',
-    'Credit card' => 'Крединая карта',
+    'Credit card' => 'Банковская карта',
     'Payment system successfully deleted.' => 'Платежная система успешно удалена.',
     'Change Password' => 'Сменить Пароль',
     'New Password' => 'Новый Пароль',
