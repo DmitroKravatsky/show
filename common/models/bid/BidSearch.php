@@ -60,7 +60,10 @@ class BidSearch extends BidEntity
      */
     public function search($params)
     {
-        $query = BidEntity::find()->joinWith(['managerProfile'])->with('processedByProfile');
+        $query = BidEntity::find()
+            ->joinWith(['managerProfile'])
+            ->with('processedByProfile')
+            ->joinWith('bidOwnerProfile as author_profile');
 
         $expression = 'FIELD ('
             . self::tableName() . '.status,"'
@@ -107,8 +110,8 @@ class BidSearch extends BidEntity
             ->andFilterWhere(['like', 'to_payment_system', $this->to_wallet])
             ->andFilterWhere([
                 'or',
-                ['like', UserProfile::tableName() . '.name', $this->full_name],
-                ['like', UserProfile::tableName() . '.last_name', $this->full_name]
+                ['like', 'author_profile.name', $this->full_name],
+                ['like', 'author_profile.last_name', $this->full_name]
             ]);
 
         if ($this->myBid == BidEntity::MANAGER_BID_YES) {
