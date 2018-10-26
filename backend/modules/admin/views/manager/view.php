@@ -32,35 +32,42 @@ $this->params['breadcrumbs']['title'] = $this->title;
             <div class="modal-header">
                 <h5 class="modal-title"><?= Yii::t('app', 'Change Password') ?></h5>
             </div>
-            <div class="x_content">
-                <div id="alerts"></div>
-                <div class="form-group">
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Password'); ?></label>
-                    <?php $form = ActiveForm::begin([
-                        'action'  => '/admin/manager/update-password',
-                    ]); ?>
-                    <div class="col-md-9 col-sm-9 col-xs-12">
-                        <?= $form->field($manager, 'email', ['enableClientValidation' => true])->hiddenInput([
-                        ])->label(false) ?>
-                    </div>
-                    <div class="col-md-9 col-sm-9 col-xs-12">
-                        <?= $form->field($manager, 'newPassword', ['enableClientValidation' => true])->passwordInput([
-                            'autofocus'   => true,
-                        ])->label(false) ?>
-                    </div>
-                    <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Repeat Password'); ?></label>
-                    <div class="col-md-9 col-sm-9 col-xs-12">
-                        <?= $form->field($manager, 'repeatPassword', ['enableClientValidation' => true])->passwordInput([
-                        ])->label(false) ?>
+
+            <?php $form = ActiveForm::begin([
+                'action'  => '/admin/manager/update-password',
+            ]); ?>
+                <div class="x_content">
+                    <div class="form-group">
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"></label>
+
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <?= $form->field($manager, 'email', ['enableClientValidation' => true])->hiddenInput([
+                            ])->label(false) ?>
+                        </div>
+
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Password'); ?></label>
+
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <?= $form->field($manager, 'newPassword', ['enableClientValidation' => true])->passwordInput([
+                                'autofocus'   => true,
+                            ])->label(false) ?>
+                        </div>
+
+                        <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Repeat Password'); ?></label>
+
+                        <div class="col-md-9 col-sm-9 col-xs-12">
+                            <?= $form->field($manager, 'repeatPassword', ['enableClientValidation' => true])->passwordInput([
+                            ])->label(false) ?>
+                        </div>
                     </div>
                 </div>
-            </div>
-            <div class="modal-footer">
-                <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
-                    'class' => 'btn btn-primary',
-                ]) ?>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
-            </div>
+
+                <div class="modal-footer">
+                    <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
+                        'class' => 'btn btn-primary',
+                    ]) ?>
+                    <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
+                </div>
             <?php $form = ActiveForm::end(); ?>
         </div>
     </div>
