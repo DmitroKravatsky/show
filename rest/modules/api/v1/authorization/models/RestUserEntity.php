@@ -120,7 +120,7 @@ class RestUserEntity extends User
         ];
 
         $scenarios[self::SCENARIO_RECOVERY_PWD] = [
-            'email', 'password', 'confirm_password', 'phone_number','recovery_code'
+            'password', 'confirm_password', 'phone_number','recovery_code'
         ];
 
         $scenarios[self::SCENARIO_LOGIN] = ['email', 'password', 'phone_number'];
@@ -324,7 +324,13 @@ class RestUserEntity extends User
         $recoveryCode = $this->recovery_code;
         $createdRecoveryCode = $this->created_recovery_code;
         try{
-            $this->setAttributes($postData);
+            $this->setAttributes(
+                [
+                    'password' => $postData['password'],
+                    'confirm_password' => $postData['confirm_password'],
+                    'recovery_code' => $postData['recovery_code'],
+                ]
+            );
             if ($this->validate()
                 && $this->checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData['recovery_code'])
             ) {
