@@ -196,4 +196,19 @@ class UserNotifications extends ActiveRecord
         return $value === self::STATUS_READ_NO ? Yii::t('app', 'No') : Yii::t('app', 'Yes');
     }
 
+    /**
+     * @return bool
+     */
+    public static function isUserHasUnreadMessages()
+    {
+        return static::find()->where(['is_read' => self::STATUS_READ_NO, 'user_id' => Yii::$app->user->id])->exists();
+    }
+
+    /**
+     * @return bool
+     */
+    public static function isUserHasMessages()
+    {
+        return static::find()->where(['user_id' => Yii::$app->user->id])->exists();
+    }
 }
