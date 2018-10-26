@@ -54,15 +54,8 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'class'    => ActionColumn::class,
-                        'template' => '{view} {visible} {update} {delete}',
+                        'template' => '{visible} {update} {delete}',
                         'buttons'  => [
-                            'view' => function ($url, PaymentSystem $paymentSystem) {
-                                return Html::a(
-                                    '<span class="glyphicon glyphicon-eye-open"></span>',
-                                    Url::to(['/payment-system/view/' . $paymentSystem->id]),
-                                    ['title' => Yii::t('app', 'View')]
-                                );
-                            },
                             'visible' => function ($url, PaymentSystem $paymentSystem) {
                                 if ($paymentSystem->visible) {
                                     $options = ['title' => Yii::t('app', 'Invisible')];

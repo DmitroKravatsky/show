@@ -8,7 +8,7 @@ use yii\web\Controller;
 use yii\web\NotFoundHttpException;
 use Yii;
 use backend\modules\admin\controllers\actions\paymentSystem\{
-    IndexAction, ViewAction, CreateAction, UpdateAction, DeleteAction, ToggleVisibleAction
+    IndexAction, CreateAction, UpdateAction, DeleteAction, ToggleVisibleAction
 };
 
 class PaymentSystemController extends Controller
@@ -24,7 +24,7 @@ class PaymentSystemController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'toggle-visible', 'update',],
+                        'actions' => ['index', 'toggle-visible', 'update',],
                         'roles'   => ['admin', 'manager',]
                     ],
                     [
@@ -45,9 +45,6 @@ class PaymentSystemController extends Controller
         return [
             'index' => [
                 'class' => IndexAction::class
-            ],
-            'view' => [
-                'class' => ViewAction::class
             ],
             'create' => [
                 'class' => CreateAction::class
