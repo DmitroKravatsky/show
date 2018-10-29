@@ -463,7 +463,7 @@ class BidEntity extends ActiveRecord
         $statuses = [self::STATUS_PAID_BY_US_DONE, self::STATUS_REJECTED];
         if (!Yii::$app->user->can(User::ROLE_ADMIN) && in_array($bid->status, $statuses)) {
             return false;
-        } elseif (Yii::$app->user->can(User::ROLE_MANAGER) && static::isProcessedByAnotherManager($bid)) {
+        } elseif (!Yii::$app->user->can(User::ROLE_ADMIN) && static::isProcessedByAnotherManager($bid)) {
             return false;
         } else {
             return true;
