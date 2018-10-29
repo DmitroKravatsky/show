@@ -27,8 +27,13 @@ class BidController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'delete', 'update-bid-status', 'view', 'toggle-processed',],
+                        'actions' => ['index', 'update-bid-status', 'view', 'toggle-processed',],
                         'roles'   => ['admin', 'manager',]
+                    ],
+                    [
+                        'allow'   => true,
+                        'actions' => ['delete',],
+                        'roles'   => ['admin',]
                     ],
                 ],
             ],
