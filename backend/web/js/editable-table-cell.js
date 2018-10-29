@@ -21,6 +21,7 @@ $(document).ready(function () {
                 var tableRow = $('tr[data-key="' + fieldId + '"]');
                 var bidOldStatusValue = result.bidOldStatusValue;
                 var bidOldStatusText = result.bidOldStatusText;
+                var statusNew = 'new';
 
                 if (document.location.pathname.indexOf(ACTION_ID) !== -1) {
                     $('#status').html(bidStatusText);
@@ -38,6 +39,10 @@ $(document).ready(function () {
                             .attr('value', bidOldStatusValue)
                             .text(bidOldStatusText)
                     );
+
+                    if (!isAdmin) {
+                        $('#' + selectId + ' option[value="' + statusNew + '"]').remove();
+                    }
 
                     tableRow.each(function () {
                         $(this).find('.status-column').html(bidStatusText);
