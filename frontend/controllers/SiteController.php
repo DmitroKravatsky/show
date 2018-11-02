@@ -82,29 +82,15 @@ class SiteController extends Controller
                     // Reserve module
                     Yii::getAlias('@rest/modules/api/v1/reserve/controllers/actions/ListAction.php'),
                     // Review module
-                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/CreateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/UpdateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/DeleteAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/ListAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/'),
                     // User module
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/GetProfileAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UpdatePasswordAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/BindFbAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/BindGmailAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile/UnbindSocialNetworkAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/ListAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications/DeleteAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile'),
                     // Wallet module
-                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/CreateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/UpdateAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/ListAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions/DeleteAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions'),
                     // Payment System Module
                     Yii::getAlias('@rest/modules/api/v1/paymentSystem/controllers/actions/ListAction.php'),
                     // Exchange Rates Module
-                    Yii::getAlias('@rest/modules/api/v1/exchangeRates/controllers/actions/ListAction.php'),
-                    Yii::getAlias('@rest/modules/api/v1/exchangeRates/controllers/actions/CalculateAmountAction.php'),
+                    Yii::getAlias('@rest/modules/api/v1/exchangeRates/controllers/actions'),
                 ],
             ],
 

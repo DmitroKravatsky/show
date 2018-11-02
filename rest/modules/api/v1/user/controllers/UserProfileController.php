@@ -6,7 +6,8 @@ use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    BindFbAction, GetProfileAction, UnbindSocialNetworkAction, UpdateAction, UpdatePasswordAction, BindGmailAction
+    BindFbAction, GetProfileAction, SendNewEmailValidationCodeAction, UnbindSocialNetworkAction, UpdateAction,
+    UpdatePasswordAction, BindGmailAction, VerifyNewEmailAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -38,11 +39,13 @@ class UserProfileController extends Controller
         $behaviors['verbs'] = [
             'class'   => VerbFilter::class,
             'actions' => [
-                'update'          => ['PUT'],
-                'get-profile'     => ['GET'],
-                'update-password' => ['PUT'],
-                'bind-gmail'      => ['POST'],
-                'bind-fb'         => ['POST'],
+                'update'                         => ['PUT'],
+                'get-profile'                    => ['GET'],
+                'update-password'                => ['PUT'],
+                'bind-gmail'                     => ['POST'],
+                'bind-fb'                        => ['POST'],
+                'send-new-email-validation-code' => ['POST'],
+                'verify-new-email'               => ['POST'],
             ]
         ];
 
@@ -112,7 +115,17 @@ class UserProfileController extends Controller
             'class'      => UnbindSocialNetworkAction::class,
             'modelClass' => UserSocial::class,
         ];
-        
+
+        $actions['send-new-email-validation-code'] = [
+            'class'      => SendNewEmailValidationCodeAction::class,
+            'modelClass' => RestUserEntity::class,
+        ];
+
+        $actions['verify-new-email'] = [
+            'class'      => VerifyNewEmailAction::class,
+            'modelClass' => RestUserEntity::class,
+        ];
+
         return $actions;
     }
 }

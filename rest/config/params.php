@@ -9,4 +9,5 @@ return [
     'guest-password' => 'guestPassword',
     'posts-per-page' => 5,
     'rates-xml-file' => Yii::getAlias('@frontend/web/xml/rates.xml'),
+    'emailVerificationCodeLifeTime' => 3600,
 ];
