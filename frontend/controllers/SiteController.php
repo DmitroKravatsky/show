@@ -85,6 +85,7 @@ class SiteController extends Controller
                     Yii::getAlias('@rest/modules/api/v1/review/controllers/actions/'),
                     // User module
                     Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/profile'),
+                    Yii::getAlias('@rest/modules/api/v1/user/controllers/actions/notifications'),
                     // Wallet module
                     Yii::getAlias('@rest/modules/api/v1/wallet/controllers/actions'),
                     // Payment System Module

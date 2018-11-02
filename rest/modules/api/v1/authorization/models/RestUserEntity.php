@@ -136,7 +136,7 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE]  = ['email'];
 
-        $scenarios[self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE]  = ['email', 'email_verification_code'];
+        $scenarios[self::SCENARIO_VERIFY_NEW_EMAIL]  = ['email', 'email_verification_code'];
 
         return $scenarios;
     }
@@ -502,6 +502,7 @@ class RestUserEntity extends User
 
         $user->email_verification_code = rand(1000, 9999);
         $user->created_email_verification_code = time();
+
         if ($user->save(false)) {
             \Yii::$app->sendMail->run(
                 'sendEmailVerificationCode-html.php',
