@@ -13,6 +13,7 @@ use common\models\user\User;
 use rest\modules\api\v1\authorization\models\repositories\SocialRepository;
 use yii\web\ErrorHandler;
 use yii\web\HttpException;
+use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\db\Exception as ExceptionDb;
 use yii\web\UnprocessableEntityHttpException;
@@ -40,20 +41,24 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $created_recovery_code
  * @property integer $status
  * @property integer $verification_code
+ * @property integer $email_verification_code
+ * @property integer $created_email_verification_code
  */
 
 class RestUserEntity extends User
 {
     use SocialRepository, AuthorizationJwt, AuthorizationRepository;
 
-    const SCENARIO_REGISTER        = 'register';
-    const SCENARIO_REGISTER_BY_BID = 'register-by-bid';
-    const SCENARIO_UPDATE_BY_BID   = 'update-by-bid';
-    const SCENARIO_SOCIAL_REGISTER = 'social_register';
-    const SCENARIO_RECOVERY_PWD    = 'recovery-password';
-    const SCENARIO_UPDATE_PASSWORD = 'update-password';
-    const SCENARIO_LOGIN           = 'login';
-    const SCENARIO_VERIFY_PROFILE  = 'verify';
+    const SCENARIO_REGISTER                      = 'register';
+    const SCENARIO_REGISTER_BY_BID               = 'register-by-bid';
+    const SCENARIO_UPDATE_BY_BID                 = 'update-by-bid';
+    const SCENARIO_SOCIAL_REGISTER               = 'social_register';
+    const SCENARIO_RECOVERY_PWD                  = 'recovery-password';
+    const SCENARIO_UPDATE_PASSWORD               = 'update-password';
+    const SCENARIO_LOGIN                         = 'login';
+    const SCENARIO_VERIFY_PROFILE                = 'verify';
+    const SCENARIO_SEND_EMAIL_VERIFICATION_CODE  = 'send-email-verification-code';
+    const SCENARIO_VERIFY_NEW_EMAIL              = 'verify-email';
 
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
@@ -129,6 +134,10 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_VERIFY_PROFILE]  = ['verification_code', 'phone_number'];
 
+        $scenarios[self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE]  = ['email'];
+
+        $scenarios[self::SCENARIO_VERIFY_NEW_EMAIL]  = ['email', 'email_verification_code'];
+
         return $scenarios;
     }
 
@@ -151,7 +160,9 @@ class RestUserEntity extends User
     {
         return [
             ['email', 'email'],
-            [['verification_code', 'register_by_bid',], 'integer'],
+            ['email', 'required', 'on' => self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE],
+            [['email_verification_code', 'email'], 'required', 'on' => self::SCENARIO_VERIFY_NEW_EMAIL],
+            [['verification_code', 'register_by_bid', 'email_verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [
                 'phone_number',
@@ -467,5 +478,95 @@ class RestUserEntity extends User
         if (in_array($this->scenario, $registrationScenarios)) {
             $this->status = self::STATUS_UNVERIFIED;
         }
+    }
+
+    /**
+     * Sends verification code to new email
+     * @param $email string potential user new email
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function sendEmailVerificationCode($email)
+    {
+        $this->setAttribute('email', $email);
+        $this->setScenario(self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE);
+        if (!$this->validate('email')) {
+            $this->throwModelException($this->errors);
+        }
+
+        $user = static::findOne(\Yii::$app->user->id);
+        if(!$user) {
+            throw new NotFoundHttpException('User is not found');
+        }
+
+        $user->email_verification_code = rand(1000, 9999);
+        $user->created_email_verification_code = time();
+
+        if ($user->save(false)) {
+            \Yii::$app->sendMail->run(
+                'sendEmailVerificationCode-html.php',
+                [
+                    'email' => $email,
+                    'verificationCode' => $user->email_verification_code
+                ],
+                \Yii::$app->params['supportEmail'], $email, 'Email validation'
+            );
+            return true;
+        }
+        throw new ServerErrorHttpException();
+    }
+
+    /**
+     * Updates user email if verification code is correct
+     * @param $params
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
+     */
+    public function verifyNewEmail($params)
+    {
+        $this->setAttributes([
+            'email' => $params['email'],
+            'email_verification_code' => $params['email_verification_code']
+        ]);
+        $this->setScenario(self::SCENARIO_VERIFY_NEW_EMAIL);
+        if (!$this->validate()) {
+            $this->throwModelException($this->errors);
+        }
+
+        $user = static::findOne(\Yii::$app->user->id);
+        if(!$user) {
+            throw new NotFoundHttpException('User is not found');
+        }
+
+        if (!$this->isNewEmailVerificationValid($params['email_verification_code'], $user)) {
+            throw new UnprocessableEntityHttpException('Verification code is invalid or expired');
+        }
+
+        $user->email = $params['email'];
+        $user->email_verification_code = null;
+
+        if ($user->save(false)) {
+            return true;
+        }
+        throw new ServerErrorHttpException('Server error, please try later');
+    }
+
+    /**
+     * Validates passed verification code
+     * @param $verificationCode string Code that user has passed
+     * @param $userModel RestUserEntity
+     * @return bool
+     */
+    public function isNewEmailVerificationValid($verificationCode, RestUserEntity $userModel):bool
+    {
+        if (($userModel->created_email_verification_code + \Yii::$app->params['emailVerificationCodeLifeTime']) > time()) {
+            if (intval($verificationCode) === $userModel->email_verification_code) {
+                return true;
+            }
+        }
+        return false;
     }
 }
