@@ -73,7 +73,7 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'class' => \yii\grid\ActionColumn::class,
-                        'template' => '{view} {delete}',
+                        'template' => '{view}' . (Yii::$app->user->can('admin') ? ' {delete}' : ''),
                         'buttons' => [
                             'view' => function($url, $model) {
                                 return Html::a(
