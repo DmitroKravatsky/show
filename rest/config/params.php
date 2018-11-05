@@ -10,4 +10,5 @@ return [
     'posts-per-page' => 5,
     'rates-xml-file' => Yii::getAlias('@frontend/web/xml/rates.xml'),
     'emailVerificationCodeLifeTime' => 3600,
+    'phoneVerificationCodeLifeTime' => 3600,
 ];

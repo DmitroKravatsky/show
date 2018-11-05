@@ -6,8 +6,7 @@ use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
-    BindFbAction, GetProfileAction, SendNewEmailValidationCodeAction, UnbindSocialNetworkAction, UpdateAction,
-    UpdatePasswordAction, BindGmailAction, VerifyNewEmailAction
+    BindFbAction, GetProfileAction, SendNewEmailValidationCodeAction, SendNewPhoneVerificationCodeAction, UnbindSocialNetworkAction, UpdateAction, UpdatePasswordAction, BindGmailAction, VerifyNewEmailAction, VerifyNewPhoneAction
 };
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
@@ -123,6 +122,16 @@ class UserProfileController extends Controller
 
         $actions['verify-new-email'] = [
             'class'      => VerifyNewEmailAction::class,
+            'modelClass' => RestUserEntity::class,
+        ];
+
+        $actions['send-new-phone-verification-code'] = [
+            'class'      => SendNewPhoneVerificationCodeAction::class,
+            'modelClass' => RestUserEntity::class,
+        ];
+
+        $actions['verify-new-phone'] = [
+            'class'      => VerifyNewPhoneAction::class,
             'modelClass' => RestUserEntity::class,
         ];
 
