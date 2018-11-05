@@ -43,6 +43,8 @@ use yii\web\UnprocessableEntityHttpException;
  * @property integer $verification_code
  * @property integer $email_verification_code
  * @property integer $created_email_verification_code
+ * @property integer $phone_verification_code
+ * @property integer $created_phone_verification_code
  */
 
 class RestUserEntity extends User
@@ -59,6 +61,8 @@ class RestUserEntity extends User
     const SCENARIO_VERIFY_PROFILE                = 'verify';
     const SCENARIO_SEND_EMAIL_VERIFICATION_CODE  = 'send-email-verification-code';
     const SCENARIO_VERIFY_NEW_EMAIL              = 'verify-email';
+    const SCENARIO_SEND_PHONE_VERIFICATION_CODE  = 'send-phone-verification-code';
+    const SCENARIO_VERIFY_NEW_PHONE              = 'verify-phone';
 
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
@@ -83,23 +87,25 @@ class RestUserEntity extends User
     public function attributeLabels(): array
     {
         return [
-            'id'                    => '#',
-            'email'                 => 'Email',
-            'phone_number'          => 'Номер телефона',
-            'source'                => 'Социальная сеть',
-            'terms_condition'       => 'Пользовательское соглашение',
-            'password'              => 'Пароль',
-            'confirm_password'      => 'Подтверждение пароля',
-            'new_password'          => 'Новый пароль',
-            'current_password'      => 'Текущий пароль',
-            'created_at'            => 'Дата создания',
-            'updated_at'            => 'Дата изменения',
-            'created_recovery_code' => 'Дата создания кода востановления',
-            'recovery_code'         => 'Код востановления',
-            'refresh_token'         => 'Токен обновления',
-            'created_refresh_token' => 'Дата создания токена доступа',
-            'status'                => 'Статус полльзователя',
-            'verification_code'     => 'Код подтверждения аккаунта',
+            'id'                              => '#',
+            'email'                           => 'Email',
+            'phone_number'                    => 'Номер телефона',
+            'source'                          => 'Социальная сеть',
+            'terms_condition'                 => 'Пользовательское соглашение',
+            'password'                        => 'Пароль',
+            'confirm_password'                => 'Подтверждение пароля',
+            'new_password'                    => 'Новый пароль',
+            'current_password'                => 'Текущий пароль',
+            'created_at'                      => 'Дата создания',
+            'updated_at'                      => 'Дата изменения',
+            'created_recovery_code'           => 'Дата создания кода востановления',
+            'recovery_code'                   => 'Код востановления',
+            'refresh_token'                   => 'Токен обновления',
+            'created_refresh_token'           => 'Дата создания токена доступа',
+            'status'                          => 'Статус полльзователя',
+            'verification_code'               => 'Код подтверждения аккаунта',
+            'phone_verification_code'         => 'Код подтверждения телефона',
+            'created_phone_verification_code' => 'Дата создания кода верификации телефона',
         ];
     }
 
@@ -138,6 +144,10 @@ class RestUserEntity extends User
 
         $scenarios[self::SCENARIO_VERIFY_NEW_EMAIL]  = ['email', 'email_verification_code'];
 
+        $scenarios[self::SCENARIO_SEND_PHONE_VERIFICATION_CODE]  = ['phone_number'];
+
+        $scenarios[self::SCENARIO_VERIFY_NEW_PHONE]  = ['phone_number', 'phone_verification_code'];
+
         return $scenarios;
     }
 
@@ -162,7 +172,9 @@ class RestUserEntity extends User
             ['email', 'email'],
             ['email', 'required', 'on' => self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE],
             [['email_verification_code', 'email'], 'required', 'on' => self::SCENARIO_VERIFY_NEW_EMAIL],
-            [['verification_code', 'register_by_bid', 'email_verification_code'], 'integer'],
+            ['phone_number', 'required', 'on' => self::SCENARIO_SEND_PHONE_VERIFICATION_CODE],
+            [['phone_verification_code', 'phone_number'], 'required', 'on' => self::SCENARIO_VERIFY_NEW_PHONE],
+            [['verification_code', 'register_by_bid', 'email_verification_code', 'phone_verification_code'], 'integer'],
             ['role', 'in', 'range' => [self::ROLE_GUEST, self::ROLE_USER]],
             [
                 'phone_number',
@@ -496,7 +508,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -537,7 +549,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -566,6 +578,90 @@ class RestUserEntity extends User
             if (intval($verificationCode) === $userModel->email_verification_code) {
                 return true;
             }
+        }
+        return false;
+    }
+
+    /**
+     * Sends verification code to new phone number
+     * @param $phoneNumber string potential user new phone
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     */
+    public function sendPhoneVerificationCode($phoneNumber)
+    {
+        $this->setAttribute('phone_number', $phoneNumber);
+        $this->setScenario(self::SCENARIO_SEND_PHONE_VERIFICATION_CODE);
+        if (!$this->validate('phone_number')) {
+            $this->throwModelException($this->errors);
+        }
+
+        $user = static::findOne(\Yii::$app->user->id);
+        if (!$user) {
+            throw new NotFoundHttpException('User is not found');
+        }
+
+        $user->phone_verification_code = 0000;//rand(1000, 9999);
+        $user->created_phone_verification_code = time();
+        if ($user->save(false)) {
+            //\Yii::$app->sendSms->run('Your verification code is ' . $user->phone_verification_code, $phone_number);
+            return true;
+        }
+
+        throw new ServerErrorHttpException();
+    }
+
+    /**
+     * Updates user phone number if verification code is correct
+     * @param $params
+     * @return bool
+     * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
+     * @throws UnprocessableEntityHttpException
+     */
+    public function verifyNewPhone($params)
+    {
+        $this->setAttributes([
+            'phone_number' => $params['phone_number'],
+            'phone_verification_code' => $params['phone_verification_code']
+        ]);
+        $this->setScenario(self::SCENARIO_VERIFY_NEW_PHONE);
+        if (!$this->validate()) {
+            $this->throwModelException($this->errors);
+        }
+
+        $user = static::findOne(\Yii::$app->user->id);
+        if (!$user) {
+            throw new NotFoundHttpException('User is not found');
+        }
+
+        if (!$this->isNewPhoneVerificationCodeValid($params['phone_verification_code'], $user)) {
+            throw new UnprocessableEntityHttpException('Verification code is invalid or expired');
+        }
+
+        $user->phone_number = $params['phone_number'];
+        $user->phone_verification_code = null;
+
+        if ($user->save(false)) {
+            return true;
+        }
+        throw new ServerErrorHttpException('Server error, please try later');
+    }
+
+    /**
+     * Validates passed verification code
+     * @param $verificationCode string Code that user has passed
+     * @param $userModel RestUserEntity
+     * @return bool
+     */
+    public function isNewPhoneVerificationCodeValid($verificationCode, RestUserEntity $userModel):bool
+    {
+        if (!($userModel->created_phone_verification_code + \Yii::$app->params['phoneVerificationCodeLifeTime']) > time()) {
+            return false;
+        }
+        if (intval($verificationCode) === $userModel->phone_verification_code) {
+            return true;
         }
         return false;
     }
