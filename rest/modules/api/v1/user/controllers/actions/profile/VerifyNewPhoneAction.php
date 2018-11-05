@@ -8,6 +8,7 @@ use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class VerifyNewPhoneAction
@@ -113,6 +114,7 @@ class VerifyNewPhoneAction extends Action
      * )
      *
      * @throws NotFoundHttpException
+     * @throws ServerErrorHttpException
      * @return array
      */
     public function run()
@@ -129,6 +131,8 @@ class VerifyNewPhoneAction extends Action
             ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
+        } catch (ServerErrorHttpException $e) {
+            throw new ServerErrorHttpException($e->getMessage());
         }
     }
 }

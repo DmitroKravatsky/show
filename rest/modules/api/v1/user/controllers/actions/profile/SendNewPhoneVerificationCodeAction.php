@@ -99,6 +99,10 @@ class SendNewPhoneVerificationCodeAction extends Action
      *         response = 404,
      *         description = "NotFoundHttpException"
      *     ),
+     *      @SWG\Response(
+     *         response = 405,
+     *         description = "Method Not Allowed"
+     *     ),
      *     @SWG\Response (
      *         response = 500,
      *         description = "ServerErrorHttpException"
