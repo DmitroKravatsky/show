@@ -508,7 +508,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -549,7 +549,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -598,7 +598,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -632,7 +632,7 @@ class RestUserEntity extends User
         }
 
         $user = static::findOne(\Yii::$app->user->id);
-        if(!$user) {
+        if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
 
@@ -657,10 +657,11 @@ class RestUserEntity extends User
      */
     public function isNewPhoneVerificationCodeValid($verificationCode, RestUserEntity $userModel):bool
     {
-        if (($userModel->created_phone_verification_code + \Yii::$app->params['phoneVerificationCodeLifeTime']) > time()) {
-            if (intval($verificationCode) === $userModel->phone_verification_code) {
-                return true;
-            }
+        if (!($userModel->created_phone_verification_code + \Yii::$app->params['phoneVerificationCodeLifeTime']) > time()) {
+            return false;
+        }
+        if (intval($verificationCode) === $userModel->phone_verification_code) {
+            return true;
         }
         return false;
     }
