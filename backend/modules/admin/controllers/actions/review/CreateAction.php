@@ -30,6 +30,6 @@ class CreateAction extends Action
                 Yii::t('app', 'Something wrong, please try again later.')
             );
         }
-        return $this->controller->redirect(Yii::$app->request->referrer);
+        return $this->controller->render('create', ['review' => new ReviewEntity()]);
     }
 }
