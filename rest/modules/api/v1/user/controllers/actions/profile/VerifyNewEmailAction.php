@@ -54,7 +54,7 @@ class VerifyNewEmailAction extends Action
     /**
      * Sends code to validate new email
      *
-     * @SWG\Get(path="/user/profile/verify-new-email",
+     * @SWG\POST(path="/user/profile/verify-new-email",
      *      tags={"User module"},
      *      summary="Get user profile",
      *      description="Get user profile",

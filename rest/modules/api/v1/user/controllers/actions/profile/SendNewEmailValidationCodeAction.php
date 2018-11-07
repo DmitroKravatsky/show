@@ -55,7 +55,7 @@ class SendNewEmailValidationCodeAction extends Action
     /**
      * Sends code to validate new email
      *
-     * @SWG\Get(path="/user/profile/send-email-validation-code",
+     * @SWG\POST(path="/user/profile/send-new-email-validation-code",
      *      tags={"User module"},
      *      summary="Get user profile",
      *      description="Get user profile",
