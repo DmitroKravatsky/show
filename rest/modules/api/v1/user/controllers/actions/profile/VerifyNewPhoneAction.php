@@ -7,8 +7,10 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
+use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class VerifyNewPhoneAction
@@ -76,24 +78,31 @@ class VerifyNewPhoneAction extends Action
      *      ),
      *     @SWG\Parameter(
      *          in = "formData",
-     *          name = "phone_number_verification_code",
+     *          name = "phone_verification_code",
      *          description = "user's new phone_number verification code",
      *          required = true,
      *          type = "integer"
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
-     *              @SWG\Property(property="data", type="object")
      *         ),
      *         examples = {
      *              "status": 200,
      *              "message": "Phone was updated .",
      *         }
+     *     ),
+     *     @SWG\Response (
+     *         response = 400,
+     *         description = "Bad request"
+     *     ),
+     *     @SWG\Response (
+     *         response = 401,
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response(
      *         response = 404,
@@ -105,7 +114,7 @@ class VerifyNewPhoneAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Wrong verification_code"
+     *         description = "Validation error"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -114,6 +123,7 @@ class VerifyNewPhoneAction extends Action
      * )
      *
      * @throws NotFoundHttpException
+     * @throws UnprocessableEntityHttpException
      * @throws ServerErrorHttpException
      * @return array
      */
@@ -131,8 +141,11 @@ class VerifyNewPhoneAction extends Action
             ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            \Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something wrong, please try later');
         }
     }
 }
