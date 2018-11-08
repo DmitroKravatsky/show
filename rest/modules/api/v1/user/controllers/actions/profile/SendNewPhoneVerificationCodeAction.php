@@ -5,10 +5,13 @@ namespace rest\modules\api\v1\user\controllers\actions\profile;
 use common\behaviors\ValidatePostParameters;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
+use Yii;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
+use yii\web\ErrorHandler;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class SendNewPhoneValidationCodeAction
@@ -76,7 +79,7 @@ class SendNewPhoneVerificationCodeAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -89,29 +92,34 @@ class SendNewPhoneVerificationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Not enough income parameters"
+     *         description = "Bad request"
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "NotFoundHttpException"
+     *         description = "Not Found"
      *     ),
      *      @SWG\Response(
      *         response = 405,
      *         description = "Method Not Allowed"
      *     ),
      *     @SWG\Response (
+     *         response = 422,
+     *         description = "Validation error"
+     *     ),
+     *     @SWG\Response (
      *         response = 500,
-     *         description = "ServerErrorHttpException"
+     *         description = "Server Error"
      *     )
      * )
      *
      * @return array
      *
      * @throws NotFoundHttpException
+     * @throws UnprocessableEntityHttpException
      * @throws ServerErrorHttpException
      */
     public function run()
@@ -128,8 +136,11 @@ class SendNewPhoneVerificationCodeAction extends Action
             ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
-        } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something wrong, please try later');
         }
     }
 }

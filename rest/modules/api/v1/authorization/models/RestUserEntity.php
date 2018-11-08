@@ -242,7 +242,9 @@ class RestUserEntity extends User
                 ['phone_number', 'email',],
                 'unique',
                 'on' => [
-                    self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID, self::SCENARIO_UPDATE_BY_BID
+                    self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID,
+                    self::SCENARIO_UPDATE_BY_BID, self::SCENARIO_SEND_PHONE_VERIFICATION_CODE,
+                    self::SCENARIO_VERIFY_NEW_PHONE
                 ]
             ],
         ];
