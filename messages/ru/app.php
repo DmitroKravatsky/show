@@ -131,7 +131,7 @@ return [
     'Edit' => 'Редактировать',
     'Message was successfully send.' => 'Сообщение успешно отправлено.',
     'A new user has been registered. Registration was conducted with a phone number {phone_number}.' => 'Зарегистрирован новый пользователь. Регистрация проводилась с номером телефона {phone_number}.',
-    'User {full_name} has created new bid. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.' => 'Ваша заявка принята. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.',
+    'User {full_name} has created new bid. Transfer to the card {sum} {currency} through the Wallet app. Recipient:Card/account {wallet}.' => 'Пользователь {full_name} создал новую заявку. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.',
     'Client {full_name} has paid {sum} {currency} to wallet {wallet} .' => 'Ваш платёж {sum} {currency} в {wallet} принят.',
     'Your bid number {bid_id} is now in progress.' =>  'Ваша заявка {bid_id} в обработке.',
     'Your bid is rejected. Transfer to the card {sum} {currency} through the Wallet app. Recipient: Card/account {wallet}.' => 'Ваша заявка не выполнена. Перевод на карту {sum} {currency} через приложение Wallet. Получатель: Карта/счет {wallet}.',
