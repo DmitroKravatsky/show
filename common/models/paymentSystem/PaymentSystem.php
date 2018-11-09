@@ -40,12 +40,54 @@ class PaymentSystem extends ActiveRecord implements IVisible
     const ONLINE_WALLET = 'online_wallet';
     const CREDIT_CARD   = 'credit_card';
 
+    const WEBMONEY_WMX      = 'Webmoney WMX';
+    const WEBMONEY_RUB      = 'Webmoney RUB';
+    const WEBMONEY_USD      = 'Webmoney USD';
+    const WEBMONEY_UAH      = 'Webmoney UAH';
+    const WEBMONEY_EUR      = 'Webmoney EUR';
+    const VTB_24_RUB        = 'ВТБ 24 RUB';
+    const YANDEX_MONEY_RUB  = 'Яндекс.Деньги RUB';
+    const SBERBANK_RUB      = 'Сбербанк RUB';
+    const PRIVAT_24_UAH     = 'Приват24 UAH';
+    const RNK_BANK_RUB      = 'РНК Банк RUB';
+    const VISA_MASTER_RUB   = 'Visa/Master руб RUB';
+
     /**
      * @return string
      */
     public static function tableName(): string
     {
         return 'payment_system';
+    }
+
+    /**
+     * @return array
+     */
+    public static function nameLabels(): array
+    {
+        return [
+            self::WEBMONEY_WMX     => self::WEBMONEY_WMX,
+            self::WEBMONEY_RUB     => self::WEBMONEY_RUB,
+            self::WEBMONEY_USD     => self::WEBMONEY_USD,
+            self::WEBMONEY_UAH     => self::WEBMONEY_UAH,
+            self::VTB_24_RUB       => self::VTB_24_RUB,
+            self::YANDEX_MONEY_RUB => self::YANDEX_MONEY_RUB,
+            self::SBERBANK_RUB     => self::SBERBANK_RUB,
+            self::PRIVAT_24_UAH    => self::PRIVAT_24_UAH,
+            self::RNK_BANK_RUB     => self::RNK_BANK_RUB,
+            self::VISA_MASTER_RUB  => self::VISA_MASTER_RUB,
+        ];
+    }
+
+    /**
+     * Returns payment system name label
+     * @param $name
+     * @return string
+     */
+    public static function getPaymentNameValue($name): string
+    {
+        $paymentSystems = static::nameLabels();
+        return $paymentSystems[$name];
     }
 
     /**
