@@ -85,7 +85,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                 'collapsable' => true,
             ]) ?>
                 <div class="form-group">
-                    <?= Html::a('<i class="glyphicon glyphicon-plus"></i>', false, [
+                    <?= Html::a('<i class="glyphicon glyphicon-envelope"></i>', false, [
                         'reInviteUrl' => Url::to(['/manager/re-invite', 'userId' => $manager->id,]),
                         'title' => Yii::t('app', 'Re-invite'),
                         'class' => 'ajaxReInviteMessage btn btn-success',
