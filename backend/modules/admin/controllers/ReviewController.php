@@ -24,12 +24,12 @@ class ReviewController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view',],
+                        'actions' => ['index', 'view', 'create'],
                         'roles'   => ['admin', 'manager']
                     ],
                     [
                         'allow'   => true,
-                        'actions' => ['create', 'delete'],
+                        'actions' => ['delete'],
                         'roles'   => ['admin']
                     ],
                 ],

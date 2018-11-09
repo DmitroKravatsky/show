@@ -23,7 +23,7 @@ class CreateAction extends Action
                     'success',
                     Yii::t('app', 'Review was successfully created.')
                 );
-                return $this->controller->redirect(Yii::$app->request->referrer);
+                return $this->controller->redirect('index');
             }
             \Yii::$app->session->setFlash(
                 'error',
