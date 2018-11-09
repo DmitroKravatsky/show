@@ -91,7 +91,13 @@ $this->params['breadcrumbs']['title'] = $this->title;
                             },
                         ]
                     ],
-                    'name',
+                    [
+                        'attribute' => 'name',
+                        'filter'    => PaymentSystem::nameLabels(),
+                        'value'     => function (PaymentSystem $paymentSystem) {
+                            return $paymentSystem->name;
+                        }
+                    ],
                     [
                         'attribute' => 'payment_system_type',
                         'filter'    => PaymentSystem::paymentSystemTypeLabels(),

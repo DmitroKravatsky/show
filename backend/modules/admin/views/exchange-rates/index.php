@@ -1,5 +1,6 @@
 <?php
 
+use common\models\paymentSystem\PaymentSystem;
 use kartik\{ daterange\DateRangePicker, grid\GridView };
 use yii\helpers\Html;
 use yii\widgets\Pjax;
@@ -67,12 +68,14 @@ $this->params['breadcrumbs'][] = $this->title;
                     ],
                     [
                         'attribute' => 'from_payment_system_id',
+                        'filter'    => PaymentSystem::nameLabels(),
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->fromPaymentSystem->name;
                         }
                     ],
                     [
                         'attribute' => 'to_payment_system_id',
+                        'filter'    => PaymentSystem::nameLabels(),
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->toPaymentSystem->name;
                         }

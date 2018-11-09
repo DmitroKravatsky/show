@@ -64,8 +64,8 @@ class ExchangeRatesSearch extends ExchangeRates
             'value' => $this->value,
         ]);
 
-        $query->andFilterWhere(['like', 'from_payment_system.name', $this->from_payment_system_id]);
-        $query->andFilterWhere(['like', 'to_payment_system.name', $this->to_payment_system_id]);
+        $query->andFilterWhere(['from_payment_system.name' => $this->from_payment_system_id]);
+        $query->andFilterWhere(['to_payment_system.name' => $this->to_payment_system_id]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);

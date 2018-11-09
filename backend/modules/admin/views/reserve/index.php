@@ -107,6 +107,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
                     ],
                     [
                         'attribute' => 'payment_system',
+                        'filter'    => PaymentSystem::nameLabels(),
                         'value'     => function (Reserve $reserve) {
                             return $reserve->paymentSystem->name;
                         }
