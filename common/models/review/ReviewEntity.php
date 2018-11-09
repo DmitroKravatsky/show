@@ -2,6 +2,7 @@
 
 namespace common\models\review;
 
+use common\behaviors\ImageBehavior;
 use common\models\review\repositories\RestReviewRepository;
 use common\models\userProfile\UserProfileEntity;
 use rest\behaviors\ValidationExceptionFirstMessage;
@@ -19,6 +20,7 @@ use Yii;
  * @property integer $id
  * @property integer $created_by
  * @property string  $text
+ * @property string  $avatar
  * @property integer $terms_condition
  * @property integer $created_at
  * @property integer $updated_at
@@ -29,6 +31,8 @@ use Yii;
 class ReviewEntity extends ActiveRecord
 {
     use RestReviewRepository;
+
+    const PATH_TO_FAKE_USER_PHOTO = 'images/fakeusers';
 
     public $terms_condition;
 
@@ -61,10 +65,11 @@ class ReviewEntity extends ActiveRecord
     public function rules(): array 
     {
         return [
-            ['text', 'string'],
+            [['text', 'avatar', 'name', 'last_name'], 'string'],
             ['created_by', 'default', 'value' => \Yii::$app->user->id],
             ['text', 'required'],
             ['terms_condition', 'required', 'requiredValue' => 1],
+            [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
         ];
     }
 
@@ -76,6 +81,11 @@ class ReviewEntity extends ActiveRecord
         return [
             TimestampBehavior::class,
             ValidationExceptionFirstMessage::class,
+            [
+                'class' => ImageBehavior::class,
+                'savePath' => self::PATH_TO_FAKE_USER_PHOTO,
+                'attributeName' => 'avatar',
+            ]
         ];
     }
 

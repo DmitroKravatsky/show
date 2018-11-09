@@ -26,37 +26,6 @@ $this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
-<div class="modal" tabindex="-1"  id="new-review-form" role="dialog" hidden="true">
-    <div class="modal-dialog" role="document">
-        <div class="modal-content">
-            <div class="modal-header">
-                <h5 class="modal-title"><?= Yii::t('app', 'New review') ?></h5>
-            </div>
-                <div class="x_content">
-                    <div id="alerts"></div>
-                    <div class="form-group">
-                        <label class="control-label col-md-3 col-sm-3 col-xs-12"><?= Yii::t('app', 'Create new review'); ?></label>
-                        <?php $form = ActiveForm::begin([
-                            'action'  => 'create',
-                        ]); ?>
-                        <div class="col-md-9 col-sm-9 col-xs-12">
-                            <?= $form->field($newReviewModel, 'text', ['enableClientValidation' => true])->textarea([
-                                'autofocus'   => true,
-                                'placeholder' => Yii::t('app', 'Review text')
-                            ])->label(false) ?>
-                        </div>
-                    </div>
-                </div>
-            <div class="modal-footer">
-                <?= Html::submitButton(Yii::t('app', Yii::t('app', 'Save')), [
-                    'class' => 'btn btn-primary',
-                ]) ?>
-                <button type="button" class="btn btn-secondary" data-dismiss="modal"><?= Yii::t('app', 'Close') ?></button>
-            </div>
-            <?php $form = ActiveForm::end(); ?>
-        </div>
-    </div>
-</div>
 <div class="review-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Reviews'),
@@ -127,6 +96,18 @@ $this->params['breadcrumbs']['title'] = $this->title;
                         'attribute' => 'text',
                         'value' => function (ReviewEntity $review) {
                             return Html::encode(StringHelper::truncate($review->text, 180));
+                        }
+                    ],
+                    'name',
+                    [
+                        'attribute' => 'avatar',
+                        'format' => ['image',['width'=>'100','height'=>'100']],
+                        'value' => function (ReviewEntity $review) {
+                             if ($review->avatar) {
+                                 return $review->getImageUrl();
+                             } else {
+                                 return $review->createdBy->profile->getImageUrl();
+                             }
                         }
                     ],
                     [
