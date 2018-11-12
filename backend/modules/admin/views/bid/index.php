@@ -17,7 +17,6 @@ use common\models\paymentSystem\PaymentSystem;
 /* @var $searchModel \common\models\bid\BidSearch */
 
 $this->title = Yii::t('app', 'Bids');
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('td span {line-height: 20px}') ?>
@@ -79,7 +78,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/bid/view/' . $model->id]),
-                                    ['title' => Yii::t('app', 'View')]
+                                    ['title' => Yii::t('app', 'View'), 'data-pjax' => 0]
                                 );
                             },
                             'delete' => function($url, $model) {
@@ -180,7 +179,6 @@ $this->params['breadcrumbs'][] = $this->title;
                     [
                         'attribute'      => 'in_progress_by_manager',
                         'filter'         => BackendUser::getManagerNames(),
-                        'visible'        => Yii::$app->user->can(User::ROLE_ADMIN),
                         'format'         => 'html',
                         'value'          => function (Bid $bid) {
                             if (isset($bid->inProgressByManager)) {

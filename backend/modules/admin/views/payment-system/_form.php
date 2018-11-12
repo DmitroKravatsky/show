@@ -1,5 +1,6 @@
 <?php
 
+use yii\helpers\Url;
 use yii\widgets\ActiveForm;
 use yiister\gentelella\widgets\Panel;
 use yii\helpers\Html;
@@ -15,7 +16,15 @@ use common\models\paymentSystem\PaymentSystem;
 
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Payment System'),
+                'header' => Html::a(
+                    '<i class="glyphicon glyphicon-chevron-left"></i>',
+                    Url::to('/admin/payment-system/index'),
+                    [
+                        'title' => Yii::t('app', 'Back'),
+                        'class' => 'btn btn-light btn-lg',
+                        'style' => 'margin-left:0'
+                    ]
+                ) . Yii::t('app', 'Payment System'),
             ]) ?>
                 <?php $form = ActiveForm::begin() ?>
                     <?= $form->field($paymentSystem, 'name')->textInput(['maxlength' => true]) ?>

@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 use common\models\reserve\ReserveEntity as Reserve;
@@ -9,8 +11,6 @@ use common\models\paymentSystem\PaymentSystem;
 /** @var Reserve $reserve */
 
 $this->title = Yii::t('app', 'Reserve') . ': ' . $reserve->paymentSystem->name;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reserves'), 'url' => ['index']];
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <div class="reserve-view">
@@ -19,7 +19,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Reserve'),
+                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/reserve/index'), [
+                    'title' => Yii::t('app', 'Back'),
+                    'class' => 'btn btn-light btn-lg',
+                    'style' => 'margin-left:0'
+                ]) . $this->title,
             ]) ?>
             <?= DetailView::widget([
                 'model' => $reserve,

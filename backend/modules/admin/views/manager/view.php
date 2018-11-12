@@ -17,9 +17,6 @@ use common\helpers\Toolbar;
 /* @var \common\models\user\UserSearch $searchModel */
 /* @var \yii\data\ActiveDataProvider $dataProvider */
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Managers'), 'url' => ['index']];
-$this->title = Yii::t('app', 'Manager') . ': ' . $manager->id;
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
@@ -81,7 +78,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
             <div id="re-invite-success"></div>
             <div id="re-invite-error"></div>
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Manager'),
+                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/manager/index'), [
+                    'title' => Yii::t('app', 'Back'),
+                    'class' => 'btn btn-light btn-lg',
+                    'style' => 'margin-left:0'
+                ]) . Yii::t('app', 'Manager'),
                 'collapsable' => true,
             ]) ?>
                 <div class="form-group">

@@ -13,9 +13,7 @@ use common\models\user\User;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel \common\models\bid\BidSearch */
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
 $this->title = Yii::t('app', 'User') . ': ' . $user->profile->getUserFullName() ?? null;
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
@@ -28,7 +26,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <div id="user-status-success"></div>
 
         <?php Panel::begin([
-            'header' => Yii::t('app', 'User'),
+            'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/user/index'), [
+                    'title' => Yii::t('app', 'Back'),
+                    'class' => 'btn btn-light btn-lg',
+                    'style' => 'margin-left:0'
+                ]) . Yii::t('app', 'User') . ': ' . $user->getFullName(),
             'collapsable' => true,
         ]) ?>
             <?= DetailView::widget([

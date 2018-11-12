@@ -1,5 +1,7 @@
 <?php
 
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 use common\models\review\ReviewEntity;
@@ -8,8 +10,6 @@ use common\models\review\ReviewEntity;
 /** @var ReviewEntity $review */
 
 $this->title = Yii::t('app', 'Review') . ': ' . $review->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reviews'), 'url' => ['index']];
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <div class="notification-view">
@@ -18,7 +18,11 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Review'),
+                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/review/index'), [
+                        'title' => Yii::t('app', 'Back'),
+                        'class' => 'btn btn-light btn-lg',
+                        'style' => 'margin-left:0'
+                    ]) . Yii::t('app', 'Review'),
             ]) ?>
             <?= DetailView::widget([
                 'model' => $review,

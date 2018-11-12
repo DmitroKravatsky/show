@@ -13,7 +13,6 @@ use common\helpers\{ UrlHelper, Toolbar };
 /** @var \common\models\userNotifications\UserNotificationsSearch $searchModel */
 
 $this->title = Yii::t('app', 'Notifications');
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
@@ -64,7 +63,7 @@ $this->params['breadcrumbs'][] = $this->title;
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/notifications/view', 'id' => $notification->notification_id]),
-                                    ['title' => Yii::t('app', 'View')]
+                                    ['title' => Yii::t('app', 'View'), 'data-pjax' => 0]
                                 );
                             },
                             'delete' => function($url, UserNotifications $notification) {
