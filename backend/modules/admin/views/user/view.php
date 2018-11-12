@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use yii\{ widgets\DetailView, helpers\Url, widgets\Pjax, helpers\Html, web\View };
 use backend\models\BackendUser;
@@ -13,9 +14,7 @@ use common\models\user\User;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel \common\models\bid\BidSearch */
 
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Users'), 'url' => ['index']];
 $this->title = Yii::t('app', 'User') . ': ' . $user->profile->getUserFullName() ?? null;
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
@@ -28,7 +27,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         <div id="user-status-success"></div>
 
         <?php Panel::begin([
-            'header' => Yii::t('app', 'User'),
+            'header' => Toolbar::createBackButton('/user/index') . Yii::t('app', 'User') . ': ' . $user->getFullName(),
             'collapsable' => true,
         ]) ?>
             <?= DetailView::widget([

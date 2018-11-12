@@ -1,6 +1,9 @@
 <?php
 
+use common\helpers\Toolbar;
 use common\models\userNotifications\NotificationsEntity;
+use yii\helpers\Html;
+use yii\helpers\Url;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 
@@ -8,8 +11,6 @@ use yii\widgets\DetailView;
 /** @var NotificationsEntity $notification */
 
 $this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Notifications'), 'url' => ['index']];
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <div class="notification-view">
@@ -18,7 +19,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Notification'),
+                'header' => Toolbar::createBackButton('/notifications/index') .  Yii::t('app', 'Notification'),
             ]) ?>
             <?= DetailView::widget([
                 'model' => $notification,

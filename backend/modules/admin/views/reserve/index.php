@@ -18,7 +18,6 @@ use backend\models\BackendUser;
 /** @var \yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Reserves');
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>

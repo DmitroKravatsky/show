@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 use common\models\review\ReviewEntity;
@@ -8,8 +9,6 @@ use common\models\review\ReviewEntity;
 /** @var ReviewEntity $review */
 
 $this->title = Yii::t('app', 'Review') . ': ' . $review->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Reviews'), 'url' => ['index']];
-$this->params['breadcrumbs']['title'] = $this->title;
 ?>
 
 <div class="notification-view">
@@ -18,7 +17,7 @@ $this->params['breadcrumbs']['title'] = $this->title;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Review'),
+                'header' => Toolbar::createBackButton('/review/index') . Yii::t('app', 'Review'),
             ]) ?>
             <?= DetailView::widget([
                 'model' => $review,

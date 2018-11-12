@@ -14,8 +14,6 @@ use yii\helpers\Url;
 /* @var $dataProvider yii\data\ActiveDataProvider */
 /* @var $searchModel \common\models\exchangeRates\ExchangeRatesSearch */
 
-$this->title = Yii::t('app', 'Exchange Rates');
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('td span {line-height: 20px}') ?>

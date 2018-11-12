@@ -14,7 +14,6 @@ use kartik\file\FileInput;
 
 $filePreviewClass = 'file-preview-image kv-preview-data';
 $this->title = Yii::t('app', 'User Profile');
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 <style>
     .collapse-link {

@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
 use yii\{
@@ -14,8 +15,6 @@ use kartik\{ grid\GridView, select2\Select2 };
 /** @var BidHistorySearch $searchModel */
 
 $this->title = Yii::t('app', 'Bid') . ' №' . $model->id;
-$this->params['breadcrumbs'][] = ['label' => Yii::t('app', 'Bids'), 'url' => ['index']];
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;} td span {line-height: 20px}') ?>
@@ -26,11 +25,12 @@ $this->params['breadcrumbs'][] = $this->title;
     <div class="row">
         <div id="bid-status-error"></div>
         <div id="bid-status-success"></div>
-        <?php Pjax::begin() ?>
             <?php Panel::begin([
-                'header' => Yii::t('app', 'Bid') . ' №' . $model->id,
+                'header' => Toolbar::createBackButton('/bid/index') . Yii::t('app', 'Bid') . ' №' . $model->id,
                 'collapsable' => true,
             ]) ?>
+            <?php Pjax::begin() ?>
+
                 <?= DetailView::widget([
                     'model'      => $model,
                     'template'   => '<tr data-key="' . $model->id . '"><th{captionOptions}>{label}</th><td{contentOptions}>{value}</td></tr>',
@@ -148,14 +148,17 @@ $this->params['breadcrumbs'][] = $this->title;
                         'updated_at:datetime',
                     ],
                 ]) ?>
-            <?php Panel::end() ?>
+            <?php Pjax::end() ?>
+        <?php Panel::end() ?>
 
-            <hr>
+        <hr>
 
-            <?php Panel::begin([
+
+        <?php Panel::begin([
                 'header' => Yii::t('app', 'Logs'),
                 'collapsable' => true,
-            ]) ?>
+        ]) ?>
+            <?php Pjax::begin() ?>
                 <?= GridView::widget([
                     'dataProvider' => $dataProvider,
                     'filterModel'  => $searchModel,
@@ -232,8 +235,8 @@ $this->params['breadcrumbs'][] = $this->title;
                         ],
                     ],
                 ]) ?>
-            <?php Panel::end() ?>
-        <?php Pjax::end() ?>
+            <?php Pjax::end() ?>
+        <?php Panel::end() ?>
 
     </div>
     <div id="loader"></div>

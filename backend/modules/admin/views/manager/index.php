@@ -16,7 +16,6 @@ use yii\web\View;
 /* @var \yii\data\ActiveDataProvider $dataProvider */
 
 $this->title = Yii::t('app', 'Managers');
-$this->params['breadcrumbs'][] = $this->title;
 ?>
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>

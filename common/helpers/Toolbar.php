@@ -66,4 +66,22 @@ class Toolbar
             $propertiesList
         ) . ' ';
     }
+
+    /**
+     * Creates back to the previous page button
+     * @param $url string Direction link
+     * @param array $propertiesList Array of actual tag properties
+     * @return string
+     */
+    public static function createBackButton($url, array $propertiesList = []): string
+    {
+        return Html::a(
+            '<i class="glyphicon glyphicon-chevron-left"></i>',
+            Url::to([$url]),
+            $propertiesList ? $propertiesList : [
+                'title' => Yii::t('app', 'Back'),
+                'class' => 'btn btn-light btn-lg',
+            ]
+        ) . ' ';
+    }
 }
