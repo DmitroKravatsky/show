@@ -1,7 +1,6 @@
 <?php
 
-use yii\helpers\Html;
-use yii\helpers\Url;
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\DetailView;
 use common\models\review\ReviewEntity;
@@ -18,11 +17,7 @@ $this->title = Yii::t('app', 'Review') . ': ' . $review->id;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/review/index'), [
-                        'title' => Yii::t('app', 'Back'),
-                        'class' => 'btn btn-light btn-lg',
-                        'style' => 'margin-left:0'
-                    ]) . Yii::t('app', 'Review'),
+                'header' => Toolbar::createBackButton('/review/index') . Yii::t('app', 'Review'),
             ]) ?>
             <?= DetailView::widget([
                 'model' => $review,

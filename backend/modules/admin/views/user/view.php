@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use yii\{ widgets\DetailView, helpers\Url, widgets\Pjax, helpers\Html, web\View };
 use backend\models\BackendUser;
@@ -26,11 +27,7 @@ $this->title = Yii::t('app', 'User') . ': ' . $user->profile->getUserFullName() 
         <div id="user-status-success"></div>
 
         <?php Panel::begin([
-            'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/user/index'), [
-                    'title' => Yii::t('app', 'Back'),
-                    'class' => 'btn btn-light btn-lg',
-                    'style' => 'margin-left:0'
-                ]) . Yii::t('app', 'User') . ': ' . $user->getFullName(),
+            'header' => Toolbar::createBackButton('/user/index') . Yii::t('app', 'User') . ': ' . $user->getFullName(),
             'collapsable' => true,
         ]) ?>
             <?= DetailView::widget([

@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use common\models\userNotifications\NotificationsEntity;
 use yii\helpers\Html;
 use yii\helpers\Url;
@@ -18,11 +19,7 @@ $this->title = Yii::t('app', 'Notification') . ': ' . $notification->id;
         </label>
         <div class="col-md-6">
             <?php Panel::begin([
-                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/notifications/index'), [
-                    'title' => Yii::t('app', 'Back'),
-                    'class' => 'btn btn-light btn-lg',
-                    'style' => 'margin-left:0',
-                ]) .  Yii::t('app', 'Notification'),
+                'header' => Toolbar::createBackButton('/notifications/index') .  Yii::t('app', 'Notification'),
             ]) ?>
             <?= DetailView::widget([
                 'model' => $notification,

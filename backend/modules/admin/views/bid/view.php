@@ -1,5 +1,6 @@
 <?php
 
+use common\helpers\Toolbar;
 use yiister\gentelella\widgets\Panel;
 use common\models\{ bid\BidEntity as Bid, bidHistory\BidHistory, bidHistory\BidHistorySearch };
 use yii\{
@@ -25,11 +26,7 @@ $this->title = Yii::t('app', 'Bid') . ' №' . $model->id;
         <div id="bid-status-error"></div>
         <div id="bid-status-success"></div>
             <?php Panel::begin([
-                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/bid/index'), [
-                'title' => Yii::t('app', 'Back'),
-                'class' => 'btn btn-light btn-lg',
-                'style' => 'margin-left:0'
-            ]) . Yii::t('app', 'Bid') . ' №' . $model->id,
+                'header' => Toolbar::createBackButton('/bid/index') . Yii::t('app', 'Bid') . ' №' . $model->id,
                 'collapsable' => true,
             ]) ?>
             <?php Pjax::begin() ?>

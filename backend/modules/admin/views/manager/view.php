@@ -78,11 +78,7 @@ use common\helpers\Toolbar;
             <div id="re-invite-success"></div>
             <div id="re-invite-error"></div>
             <?php Panel::begin([
-                'header' => Html::a('<i class="glyphicon glyphicon-chevron-left"></i>', Url::to('/admin/manager/index'), [
-                    'title' => Yii::t('app', 'Back'),
-                    'class' => 'btn btn-light btn-lg',
-                    'style' => 'margin-left:0'
-                ]) . Yii::t('app', 'Manager'),
+                'header' => Toolbar::createBackButton('/manager/index') . Yii::t('app', 'Manager'),
                 'collapsable' => true,
             ]) ?>
                 <div class="form-group">
