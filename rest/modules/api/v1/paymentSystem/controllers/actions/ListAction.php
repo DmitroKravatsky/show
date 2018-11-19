@@ -2,9 +2,10 @@
 
 namespace rest\modules\api\v1\paymentSystem\controllers\actions;
 
+use Yii;
 use common\models\paymentSystem\PaymentSystem;
 use yii\rest\Action;
-use Yii;
+use yii\web\ServerErrorHttpException;
 
 class ListAction extends Action
 {
@@ -59,14 +60,29 @@ class ListAction extends Action
      *             }
      *         }
      *     ),
+     *      @SWG\Response(
+     *         response = 405,
+     *         description = "Method Not Allowed"
+     *     ),
+     *     @SWG\Response (
+     *         response = 500,
+     *         description = "Internal Server Error "
+     *     )
      * )
      *
      * @return \yii\data\ArrayDataProvider
+     * @throws ServerErrorHttpException
      */
     public function run()
     {
-        /** @var PaymentSystem $paymentSystem */
-        $paymentSystem = $this->modelClass;
-        return $paymentSystem::getList(Yii::$app->request->queryParams, false);
+        try {
+            /** @var PaymentSystem $paymentSystem */
+            $paymentSystem = $this->modelClass;
+
+            return $paymentSystem::getVisibleList(Yii::$app->request->queryParams);
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            throw new ServerErrorHttpException('Something wrong, please try later.');
+        }
     }
 }
