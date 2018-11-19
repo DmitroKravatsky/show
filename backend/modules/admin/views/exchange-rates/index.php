@@ -20,7 +20,6 @@ use yii\helpers\Url;
 
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
-
 <div class="exchange-rates-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Exchange Rates'),
@@ -65,10 +64,28 @@ use yii\helpers\Url;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'attribute' => 'from_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->fromPaymentSystem->currency;
+                        }
+                    ],
+                    [
                         'attribute' => 'from_payment_system_id',
                         'filter'    => PaymentSystem::nameLabels(),
+                        'headerOptions' => [
+                            'style' => 'width:100px',
+                            'data-header-attribute'=>'from_currency',
+                        ],
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->fromPaymentSystem->name;
+                        }
+                    ],
+                    [
+                        'attribute' => 'to_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->toPaymentSystem->currency;
                         }
                     ],
                     [

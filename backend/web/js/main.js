@@ -24,4 +24,8 @@ $(document).ready(function () {
         event.preventDefault();
         $('#update-manager-password-form').modal("show");
     });
+
+    $('.kv-editable-input').focusout(function () {
+        $('.close:button').click();
+    });
 });

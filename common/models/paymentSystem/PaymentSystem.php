@@ -80,6 +80,25 @@ class PaymentSystem extends ActiveRecord implements IVisible
     }
 
     /**
+     * @return array
+     */
+    public static function filteredNameLabels($filterValue): array
+    {
+        return [
+            self::WEBMONEY_WMX     => self::WEBMONEY_WMX,
+            self::WEBMONEY_RUB     => self::WEBMONEY_RUB,
+            self::WEBMONEY_USD     => self::WEBMONEY_USD,
+            self::WEBMONEY_UAH     => self::WEBMONEY_UAH,
+            self::VTB_24_RUB       => self::VTB_24_RUB,
+            self::YANDEX_MONEY_RUB => self::YANDEX_MONEY_RUB,
+            self::SBERBANK_RUB     => self::SBERBANK_RUB,
+            self::PRIVAT_24_UAH    => self::PRIVAT_24_UAH,
+            self::RNK_BANK_RUB     => self::RNK_BANK_RUB,
+            self::VISA_MASTER_RUB  => self::VISA_MASTER_RUB,
+        ];
+    }
+
+    /**
      * Returns payment system name label
      * @param $name
      * @return string

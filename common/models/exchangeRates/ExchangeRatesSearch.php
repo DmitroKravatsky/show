@@ -14,6 +14,8 @@ use common\models\exchangeRates\ExchangeRates;
 class ExchangeRatesSearch extends ExchangeRates
 {
     public $dateRange;
+    public $from_currency;
+    public $to_currency;
 
     /**
      * {@inheritdoc}
@@ -23,7 +25,7 @@ class ExchangeRatesSearch extends ExchangeRates
         return [
             [['id', 'created_at', 'updated_at'], 'integer'],
             [['value'], 'number'],
-            [['dateRange', 'from_payment_system_id', 'to_payment_system_id',], 'safe',],
+            [['dateRange', 'from_payment_system_id', 'to_payment_system_id', 'to_currency', 'from_currency'], 'safe',],
         ];
     }
 
@@ -66,6 +68,8 @@ class ExchangeRatesSearch extends ExchangeRates
 
         $query->andFilterWhere(['from_payment_system.name' => $this->from_payment_system_id]);
         $query->andFilterWhere(['to_payment_system.name' => $this->to_payment_system_id]);
+        $query->andFilterWhere(['from_payment_system.currency' => $this->from_currency]);
+        $query->andFilterWhere(['to_payment_system.currency' => $this->to_currency]);
 
         if (!empty($this->dateRange) && strpos($this->dateRange, '-') !== false) {
             list($fromDate, $toDate) = explode(' - ', $this->dateRange);

@@ -73,7 +73,7 @@ class BidSearch extends BidEntity
             . self::STATUS_PAID_BY_US_DONE . '","'
             . self::STATUS_REJECTED
         . '")';
-
+//        var_dump($expression);exit;
         $dataProvider = new ActiveDataProvider([
             'query' => $query->orderBy([new Expression($expression)])
                 ->addOrderBy(['created_at' => SORT_DESC]),
