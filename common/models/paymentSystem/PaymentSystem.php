@@ -219,18 +219,14 @@ class PaymentSystem extends ActiveRecord implements IVisible
         return $this->hasOne(Reserve::class, ['payment_system_id' => 'id']);
     }
 
-    public static function getList($params ,$onlyVisible = true)
+    public static function getVisibleList($params)
     {
         $query = static::find()->select([
             'id', 'name', 'currency', 'payment_system_type', 'min_transaction_sum'
-        ]);
+        ])->where(['visible' => self::VISIBLE_YES]);
 
         if (isset($params['filter'])) {
             $query->andWhere(['currency' => $params['filter']]);
-        }
-
-        if ($onlyVisible) {
-            $query->where(['visible' => self::VISIBLE_YES]);
         }
 
         return $query->orderBy(['created_at' => SORT_DESC])->all();
