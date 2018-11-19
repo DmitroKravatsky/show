@@ -2,8 +2,10 @@
 
 namespace rest\modules\api\v1\review\controllers\actions;
 
+use Yii;
 use common\models\review\ReviewEntity;
 use yii\rest\Action;
+use yii\web\ServerErrorHttpException;
 
 /**
  * Class ListAction
@@ -71,12 +73,26 @@ class ListAction extends Action
      *               }
      *         }
      *     ),
+     *      @SWG\Response(
+     *         response = 405,
+     *         description = "Method Not Allowed"
+     *     ),
+     *     @SWG\Response (
+     *         response = 500,
+     *         description = "Internal Server Error "
+     *     )
      * )
      * @return \yii\data\ArrayDataProvider
+     * @throws ServerErrorHttpException
      */
     public function run()
     {
-        $reviewModel = new ReviewEntity();
-        return $reviewModel->listReviews(\Yii::$app->requestedParams);
+        try {
+            $reviewModel = new ReviewEntity();
+            return $reviewModel->listReviews(Yii::$app->requestedParams);
+        } catch (\Exception $e) {
+            Yii::error($e->getMessage());
+            throw new ServerErrorHttpException('Something wrong, please try later.');
+        }
     }
 }

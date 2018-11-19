@@ -74,7 +74,7 @@ trait RestReviewRepository
     public function listReviews(array $params): ArrayDataProvider
     {
         $reviews = ReviewEntity::find()
-            ->select(['name', 'text', 'review.created_at'])
+            ->select([ReviewEntity::tableName() . '.name', 'text', 'review.created_at'])
             ->leftJoin('user_profile', 'review.created_by = user_profile.user_id')
             ->orderBy(['review.created_at' => SORT_DESC])
             ->asArray()
