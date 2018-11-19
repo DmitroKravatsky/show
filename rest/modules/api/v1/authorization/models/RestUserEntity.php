@@ -29,6 +29,7 @@ use yii\web\UnprocessableEntityHttpException;
  * @property string $confirm_password
  * @property string $password_reset_token
  * @property string $email
+ * @property string $new_email
  * @property string $auth_key
  * @property string $source
  * @property string $phone_number
@@ -172,6 +173,7 @@ class RestUserEntity extends User
             ['email', 'email'],
             ['email', 'required', 'on' => self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE],
             [['email_verification_code', 'email'], 'required', 'on' => self::SCENARIO_VERIFY_NEW_EMAIL],
+            [['email'], 'unique', 'on' => [self::SCENARIO_VERIFY_NEW_EMAIL, self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE]],
             ['phone_number', 'required', 'on' => self::SCENARIO_SEND_PHONE_VERIFICATION_CODE],
             [['phone_verification_code', 'phone_number'], 'required', 'on' => self::SCENARIO_VERIFY_NEW_PHONE],
             [['verification_code', 'register_by_bid', 'email_verification_code', 'phone_verification_code'], 'integer'],
@@ -247,6 +249,7 @@ class RestUserEntity extends User
                     self::SCENARIO_VERIFY_NEW_PHONE
                 ]
             ],
+            [['new_email'], 'string', 'max' => 255],
         ];
     }
 
@@ -516,6 +519,7 @@ class RestUserEntity extends User
 
         $user->email_verification_code = rand(1000, 9999);
         $user->created_email_verification_code = time();
+        $user->new_email = $email;
 
         if ($user->save(false)) {
             \Yii::$app->sendMail->run(
@@ -559,8 +563,13 @@ class RestUserEntity extends User
             throw new UnprocessableEntityHttpException('Verification code is invalid or expired');
         }
 
+        if (!$this->isNewEmailValid($params['email'], $user)) {
+            throw new UnprocessableEntityHttpException('Email address is invalid.');
+        }
+
         $user->email = $params['email'];
         $user->email_verification_code = null;
+        $user->new_email = null;
 
         if ($user->save(false)) {
             return true;
@@ -582,6 +591,11 @@ class RestUserEntity extends User
             }
         }
         return false;
+    }
+
+    public function isNewEmailValid(string $email, RestUserEntity $userModel): bool
+    {
+        return $email === $userModel->new_email;
     }
 
     /**
