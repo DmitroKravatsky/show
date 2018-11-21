@@ -34,7 +34,7 @@ $this->params['breadcrumbs'][] = $this->title;
                         'showUpload' => false,
                         'browseClass' => 'btn btn-primary btn-block',
                         'browseIcon' => '<i class="glyphicon glyphicon-camera"></i> ',
-                        'browseLabel' =>  'Select Photo',
+                        'browseLabel' =>  Yii::t('app', 'Select Photo'),
                         'fileActionSettings' => [
                             'showRemove' => false,
                         ],
