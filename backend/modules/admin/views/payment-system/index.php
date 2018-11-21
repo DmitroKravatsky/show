@@ -23,7 +23,7 @@ $this->title = Yii::t('app', 'Payment Systems');
         'header' => Yii::t('app', 'Payment Systems'),
         'collapsable' => true,
     ]) ?>
-        <?php Pjax::begin() ?>
+        <?php Pjax::begin(['id' => 'pjax-container']) ?>
             <?= GridView::widget([
                 'filterModel'  => $searchModel,
                 'filterUrl'    => UrlHelper::getFilterUrl(),
@@ -78,9 +78,11 @@ $this->title = Yii::t('app', 'Payment Systems');
                             },
                             'delete' => function($url, PaymentSystem $paymentSystem) {
                                 $customUrl = Url::to(['/payment-system/delete', 'id' => $paymentSystem->id]);
+
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
                                     'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'class' => 'delete-button',
                                 ]);
                             },
                         ],
@@ -151,4 +153,5 @@ $this->title = Yii::t('app', 'Payment Systems');
             ]) ?>
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>

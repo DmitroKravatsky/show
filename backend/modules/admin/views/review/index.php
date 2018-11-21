@@ -3,7 +3,6 @@
 use common\models\review\ReviewEntity;
 use common\models\user\User;
 use kartik\grid\GridView;
-use yii\bootstrap\ActiveForm;
 use yiister\gentelella\widgets\Panel;
 use yii\widgets\Pjax;
 use kartik\daterange\DateRangePicker;
@@ -30,7 +29,7 @@ $this->title = Yii::t('app', 'Reviews');
         'header' => Yii::t('app', 'Reviews'),
         'collapsable' => true,
     ]) ?>
-        <?php Pjax::begin() ?>
+        <?php Pjax::begin(['id' => 'pjax-container']) ?>
             <?= GridView::widget([
                 'filterModel' => $searchModel,
                 'filterUrl' => UrlHelper::getFilterUrl(),
@@ -74,12 +73,14 @@ $this->title = Yii::t('app', 'Reviews');
                             },
                             'delete' => function($url, ReviewEntity $model) {
                                 $customUrl = Url::to(['/review/delete', 'id' => $model->id]);
+
                                 return Yii::$app->user->can(User::ROLE_ADMIN) ? Html::a(
                                     '<span class="glyphicon glyphicon-trash"></span>',
                                     $customUrl,
                                     [
                                         'title' => Yii::t('app', 'Delete'),
-                                        'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                        'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                        'class' => 'delete-button',
                                     ]
                                 ) : '';
                             },
@@ -128,4 +129,5 @@ $this->title = Yii::t('app', 'Reviews');
             ]) ?>
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>
