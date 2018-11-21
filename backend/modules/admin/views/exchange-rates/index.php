@@ -25,7 +25,7 @@ use yii\helpers\Url;
         'header' => Yii::t('app', 'Exchange Rates'),
         'collapsable' => true,
     ]) ?>
-        <?php Pjax::begin()?>
+<!--        --><?php //Pjax::begin()?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel'  => $searchModel,
@@ -72,7 +72,7 @@ use yii\helpers\Url;
                     ],
                     [
                         'attribute' => 'from_payment_system_id',
-                        'filter'    => PaymentSystem::nameLabels(),
+                        'filter'    => PaymentSystem::filteredNameLabels($searchModel->from_currency),
                         'headerOptions' => [
                             'style' => 'width:100px',
                             'data-header-attribute'=>'from_currency',
@@ -90,7 +90,7 @@ use yii\helpers\Url;
                     ],
                     [
                         'attribute' => 'to_payment_system_id',
-                        'filter'    => PaymentSystem::nameLabels(),
+                        'filter'    => PaymentSystem::filteredNameLabels($searchModel->to_currency),
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->toPaymentSystem->name;
                         }
@@ -127,7 +127,7 @@ use yii\helpers\Url;
                 ]
 
             ])?>
-        <?php Pjax::end()?>
+<!--        --><?php //Pjax::end()?>
     <?php Panel::end() ?>
     <div id="loader"></div>
 </div>
