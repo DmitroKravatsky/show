@@ -2,32 +2,28 @@
 
 namespace backend\modules\admin\controllers\actions\notifications;
 
+use Yii;
 use backend\modules\admin\controllers\NotificationsController;
 use yii\base\Action;
-use Yii;
-use yii\helpers\Url;
+use common\models\userNotifications\UserNotificationsSearch;
 
 class DeleteAction extends Action
 {
     /** @var NotificationsController */
     public $controller;
 
-    /**
-     * @param int $id
-     * @return \yii\web\Response
-     * @throws \Throwable
-     * @throws \yii\db\StaleObjectException
-     * @throws \yii\web\NotFoundHttpException
-     */
     public function run($id)
     {
-        $notification = $this->controller->findUserNotification($id, Yii::$app->user->id);
-        if ($notification->delete()) {
-            Yii::$app->session->setFlash('success', Yii::t('app', 'Notification successfully deleted.'));
-        } else {
-            Yii::$app->session->setFlash('error', Yii::t('app', 'Something wrong, please try again later.'));
+        if (Yii::$app->request->isAjax) {
+            $this->controller->findUserNotification($id, Yii::$app->user->id)->delete();
         }
 
-        return $this->controller->redirect(Url::to(Yii::$app->request->referrer));
+        $searchModel = new UserNotificationsSearch();
+        $dataProvider = $searchModel->search(Yii::$app->request->queryParams);
+
+        return $this->controller->render('index', [
+            'searchModel' => $searchModel,
+            'dataProvider' => $dataProvider,
+        ]);
     }
 }

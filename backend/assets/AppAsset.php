@@ -20,7 +20,8 @@ class AppAsset extends AssetBundle
     public $js = [
         'js/editable-table-cell.js',
         'js/change-password-modal.js',
-        'js/main.js'
+        'js/main.js',
+        'js/delete-grid-row.js'
     ];
     public $depends = [
         'yii\web\YiiAsset',

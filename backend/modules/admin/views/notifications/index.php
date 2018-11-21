@@ -22,7 +22,7 @@ $this->title = Yii::t('app', 'Notifications');
         'header' => Yii::t('app', 'Notifications'),
         'collapsable' => true,
     ]) ?>
-        <?php Pjax::begin() ?>
+        <?php Pjax::begin(['id' => 'pjax-container']) ?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel'  => $searchModel,
@@ -68,9 +68,11 @@ $this->title = Yii::t('app', 'Notifications');
                             },
                             'delete' => function($url, UserNotifications $notification) {
                                 $url = Url::to(['/notifications/delete', 'id' => $notification->notification_id]);
+
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $url, [
                                     'title' => Yii::t('app', 'Delete'),
-                                    'data-confirm' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'class' => 'delete-button',
                                 ]);
                             },
                         ]
@@ -122,4 +124,5 @@ $this->title = Yii::t('app', 'Notifications');
             ]) ?>
         <?php Pjax::end() ?>
     <?php Panel::end() ?>
+    <div id="loader"></div>
 </div>

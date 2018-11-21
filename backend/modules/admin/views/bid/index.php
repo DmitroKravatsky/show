@@ -21,15 +21,12 @@ $this->title = Yii::t('app', 'Bids');
 
 <?= Html::style('td span {line-height: 20px}') ?>
 
-<?php if ($message = Yii::$app->session->getFlash('delete-success')): ?>
-    <div class="alert alert-success">
-        <?= $message ?>
-    </div>
-<?php endif;?>
-
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
 
-<?php $this->registerJs('var language = "' . Yii::$app->language . '";  addEventListener("popstate",function(e){location.reload();},false);', View::POS_HEAD) ?>
+<?php $this->registerJs(
+        'var language = "' . Yii::$app->language . '";  addEventListener("popstate",function(e){location.reload();},false);',
+        View::POS_HEAD
+) ?>
 
 <div id="bid-status-error"></div>
 <div id="bid-status-success"></div>
@@ -39,7 +36,7 @@ $this->title = Yii::t('app', 'Bids');
         'header' => Yii::t('app', 'Bids'),
         'collapsable' => true,
     ]) ?>
-        <?php Pjax::begin()?>
+        <?php Pjax::begin(['id' => 'pjax-container'])?>
             <?= GridView::widget([
                 'dataProvider' => $dataProvider,
                 'filterModel'  => $searchModel,
@@ -82,13 +79,12 @@ $this->title = Yii::t('app', 'Bids');
                                 );
                             },
                             'delete' => function($url, $model) {
-                                $customUrl = Url::to([
-                                    'bid/delete',
-                                    'id' => $model['id']
-                                ]);
+                                $customUrl = Url::to(['bid/delete', 'id' => $model['id']]);
+
                                 return Html::a('<span class="glyphicon glyphicon-trash"></span>', $customUrl, [
-                                    'title' => \Yii::t('app', 'Delete'),
-                                    'data-confirm' => \Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'title' => Yii::t('app', 'Delete'),
+                                    'data-message' => Yii::t('yii', 'Are you sure you want to delete this item?'),
+                                    'class' => 'delete-button',
                                 ]);
                             },
                         ]
