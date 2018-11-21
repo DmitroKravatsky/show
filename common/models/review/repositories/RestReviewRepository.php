@@ -75,6 +75,7 @@ trait RestReviewRepository
     {
         $reviews = ReviewEntity::find()
             ->select([ReviewEntity::tableName() . '.name', 'text', 'review.created_at'])
+            ->where(['visible' => ReviewEntity::VISIBLE_YES])
             ->leftJoin('user_profile', 'review.created_by = user_profile.user_id')
             ->orderBy(['review.created_at' => SORT_DESC])
             ->asArray()

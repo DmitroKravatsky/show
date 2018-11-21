@@ -20,7 +20,7 @@ class ReviewSearch extends ReviewEntity
     public function rules(): array
     {
         return [
-            [['id', 'created_at', 'updated_at'], 'integer'],
+            [['id', 'visible', 'created_at', 'updated_at'], 'integer'],
             [['text', 'dateRange', 'created_by',], 'safe'],
         ];
     }
@@ -57,7 +57,9 @@ class ReviewSearch extends ReviewEntity
             return $dataProvider;
         }
 
-        $query->andFilterWhere(['like', 'text', $this->text])
+        $query
+            ->andFilterWhere(['like', 'text', $this->text])
+            ->andFilterWhere(['visible' => $this->visible])
             ->andFilterWhere([
                 'or',
                 ['like', 'user_profile.name', $this->created_by],

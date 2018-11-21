@@ -2,14 +2,16 @@
 
 namespace common\models\review;
 
+use Yii;
+use common\traits\VisibleTrait;
 use common\behaviors\ImageBehavior;
 use common\models\review\repositories\RestReviewRepository;
 use common\models\userProfile\UserProfileEntity;
+use common\models\user\User;
+use common\interfaces\IVisible;
 use rest\behaviors\ValidationExceptionFirstMessage;
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
-use common\models\user\User;
-use Yii;
 
 /**
  * Class ReviewEntity
@@ -22,15 +24,16 @@ use Yii;
  * @property string  $text
  * @property string  $avatar
  * @property integer $terms_condition
+ * @property integer $visible
  * @property integer $created_at
  * @property integer $updated_at
  *
  * @property User $createdBy
  * @property UserProfileEntity $createdByProfile
  */
-class ReviewEntity extends ActiveRecord
+class ReviewEntity extends ActiveRecord implements IVisible
 {
-    use RestReviewRepository;
+    use RestReviewRepository, VisibleTrait;
 
     const PATH_TO_FAKE_USER_PHOTO = 'images/fakeusers';
 
@@ -59,6 +62,7 @@ class ReviewEntity extends ActiveRecord
             'avatar'          => Yii::t('app', 'Avatar'),
             'name'            => Yii::t('app', 'First Name'),
             'last_name'       => Yii::t('app', 'Last Name'),
+            'visible'         => Yii::t('app', 'Visible')
         ];
     }
 
@@ -73,6 +77,7 @@ class ReviewEntity extends ActiveRecord
             ['text', 'required'],
             ['terms_condition', 'required', 'requiredValue' => 1],
             [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
+            [['visible'], 'integer'],
         ];
     }
 
@@ -90,6 +95,12 @@ class ReviewEntity extends ActiveRecord
                 'attributeName' => 'avatar',
             ]
         ];
+    }
+
+    public function toggleVisible(): bool
+    {
+        $this->visible = !$this->visible;
+        return $this->save(false, ['visible']);
     }
 
     /**
