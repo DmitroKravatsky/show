@@ -56,6 +56,9 @@ class ReviewEntity extends ActiveRecord
             'terms_condition' => Yii::t('app', 'Terms Condition'),
             'created_at'      => Yii::t('app', 'Created At'),
             'updated_at'      => Yii::t('app', 'Updated At'),
+            'avatar'          => Yii::t('app', 'Avatar'),
+            'name'            => Yii::t('app', 'First Name'),
+            'last_name'       => Yii::t('app', 'Last Name'),
         ];
     }
 

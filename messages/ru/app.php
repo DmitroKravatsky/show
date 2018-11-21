@@ -201,5 +201,6 @@ return [
     'Unload' => 'Выгрузить',
     'Currency Code' => 'Код Валюты',
     'File successfully generated.' => 'Файл успешно сгенерирован.',
-    'New review' => 'Новый отзыв'
+    'New review' => 'Новый отзыв',
+    'Select Photo' => 'Выберете фото'
 ];
