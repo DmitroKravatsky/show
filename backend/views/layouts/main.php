@@ -198,7 +198,7 @@ $this->title = Yii::t('app', 'Dashboard');
                                         <?php else:?>
                                             <?php foreach ($userNotifications as $userNotification): ?>
                                                 <li>
-                                                    <a href="<?= Url::to(["/notification/view/{$userNotification->notification_id}"])?>">
+                                                    <a href="<?= Url::to(["/notifications/view/{$userNotification->notification_id}"])?>">
                                                         <span class="image">
                                                             <img src="http://placehold.it/128x128" alt="Profile Image" />
                                                         </span>
