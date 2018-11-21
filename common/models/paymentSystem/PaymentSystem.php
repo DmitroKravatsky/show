@@ -80,6 +80,7 @@ class PaymentSystem extends ActiveRecord implements IVisible
     }
 
     /**
+     * Returns an array of possible payment system names
      * @param $filterCurrency string
      * @return array
      */
