@@ -183,6 +183,7 @@ return [
     'Operator' => 'Оператор',
     'Reserve successfully deleted.' => 'Резерв усешно удален',
     'Review successfully deleted.' => 'Отзыв успешно удален.',
+    'Review successfully updated.' => 'Отзыв успешно обновлен.',
     'Registration Method' => 'Способ Регистрации',
     'Social Network' => 'Социальная Сеть',
     'Application' => 'Приложение',

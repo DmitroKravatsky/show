@@ -62,13 +62,28 @@ $this->title = Yii::t('app', 'Reviews');
                     ],
                     [
                         'class' => ActionColumn::class,
-                        'template' => '{view} {delete}',
+                        'template' => '{view} {visible} {delete}',
                         'buttons' => [
                             'view' => function($url, $model) {
                                 return Html::a(
                                     '<span class="glyphicon glyphicon-eye-open"></span>',
                                     Url::to(['/review/view/' . $model->id]),
                                     ['title' => Yii::t('app', 'View'), 'data-pjax' => 0]
+                                );
+                            },
+                            'visible' => function ($url, ReviewEntity $review) {
+                                $options = ['data-pjax' => 0];
+                                if ($review->visible) {
+                                    $options['title'] = Yii::t('app', 'Invisible');
+                                    $iconClass = 'glyphicon-check';
+                                } else {
+                                    $options['title'] = Yii::t('app', 'Visible');
+                                    $iconClass = 'glyphicon-unchecked';
+                                }
+                                return Html::a(
+                                    '<span class="glyphicon ' . $iconClass . '"></span>',
+                                    Url::to(['/review/toggle-visible/' . $review->id]),
+                                    $options
                                 );
                             },
                             'delete' => function($url, ReviewEntity $model) {
@@ -108,6 +123,13 @@ $this->title = Yii::t('app', 'Reviews');
                              } else {
                                  return $review->createdBy->profile->getImageUrl();
                              }
+                        }
+                    ],
+                    [
+                        'attribute' => 'visible',
+                        'filter'    => ReviewEntity::getVisibleStatuses(),
+                        'value'     => function (ReviewEntity $review) {
+                            return ReviewEntity::getVisibleValue($review->visible);
                         }
                     ],
                     [

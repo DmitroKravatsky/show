@@ -2,14 +2,14 @@
 
 namespace backend\modules\admin\controllers;
 
+use Yii;
 use common\models\review\ReviewEntity;
 use yii\web\Controller;
+use yii\web\NotFoundHttpException;
 use yii\filters\AccessControl;
 use backend\modules\admin\controllers\actions\review\{
-    CreateAction, IndexAction, ViewAction, DeleteAction
+    CreateAction, IndexAction, ViewAction, DeleteAction, ToggleVisibleAction
 };
-use yii\web\NotFoundHttpException;
-use Yii;
 
 class ReviewController extends Controller
 {
@@ -24,7 +24,7 @@ class ReviewController extends Controller
                 'rules' => [
                     [
                         'allow'   => true,
-                        'actions' => ['index', 'view', 'create'],
+                        'actions' => ['index', 'view', 'create', 'toggle-visible',],
                         'roles'   => ['admin', 'manager']
                     ],
                     [
@@ -54,6 +54,9 @@ class ReviewController extends Controller
             ],
             'delete' => [
                 'class' => DeleteAction::class,
+            ],
+            'toggle-visible' => [
+                'class' => ToggleVisibleAction::class
             ],
         ];
     }
