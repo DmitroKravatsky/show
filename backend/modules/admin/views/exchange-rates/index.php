@@ -15,12 +15,18 @@ use yii\helpers\Url;
 /* @var $searchModel \common\models\exchangeRates\ExchangeRatesSearch */
 
 ?>
-
+<?php $this->registerJs(
+    "$(document).on('pjax:end', function () {
+        var btns = $(\"[data-toggle='popover-x']\");
+        if (btns.length) {
+            btns.popoverButton();
+        }
+    });"
+)?>
 <?= Html::style('td span {line-height: 20px}') ?>
 
 
 <?= Html::style('.collapse-link {margin-left: 46px;}') ?>
-
 <div class="exchange-rates-index">
     <?php Panel::begin([
         'header' => Yii::t('app', 'Exchange Rates'),
@@ -65,15 +71,35 @@ use yii\helpers\Url;
                         'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
                     [
+                        'attribute' => 'from_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->fromPaymentSystem->currency;
+                        }
+                    ],
+                    [
                         'attribute' => 'from_payment_system_id',
-                        'filter'    => PaymentSystem::nameLabels(),
+                        'filter'    => $searchModel->from_currency
+                            ? PaymentSystem::filteredNameLabels($searchModel->from_currency)
+                            : PaymentSystem::nameLabels(),
+                        'headerOptions' => [
+                            'style' => 'width:100px',
+                            'data-header-attribute'=>'from_currency',
+                        ],
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->fromPaymentSystem->name;
                         }
                     ],
                     [
+                        'attribute' => 'to_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->toPaymentSystem->currency;
+                        }
+                    ],
+                    [
                         'attribute' => 'to_payment_system_id',
-                        'filter'    => PaymentSystem::nameLabels(),
+                        'filter'    => PaymentSystem::filteredNameLabels($searchModel->to_currency),
                         'value'     => function (ExchangeRates $exchangeRates) {
                             return $exchangeRates->toPaymentSystem->name;
                         }

@@ -80,6 +80,26 @@ class PaymentSystem extends ActiveRecord implements IVisible
     }
 
     /**
+     * Returns an array of possible payment system names
+     * @param $filterCurrency string
+     * @return array
+     */
+    public static function filteredNameLabels($filterCurrency = null): array
+    {
+        if ($filterCurrency == null) {
+            return static::nameLabels();
+        }
+
+        $nameLabels = PaymentSystem::findPaymentSystemNamesByCurrencyType($filterCurrency);
+        $filteredNames = [];
+        foreach ($nameLabels as $nameLabel) {
+            $filteredNames[$nameLabel->name] = $nameLabel->name;
+        }
+
+        return $filteredNames;
+    }
+
+    /**
      * Returns payment system name label
      * @param $name
      * @return string
@@ -230,5 +250,9 @@ class PaymentSystem extends ActiveRecord implements IVisible
         }
 
         return $query->orderBy(['created_at' => SORT_DESC])->all();
+    }
+
+    public static function findPaymentSystemNamesByCurrencyType($currencyType) {
+        return PaymentSystem::find()->select('name')->where(['currency' => $currencyType])->all();
     }
 }
