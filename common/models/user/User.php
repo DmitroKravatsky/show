@@ -389,7 +389,7 @@ class User extends ActiveRecord implements IdentityInterface
             ->select('id')
             ->leftJoin('auth_assignment', 'auth_assignment.user_id = id')
             ->where(['user.status_online' => self::STATUS_ONLINE_YES])
-            ->andWhere(['auth_assignment.item_name' => self::ROLE_MANAGER])
+            ->andWhere(['auth_assignment.item_name' => [self::ROLE_MANAGER, self::ROLE_ADMIN]])
             ->column();
 
         return $managersIds ?? null;
