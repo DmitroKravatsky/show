@@ -31,7 +31,8 @@ $(document).ready(function () {
     $(document).click(function(event) {
         editableForm = $('.' + editableFormClass);
         currentlyClickedOjb = $(event.target);
-        if(editableForm.is(":visible")
+        if(
+            editableForm.is(":visible")
             && !currentlyClickedOjb.closest('#' + editableForm.attr('id')).length
             && currentlyClickedOjb.attr('class') != editableLinkInColumnClass
         ) {
