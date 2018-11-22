@@ -121,7 +121,7 @@ trait RestUserNotificationsRepository
      */
     public function addNotify($type, string $text, $recipientId, $customData = null)
     {
-        if ($recipientId === null) {
+        if ($recipientId === null || empty($recipientId)) {
             return true;
         }
         $notification = new NotificationsEntity();
