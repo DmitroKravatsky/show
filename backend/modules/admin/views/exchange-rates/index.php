@@ -15,7 +15,14 @@ use yii\helpers\Url;
 /* @var $searchModel \common\models\exchangeRates\ExchangeRatesSearch */
 
 ?>
-
+<?php $this->registerJs(
+    "$(document).on('pjax:end', function () {
+        var btns = $(\"[data-toggle='popover-x']\");
+        if (btns.length) {
+            btns.popoverButton();
+        }
+    });"
+)?>
 <?= Html::style('td span {line-height: 20px}') ?>
 
 
@@ -25,107 +32,111 @@ use yii\helpers\Url;
         'header' => Yii::t('app', 'Exchange Rates'),
         'collapsable' => true,
     ]) ?>
-        <?= GridView::widget([
-            'dataProvider' => $dataProvider,
-            'filterModel'  => $searchModel,
-            'filterUrl'    => UrlHelper::getFilterUrl(),
-            'hover'        => true,
-            'toolbar'      =>  [
-                ['content' =>
-                    Toolbar::resetButton()
-                    . Html::a(
-                        '<i class="glyphicon glyphicon-export"></i>',
-                        Url::to(['/exchange-rates/export']),
-                        ['class' => 'btn btn-success', 'title' => Yii::t('app', 'Unload')]
-                    )
-                    . Html::a(
-                        '<i class="glyphicon glyphicon-eye-open"></i>',
-                        Url::to('/xml/rates.xml'),
-                        ['data-pjax' => 0, 'target' => '_blank', 'class' => 'btn btn-info', 'title' => Yii::t('app', 'View')]
-                    )
-                ],
-                '{export}',
-                '{toggleData}',
-            ],
-            'export'       => [
-                'fontAwesome' => true
-            ],
-            'panel'        => [
-                'type'    => GridView::TYPE_DEFAULT,
-                'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
-            ],
-            'columns'      => [
-                [
-                    'class'          => 'kartik\grid\SerialColumn',
-                    'contentOptions' => ['class' => 'kartik-sheet-style'],
-                    'width'          => '36px',
-                    'header'         => '',
-                    'headerOptions'  => ['class' => 'kartik-sheet-style']
-                ],
-                [
-                    'attribute' => 'from_currency',
-                    'filter'    => PaymentSystem::currencyLabels(),
-                    'value'     => function (ExchangeRates $exchangeRates) {
-                        return $exchangeRates->fromPaymentSystem->currency;
-                    }
-                ],
-                [
-                    'attribute' => 'from_payment_system_id',
-                    'filter'    =>  PaymentSystem::filteredNameLabels($searchModel->from_currency),
-                    'headerOptions' => [
-                        'style' => 'width:100px',
-                        'data-header-attribute'=>'from_currency',
+        <?php Pjax::begin()?>
+            <?= GridView::widget([
+                'dataProvider' => $dataProvider,
+                'filterModel'  => $searchModel,
+                'filterUrl'    => UrlHelper::getFilterUrl(),
+                'hover'        => true,
+                'toolbar'      =>  [
+                    ['content' =>
+                        Toolbar::resetButton()
+                        . Html::a(
+                            '<i class="glyphicon glyphicon-export"></i>',
+                            Url::to(['/exchange-rates/export']),
+                            ['class' => 'btn btn-success', 'title' => Yii::t('app', 'Unload')]
+                        )
+                        . Html::a(
+                            '<i class="glyphicon glyphicon-eye-open"></i>',
+                            Url::to('/xml/rates.xml'),
+                            ['data-pjax' => 0, 'target' => '_blank', 'class' => 'btn btn-info', 'title' => Yii::t('app', 'View')]
+                        )
                     ],
-                    'value'     => function (ExchangeRates $exchangeRates) {
-                        return $exchangeRates->fromPaymentSystem->name;
-                    }
+                    '{export}',
+                    '{toggleData}',
                 ],
-                [
-                    'attribute' => 'to_currency',
-                    'filter'    => PaymentSystem::currencyLabels(),
-                    'value'     => function (ExchangeRates $exchangeRates) {
-                        return $exchangeRates->toPaymentSystem->currency;
-                    }
+                'export'       => [
+                    'fontAwesome' => true
                 ],
-                [
-                    'attribute' => 'to_payment_system_id',
-                    'filter'    => PaymentSystem::filteredNameLabels($searchModel->to_currency),
-                    'value'     => function (ExchangeRates $exchangeRates) {
-                        return $exchangeRates->toPaymentSystem->name;
-                    }
+                'panel'        => [
+                    'type'    => GridView::TYPE_DEFAULT,
+                    'heading' => '<i class="glyphicon glyphicon-list"></i>&nbsp;' . Yii::t('app', 'List')
                 ],
-                [
-                    'attribute'       => 'value',
-                    'class'           => 'kartik\grid\EditableColumn',
-                    'value'           => function (ExchangeRates $exchangeRates) {
-                        return round($exchangeRates->value, 2);
-                    },
-                    'editableOptions' => [
-                        'header'    => Yii::t('app', 'Value'),
-                        'options'   => [
-                            'pluginOptions' => ['min' => 0, 'max' => 100000]
-                        ]
+                'columns'      => [
+                    [
+                        'class'          => 'kartik\grid\SerialColumn',
+                        'contentOptions' => ['class' => 'kartik-sheet-style'],
+                        'width'          => '36px',
+                        'header'         => '',
+                        'headerOptions'  => ['class' => 'kartik-sheet-style']
                     ],
-                ],
-                [
-                    'attribute' => 'created_at',
-                    'format'    => 'date',
-                    'value'     => 'created_at',
-                    'filter'    => DateRangePicker::widget([
-                        'model'          => $searchModel,
-                        'attribute'      => 'dateRange',
-                        'convertFormat'  => true,
-                        'pluginOptions'  => [
-                            'timePicker' => true,
-                            'locale'     => [
-                                'format' => 'Y-m-d',
+                    [
+                        'attribute' => 'from_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->fromPaymentSystem->currency;
+                        }
+                    ],
+                    [
+                        'attribute' => 'from_payment_system_id',
+                        'filter'    => $searchModel->from_currency
+                            ? PaymentSystem::filteredNameLabels($searchModel->from_currency)
+                            : PaymentSystem::nameLabels(),
+                        'headerOptions' => [
+                            'style' => 'width:100px',
+                            'data-header-attribute'=>'from_currency',
+                        ],
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->fromPaymentSystem->name;
+                        }
+                    ],
+                    [
+                        'attribute' => 'to_currency',
+                        'filter'    => PaymentSystem::currencyLabels(),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->toPaymentSystem->currency;
+                        }
+                    ],
+                    [
+                        'attribute' => 'to_payment_system_id',
+                        'filter'    => PaymentSystem::filteredNameLabels($searchModel->to_currency),
+                        'value'     => function (ExchangeRates $exchangeRates) {
+                            return $exchangeRates->toPaymentSystem->name;
+                        }
+                    ],
+                    [
+                        'attribute'       => 'value',
+                        'class'           => 'kartik\grid\EditableColumn',
+                        'value'           => function (ExchangeRates $exchangeRates) {
+                            return round($exchangeRates->value, 2);
+                        },
+                        'editableOptions' => [
+                            'header'    => Yii::t('app', 'Value'),
+                            'options'   => [
+                                'pluginOptions' => ['min' => 0, 'max' => 100000]
                             ]
-                        ]
-                    ]),
-                ],
-            ]
+                        ],
+                    ],
+                    [
+                        'attribute' => 'created_at',
+                        'format'    => 'date',
+                        'value'     => 'created_at',
+                        'filter'    => DateRangePicker::widget([
+                            'model'          => $searchModel,
+                            'attribute'      => 'dateRange',
+                            'convertFormat'  => true,
+                            'pluginOptions'  => [
+                                'timePicker' => true,
+                                'locale'     => [
+                                    'format' => 'Y-m-d',
+                                ]
+                            ]
+                        ]),
+                    ],
+                ]
 
-        ])?>
+            ])?>
+        <?php Pjax::end()?>
     <?php Panel::end() ?>
     <div id="loader"></div>
 </div>
