@@ -2,12 +2,12 @@
 
 namespace common\models\userProfile\repositories;
 
-use common\models\userProfile\UserProfileEntity;
-use common\models\userSocial\UserSocial;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use Yii;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
+use common\models\userProfile\UserProfileEntity;
+use common\models\userSocial\UserSocial;
 
 /**
  * Class RestUserProfileRepository
@@ -69,20 +69,21 @@ trait RestUserProfileRepository
      */
     public function updateProfile(array $params): UserProfileEntity
     {
-        $transaction = \Yii::$app->db->beginTransaction();
+        $transaction = Yii::$app->db->beginTransaction();
         try {
-            $userProfile = static::findUserProfile(\Yii::$app->user->id);
+            $userProfile = static::findUserProfile(Yii::$app->user->id);
 
             $userProfile->setScenario(UserProfileEntity::SCENARIO_UPDATE);
-            if (isset($params['avatar'])) {
-                $params['avatar'] = $this->updateAvatar($params);
-            }
             $userProfile->setAttributes($params);
             if (!$userProfile->validate()) {
                 $this->throwModelException($userProfile->errors);
             }
 
-            if ($userProfile->save()) {
+            if (isset($params['avatar_base64'])) {
+                $userProfile->avatar = $this->updateAvatar($params['avatar_base64']);
+            }
+
+            if ($userProfile->save(false)) {
                 $transaction->commit();
                 return $userProfile;
             }
@@ -136,33 +137,25 @@ trait RestUserProfileRepository
         return $userModel;
     }
 
-    /**
-     * Updates user avatar
-     * @param array $params
-     * @return null|static
-     * @throws ServerErrorHttpException
-     */
-    public function updateAvatar(array $params)
+    public function updateAvatar(string $base64)
     {
         /** @var \frostealth\yii2\aws\s3\Service $s3 */
-        $s3 = \Yii::$app->get('s3');
+        $s3 = Yii::$app->get('s3');
 
-        $fileName = \Yii::$app->params['s3_folders']['user_profile'] . '/user-' . \Yii::$app->user->id
-            . '/' . \Yii::$app->security->generateRandomString() . '.' . \Yii::$app->params['picture_format'];
+        $fileName = Yii::$app->params['s3_folders']['user_profile']
+            . '/user-'
+            . Yii::$app->user->id
+            . '/'
+            . time()
+            . '.'
+            . Yii::$app->params['picture_format'];
 
-        $result = $s3->commands()->put($fileName, base64_decode($params['avatar']))
-            ->withContentType("image/jpeg")->execute();
+        $result = $s3->commands()->put($fileName, base64_decode($base64))->withContentType("image/jpeg")->execute();
+
         return $result->get('ObjectURL');
-
     }
 
-    /**
-     * Returns userProfile model
-     * @param $userId integer User id
-     * @return mixed
-     * @throws NotFoundHttpException
-     */
-    public static function findUserProfile($userId)
+    public static function findUserProfile($userId): UserProfileEntity
     {
         $userProfile = static::find()->where(['user_id' => $userId])->one();
         if (!$userProfile) {

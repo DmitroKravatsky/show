@@ -31,7 +31,8 @@ trait RestReviewRepository
         if (!$user->hasBids()) {
             throw new ForbiddenHttpException(\Yii::t('app', 'You must have at least one bid to write a review'));
         }
-        $reviewModel = new ReviewEntity();
+
+        $reviewModel = new ReviewEntity(['scenario' => ReviewEntity::SCENARIO_CREATE]);
         $reviewModel->setAttributes($params);
         if (!$reviewModel->save()) {
             $this->throwModelException($reviewModel->errors);
@@ -41,20 +42,9 @@ trait RestReviewRepository
 
     }
 
-    /**
-     * Updates an existing Review model by Review id and User id
-     *
-     * @param $id int
-     * @param $params array of the POST data
-     *
-     * @return ReviewEntity
-     *
-     * @throws NotFoundHttpException
-     * @throws \yii\web\UnprocessableEntityHttpException
-     */
     public function updateReview(int $id, array $params): ReviewEntity
     {
-        $reviewModel = $this->findModel(['id' => $id, 'created_by' => \Yii::$app->user->id]);
+        $reviewModel = $this->findModel(['id' => $id, 'created_by' => Yii::$app->user->id]);
         $reviewModel->setAttributes($params);
 
         if (!$reviewModel->save()) {
@@ -110,16 +100,7 @@ trait RestReviewRepository
         return false;
     }
 
-    /**
-     * Finds a Review model by params
-     *
-     * @param $params array
-     *
-     * @return BaseActiveRecord
-     *
-     * @throws NotFoundHttpException
-     */
-    public function findModel(array $params): BaseActiveRecord
+    public function findModel(array $params): ReviewEntity
     {
         if (empty($reviewModel = self::findOne($params))) {
             throw new NotFoundHttpException('Отзыв не найден');

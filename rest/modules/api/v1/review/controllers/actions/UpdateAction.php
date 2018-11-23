@@ -2,12 +2,12 @@
 
 namespace rest\modules\api\v1\review\controllers\actions;
 
-use common\models\review\ReviewEntity;
-use rest\modules\api\v1\review\controllers\ReviewController;
+use Yii;
 use yii\rest\Action;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
+use yii\web\{ NotFoundHttpException, ServerErrorHttpException };
+use common\models\review\ReviewEntity;
 use common\behaviors\AccessUserStatusBehavior;
+use rest\modules\api\v1\review\controllers\ReviewController;
 
 /**
  * Class UpdateAction
@@ -27,7 +27,7 @@ class UpdateAction extends Action
         return [
             [
                 'class'   => AccessUserStatusBehavior::class,
-                'message' => 'Access denied'
+                'message' => 'Access Denied.'
             ]
         ];
     }
@@ -67,7 +67,7 @@ class UpdateAction extends Action
      *          in = "formData",
      *          name = "text",
      *          description = "review's text",
-     *          required = false,
+     *          required = true,
      *          type = "string"
      *      ),
      *      @SWG\Response(
@@ -84,7 +84,7 @@ class UpdateAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Review was successfully edited",
+     *              "message": "Review was successfully edited.",
      *              "data": {
      *                  "id": 6,
      *                  "text": "Деньги пришли быстро и без проблем"
@@ -92,20 +92,24 @@ class UpdateAction extends Action
      *         }
      *     ),
      *     @SWG\Response (
-     *         response = 404,
-     *         description = "Review is not found"
-     *     ),
-     *     @SWG\Response (
-     *         response = 422,
-     *         description = "Validation Error"
-     *     ),
-     *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 403,
      *         description = "Forbidden"
+     *     ),
+     *     @SWG\Response (
+     *         response = 404,
+     *         description = "Not Found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 422,
+     *         description = "Unprocessable Entity"
+     *     ),
+     *     @SWG\Response (
+     *         response = 405,
+     *         description = "Method Not Allowed"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -125,18 +129,18 @@ class UpdateAction extends Action
         try {
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
-            $reviewModel = $reviewModel->updateReview($id, \Yii::$app->request->bodyParams);
-            $response = \Yii::$app->getResponse()->setStatusCode(200, \Yii::t('app', 'Review was successfully edited'));
+            $reviewModel = $reviewModel->updateReview($id, Yii::$app->request->bodyParams);
+
             return [
-                'status'  => $response->statusCode,
-                'message' => $response->statusText,
+                'status'  => Yii::$app->getResponse()->getStatusCode(),
+                'message' => 'Review was successfully edited.',
                 'data'    => $reviewModel->getAttributes(['id', 'text'])
             ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
+            Yii::error($e->getMessage());
+            throw new ServerErrorHttpException('Something wrong, please try again later.');
         }
     }
 }

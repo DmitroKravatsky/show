@@ -25,10 +25,7 @@ class ReviewSearch extends ReviewEntity
         ];
     }
 
-    /**
-     * {@inheritdoc}
-     */
-    public function scenarios()
+    public function scenarios(): array
     {
         return Model::scenarios();
     }

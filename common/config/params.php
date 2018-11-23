@@ -8,4 +8,5 @@ return [
         'user_profile' => 'user_profile',
     ],
     'pageSize' => 10,
+    'avatarMaxSizeInKb'       => 2 * 1024,
 ];
