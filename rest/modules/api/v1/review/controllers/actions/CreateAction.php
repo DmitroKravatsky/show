@@ -120,6 +120,7 @@ class CreateAction extends Action
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
             $reviewModel = $reviewModel->create(Yii::$app->request->bodyParams);
+
             $response = Yii::$app->getResponse()->setStatusCode(201);
             $response->data = [
                 'status'  => $response->statusCode,

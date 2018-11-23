@@ -35,6 +35,8 @@ class ReviewEntity extends ActiveRecord implements IVisible
 {
     use RestReviewRepository, VisibleTrait;
 
+    const SCENARIO_CREATE = 'create';
+
     const PATH_TO_FAKE_USER_PHOTO = 'images/fakeusers';
 
     public $terms_condition;
@@ -45,6 +47,15 @@ class ReviewEntity extends ActiveRecord implements IVisible
     public static function tableName(): string 
     {
         return '{{%review}}';
+    }
+
+    public function scenarios(): array
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_CREATE] = ['terms_condition', 'created_by', 'text',];
+
+        return $scenarios;
     }
 
     /**
@@ -73,9 +84,9 @@ class ReviewEntity extends ActiveRecord implements IVisible
     {
         return [
             [['text', 'avatar', 'name', 'last_name'], 'string'],
-            ['created_by', 'default', 'value' => \Yii::$app->user->id],
+            ['created_by', 'default', 'value' => Yii::$app->user->id],
             ['text', 'required'],
-            ['terms_condition', 'required', 'requiredValue' => 1],
+            ['terms_condition', 'required', 'requiredValue' => 1, 'on' => self::SCENARIO_CREATE],
             [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
             [['visible'], 'integer'],
         ];
