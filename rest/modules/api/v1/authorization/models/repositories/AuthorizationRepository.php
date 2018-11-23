@@ -33,10 +33,16 @@ trait AuthorizationRepository
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {
+            /** @var RestUserEntity $user */
             $user = $this->getUnverifiedUserByPhoneNumber($params['phone_number']);
+
+            if ($user) {
+                $user->setScenario(RestUserEntity::SCENARIO_RESTORE_REGISTRATION);
+            }
             if ($user == null) {
                 $user = new RestUserEntity(['scenario' => self::SCENARIO_REGISTER]);
             }
+
             $user->setAttributes([
                 'source'                => self::NATIVE,
                 'phone_number'          => $params['phone_number'],
