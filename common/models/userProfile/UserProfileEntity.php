@@ -2,14 +2,15 @@
 
 namespace common\models\userProfile;
 
-use common\behaviors\ImageBehavior;
-use common\models\userProfile\repositories\RestUserProfileRepository;
-use rest\behaviors\ValidationExceptionFirstMessage;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use Yii;
 use yii\db\ActiveRecord;
 use yii\behaviors\TimestampBehavior;
-use Yii;
+use common\behaviors\ImageBehavior;
 use common\models\userSocial\UserSocial;
+use common\models\userProfile\repositories\RestUserProfileRepository;
+use common\validators\Base64Validator;
+use rest\behaviors\ValidationExceptionFirstMessage;
+use rest\modules\api\v1\authorization\models\RestUserEntity;
 
 /**
  * Class UserProfileEntity
@@ -22,6 +23,7 @@ use common\models\userSocial\UserSocial;
  * @property string $name
  * @property string $last_name
  * @property string $avatar
+ * @property string $avatar_base64
  * @property integer $created_at
  * @property integer $updated_at
  * @property UserSocial[] $userSocials
@@ -32,6 +34,8 @@ class UserProfileEntity extends ActiveRecord
     
     const SCENARIO_CREATE = 'create';
     const SCENARIO_UPDATE = 'update';
+
+    public $avatar_base64;
 
     /**
      * @return string
@@ -66,9 +70,10 @@ class UserProfileEntity extends ActiveRecord
             [['id', 'user_id'], 'integer'],
             ['user_id', 'default', 'value' => \Yii::$app->user->id],
             [['name', 'last_name',], 'string', 'max' => 20],
-            ['avatar', 'string'],
+            [['avatar', 'avatar_base64',], 'string'],
             [['created_at', 'updated_at'], 'safe'],
             [['avatar'], 'file', 'extensions' => 'png, jpg, jpeg'],
+            [['avatar_base64'], Base64Validator::class, 'extensions' => ['jpg', 'jpeg', 'png']],
         ];
     }
 
@@ -96,7 +101,7 @@ class UserProfileEntity extends ActiveRecord
         $scenarios = parent::scenarios();
 
         $scenarios[self::SCENARIO_CREATE] = ['id', 'user_id', 'name', 'last_name', 'avatar',];
-        $scenarios[self::SCENARIO_UPDATE] = ['id', 'user_id', 'name', 'last_name', 'avatar',];
+        $scenarios[self::SCENARIO_UPDATE] = ['id', 'user_id', 'name', 'last_name', 'avatar', 'avatar_base64'];
 
         return $scenarios;
     }
