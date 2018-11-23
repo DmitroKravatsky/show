@@ -2,10 +2,11 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\profile;
 
-use common\models\userProfile\UserProfileEntity;
-use rest\modules\api\v1\user\controllers\UserProfileController;
+use Yii;
 use yii\rest\Action;
 use yii\web\ServerErrorHttpException;
+use common\models\userProfile\UserProfileEntity;
+use rest\modules\api\v1\user\controllers\UserProfileController;
 
 /**
  * Class UpdateAction
@@ -47,11 +48,10 @@ class UpdateAction extends Action
      *      ),
      *      @SWG\Parameter(
      *          in = "formData",
-     *          name = "avatar",
+     *          name = "avatar_base64",
      *          description = "User avatar in base64 format",
      *          required = false,
      *          type = "string",
-     *          format = "byte"
      *      ),
      *      @SWG\Response(
      *         response = 200,
@@ -69,12 +69,12 @@ class UpdateAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "'Profile was successfully edited'",
+     *              "message": "Profile was successfully edited.",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
      *                  "last_name": "Smith",
-     *                  "avatar": "https://bigbizbucket.s3.amazonaws.com/user_profile/user-125/Vwd4V1c_rAyWUsWjaQUfwu87PaZnb1VF.jpeg"
+     *                  "avatar": "https://bigbizbucket.s3.amazonaws.com/user_profile/user-7/1542987716.jpeg"
      *              }
      *         }
      *     ),
@@ -101,12 +101,11 @@ class UpdateAction extends Action
     {
         /** @var UserProfileEntity $model */
         $model = new $this->modelClass;
-        $userProfile = $model->updateProfile(\Yii::$app->request->bodyParams);
+        $userProfile = $model->updateProfile(Yii::$app->request->bodyParams);
 
-        $response = \Yii::$app->response->setStatusCode(200);
         return [
-            'status'  => $response->statusCode,
-            'message' => 'Profile was successfully edited',
+            'status'  => Yii::$app->response->getStatusCode(),
+            'message' => 'Profile was successfully edited.',
             'data'    => $userProfile->getAttributes((['id', 'name', 'last_name', 'avatar']))
         ];
     }
