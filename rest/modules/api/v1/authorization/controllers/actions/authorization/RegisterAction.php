@@ -118,7 +118,7 @@ class RegisterAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      * 
@@ -139,7 +139,7 @@ class RegisterAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
 
         $response = Yii::$app->getResponse()->setStatusCode(201);

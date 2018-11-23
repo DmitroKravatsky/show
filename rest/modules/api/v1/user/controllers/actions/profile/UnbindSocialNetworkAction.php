@@ -97,7 +97,7 @@ class UnbindSocialNetworkAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Социальная сеть успешно отвязана.",
+     *              "message": "Social network was successfully unbind",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
@@ -125,7 +125,7 @@ class UnbindSocialNetworkAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -144,7 +144,7 @@ class UnbindSocialNetworkAction extends Action
 
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Социальная сеть успешно отвязана.'),
+            'message' => \Yii::t('app', 'Social network was successfully unbind'),
             'data'    => $result
         ];
     }

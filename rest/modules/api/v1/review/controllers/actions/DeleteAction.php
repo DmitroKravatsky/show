@@ -24,7 +24,7 @@ class DeleteAction extends Action
         return [
             [
                 'class'   => AccessUserStatusBehavior::class,
-                'message' => 'Доступ запрещён.'
+                'message' => 'Access denied'
             ]
         ];
     }
@@ -76,7 +76,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Отзыв успешно удалён.",
+     *              "message": "Review was deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -84,7 +84,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Review not found"
+     *         description = "Review is not found"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -96,7 +96,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -119,12 +119,12 @@ class DeleteAction extends Action
                     'data'    => ['id' => $id]
                 ];
             }
-            throw new ServerErrorHttpException(\Yii::t('app', 'Error on review deleting'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Error on review deleting'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

@@ -83,18 +83,18 @@ class SendRecoveryCodeAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Код восстановления успешно отправлен.",
+     *              "message": "Recovery code was successfully send",
      *              "data": {
      *              }
      *         }
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "User not found"
+     *         description = "User is not found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -112,7 +112,7 @@ class SendRecoveryCodeAction extends Action
 
         $user = new RestUserEntity();
         if (($user = $user->findByPhoneNumber($phoneNumber)) === null) {
-            throw new NotFoundHttpException(Yii::t('app', 'User not found'));
+            throw new NotFoundHttpException(Yii::t('app', 'User is not found'));
         }
 
         $attributes = ['recovery_code', 'created_recovery_code'];
@@ -129,13 +129,13 @@ class SendRecoveryCodeAction extends Action
                 $response = \Yii::$app->getResponse()->setStatusCode(200);
                 return $response->content = [
                     'status'  => $response->statusCode,
-                    'message' => Yii::t('app', 'Код восстановления успешно отправлен.')
+                    'message' => Yii::t('app', 'Recovery code was successfully send')
                 ];
 
             }
             throw new ServerErrorHttpException();
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
         }
     }
 }

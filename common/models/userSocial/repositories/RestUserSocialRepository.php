@@ -43,7 +43,7 @@ trait RestUserSocialRepository
                     throw new ServerErrorHttpException;
                 }
                 if (static::isNetworkBindToCurrentUser(self::SOURCE_GMAIL, $userData->id)) {
-                    throw new BadRequestHttpException('Социальная сеть уже привязана.');
+                    throw new BadRequestHttpException('Social network is already bind');
                 }
 
                 $userSocial = new UserSocial();
@@ -82,7 +82,7 @@ trait RestUserSocialRepository
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException('Произошла ошибка.');
+            throw new ServerErrorHttpException('Social network was successfully bind');
         }
     }
 
@@ -116,7 +116,7 @@ trait RestUserSocialRepository
                     throw new ServerErrorHttpException;
                 }
                 if (static::isNetworkBindToCurrentUser(self::SOURCE_FB, $userData->id)) {
-                    throw new BadRequestHttpException('Социальная сеть уже привязана.');
+                    throw new BadRequestHttpException('Social network is already bind');
                 }
 
                 $userSocial = new UserSocial();
@@ -155,7 +155,7 @@ trait RestUserSocialRepository
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException('Произошла ошибка.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
@@ -169,7 +169,7 @@ trait RestUserSocialRepository
     {
        $userSocial = UserSocial::find()->where(['user_id' => Yii::$app->user->id, 'source_name' => $sourceName])->one();
        if (empty($userSocial)) {
-           throw new NotFoundHttpException('Социальная сеть не найдена.');
+           throw new NotFoundHttpException("Social network wasn't found");
        }
        try {
            $userSocial->delete();
@@ -180,7 +180,7 @@ trait RestUserSocialRepository
            }
            return array_merge($user->profile->getProfile(), ['is_deleted' => User::isUserDeleted($user->id)]);
        } catch (\Exception $e) {
-           throw new ServerErrorHttpException('Произошла ошибка при отвязывании социальной сети.');
+           throw new ServerErrorHttpException('Something is wrong, please try again later');
        }
     }
 

@@ -95,7 +95,7 @@ class BindGmailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Социальная сеть успешно привязана.",
+     *              "message": "Social network was successfully bind",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
@@ -122,7 +122,7 @@ class BindGmailAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -140,7 +140,7 @@ class BindGmailAction extends Action
 
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Социальная сеть успешно привязана.'),
+            'message' => \Yii::t('app', 'Something is wrong, please try again later'),
             'data'    => $result
         ];
     }

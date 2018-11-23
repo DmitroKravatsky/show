@@ -375,7 +375,7 @@ class RestUserEntity extends User
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e) {
             \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
@@ -390,10 +390,10 @@ class RestUserEntity extends User
     public function checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData)
     {
         if ($recoveryCode != $postData) {
-            $this->addError('recovery_code', 'Код восстановления неверен!');
+            $this->addError('recovery_code', 'Recovery code is incorrect');
             return false;
         } elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
-            $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
+            $this->addError('created_recovery_code', 'Recovery code is expired. Generate new');
             return false;
         }
         return true;
@@ -580,7 +580,7 @@ class RestUserEntity extends User
         if ($user->save(false)) {
             return true;
         }
-        throw new ServerErrorHttpException('Server error, please try later');
+        throw new ServerErrorHttpException('Server error, please again try later');
     }
 
     /**

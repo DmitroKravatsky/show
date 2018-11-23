@@ -36,7 +36,7 @@ trait RestUserProfileRepository
                 ->one();
 
             if (!$userProfile) {
-                throw new NotFoundHttpException();
+                throw new NotFoundHttpException('');
             }
 
             $userProfile['is_gmail_auth'] = false;
@@ -52,7 +52,7 @@ trait RestUserProfileRepository
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException('User profile is not found');
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Internal server error');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 

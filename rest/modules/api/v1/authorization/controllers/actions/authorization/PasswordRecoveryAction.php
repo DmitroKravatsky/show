@@ -112,7 +112,7 @@ class PasswordRecoveryAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Not enough income params"
+     *         description = "Parameter required"
      *     ),
      *     @SWG\Response (
      *         response = 404,
@@ -124,7 +124,7 @@ class PasswordRecoveryAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -147,13 +147,13 @@ class PasswordRecoveryAction extends Action
                 $response = \Yii::$app->getResponse()->setStatusCode(200);
                 return $response->content = [
                     'status' => $response->statusCode,
-                    'message' => 'Восстановления пароля прошло успешно.'
+                    'message' => 'Password recovery was successfully ended'
                 ];
             }
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

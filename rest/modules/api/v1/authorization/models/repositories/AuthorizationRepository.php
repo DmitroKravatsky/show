@@ -100,7 +100,7 @@ trait AuthorizationRepository
         /** @var RestUserEntity $user */
         $user = $this->getUserByPhoneNumber($params['phone_number']);
         if ($user->status === self::STATUS_UNVERIFIED && $user->register_by_bid == self::REGISTER_BY_BID_NO) {
-            throw new ForbiddenHttpException('Номер телефона не найден.');
+            throw new ForbiddenHttpException('Wrong credentials');
         }
         if ($user->validatePassword($params['password'])) {
             return $user;
@@ -146,7 +146,7 @@ trait AuthorizationRepository
         if ($user) {
             return $user;
         }
-        throw new NotFoundHttpException('Пользователь не найден.');
+        throw new NotFoundHttpException('User is not found');
     }
 
     /**
@@ -209,7 +209,7 @@ trait AuthorizationRepository
         try {
             $user = RestUserEntity::findOne(RestUserEntity::getRefreshTokenId($currentRefreshToken));
             if (!$user) {
-                throw new NotFoundHttpException('User not found');
+                throw new NotFoundHttpException('User is not found');
             }
             if (RestUserEntity::isRefreshTokenExpired($user->created_refresh_token)) {
                 throw new UnauthorizedHttpException('Refresh token was expired');
@@ -243,7 +243,7 @@ trait AuthorizationRepository
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e){
             \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
@@ -273,11 +273,11 @@ trait AuthorizationRepository
 
             $user = RestUserEntity::findOne(['phone_number' => $user->phone_number]);
             if (!$user) {
-                throw new NotFoundHttpException('Пользователь не найден.');
+                throw new NotFoundHttpException('User is not found');
             }
 
             if ($user->verification_code !== (int)($params['verification_code'])) {
-                throw new UnprocessableEntityHttpException('Неверный код верификации.');
+                throw new UnprocessableEntityHttpException('Wrong verification code');
             }
 
             $user->status = RestUserEntity::STATUS_VERIFIED;
@@ -295,7 +295,7 @@ trait AuthorizationRepository
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
