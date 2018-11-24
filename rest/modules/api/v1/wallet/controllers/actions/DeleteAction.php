@@ -88,7 +88,13 @@ class DeleteAction extends Action
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
             if ($walletModel->deleteWallet($id)) {
-                return $this->controller->setResponse(200, 'Шаблон кошелька успешно удалён.', ['id' => $id]);
+                $response = \Yii::$app->getResponse();
+                $response->setStatusCode(200, \Yii::t('app', 'Layout was successfully deleted'));
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => $response->statusText,
+                    'data'    => ['id' => $id]
+                ];
             }
             throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении шаблона кошелька.'));
         } catch (NotFoundHttpException $e) {
