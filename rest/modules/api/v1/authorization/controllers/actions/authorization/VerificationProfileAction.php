@@ -49,7 +49,12 @@ class VerificationProfileAction extends Action
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
      *              @SWG\Property(property="message", type="string", description="Status message"),
-     *              @SWG\Property(property="data", type="object")
+     *              @SWG\Property(property="data", type="object",
+     *                  @SWG\Property(property="id", type="int", description="user id"),
+     *                  @SWG\Property(property="access_token", type="string", description="access token"),
+     *                  @SWG\Property(property="exp", type="integer", description="expires date"),
+     *                  @SWG\Property(property="refresh_token", type="string", description="refresh token"),
+     *              )
      *         ),
      *         examples = {
      *              "status": 200,
