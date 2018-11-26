@@ -112,7 +112,7 @@ trait RestBidRepository
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Server error occurred , please try later');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
 
     }
@@ -185,7 +185,7 @@ trait RestBidRepository
                 Yii::$app->user->can(RestUserEntity::ROLE_GUEST)
                 && (RestUserEntity::findByEmail($bid->email) || RestUserEntity::findByPhoneNumber($bid->phone_number))
             ) {
-                throw new BadRequestHttpException('Пользователь с таким "E-mail" или "Номером телефона" уже существует. Пожалуйста авторизуйтесь.');
+                throw new BadRequestHttpException('User with the same "E-mail" or "Phone number" already exist.');
             }
 
             $bid->status = BidEntity::STATUS_NEW;
@@ -200,7 +200,7 @@ trait RestBidRepository
             }
 
             if (!$bid->save(false)) {
-                throw new ServerErrorHttpException();
+                throw new ServerErrorHttpException('Something wrong, please try again later');
             }
 
             $transaction->commit();

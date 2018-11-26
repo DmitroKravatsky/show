@@ -79,7 +79,7 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Internal Server Error "
+     *         description = "Server Error "
      *     )
      * )
      * @return \yii\data\ArrayDataProvider
@@ -92,7 +92,7 @@ class ListAction extends Action
             return $reviewModel->listReviews(Yii::$app->requestedParams);
         } catch (\Exception $e) {
             Yii::error($e->getMessage());
-            throw new ServerErrorHttpException('Something wrong, please try later.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

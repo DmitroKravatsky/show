@@ -67,7 +67,7 @@ class ResendVerificationCodeAction extends Action
      *         description = "success",
      *         examples = {
      *              "status": 200,
-     *              "message": "Код верификации успешно отправлен."
+     *              "message": "Verification code was successfully send"
      *         }
      *     ),
      *     @SWG\Response (
@@ -76,11 +76,11 @@ class ResendVerificationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "User not found"
+     *         description = "User is not found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )*
      * @return array
@@ -91,7 +91,7 @@ class ResendVerificationCodeAction extends Action
         if ($model->resendVerificationCode(\Yii::$app->request->post('phone_number'))) {
             return [
                 'status'   => 200,
-                'message'  => 'Код верификации успешно отправлен.'
+                'message'  => 'Verification code was successfully send'
             ];
         }
     }

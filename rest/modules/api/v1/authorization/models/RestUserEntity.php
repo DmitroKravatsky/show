@@ -64,6 +64,7 @@ class RestUserEntity extends User
     const SCENARIO_VERIFY_NEW_EMAIL              = 'verify-email';
     const SCENARIO_SEND_PHONE_VERIFICATION_CODE  = 'send-phone-verification-code';
     const SCENARIO_VERIFY_NEW_PHONE              = 'verify-phone';
+    const SCENARIO_RESTORE_REGISTRATION          = 'restore-registration';
 
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
@@ -120,6 +121,10 @@ class RestUserEntity extends User
         $scenarios[self::SCENARIO_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'confirm_password', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
+        ];
+
+        $scenarios[self::SCENARIO_RESTORE_REGISTRATION] = [
+            'password', 'terms_condition', 'confirm_password'
         ];
 
         $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
@@ -213,7 +218,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER]
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_RESTORE_REGISTRATION]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
@@ -227,6 +232,7 @@ class RestUserEntity extends User
                 'compareAttribute' => 'password',
                 'on'               =>
                     [
+                        self::SCENARIO_RESTORE_REGISTRATION,
                         self::SCENARIO_REGISTER,
                         self::SCENARIO_SOCIAL_REGISTER,
                         self::SCENARIO_RECOVERY_PWD
@@ -369,7 +375,7 @@ class RestUserEntity extends User
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e) {
             \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
@@ -384,10 +390,10 @@ class RestUserEntity extends User
     public function checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData)
     {
         if ($recoveryCode != $postData) {
-            $this->addError('recovery_code', 'Код восстановления неверен!');
+            $this->addError('recovery_code', 'Recovery code is incorrect');
             return false;
         } elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
-            $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
+            $this->addError('created_recovery_code', 'Recovery code is expired. Generate new');
             return false;
         }
         return true;
@@ -574,7 +580,7 @@ class RestUserEntity extends User
         if ($user->save(false)) {
             return true;
         }
-        throw new ServerErrorHttpException('Server error, please try later');
+        throw new ServerErrorHttpException('Server error, please again try later');
     }
 
     /**

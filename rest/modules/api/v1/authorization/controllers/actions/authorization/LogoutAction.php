@@ -45,7 +45,7 @@ class LogoutAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Выход успешно осуществлён.",
+     *              "message": "Logout was completed",
      *              "data": {}
      *         }
      *     ),
@@ -55,7 +55,7 @@ class LogoutAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -76,7 +76,7 @@ class LogoutAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(200);
         return $response->content = [
             'status'  => $response->statusCode,
-            'message' => 'Выход успешно осуществлён.'
+            'message' => 'Logout was completed'
         ];
     }
 }

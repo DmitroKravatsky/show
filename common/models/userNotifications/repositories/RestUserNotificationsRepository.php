@@ -45,7 +45,7 @@ trait RestUserNotificationsRepository
             return $dataProvider;
 
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Internal server error');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
 
     }
