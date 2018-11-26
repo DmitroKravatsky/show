@@ -88,7 +88,13 @@ class DeleteAction extends Action
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
             if ($walletModel->deleteWallet($id)) {
-                return $this->controller->setResponse(200, 'Wallet layout was successfully deleted', ['id' => $id]);
+                $response = \Yii::$app->getResponse();
+                $response->setStatusCode(200, \Yii::t('app', 'Layout was successfully deleted'));
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => $response->statusText,
+                    'data'    => ['id' => $id]
+                ];
             }
             throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         } catch (NotFoundHttpException $e) {
