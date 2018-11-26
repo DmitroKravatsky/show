@@ -66,7 +66,7 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Internal Server Error "
+     *         description = "Server Error "
      *     )
      * )
      *
@@ -82,7 +82,7 @@ class ListAction extends Action
             return $paymentSystem::getVisibleList(Yii::$app->request->queryParams);
         } catch (\Exception $e) {
             Yii::error($e->getMessage());
-            throw new ServerErrorHttpException('Something wrong, please try later.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

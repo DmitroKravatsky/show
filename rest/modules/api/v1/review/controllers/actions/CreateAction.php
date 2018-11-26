@@ -27,7 +27,7 @@ class CreateAction extends Action
         return [
             [
                 'class'   => AccessUserStatusBehavior::class,
-                'message' => 'Доступ запрещён.'
+                'message' => 'Access denied'
             ]
         ];
     }
@@ -83,7 +83,7 @@ class CreateAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Отзыв успешно добавлен.",
+     *              "message": "Review was successfully created",
      *              "data": {
      *                  "id": 6,
      *                  "text": "Деньги пришли быстро и без проблем"
@@ -104,7 +104,7 @@ class CreateAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -124,7 +124,7 @@ class CreateAction extends Action
             $response = Yii::$app->getResponse()->setStatusCode(201);
             $response->data = [
                 'status'  => $response->statusCode,
-                'message' => 'Отзыв успешно создан.',
+                'message' => 'Review was successfully created',
                 'data'    => $reviewModel->getAttributes(['id', 'text'])
             ];
         } catch (UnprocessableEntityHttpException $e) {
@@ -133,7 +133,7 @@ class CreateAction extends Action
             throw new ForbiddenHttpException($e->getMessage());
         } catch (\Exception $e) {
             Yii::error($e->getMessage());
-            throw new ServerErrorHttpException();
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

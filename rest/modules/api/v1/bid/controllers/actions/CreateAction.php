@@ -141,7 +141,7 @@ class CreateAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Заявка успешно добавлена.",
+     *              "message": "Your bid was successfully granted",
      *              "data": {
      *                  "id": 6,
      *                  "created_by": 5,
@@ -176,7 +176,7 @@ class CreateAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -209,7 +209,7 @@ class CreateAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException(Yii::t('app', 'Произошла ошибка при создании заявки.'));
+            throw new ServerErrorHttpException(Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

@@ -52,7 +52,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Уведомление успешно удалено.",
+     *              "message": "Notification was successfully deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -64,7 +64,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Notification not found"
+     *         description = "Notification is not found"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -72,7 +72,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -101,7 +101,7 @@ class DeleteAction extends Action
             \Yii::error($e->getMessage());
             throw new ServerErrorHttpException(\Yii::t(
                 'app',
-                'Internal server error appeared while processing request')
+                'Something is wrong, please try again later')
             );
         }
     }

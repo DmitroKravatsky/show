@@ -85,7 +85,9 @@ class FbAuthorizeAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "You have been successfully authorized",
+     *              "message": "Authorization was successfully ended
+     *
+     *     ",
      *              "data": {
      *                  "user_id": "124",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -104,7 +106,7 @@ class FbAuthorizeAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -122,7 +124,7 @@ class FbAuthorizeAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(200);
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Authorization was successful'),
+            'message' => \Yii::t('app', 'Authorization was successfully ended'),
             'data'    => [
                 'user_id' => $user->id,
                 'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),

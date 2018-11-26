@@ -88,7 +88,7 @@ class GenerateNewAccessTokenAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Сгенерирован новый токен.",
+     *              "message": "New access token was successfully generated",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
@@ -113,7 +113,7 @@ class GenerateNewAccessTokenAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User not found"
+     *         description = "User is not found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -121,7 +121,7 @@ class GenerateNewAccessTokenAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -142,7 +142,7 @@ class GenerateNewAccessTokenAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Сгенерирован новый токен.',
+            'message' => 'New access token was successfully generated',
             'data'    => $responseData
         ];
     }
