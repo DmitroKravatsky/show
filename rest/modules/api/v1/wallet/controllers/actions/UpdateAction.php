@@ -7,6 +7,7 @@ use rest\modules\api\v1\wallet\controllers\WalletController;
 use yii\rest\Action;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
+use yii\web\UnprocessableEntityHttpException;
 
 /**
  * Class UpdateAction
@@ -77,7 +78,7 @@ class UpdateAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Шаблон кошелька успешно изменён.",
+     *              "message": "Wallet layout was successfully updated",
      *              "data": {
      *                  "id": 6,
      *                  "name": "Мой первый шалон",
@@ -89,7 +90,7 @@ class UpdateAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Wallet not found"
+     *         description = "Wallet is not found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -105,7 +106,7 @@ class UpdateAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -114,6 +115,7 @@ class UpdateAction extends Action
      * @return array
      *
      * @throws NotFoundHttpException
+     * @throws UnprocessableEntityHttpException
      * @throws ServerErrorHttpException
      */
     public function run(int $id): array
@@ -127,14 +129,16 @@ class UpdateAction extends Action
 
             return [
                 'status'  => \Yii::$app->response->statusCode,
-                'message' => 'Шаблон кошелька успешно изменён.',
+                'message' => 'Wallet layout was successfully updated',
                 'data'    => $walletModel->getAttributes(['id', 'name', 'number', 'payment_system_id', 'created_at'])
             ];
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при изменении отзыва.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

@@ -91,7 +91,7 @@ class VerifyNewEmailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Верификация профиля проша успешно.",
+     *              "message": "Email was updated ",
      *              "data": {
      *                  "id" : 21,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -110,7 +110,7 @@ class VerifyNewEmailAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal sever error"
+     *         description = "Sever Error"
      *     )
      * )
      *

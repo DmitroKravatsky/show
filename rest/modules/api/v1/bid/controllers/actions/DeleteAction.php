@@ -50,7 +50,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Заявка успешно удалёна.",
+     *              "message": "The bid was successfully deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -62,11 +62,11 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Bid not found"
+     *         description = "Bid is not found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -90,7 +90,7 @@ class DeleteAction extends Action
                     'data'    => ['id' => $id]
                 ];
             }
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении заявки.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something wrong, please try again later'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException();
         } catch (\Exception $e) {

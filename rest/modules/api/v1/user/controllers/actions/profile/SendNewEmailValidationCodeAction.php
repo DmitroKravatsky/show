@@ -97,11 +97,11 @@ class SendNewEmailValidationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "NotFoundHttpException"
+     *         description = "User is not found"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "ServerErrorHttpException"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -125,7 +125,7 @@ class SendNewEmailValidationCodeAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException($e->getMessage());
+            throw new ServerErrorHttpException($e->getMessage('Something is wrong, please try again later'));
         }
     }
 }

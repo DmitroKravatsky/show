@@ -57,7 +57,7 @@ class LoginAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Авторизация прошла успешно.",
+     *              "message": "Authorization was successfully ended",
      *              "data": {
      *                  "user_id" : "157",
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -80,7 +80,7 @@ class LoginAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Server internal error"
+     *         description = "Internal Error"
      *     )
      * )
      *
@@ -112,7 +112,7 @@ class LoginAction extends Action
 
                 return [
                     'status'  => $response->statusCode,
-                    'message' => 'Авторизация прошла успешно.',
+                    'message' => 'Authorization was successfully ended',
                     'data'    => [
                         'user_id'       => $user->id,
                         'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
@@ -131,7 +131,7 @@ class LoginAction extends Action
         } catch (UnauthorizedHttpException $e) {
             throw new UnauthorizedHttpException('Wrong credentials');
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

@@ -150,7 +150,7 @@ trait SocialRepository
     /**
      * Authorization with Gmail
      *
-     * @param $params array of post datagit
+     * @param $params array of post data
      *
      * @param $params array of POST data
      * @return RestUserEntity
@@ -194,7 +194,7 @@ trait SocialRepository
                     return $newUser;
                 }
 
-                throw new ServerErrorHttpException('Internal server error');
+                throw new ServerErrorHttpException('Server Error');
             } else {
                 throw new BadRequestHttpException('Bad Request');
             }
@@ -204,7 +204,7 @@ trait SocialRepository
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException('Произошла ошибка при регистрации.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
 
     }
@@ -358,7 +358,7 @@ trait SocialRepository
                     $transaction->commit();
                     return $newUser;
                 }
-                throw new ServerErrorHttpException('Internal server error');
+                throw new ServerErrorHttpException('Server Error');
 
             } else {
                 throw new BadRequestHttpException('Bad Request');

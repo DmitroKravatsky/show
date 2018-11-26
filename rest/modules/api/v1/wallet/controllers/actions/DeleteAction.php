@@ -52,7 +52,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Шаблон кошелька успешно удалён.",
+     *              "message": "Wallet layout was successfully deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -68,11 +68,11 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Not found"
+     *         description = "Wallet is not found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      * @param $id
@@ -96,12 +96,12 @@ class DeleteAction extends Action
                     'data'    => ['id' => $id]
                 ];
             }
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении шаблона кошелька.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении шаблона кошелька.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

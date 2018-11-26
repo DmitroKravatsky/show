@@ -78,11 +78,11 @@ class GetProfileAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "NotFoundHttpException"
+     *         description = "User profile is not found"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "ServerErrorHttpException"
+     *         description = "Server Error"
      *     )
      * )
      *

@@ -56,11 +56,11 @@ class CalculateAmountAction extends Action
      *     ),
      *     @SWG\Response (
      *        response = 404,
-     *        description = "Not found"
+     *        description = "Payment system is not found"
      *     ),
      *     @SWG\Response (
      *        response = 500,
-     *        description = "Internal Server Error"
+     *        description = "Server Error"
      *     )
      * )
      *
@@ -84,9 +84,9 @@ class CalculateAmountAction extends Action
                 ]
             ];
         } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('Платежная система не найдена.');
+            throw new NotFoundHttpException('Payment system is not found');
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Произошла ошибка сервера.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }
