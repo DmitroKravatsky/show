@@ -94,10 +94,10 @@ class GenerateNewAccessTokenAction extends Action
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *                  "exp": "1520070475",
      *                  "user": {
-     *                      "id": "531",
+     *                      "id": 531,
      *                      "phone_number": "+380959751856",
      *                      "role": "guest",
-     *                      "created_at": "1520070475",
+     *                      "created_at": 1520070475,
      *                      "status": "VERIFIED"
      *                  }
      *              }

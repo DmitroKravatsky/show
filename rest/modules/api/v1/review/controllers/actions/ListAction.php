@@ -51,13 +51,13 @@ class ListAction extends Action
      *                   "id": 6,
      *                   "name":"Sasha",
      *                   "text": "Деньги пришли быстро и без проблем",
-     *                   "created_at": "1520256641"
+     *                   "created_at": 1520256641
      *                 },
      *                 {
      *                   "id": 8,
      *                   "name":"Dimon",
      *                   "text": "Деньги пришли быстро и без проблем.Everything OK",
-     *                   "created_at": "1520256641"
+     *                   "created_at": 1520256641
      *                  },
      *              },
      *              "_links": {
