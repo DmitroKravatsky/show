@@ -156,8 +156,8 @@ class CreateAction extends Action
      *                  "to_wallet": "1234123412341234",
      *                  "from_currency": "USD",
      *                  "to_currency": "RUB",
-     *                  "from_sum": "123",
-     *                  "to_sum": "123.5",
+     *                  "from_sum": 123,
+     *                  "to_sum": 123.5,
      *                  "created_at": 1520246365,
      *              }
      *         }
