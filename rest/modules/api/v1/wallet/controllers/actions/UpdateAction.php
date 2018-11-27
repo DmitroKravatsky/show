@@ -83,7 +83,7 @@ class UpdateAction extends Action
      *                  "id": 6,
      *                  "name": "Мой первый шалон",
      *                  "number": "1234123412341234",
-     *                  "payment_system": "yandex_money",
+     *                  "payment_system_id": 4,
      *                  "created_at": 1520246365
      *              }
      *         }
