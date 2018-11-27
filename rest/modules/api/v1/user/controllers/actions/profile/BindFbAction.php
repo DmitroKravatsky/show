@@ -97,7 +97,7 @@ class BindFbAction extends Action
      *              "status": 200,
      *              "message": "Social network was successfully bind",
      *              "data": {
-     *                  "id": 6,
+     *                  "user_id": 6,
      *                  "name": "John",
      *                  "last_name": "Smith",
      *                  "avatar": null,

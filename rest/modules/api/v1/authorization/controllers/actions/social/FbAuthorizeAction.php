@@ -85,9 +85,7 @@ class FbAuthorizeAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Authorization was successfully ended
-     *
-     *     ",
+     *              "message": "Authorization was successfully ended",
      *              "data": {
      *                  "user_id": 124,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
