@@ -5,24 +5,25 @@ declare(strict_types=1);
 namespace rest\modules\api\v1\authorization\service\authorization;
 
 use rest\modules\api\v1\authorization\model\authorization\{
-    GenerateNewAccessTokenRequestModel, LoginRequestModel, RegisterRequestModel,
+    GenerateNewAccessTokenRequestModel, GenerateNewAccessTokenResponseModel, LoginGuestResponseModel,
+    LoginRequestModel, LoginResponseModel, RegisterRequestModel, RegisterResponseModel,
     SendRecoveryCodeRequestModel, VerificationProfileRequestModel, PasswordRecoveryRequestModel,
-    ResendVerificationCodeRequestModel
+    ResendVerificationCodeRequestModel, VerificationProfileResponseModel
 };
 
 interface AuthUserServiceInterface
 {
-    public function generateNewAccessToken(GenerateNewAccessTokenRequestModel $model): array;
+    public function generateNewAccessToken(GenerateNewAccessTokenRequestModel $model): GenerateNewAccessTokenResponseModel;
 
-    public function login(LoginRequestModel $model): array;
+    public function login(LoginRequestModel $model): LoginResponseModel;
 
-    public function loginGuest(): array;
+    public function loginGuest(): LoginGuestResponseModel;
 
-    public function register(RegisterRequestModel $model): array;
+    public function register(RegisterRequestModel $model): RegisterResponseModel;
 
     public function sendPasswordRecoveryCode(SendRecoveryCodeRequestModel $model): void;
 
-    public function verifyUser(VerificationProfileRequestModel $model): array;
+    public function verifyUser(VerificationProfileRequestModel $model): VerificationProfileResponseModel;
 
     public function passwordRecovery(PasswordRecoveryRequestModel $model): void;
 

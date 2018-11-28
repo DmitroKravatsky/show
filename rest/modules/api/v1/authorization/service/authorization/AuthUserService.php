@@ -6,9 +6,10 @@ namespace rest\modules\api\v1\authorization\service\authorization;
 
 use Yii;
 use rest\modules\api\v1\authorization\model\authorization\{
-    PasswordRecoveryRequestModel, RegisterRequestModel, ResendVerificationCodeRequestModel,
-    SendRecoveryCodeRequestModel, LoginRequestModel, GenerateNewAccessTokenRequestModel,
-    VerificationProfileRequestModel
+    GenerateNewAccessTokenResponseModel, LoginGuestResponseModel, LoginResponseModel,
+    PasswordRecoveryRequestModel, RegisterRequestModel, RegisterResponseModel,
+    ResendVerificationCodeRequestModel, SendRecoveryCodeRequestModel, LoginRequestModel,
+    GenerateNewAccessTokenRequestModel, VerificationProfileRequestModel, VerificationProfileResponseModel
 };
 use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\authorization\factory\AuthUserFactoryInterface;
@@ -30,7 +31,7 @@ class AuthUserService implements AuthUserServiceInterface
         $this->repository = $repository;
     }
 
-    public function generateNewAccessToken(GenerateNewAccessTokenRequestModel $model): array
+    public function generateNewAccessToken(GenerateNewAccessTokenRequestModel $model): GenerateNewAccessTokenResponseModel
     {
         $currentRefreshToken = $model->refresh_token;
         $authUserEntity = $this->repository->findOneByRefreshToken($currentRefreshToken);
@@ -57,7 +58,7 @@ class AuthUserService implements AuthUserServiceInterface
         return $factory->createGenerateNewAccessTokenResult($authUserEntity);
     }
 
-    public function login(LoginRequestModel $model): array
+    public function login(LoginRequestModel $model): LoginResponseModel
     {
         $authUserEntity = $this->findUserByPhoneNumber($model->phone_number);
 
@@ -82,7 +83,7 @@ class AuthUserService implements AuthUserServiceInterface
         return $factory->createLoginResult($authUserEntity);
     }
 
-    public function loginGuest(): array
+    public function loginGuest(): LoginGuestResponseModel
     {
         $authUserEntity = $this->repository->findOneByEmail(Yii::$app->params['guest-email']);
         if (!$authUserEntity || !$this->validatePassword(Yii::$app->params['guest-password'], $authUserEntity->password)) {
@@ -95,7 +96,7 @@ class AuthUserService implements AuthUserServiceInterface
         return $factory->createLoginGuestResult($authUserEntity);
     }
 
-    public function register(RegisterRequestModel $model): array
+    public function register(RegisterRequestModel $model): RegisterResponseModel
     {
         $authUserEntity = $this->repository->findOneByPhoneNumber($model->phone_number);
         if ($authUserEntity === null) {
@@ -151,7 +152,7 @@ class AuthUserService implements AuthUserServiceInterface
 //        );
     }
 
-    public function verifyUser(VerificationProfileRequestModel $model): array
+    public function verifyUser(VerificationProfileRequestModel $model): VerificationProfileResponseModel
     {
         $authUserEntity = $this->findUserByPhoneNumber($model->phone_number);
         if ($authUserEntity->verification_code !== (int) $model->verification_code) {

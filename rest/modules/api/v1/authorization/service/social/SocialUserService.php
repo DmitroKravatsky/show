@@ -9,7 +9,7 @@ use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\authorization\repository\AuthUserRepositoryInterface;
 use rest\modules\api\v1\authorization\factory\AuthUserFactoryInterface;
 use rest\modules\api\v1\authorization\model\social\{
-    FbAuthorizationRequestModel, GmailAuthorizationRequestModel
+    FbAuthorizationRequestModel, GmailAuthorizationRequestModel, SocialAuthorizationResponseModel
 };
 use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
@@ -26,7 +26,7 @@ class SocialUserService implements SocialUserServiceInterface
         $this->repository = $repository;
     }
 
-    public function fbAuthorization(FbAuthorizationRequestModel $model): array
+    public function fbAuthorization(FbAuthorizationRequestModel $model): SocialAuthorizationResponseModel
     {
         $transaction = Yii::$app->db->beginTransaction();
         try {
@@ -73,7 +73,7 @@ class SocialUserService implements SocialUserServiceInterface
         }
     }
 
-    public function gmailAuthorization(GmailAuthorizationRequestModel $model): array
+    public function gmailAuthorization(GmailAuthorizationRequestModel $model): SocialAuthorizationResponseModel
     {
         $transaction = \Yii::$app->db->beginTransaction();
         try {

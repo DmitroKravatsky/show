@@ -6,7 +6,7 @@ namespace rest\modules\api\v1\authorization\controller;
 
 use rest\modules\api\v1\authorization\controller\action\authorization\{
     LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction,
-    ResendVerificationCodeAction, SendRecoveryCodeAction, VerificationProfileAction,
+    SendVerificationCodeAction, SendRecoveryCodeAction, VerificationProfileAction,
     GenerateNewAccessTokenAction
 };
 use rest\modules\api\v1\authorization\service\authorization\AuthUserServiceInterface;
@@ -51,7 +51,7 @@ class AuthorizationController extends Controller
                 'send-recovery-code'        => ['POST'],
                 'password-recovery'         => ['POST'],
                 'verification-profile'      => ['POST'],
-                'resend-verification-code'  => ['POST'],
+                'send-verification-code'    => ['POST'],
             ]
         ];
 
@@ -101,8 +101,8 @@ class AuthorizationController extends Controller
                 'class'      => LogoutAction::class,
                 'modelClass' => $this->modelClass
             ],
-            'resend-verification-code'  => [
-                'class'      => ResendVerificationCodeAction::class,
+            'send-verification-code'    => [
+                'class'      => SendVerificationCodeAction::class,
                 'modelClass' => $this->modelClass
             ],
         ];

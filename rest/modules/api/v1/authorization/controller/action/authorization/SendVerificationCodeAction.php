@@ -12,7 +12,7 @@ use yii\web\{
     NotFoundHttpException, ServerErrorHttpException, ErrorHandler
 };
 
-class ResendVerificationCodeAction extends Action
+class SendVerificationCodeAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
@@ -20,7 +20,7 @@ class ResendVerificationCodeAction extends Action
     /**
      * Creates and sends new verification code to user
      *
-     * @SWG\Post(path="/authorization/resend-verification-code",
+     * @SWG\Post(path="/authorization/send-verification-code",
      *      tags={"Authorization module"},
      *      summary=" send verification code",
      *      description="Creates and sends new verification code to user",
