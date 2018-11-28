@@ -71,7 +71,7 @@ class CreateAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 201,
-     *         description = "success",
+     *         description = "created",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -92,11 +92,11 @@ class CreateAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 403,

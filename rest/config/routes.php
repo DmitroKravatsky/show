@@ -42,7 +42,7 @@ return [
             'user/notifications' => 'api/v1/user/user-notifications',
         ],
         'patterns'   => [
-            'GET list'    => 'list',
+            'GET'         => 'list',
             'DELETE {id}' => 'delete'
         ],
     ],
@@ -65,8 +65,6 @@ return [
             'social' => 'api/v1/authorization/social',
         ],
         'patterns'   => [
-            'POST vk-register'         => 'vk-register',
-            'POST vk-login'            => 'vk-login',
             'POST gmail-authorize'     => 'gmail-authorize',
             'POST fb-authorize'        => 'fb-authorize',
 
@@ -101,7 +99,7 @@ return [
         'patterns'   => [
             'POST'        => 'create',
             'PUT {id}'    => 'update',
-            'GET list'    => 'list',
+            'GET'         => 'list',
             'DELETE {id}' => 'delete',
         ],
     ],
@@ -115,7 +113,6 @@ return [
         'patterns'   => [
             'POST'        => 'create',
             'PUT {id}'    => 'update',
-            'GET list'    => 'list',
             'DELETE {id}' => 'delete',
             'GET'         => 'list'
         ],

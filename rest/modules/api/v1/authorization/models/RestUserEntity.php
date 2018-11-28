@@ -90,24 +90,24 @@ class RestUserEntity extends User
     {
         return [
             'id'                              => '#',
-            'email'                           => 'Email',
-            'phone_number'                    => 'Номер телефона',
-            'source'                          => 'Социальная сеть',
-            'terms_condition'                 => 'Пользовательское соглашение',
-            'password'                        => 'Пароль',
-            'confirm_password'                => 'Подтверждение пароля',
-            'new_password'                    => 'Новый пароль',
-            'current_password'                => 'Текущий пароль',
-            'created_at'                      => 'Дата создания',
-            'updated_at'                      => 'Дата изменения',
-            'created_recovery_code'           => 'Дата создания кода востановления',
-            'recovery_code'                   => 'Код востановления',
-            'refresh_token'                   => 'Токен обновления',
-            'created_refresh_token'           => 'Дата создания токена доступа',
-            'status'                          => 'Статус полльзователя',
-            'verification_code'               => 'Код подтверждения аккаунта',
-            'phone_verification_code'         => 'Код подтверждения телефона',
-            'created_phone_verification_code' => 'Дата создания кода верификации телефона',
+            'email'                           => Yii::t('app', 'Email'),
+            'phone_number'                    => Yii::t('app', 'Phone number'),
+            'source'                          => Yii::t('app', 'Source'),
+            'terms_condition'                 => Yii::t('app', 'Terms condition'),
+            'password'                        => Yii::t('app', 'Password'),
+            'confirm_password'                => Yii::t('app', 'Confirm password'),
+            'new_password'                    => Yii::t('app', 'New password'),
+            'current_password'                => Yii::t('app', 'Current password'),
+            'created_at'                      => Yii::t('app', 'Creation date'),
+            'updated_at'                      => Yii::t('app', 'Edited date'),
+            'created_recovery_code'           => Yii::t('app', 'Date of creation of recovery'),
+            'recovery_code'                   => Yii::t('app', 'Recovery code'),
+            'refresh_token'                   => Yii::t('app', 'Refresh token'),
+            'created_refresh_token'           => Yii::t('app', 'Date of creation of refresh token '),
+            'status'                          => Yii::t('app', 'User status'),
+            'verification_code'               => Yii::t('app', 'Verification code'),
+            'phone_verification_code'         => Yii::t('app', 'Phone verification code'),
+            'created_phone_verification_code' => Yii::t('app', 'Date of creation of phone verification code '),
         ];
     }
 
@@ -196,7 +196,7 @@ class RestUserEntity extends User
                 'required',
                 'on'            => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
                 'requiredValue' => 1,
-                'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
+                'message'       => \Yii::t('app', 'You should except "Terms conditions"')
             ],
             ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],],
             [
@@ -321,7 +321,7 @@ class RestUserEntity extends User
     public function validateCurrentPassword($attribute)
     {
         if (!\Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
-            $this->addError($this->{$attribute}, \Yii::t('app', 'Неверно введен старый пароль.'));
+            $this->addError($this->{$attribute}, \Yii::t('app', 'Wrong old password'));
             return false;
         }
 

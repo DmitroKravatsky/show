@@ -72,7 +72,7 @@ class UpdateAction extends Action
      *                  @SWG\Property(property="id", type="integer", description="Wallet id"),
      *                  @SWG\Property(property="number", type="integer", description="Wallet number"),
      *                  @SWG\Property(property="name", type="string", description="Wallet name"),
-     *                  @SWG\Property(property="payment_system", type="string", description="Payment system"),
+     *                  @SWG\Property(property="payment_system_id", type="integer", description="Payment system id"),
      *                  @SWG\Property(property="created_at", type="integer", description="created at")
      *              ),
      *         ),
@@ -83,22 +83,22 @@ class UpdateAction extends Action
      *                  "id": 6,
      *                  "name": "Мой первый шалон",
      *                  "number": "1234123412341234",
-     *                  "payment_system_id": 4,
+     *                  "payment_system_id": 6,
      *                  "created_at": 1520246365
      *              }
      *         }
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Wallet is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *      @SWG\Response (
      *         response = 403,
@@ -106,7 +106,7 @@ class UpdateAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

@@ -68,7 +68,7 @@ class BindFbAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -110,7 +110,7 @@ class BindFbAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Bad request"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response(
      *         response = 403,
@@ -118,11 +118,11 @@ class BindFbAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

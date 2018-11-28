@@ -36,7 +36,7 @@ class LogoutAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -50,7 +50,7 @@ class LogoutAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 401,
-     *         description = "Invalid or expired access token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response(
      *         response = 500,
