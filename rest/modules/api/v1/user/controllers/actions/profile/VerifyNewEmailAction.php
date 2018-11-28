@@ -91,7 +91,8 @@ class VerifyNewEmailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Email was updated ",
+     *              "message": "Email was updated",
+     *          }
      *     ),
      *     @SWG\Response(
      *         response = 404,
