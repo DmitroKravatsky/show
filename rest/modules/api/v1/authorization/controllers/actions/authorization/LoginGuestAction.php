@@ -28,7 +28,7 @@ class LoginGuestAction extends Action
      *      produces={"application/json"},
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -45,6 +45,10 @@ class LoginGuestAction extends Action
      *                  "exp": 1536224824,
      *              }
      *         }
+     *     ),
+     *      @SWG\Response (
+     *         response = 401,
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 500,

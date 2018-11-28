@@ -102,17 +102,13 @@ class SendNewPhoneVerificationCodeAction extends Action
      *         response = 404,
      *         description = "User is not found"
      *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
-     *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

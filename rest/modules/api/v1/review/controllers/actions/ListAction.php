@@ -16,14 +16,14 @@ class ListAction extends Action
     /**
      * Returns reviews list
      *
-     * @SWG\Get(path="/review/list",
+     * @SWG\Get(path="/review",
      *      tags={"Review module"},
      *      summary="Review create",
      *      description="Creates review",
      *      produces={"application/json"},
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
@@ -73,13 +73,9 @@ class ListAction extends Action
      *               }
      *         }
      *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
-     *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Server Error "
+     *         description = "Internal Server Error"
      *     )
      * )
      * @return \yii\data\ArrayDataProvider

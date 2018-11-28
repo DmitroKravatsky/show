@@ -64,7 +64,7 @@ class ResendVerificationCodeAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         examples = {
      *              "status": 200,
      *              "message": "Verification code was successfully send"
@@ -72,15 +72,15 @@ class ResendVerificationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Bad request"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )*
      * @return array
