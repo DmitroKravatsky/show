@@ -106,8 +106,6 @@ class PasswordRecoveryAction extends Action
      *         examples = {
      *              "status": 200,
      *              "message": "Password recovery was successfully ended",
-     *              "data": {
-     *              }
      *         }
      *     ),
      *     @SWG\Response (

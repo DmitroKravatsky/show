@@ -46,7 +46,6 @@ class LogoutAction extends Action
      *         examples = {
      *              "status": 200,
      *              "message": "Logout was completed",
-     *              "data": {}
      *         }
      *     ),
      *     @SWG\Response(

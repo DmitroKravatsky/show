@@ -97,7 +97,7 @@ class BindGmailAction extends Action
      *              "status": 200,
      *              "message": "Social network was successfully bind",
      *              "data": {
-     *                  "id": 6,
+     *                  "user_id": 6,
      *                  "name": "John",
      *                  "last_name": "Smith",
      *                  "avatar": null,
@@ -140,7 +140,7 @@ class BindGmailAction extends Action
 
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Something is wrong, please try again later'),
+            'message' => \Yii::t('app', 'Social network was successfully bind'),
             'data'    => $result
         ];
     }

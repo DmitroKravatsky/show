@@ -84,8 +84,6 @@ class SendRecoveryCodeAction extends Action
      *         examples = {
      *              "status": 200,
      *              "message": "Recovery code was successfully send",
-     *              "data": {
-     *              }
      *         }
      *     ),
      *     @SWG\Response (
