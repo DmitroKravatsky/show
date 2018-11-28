@@ -62,11 +62,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Bid is not found"
-     *     ),
-     *     @SWG\Response (
-     *         response = 405,
-     *         description = "Method Not Allowed"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response(
      *         response = 500,

@@ -100,7 +100,7 @@ class SendNewPhoneVerificationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Not Found"
+     *         description = "User is not found"
      *     ),
      *     @SWG\Response (
      *         response = 422,

@@ -20,7 +20,7 @@ class UpdateAction extends Action
     /**
      * Updates an existing model
      *
-     * @SWG\Put(path="/user/profile/update",
+     * @SWG\Put(path="/user/profile",
      *      tags={"User module"},
      *      summary="Updates user profile",
      *      description="Updates user profile",
@@ -88,7 +88,7 @@ class UpdateAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Internal Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

@@ -122,7 +122,7 @@ class BindFbAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Internal Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
