@@ -48,7 +48,7 @@ class ListAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
@@ -147,12 +147,8 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response (
      *        response = 401,
-     *        description = "Invalid credentials or Expired token"
-     *     ),
-     *     @SWG\Response (
-     *         response = 405,
-     *         description = "Method Not Allowed"
-     *     ),
+     *        description = "Unauthorized"
+     *     )
      * )
      *
      * @return \yii\data\ArrayDataProvider

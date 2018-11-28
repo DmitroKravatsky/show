@@ -145,7 +145,7 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response(
      *        response = 500,
-     *        description = "Server Error"
+     *        description = "Internal Server Error"
      *     )
      * )
      *

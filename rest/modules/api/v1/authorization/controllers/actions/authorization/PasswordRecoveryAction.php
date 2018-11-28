@@ -117,7 +117,7 @@ class PasswordRecoveryAction extends Action
      *     @SWG\Response (
      *         response = 404,
      *         description = "Not Found"
-     *     )
+     *     ),
      *     @SWG\Response (
      *         response = 422,
      *         description = "Unprocessable Entity"

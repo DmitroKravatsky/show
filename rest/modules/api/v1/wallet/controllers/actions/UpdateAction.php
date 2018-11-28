@@ -72,7 +72,7 @@ class UpdateAction extends Action
      *                  @SWG\Property(property="id", type="integer", description="Wallet id"),
      *                  @SWG\Property(property="number", type="integer", description="Wallet number"),
      *                  @SWG\Property(property="name", type="string", description="Wallet name"),
-     *                  @SWG\Property(property="payment_system", type="string", description="Payment system"),
+     *                  @SWG\Property(property="payment_system_id", type="integer", description="Payment system id"),
      *                  @SWG\Property(property="created_at", type="integer", description="created at")
      *              ),
      *         ),
@@ -83,7 +83,7 @@ class UpdateAction extends Action
      *                  "id": 6,
      *                  "name": "Мой первый шалон",
      *                  "number": "1234123412341234",
-     *                  "payment_system": "yandex_money",
+     *                  "payment_system_id": 6,
      *                  "created_at": 1520246365
      *              }
      *         }
