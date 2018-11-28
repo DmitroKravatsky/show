@@ -53,9 +53,6 @@ class DeleteAction extends Action
      *         examples = {
      *              "status": 200,
      *              "message": "Notification was successfully deleted",
-     *              "data": {
-     *                  "id": 6
-     *              }
      *         }
      *     ),
      *     @SWG\Response (

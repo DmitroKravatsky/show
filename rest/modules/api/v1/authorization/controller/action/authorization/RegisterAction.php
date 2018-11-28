@@ -71,7 +71,7 @@ class RegisterAction extends Action
      *              "data": {
      *                  "id" : 21,
      *                  "phone_number": "+380939353498",
-     *                   "status": "UNVERIFIED"
+     *                  "status": "UNVERIFIED"
      *              }
      *         }
      *     ),
