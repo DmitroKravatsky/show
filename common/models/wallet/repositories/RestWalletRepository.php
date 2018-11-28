@@ -54,6 +54,7 @@ trait RestWalletRepository
         if (!$walletModel->save()) {
             $this->throwModelException($walletModel->errors);
         }
+        $walletModel->payment_system_id = (int) $walletModel->payment_system_id;
 
         return $walletModel;
     }
