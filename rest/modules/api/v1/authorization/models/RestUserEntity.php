@@ -8,6 +8,7 @@ use common\models\userProfile\UserProfileEntity;
 use common\behaviors\ValidationExceptionFirstMessage;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationJwt;
 use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
+use Yii;
 use yii\base\Exception;
 use common\models\user\User;
 use rest\modules\api\v1\authorization\models\repositories\SocialRepository;
@@ -64,6 +65,7 @@ class RestUserEntity extends User
     const SCENARIO_VERIFY_NEW_EMAIL              = 'verify-email';
     const SCENARIO_SEND_PHONE_VERIFICATION_CODE  = 'send-phone-verification-code';
     const SCENARIO_VERIFY_NEW_PHONE              = 'verify-phone';
+    const SCENARIO_RESTORE_REGISTRATION          = 'restore-registration';
 
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
@@ -89,24 +91,24 @@ class RestUserEntity extends User
     {
         return [
             'id'                              => '#',
-            'email'                           => 'Email',
-            'phone_number'                    => 'Номер телефона',
-            'source'                          => 'Социальная сеть',
-            'terms_condition'                 => 'Пользовательское соглашение',
-            'password'                        => 'Пароль',
-            'confirm_password'                => 'Подтверждение пароля',
-            'new_password'                    => 'Новый пароль',
-            'current_password'                => 'Текущий пароль',
-            'created_at'                      => 'Дата создания',
-            'updated_at'                      => 'Дата изменения',
-            'created_recovery_code'           => 'Дата создания кода востановления',
-            'recovery_code'                   => 'Код востановления',
-            'refresh_token'                   => 'Токен обновления',
-            'created_refresh_token'           => 'Дата создания токена доступа',
-            'status'                          => 'Статус полльзователя',
-            'verification_code'               => 'Код подтверждения аккаунта',
-            'phone_verification_code'         => 'Код подтверждения телефона',
-            'created_phone_verification_code' => 'Дата создания кода верификации телефона',
+            'email'                           => Yii::t('app', 'Email'),
+            'phone_number'                    => Yii::t('app', 'Phone number'),
+            'source'                          => Yii::t('app', 'Source'),
+            'terms_condition'                 => Yii::t('app', 'Terms condition'),
+            'password'                        => Yii::t('app', 'Password'),
+            'confirm_password'                => Yii::t('app', 'Confirm password'),
+            'new_password'                    => Yii::t('app', 'New password'),
+            'current_password'                => Yii::t('app', 'Current password'),
+            'created_at'                      => Yii::t('app', 'Creation date'),
+            'updated_at'                      => Yii::t('app', 'Edited date'),
+            'created_recovery_code'           => Yii::t('app', 'Date of creation of recovery'),
+            'recovery_code'                   => Yii::t('app', 'Recovery code'),
+            'refresh_token'                   => Yii::t('app', 'Refresh token'),
+            'created_refresh_token'           => Yii::t('app', 'Date of creation of refresh token '),
+            'status'                          => Yii::t('app', 'User status'),
+            'verification_code'               => Yii::t('app', 'Verification code'),
+            'phone_verification_code'         => Yii::t('app', 'Phone verification code'),
+            'created_phone_verification_code' => Yii::t('app', 'Date of creation of phone verification code '),
         ];
     }
 
@@ -120,6 +122,10 @@ class RestUserEntity extends User
         $scenarios[self::SCENARIO_REGISTER] = [
             'email', 'password', 'phone_number', 'terms_condition', 'source', 'confirm_password', 'role',
             'refresh_token', 'created_refresh_token', 'verification_code'
+        ];
+
+        $scenarios[self::SCENARIO_RESTORE_REGISTRATION] = [
+            'password', 'terms_condition', 'confirm_password'
         ];
 
         $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
@@ -191,7 +197,7 @@ class RestUserEntity extends User
                 'required',
                 'on'            => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],
                 'requiredValue' => 1,
-                'message'       => \Yii::t('app', 'Вы должны принять "Пользовательские соглашения."')
+                'message'       => Yii::t('app', 'You should except "Terms conditions"')
             ],
             ['password', 'string', 'min' => 6, 'on' => [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER],],
             [
@@ -213,7 +219,7 @@ class RestUserEntity extends User
             [
                 ['password', 'confirm_password'],
                 'required',
-                'on' => [self::SCENARIO_REGISTER]
+                'on' => [self::SCENARIO_REGISTER, self::SCENARIO_RESTORE_REGISTRATION]
             ],
             ['password', 'required', 'on' => self::SCENARIO_LOGIN],
             [
@@ -227,6 +233,7 @@ class RestUserEntity extends User
                 'compareAttribute' => 'password',
                 'on'               =>
                     [
+                        self::SCENARIO_RESTORE_REGISTRATION,
                         self::SCENARIO_REGISTER,
                         self::SCENARIO_SOCIAL_REGISTER,
                         self::SCENARIO_RECOVERY_PWD
@@ -278,7 +285,7 @@ class RestUserEntity extends User
      */
     public function resetRecoveryCode()
     {
-        return \Yii::$app->db->createCommand()
+        return Yii::$app->db->createCommand()
             ->update(self::tableName(), [
                 'recovery_code'         => null,
                 'created_recovery_code' => null
@@ -298,8 +305,8 @@ class RestUserEntity extends User
         $scenarios = [self::SCENARIO_REGISTER, self::SCENARIO_SOCIAL_REGISTER, self::SCENARIO_REGISTER_BY_BID];
         if ($insert && in_array($this->scenario, $scenarios)) {
             $this->role = self::ROLE_USER;
-            $userRole = \Yii::$app->authManager->getRole($this->role);
-            \Yii::$app->authManager->assign($userRole, $this->getId());
+            $userRole = Yii::$app->authManager->getRole($this->role);
+            Yii::$app->authManager->assign($userRole, $this->getId());
         }
         if ($this->scenario === self::SCENARIO_RECOVERY_PWD) {
             $this->resetRecoveryCode();
@@ -314,8 +321,8 @@ class RestUserEntity extends User
      */
     public function validateCurrentPassword($attribute)
     {
-        if (!\Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
-            $this->addError($this->{$attribute}, \Yii::t('app', 'Неверно введен старый пароль.'));
+        if (!Yii::$app->security->validatePassword($this->{$attribute}, $this->password)) {
+            $this->addError($this->{$attribute}, Yii::t('app', 'Неверно введен старый пароль.'));
             return false;
         }
 
@@ -368,8 +375,8 @@ class RestUserEntity extends User
         } catch (ExceptionDb $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (Exception $e) {
-            \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Произошла ошибка при восстановлении пароля.');
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
@@ -384,10 +391,10 @@ class RestUserEntity extends User
     public function checkRecoveryCode($recoveryCode, $createdRecoveryCode, $postData)
     {
         if ($recoveryCode != $postData) {
-            $this->addError('recovery_code', 'Код восстановления неверен!');
+            $this->addError('recovery_code', 'Recovery code is incorrect');
             return false;
         } elseif (!$createdRecoveryCode || $createdRecoveryCode + 3600 < time()) {
-            $this->addError('created_recovery_code', 'Время кода восстановления истекло. Сгенерируйте новый!');
+            $this->addError('created_recovery_code', 'Recovery code is expired. Generate new');
             return false;
         }
         return true;
@@ -440,7 +447,7 @@ class RestUserEntity extends User
      */
     public function getUserRole($userId)
     {
-        return current(\Yii::$app->authManager->getRolesByUser($userId))->name;
+        return current(Yii::$app->authManager->getRolesByUser($userId))->name;
     }
 
     /**
@@ -468,7 +475,7 @@ class RestUserEntity extends User
      */
     public function hasBids():bool
     {
-        return BidEntity::find()->where(['created_by' => \Yii::$app->user->id])->exists();
+        return BidEntity::find()->where(['created_by' => Yii::$app->user->id])->exists();
     }
 
     /**
@@ -486,9 +493,9 @@ class RestUserEntity extends User
         ];
 
         if (in_array($this->scenario, $scenarios)) {
-            $this->auth_key = \Yii::$app->security->generateRandomString();
-            $this->password_reset_token = \Yii::$app->security->generateRandomString() . '_' . time();
-            $this->password = \Yii::$app->security->generatePasswordHash($this->password);
+            $this->auth_key = Yii::$app->security->generateRandomString();
+            $this->password_reset_token = Yii::$app->security->generateRandomString() . '_' . time();
+            $this->password = Yii::$app->security->generatePasswordHash($this->password);
             $this->status = self::STATUS_VERIFIED;
         }
 
@@ -512,7 +519,7 @@ class RestUserEntity extends User
             $this->throwModelException($this->errors);
         }
 
-        $user = static::findOne(\Yii::$app->user->id);
+        $user = static::findOne(Yii::$app->user->id);
         if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
@@ -522,13 +529,13 @@ class RestUserEntity extends User
         $user->new_email = $email;
 
         if ($user->save(false)) {
-            \Yii::$app->sendMail->run(
+            Yii::$app->sendMail->run(
                 'sendEmailVerificationCode-html.php',
                 [
                     'email' => $email,
                     'verificationCode' => $user->email_verification_code
                 ],
-                \Yii::$app->params['supportEmail'], $email, 'Email validation'
+                Yii::$app->params['supportEmail'], $email, 'Email validation'
             );
             return true;
         }
@@ -554,7 +561,7 @@ class RestUserEntity extends User
             $this->throwModelException($this->errors);
         }
 
-        $user = static::findOne(\Yii::$app->user->id);
+        $user = static::findOne(Yii::$app->user->id);
         if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
@@ -574,7 +581,7 @@ class RestUserEntity extends User
         if ($user->save(false)) {
             return true;
         }
-        throw new ServerErrorHttpException('Server error, please try later');
+        throw new ServerErrorHttpException('Server error, please again try later');
     }
 
     /**
@@ -585,7 +592,7 @@ class RestUserEntity extends User
      */
     public function isNewEmailVerificationValid($verificationCode, RestUserEntity $userModel):bool
     {
-        if (($userModel->created_email_verification_code + \Yii::$app->params['emailVerificationCodeLifeTime']) > time()) {
+        if (($userModel->created_email_verification_code + Yii::$app->params['emailVerificationCodeLifeTime']) > time()) {
             if (intval($verificationCode) === $userModel->email_verification_code) {
                 return true;
             }
@@ -613,7 +620,7 @@ class RestUserEntity extends User
             $this->throwModelException($this->errors);
         }
 
-        $user = static::findOne(\Yii::$app->user->id);
+        $user = static::findOne(Yii::$app->user->id);
         if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
@@ -647,7 +654,7 @@ class RestUserEntity extends User
             $this->throwModelException($this->errors);
         }
 
-        $user = static::findOne(\Yii::$app->user->id);
+        $user = static::findOne(Yii::$app->user->id);
         if (!$user) {
             throw new NotFoundHttpException('User is not found');
         }
@@ -673,7 +680,7 @@ class RestUserEntity extends User
      */
     public function isNewPhoneVerificationCodeValid($verificationCode, RestUserEntity $userModel):bool
     {
-        if (!($userModel->created_phone_verification_code + \Yii::$app->params['phoneVerificationCodeLifeTime']) > time()) {
+        if (!($userModel->created_phone_verification_code + Yii::$app->params['phoneVerificationCodeLifeTime']) > time()) {
             return false;
         }
         if (intval($verificationCode) === $userModel->phone_verification_code) {

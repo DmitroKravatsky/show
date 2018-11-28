@@ -76,7 +76,7 @@ class SendNewEmailValidationCodeAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -89,19 +89,19 @@ class SendNewEmailValidationCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Not enough income parameters"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "NotFoundHttpException"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "ServerErrorHttpException"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
@@ -125,7 +125,7 @@ class SendNewEmailValidationCodeAction extends Action
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException($e->getMessage());
+            throw new ServerErrorHttpException($e->getMessage('Something is wrong, please try again later'));
         }
     }
 }

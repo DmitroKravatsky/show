@@ -81,8 +81,8 @@ class VerifyNewEmailAction extends Action
      *          type = "integer"
      *      ),
      *      @SWG\Response(
-     *         response = 201,
-     *         description = "success",
+     *         response = 200,
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -91,7 +91,7 @@ class VerifyNewEmailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Верификация профиля проша успешно.",
+     *              "message": "Email was updated ",
      *              "data": {
      *                  "id" : 21,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -102,15 +102,15 @@ class VerifyNewEmailAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Wrong verification_code"
+     *         description = "Unprocessable Entity"
      *     ),
-     *     @SWG\Response(
+     *     @SWG\Response (
      *         response = 500,
-     *         description = "Internal sever error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

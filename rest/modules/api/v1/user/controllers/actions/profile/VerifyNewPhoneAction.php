@@ -98,7 +98,7 @@ class VerifyNewPhoneAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Bad request"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response (
      *         response = 401,
@@ -106,19 +106,15 @@ class VerifyNewPhoneAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
-     *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal sever error"
+     *         description = "Internal Sever Error"
      *     )
      * )
      *
@@ -145,7 +141,7 @@ class VerifyNewPhoneAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Something wrong, please try later');
+            throw new ServerErrorHttpException('Something wrong, please try again later');
         }
     }
 }

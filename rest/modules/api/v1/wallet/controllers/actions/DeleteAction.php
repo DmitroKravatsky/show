@@ -41,7 +41,7 @@ class DeleteAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -52,7 +52,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Шаблон кошелька успешно удалён.",
+     *              "message": "Wallet layout was successfully deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -60,7 +60,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -68,7 +68,7 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -88,14 +88,20 @@ class DeleteAction extends Action
             /** @var WalletEntity $walletModel */
             $walletModel = new $this->modelClass();
             if ($walletModel->deleteWallet($id)) {
-                return $this->controller->setResponse(200, 'Шаблон кошелька успешно удалён.', ['id' => $id]);
+                $response = \Yii::$app->getResponse();
+                $response->setStatusCode(200, \Yii::t('app', 'Layout was successfully deleted'));
+                return [
+                    'status'  => $response->statusCode,
+                    'message' => $response->statusText,
+                    'data'    => ['id' => $id]
+                ];
             }
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении шаблона кошелька.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при удалении шаблона кошелька.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

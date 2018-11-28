@@ -28,7 +28,7 @@ class GetProfileAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -74,15 +74,15 @@ class GetProfileAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "NotFoundHttpException"
+     *         description = "Not found"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "ServerErrorHttpException"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

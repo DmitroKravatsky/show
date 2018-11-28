@@ -88,7 +88,7 @@ class GenerateNewAccessTokenAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Сгенерирован новый токен.",
+     *              "message": "New access token was successfully generated",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
@@ -105,19 +105,19 @@ class GenerateNewAccessTokenAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 400,
-     *         description = "Parameter required"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response(
      *         response = 401,
-     *         description = "Refresh token was expired"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -142,7 +142,7 @@ class GenerateNewAccessTokenAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Сгенерирован новый токен.',
+            'message' => 'New access token was successfully generated',
             'data'    => $responseData
         ];
     }

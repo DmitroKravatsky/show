@@ -36,7 +36,7 @@ class LogoutAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -45,13 +45,13 @@ class LogoutAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Выход успешно осуществлён.",
+     *              "message": "Logout was completed",
      *              "data": {}
      *         }
      *     ),
      *     @SWG\Response(
      *         response = 401,
-     *         description = "Invalid or expired access token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -76,7 +76,7 @@ class LogoutAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(200);
         return $response->content = [
             'status'  => $response->statusCode,
-            'message' => 'Выход успешно осуществлён.'
+            'message' => 'Logout was completed'
         ];
     }
 }

@@ -44,7 +44,7 @@ class VerificationProfileAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 201,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -58,7 +58,7 @@ class VerificationProfileAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Верификация профиля проша успешно.",
+     *              "message": "Profile verification was successfully ended",
      *              "data": {
      *                  "id" : 21,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -69,15 +69,15 @@ class VerificationProfileAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Wrong verification_code"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal sever error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
@@ -98,7 +98,7 @@ class VerificationProfileAction extends Action
         $response = \Yii::$app->getResponse()->setStatusCode(200);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Верификация профиля прошла успешно.',
+            'message' => 'Profile verification was successfully ended',
             'data'    => [
                 /** @var RestUserEntity $user */
                 'id'            => $user->id,

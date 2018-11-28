@@ -19,12 +19,12 @@ class ListAction extends Action
      *      produces={"application/json"},
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *     ),
      *     @SWG\Response (
      *        response = 404,
-     *        description = "Not found"
-     *     )
+     *        description = "Not Found"
+     *     ),
      * )
      *
      * @throws NotFoundHttpException
@@ -35,7 +35,7 @@ class ListAction extends Action
         Yii::$app->response->format = Response::FORMAT_HTML;
         $filePath = Yii::$app->params['rates-xml-file'];
         if (!file_exists($filePath)) {
-            throw new NotFoundHttpException('Файл не найден.');
+            throw new NotFoundHttpException('File is not found');
         }
 
         return file_get_contents($filePath);

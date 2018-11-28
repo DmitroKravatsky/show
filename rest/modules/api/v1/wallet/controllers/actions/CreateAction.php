@@ -55,7 +55,7 @@ class CreateAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 201,
-     *         description = "success",
+     *         description = "created",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -70,7 +70,7 @@ class CreateAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Шаблон кошелька успешно создан.",
+     *              "message": "Wallet layout was successfully created",
      *              "data": {
      *                  "id": 6,
      *                  "name": "Мой первый шалон",
@@ -82,11 +82,11 @@ class CreateAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -113,14 +113,14 @@ class CreateAction extends Action
             \Yii::$app->getResponse()->setStatusCode(201);
             return [
                 'status'  => \Yii::$app->response->statusCode,
-                'message' => 'Шаблон кошелька успешно создан.',
+                'message' => 'Wallet layout was successfully created',
                 'data'    => $walletModel->getAttributes(['id', 'name', 'number', 'payment_system_id', 'created_at'])
             ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
-            throw new ServerErrorHttpException(\Yii::t('app', 'Произошла ошибка при создании шаблона кошелька.'));
+            throw new ServerErrorHttpException(\Yii::t('app', 'Something is wrong, please try again later'));
         }
     }
 }

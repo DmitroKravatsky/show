@@ -68,7 +68,7 @@ class BindGmailAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -95,7 +95,7 @@ class BindGmailAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Социальная сеть успешно привязана.",
+     *              "message": "Social network was successfully bind",
      *              "data": {
      *                  "id": 6,
      *                  "name": "John",
@@ -110,7 +110,7 @@ class BindGmailAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Bad request"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response(
      *         response = 403,
@@ -118,7 +118,7 @@ class BindGmailAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -140,7 +140,7 @@ class BindGmailAction extends Action
 
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Социальная сеть успешно привязана.'),
+            'message' => \Yii::t('app', 'Something is wrong, please try again later'),
             'data'    => $result
         ];
     }

@@ -28,8 +28,8 @@ class ListAction extends Action
      *        type = "string"
      *      ),
      *      @SWG\Response(
-     *         response = 201,
-     *         description = "success",
+     *         response = 200,
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),

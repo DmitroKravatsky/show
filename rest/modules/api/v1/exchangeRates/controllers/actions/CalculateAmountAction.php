@@ -39,7 +39,7 @@ class CalculateAmountAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
@@ -56,7 +56,7 @@ class CalculateAmountAction extends Action
      *     ),
      *     @SWG\Response (
      *        response = 404,
-     *        description = "Not found"
+     *        description = "Not Found"
      *     ),
      *     @SWG\Response (
      *        response = 500,
@@ -84,9 +84,9 @@ class CalculateAmountAction extends Action
                 ]
             ];
         } catch (NotFoundHttpException $e) {
-            throw new NotFoundHttpException('Платежная система не найдена.');
+            throw new NotFoundHttpException('Payment system is not found');
         } catch (\Exception $e) {
-            throw new ServerErrorHttpException('Произошла ошибка сервера.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

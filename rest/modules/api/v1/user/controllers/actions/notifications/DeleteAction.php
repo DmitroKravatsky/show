@@ -41,7 +41,7 @@ class DeleteAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -52,7 +52,7 @@ class DeleteAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Уведомление успешно удалено.",
+     *              "message": "Notification was successfully deleted",
      *              "data": {
      *                  "id": 6
      *              }
@@ -60,11 +60,11 @@ class DeleteAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "Notification not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -101,7 +101,7 @@ class DeleteAction extends Action
             \Yii::error($e->getMessage());
             throw new ServerErrorHttpException(\Yii::t(
                 'app',
-                'Internal server error appeared while processing request')
+                'Something is wrong, please try again later')
             );
         }
     }

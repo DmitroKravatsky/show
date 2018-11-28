@@ -87,7 +87,7 @@ class GmailAuthorizeAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Authorization was successful",
+     *              "message": "Authorization was successfully ended",
      *              "data": {
      *                  "user_id": 93,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -110,7 +110,7 @@ class GmailAuthorizeAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Internal Server Error"
+     *         description = "Server Error"
      *     )
      * )
      *
@@ -128,7 +128,7 @@ class GmailAuthorizeAction extends Action
 
         return [
             'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Authorization was successful'),
+            'message' => \Yii::t('app', 'Authorization was successfully ended'),
             'data'    => [
                 'user_id' => $user->id,
                 'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),

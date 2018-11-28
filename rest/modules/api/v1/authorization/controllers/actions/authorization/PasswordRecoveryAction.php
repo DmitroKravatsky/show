@@ -97,7 +97,7 @@ class PasswordRecoveryAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -112,15 +112,15 @@ class PasswordRecoveryAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Not enough income params"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "User not found"
-     *     ),
+     *         description = "Not Found"
+     *     )
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
@@ -147,13 +147,13 @@ class PasswordRecoveryAction extends Action
                 $response = \Yii::$app->getResponse()->setStatusCode(200);
                 return $response->content = [
                     'status' => $response->statusCode,
-                    'message' => 'Восстановления пароля прошло успешно.'
+                    'message' => 'Password recovery was successfully ended'
                 ];
             }
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 }

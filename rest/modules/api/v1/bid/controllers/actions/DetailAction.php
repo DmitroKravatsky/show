@@ -87,11 +87,15 @@ class DetailAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "Bid not found"
+     *         description = "Bid is not found"
+     *     ),
+     *     @SWG\Response (
+     *         response = 405,
+     *         description = "Method Not Allowed"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server error occurred , please try later"
+     *         description = "Server Error"
      *     )
      * )
      *

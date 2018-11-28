@@ -87,7 +87,7 @@ class SendNewPhoneVerificationCodeAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Verification code was successfully send to your new number",
+     *              "message": "Verification code was successfully send",
      *         }
      *     ),
      *     @SWG\Response (
@@ -102,17 +102,13 @@ class SendNewPhoneVerificationCodeAction extends Action
      *         response = 404,
      *         description = "Not Found"
      *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
-     *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
@@ -140,7 +136,7 @@ class SendNewPhoneVerificationCodeAction extends Action
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (\Exception $e) {
             Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Something wrong, please try later');
+            throw new ServerErrorHttpException('Something wrong, please try again later');
         }
     }
 }
