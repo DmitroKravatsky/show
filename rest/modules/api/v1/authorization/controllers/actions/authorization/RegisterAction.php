@@ -100,7 +100,7 @@ class RegisterAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "Registration was successfully ended",
      *              "data": {
      *                  "id" : 21,
      *                  "phone_number": "+380939353498",
@@ -145,7 +145,7 @@ class RegisterAction extends Action
         $response = Yii::$app->getResponse()->setStatusCode(201);
         return [
             'status'  => $response->statusCode,
-            'message' => 'Регистрация прошла успешно.',
+            'message' => 'Registration was successfully ended',
             'data'    => [
                 'id'            => $user->id,
                 'phone_number'  => $user->phone_number,
