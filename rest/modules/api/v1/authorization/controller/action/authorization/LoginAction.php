@@ -1,20 +1,18 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
+use Yii;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
+use rest\modules\api\v1\authorization\model\authorization\LoginRequestModel;
 use yii\rest\Action;
-use yii\web\ForbiddenHttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnauthorizedHttpException;
-use yii\web\UnprocessableEntityHttpException;
+use yii\web\{
+    ForbiddenHttpException, NotFoundHttpException, UnauthorizedHttpException,
+    UnprocessableEntityHttpException, ServerErrorHttpException, ErrorHandler
+};
 
-/**
- * Class LoginAction
- * @package rest\modules\api\v1\authorization\controllers\actions\authorization
- */
 class LoginAction extends Action
 {
     /** @var  AuthorizationController */
@@ -57,7 +55,7 @@ class LoginAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Authorization was successfully ended",
+     *              "message": "Authorization was successfully ended.",
      *              "data": {
      *                  "user_id" : 157,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -96,41 +94,25 @@ class LoginAction extends Action
      */
     public function run()
     {
+        $model = new LoginRequestModel();
+        if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+            $model->throwModelException($model->errors);
+        }
+
         try {
-            /** @var RestUserEntity $userModel */
-            $userModel = new $this->modelClass;
-
-            if ($user = $userModel->login(\Yii::$app->request->bodyParams)) {
-                $user->created_refresh_token = time();
-                $user->refresh_token = $user->getRefreshToken(['user_id' => $user->id]);
-                $user->verifyUserAfterLogin();
-
-                if (!$user->save(false)) {
-                    throw new ServerErrorHttpException();
-                }
-                $response = \Yii::$app->getResponse()->setStatusCode(200);
-
-                return [
-                    'status'  => $response->statusCode,
-                    'message' => 'Authorization was successfully ended',
-                    'data'    => [
-                        'user_id'       => $user->id,
-                        'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
-                        'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
-                        'refresh_token' => $user->refresh_token
-                    ]
-                ];
-            }
-            throw new UnauthorizedHttpException();
-        } catch (UnprocessableEntityHttpException $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage());
+            return [
+                'status'  => Yii::$app->response->getStatusCode(),
+                'message' => 'Authorization was successfully ended.',
+                'data'    => $this->controller->service->login($model)
+            ];
         } catch (ForbiddenHttpException $e) {
             throw new ForbiddenHttpException($e->getMessage());
         } catch (NotFoundHttpException $e) {
             throw new NotFoundHttpException($e->getMessage());
         } catch (UnauthorizedHttpException $e) {
-            throw new UnauthorizedHttpException('Wrong credentials');
-        } catch (ServerErrorHttpException $e) {
+            throw new UnauthorizedHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
             throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }

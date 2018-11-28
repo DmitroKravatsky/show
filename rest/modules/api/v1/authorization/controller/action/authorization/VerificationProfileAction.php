@@ -1,19 +1,17 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 02.03.18
- * Time: 22:16
- */
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
+use Yii;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
+use rest\modules\api\v1\authorization\model\authorization\VerificationProfileRequestModel;
 use yii\rest\Action;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnprocessableEntityHttpException;
+use yii\web\{
+    NotFoundHttpException, UnprocessableEntityHttpException, ServerErrorHttpException,
+    ErrorHandler
+};
 
 class VerificationProfileAction extends Action
 {
@@ -91,21 +89,24 @@ class VerificationProfileAction extends Action
      */
     public function run()
     {
-        /** @var RestUserEntity $model */
-        $model = new $this->modelClass;
-        $user  = $model->verifyUser(\Yii::$app->request->bodyParams);
+        try {
+            $model = new VerificationProfileRequestModel();
+            if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+                $model->throwModelException($model->errors);
+            }
 
-        $response = \Yii::$app->getResponse()->setStatusCode(200);
-        return [
-            'status'  => $response->statusCode,
-            'message' => 'Profile verification was successfully ended',
-            'data'    => [
-                /** @var RestUserEntity $user */
-                'id'            => $user->id,
-                'access_token'  => $token = $user->getJWT(['user_id' => $user->id]),
-                'exp'           => RestUserEntity::getPayload($token, 'exp'),
-                'refresh_token' => $user->refresh_token,
-            ]
-        ];
+            return [
+                'status' => Yii::$app->getResponse()->getStatusCode(),
+                'message' => 'Profile verification was successfully ended',
+                'data' => $this->controller->service->verifyUser($model)
+            ];
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (UnprocessableEntityHttpException $e) {
+            throw new UnprocessableEntityHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
+        }
     }
 }

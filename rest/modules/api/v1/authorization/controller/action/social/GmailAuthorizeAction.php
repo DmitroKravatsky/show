@@ -1,53 +1,19 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\social;
+declare(strict_types=1);
 
-use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\controllers\SocialController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\social;
+
+use Yii;
+use rest\modules\api\v1\authorization\controller\SocialController;
+use rest\modules\api\v1\authorization\model\social\GmailAuthorizationRequestModel;
+use yii\web\ServerErrorHttpException;
 use yii\rest\Action;
 
-/**
- * Class GmailAuthorizationAction
- * @package rest\modules\api\v1\authorization\controllers\actions\social
- *
- * @mixin ValidatePostParameters
- */
 class GmailAuthorizeAction extends Action
 {
     /** @var  SocialController */
     public $controller;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidatePostParameters::class,
-                'inputParams' => [
-                    'access_token', 'terms_condition'
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * @return bool
-     *
-     * @throws \yii\web\BadRequestHttpException
-     */
-    protected function beforeRun(): bool
-    {
-        $this->validationParams();
-        return parent::beforeRun();
-    }
 
     /**
      * Gmail authorization action
@@ -87,7 +53,7 @@ class GmailAuthorizeAction extends Action
      *         ),
      *         examples = {
      *              "status": 200,
-     *              "message": "Authorization was successfully ended",
+     *              "message": "Authorization was successfully ended.",
      *              "data": {
      *                  "user_id": 93,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -95,10 +61,6 @@ class GmailAuthorizeAction extends Action
      *                  "refresh_token": "aRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcgaRVDpKr1VmknVPwRmMlwje9D5B6BKhcg"
      *              }
      *         }
-     *     ),
-     *     @SWG\Response (
-     *         response = 400,
-     *         description = "Bad request"
      *     ),
      *      @SWG\Response (
      *         response = 401,
@@ -119,22 +81,21 @@ class GmailAuthorizeAction extends Action
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run()
+    public function run(): array
     {
-        /** @var RestUserEntity $model */
-        $model = new $this->modelClass;
-        $user = $model->gmailAuthorization(\Yii::$app->request->bodyParams);
-        $response = \Yii::$app->getResponse()->setStatusCode(200);
+        $model = new GmailAuthorizationRequestModel();
+        if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+            $model->throwModelException($model->errors);
+        }
 
-        return [
-            'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Authorization was successfully ended'),
-            'data'    => [
-                'user_id' => $user->id,
-                'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
-                'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
-                'refresh_token' => $user->refresh_token
-            ]
-        ];
+        try {
+            return [
+                'status' => Yii::$app->response->getStatusCode(),
+                'message' => 'Authorization was successfully ended.',
+                'data' => $this->controller->service->gmailAuthorization($model)
+            ];
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
+        }
     }
 }

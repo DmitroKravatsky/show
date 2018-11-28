@@ -1,13 +1,17 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\controllers\actions\social\{
+namespace rest\modules\api\v1\authorization\controller;
+
+use rest\modules\api\v1\authorization\controller\action\social\{
     FbAuthorizeAction, GmailAuthorizeAction
 };
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
+use rest\modules\api\v1\authorization\service\social\SocialUserServiceInterface;
 use yii\filters\VerbFilter;
 use yii\rest\Controller;
+use yii\base\Module;
 
 /**
  * Class SocialController
@@ -16,12 +20,17 @@ use yii\rest\Controller;
  */
 class SocialController extends Controller
 {
-    /** @var RestUserEntity */
-    public $modelClass = RestUserEntity::class;
+    /** @var AuthUserEntity */
+    public $modelClass = AuthUserEntity::class;
+    public $service;
 
-    /**
-     * @return array
-     */
+    public function __construct($id, Module $module, SocialUserServiceInterface $service, array $config = [])
+    {
+        $this->service = $service;
+
+        parent::__construct($id, $module, $config);
+    }
+
     public function behaviors(): array
     {
         $behaviors = parent::behaviors();
@@ -37,9 +46,6 @@ class SocialController extends Controller
         return $behaviors;
     }
 
-    /**
-     * @return array
-     */
     public function actions(): array
     {
         $actions = parent::actions();

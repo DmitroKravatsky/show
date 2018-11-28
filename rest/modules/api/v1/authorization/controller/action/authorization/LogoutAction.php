@@ -1,18 +1,15 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 31.03.18
- * Time: 0:23
- */
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
+use Yii;
 use yii\rest\Action;
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnauthorizedHttpException;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
+use yii\web\{
+    NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException, ErrorHandler
+};
 
 class LogoutAction extends Action
 {
@@ -20,8 +17,6 @@ class LogoutAction extends Action
     public $controller;
 
     /**
-     * GenerateNewAccessToken action
-     *
      * @SWG\Get(path="/authorization/logout",
      *      tags={"Authorization module"},
      *      summary="Logout user",
@@ -63,20 +58,25 @@ class LogoutAction extends Action
      * Logout user from a system
      *
      * @return array
+     *
+     * @throws NotFoundHttpException
      * @throws ServerErrorHttpException
      * @throws UnauthorizedHttpException
      */
     public function run()
     {
-        /** @var RestUserEntity $user */
-        $user = new $this->modelClass();
+        try {
+            $this->controller->service->logout();
 
-        $user->logout();
-
-        $response = \Yii::$app->getResponse()->setStatusCode(200);
-        return $response->content = [
-            'status'  => $response->statusCode,
-            'message' => 'Logout was completed'
-        ];
+            return [
+                'status' => Yii::$app->response->getStatusCode(),
+                'message' => 'Logout was completed'
+            ];
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
+        }
     }
 }

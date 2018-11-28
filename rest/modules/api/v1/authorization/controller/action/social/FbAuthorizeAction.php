@@ -1,51 +1,19 @@
 <?php
-namespace rest\modules\api\v1\authorization\controllers\actions\social;
 
-use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\controllers\SocialController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+declare(strict_types=1);
+
+namespace rest\modules\api\v1\authorization\controller\action\social;
+
+use Yii;
+use rest\modules\api\v1\authorization\controller\SocialController;
+use rest\modules\api\v1\authorization\model\social\FbAuthorizationRequestModel;
+use yii\web\ServerErrorHttpException;
 use yii\rest\Action;
 
-/**
- * Class FbAuthorizeAction
- * @package rest\modules\api\v1\authorization\controllers\actions\social
- *
- * @mixin ValidatePostParameters
- */
 class FbAuthorizeAction extends Action
 {
     /** @var  $controller SocialController */
     public $controller;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @return array
-     */
-    public function behaviors(): array
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidatePostParameters::class,
-                'inputParams' => [
-                    'access_token', 'terms_condition'
-                ]
-            ],
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeRun()
-    {
-        $this->validationParams();
-
-        return parent::beforeRun();
-    }
 
     /**
      * Facebook authorization action
@@ -84,10 +52,8 @@ class FbAuthorizeAction extends Action
      *              ),
      *         ),
      *         examples = {
-     *              "status": 201,
-     *              "message": "Authorization was successfully ended
-     *
-     *     ",
+     *              "status": 200,
+     *              "message": "Authorization was successfully ended.",
      *              "data": {
      *                  "user_id": 124,
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
@@ -95,10 +61,6 @@ class FbAuthorizeAction extends Action
      *                  "refresh_token": "b_pZ4P3Z10BbEwe0A6GE2Aij8cfDDAEc"
      *              }
      *         }
-     *     ),
-     *      @SWG\Response (
-     *         response = 400,
-     *         description = "Bad request"
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -116,21 +78,21 @@ class FbAuthorizeAction extends Action
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException
      */
-    public function run()
+    public function run(): array
     {
-        /** @var RestUserEntity $userModel */
-        $userModel = new $this->modelClass;
-        $user = $userModel->fbAuthorization(\Yii::$app->request->bodyParams);
-        $response = \Yii::$app->getResponse()->setStatusCode(200);
-        return [
-            'status'  => $response->statusCode,
-            'message' => \Yii::t('app', 'Authorization was successfully ended'),
-            'data'    => [
-                'user_id' => $user->id,
-                'access_token'  => $accessToken = $user->getJWT(['user_id' => $user->id]),
-                'exp'           => RestUserEntity::getPayload($accessToken, 'exp'),
-                'refresh_token' => $user->refresh_token
-            ]
-        ];
+        $model = new FbAuthorizationRequestModel();
+        if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+            $model->throwModelException($model->errors);
+        }
+
+        try {
+            return [
+                'status' => Yii::$app->response->getStatusCode(),
+                'message' => 'Authorization was successfully ended.',
+                'data' => $this->controller->service->fbAuthorization($model)
+            ];
+        } catch (\Exception $e) { var_dump($e->getMessage()); exit;
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
+        }
     }
 }

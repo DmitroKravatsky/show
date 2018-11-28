@@ -1,63 +1,22 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 16.02.18
- * Time: 8:10
- */
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
 use Yii;
+use rest\modules\api\v1\authorization\model\authorization\PasswordRecoveryRequestModel;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
 use yii\rest\Action;
-use yii\web\BadRequestHttpException;
-use yii\web\HttpException;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnprocessableEntityHttpException;
+use yii\web\{
+    BadRequestHttpException, HttpException, NotFoundHttpException, ErrorHandler,
+    UnprocessableEntityHttpException, ServerErrorHttpException
+};
 
-/**
- * Class PasswordRecovery
- * @package rest\modules\api\v1\authorization\controllers\actions\authorization
- *
- * @mixin ValidatePostParameters
- */
 class PasswordRecoveryAction extends Action
 {
-    /**
-     * @var array
-     */
-    public $params = [];
-
     /** @var  AuthorizationController */
     public $controller;
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidatePostParameters::class,
-                'inputParams' => ['password', 'confirm_password', 'recovery_code', 'phone_number']
-            ]
-        ];
-    }
-
-    /**
-     * @return bool
-     * @throws BadRequestHttpException
-     * @throws \yii\base\InvalidConfigException
-     */
-    protected function beforeRun()
-    {
-        $this->validationParams();
-
-        return parent::beforeRun();
-    }
 
     /**
      * Password recovery action
@@ -111,10 +70,6 @@ class PasswordRecoveryAction extends Action
      *         }
      *     ),
      *     @SWG\Response (
-     *         response = 400,
-     *         description = "Parameter required"
-     *     ),
-     *     @SWG\Response (
      *         response = 404,
      *         description = "User not found"
      *     ),
@@ -137,23 +92,25 @@ class PasswordRecoveryAction extends Action
      */
     public function run()
     {
-        $phoneNumber = \Yii::$app->request->post('phone_number');
-        $user = new RestUserEntity();
-        $user = $user->getUserByPhoneNumber($phoneNumber);
-
-        $user->scenario = RestUserEntity::SCENARIO_RECOVERY_PWD;
         try {
-            if ($user->recoveryCode(Yii::$app->request->post())) {
-                $response = \Yii::$app->getResponse()->setStatusCode(200);
-                return $response->content = [
-                    'status' => $response->statusCode,
-                    'message' => 'Password recovery was successfully ended'
-                ];
+            $model = new PasswordRecoveryRequestModel();
+            if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+                $model->throwModelException($model->errors);
             }
+
+            $this->controller->service->passwordRecovery($model);
+
+            return [
+                'status' => Yii::$app->response->getStatusCode(),
+                'message' => 'Password recovery was successfully ended.'
+            ];
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
         } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Something is wrong, please try again later');
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
         }
     }
 }

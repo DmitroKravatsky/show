@@ -1,55 +1,22 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
+use Yii;
 use yii\rest\Action;
-use yii\web\HttpException;
-use yii\web\NotFoundHttpException;
-use yii\web\ServerErrorHttpException;
+use yii\web\{
+    HttpException, NotFoundHttpException, ServerErrorHttpException, UnauthorizedHttpException,
+    ErrorHandler
+};
+use rest\modules\api\v1\authorization\model\authorization\GenerateNewAccessTokenRequestModel;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
 
-/**
- * Class GenerateNewAccessTokenAction
- * @package rest\modules\api\v1\authorization\controllers\actions\authorization
- *
- * @mixin ValidatePostParameters
- */
 class GenerateNewAccessTokenAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidatePostParameters::class,
-                'inputParams' => [
-                    'refresh_token'
-                ]
-            ]
-        ];
-    }
-
-    /**
-     * @inheritdoc
-     */
-    public function beforeRun()
-    {
-        $this->validationParams();
-
-        return parent::beforeRun();
-    }
 
     /**
      * GenerateNewAccessToken action
@@ -88,13 +55,13 @@ class GenerateNewAccessTokenAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "New access token was successfully generated",
+     *              "message": "New access token was successfully generated.",
      *              "data": {
      *                  "access_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJqdGkiOjExLCJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiIsImV4cCI6MTUxODE3MjA2NX0.YpKRykzIfEJI5RhB5HYd5pDdBy8CWrA5OinJYGyVmew",
      *                  "refresh_token": "eyJ0eXAiOiJKV1QiLCJhbGciOiJIUzI1NiJ9.eyJpZCI6MTI1LCJleHAiOjE1MjcxNjk2NDV9.INeMCEZun9wQ4xgeDSJpcae6aV8p3F7JTgoIGzv5QHk",
      *                  "exp": "1520070475",
      *                  "user": {
-     *                      "id": 531,
+     *                      "id": 5,
      *                      "phone_number": "+380959751856",
      *                      "role": "guest",
      *                      "created_at": 1520070475,
@@ -102,10 +69,6 @@ class GenerateNewAccessTokenAction extends Action
      *                  }
      *              }
      *         }
-     *     ),
-     *     @SWG\Response(
-     *         response = 400,
-     *         description = "Parameter required"
      *     ),
      *     @SWG\Response(
      *         response = 401,
@@ -135,16 +98,25 @@ class GenerateNewAccessTokenAction extends Action
      */
     public function run()
     {
-        /** @var  $restUser RestUserEntity */
-        $restUser = new $this->modelClass();
-        $responseData = $restUser->generateNewAccessToken();
+        $model = new GenerateNewAccessTokenRequestModel();
+        if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+            $model->throwModelException($model->errors);
+        }
 
-        $response = \Yii::$app->getResponse()->setStatusCode(201);
-        return [
-            'status'  => $response->statusCode,
-            'message' => 'New access token was successfully generated',
-            'data'    => $responseData
-        ];
+        try {
+            $response = Yii::$app->getResponse()->setStatusCode(201);
+            return [
+                'status' => $response->statusCode,
+                'message' => 'New access token was successfully generated.',
+                'data' => $this->controller->service->generateNewAccessToken($model)
+            ];
+        } catch (NotFoundHttpException $e) {
+            throw new NotFoundHttpException($e->getMessage());
+        } catch (UnauthorizedHttpException $e) {
+            throw new UnauthorizedHttpException($e->getMessage());
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
+        }
     }
-
 }

@@ -1,8 +1,9 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\models\repositories;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\entity;
+
 use Yii;
 use Firebase\JWT\JWT;
 use yii\filters\auth\HttpBearerAuth;
@@ -50,14 +51,16 @@ trait AuthorizationJwt
     public static function findIdentityByAccessToken($token, $type = null)
     {
         if ($type == HttpBearerAuth::class) {
-            if (RestUserEntity::isAlreadyBlocked($token)) {
+            if (BlockToken::isAlreadyBlocked($token)) {
                 throw new UnauthorizedHttpException('Unauthorized');
             }
-                $decodedArray = static::decodeJWT($token);
+
+            $decodedArray = static::decodeJWT($token);
             if (!isset($decodedArray['jti'])) {
                 throw new UnauthorizedHttpException('Unauthorized');
             }
             $id = $decodedArray['jti'];
+
             return self::findByJTI($id);
         }
 
@@ -98,7 +101,7 @@ trait AuthorizationJwt
      */
     public static function findByJTI($id)
     {
-        $model = RestUserEntity::findOne($id);
+        $model = AuthUserEntity::findOne($id);
         if (empty($model)) {
             throw new UnauthorizedHttpException('Incorrect token');
         }
@@ -267,6 +270,5 @@ trait AuthorizationJwt
             throw new UnprocessableEntityHttpException('Invalid refresh token');
 
         }
-
     }
 }

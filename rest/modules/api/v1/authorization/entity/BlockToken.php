@@ -1,13 +1,8 @@
 <?php
-/**
- * Created by PhpStorm.
- * User: dima
- * Date: 22.02.18
- * Time: 22:24
- */
 
-namespace rest\modules\api\v1\authorization\models;
+declare(strict_types=1);
 
+namespace rest\modules\api\v1\authorization\entity;
 
 use yii\behaviors\TimestampBehavior;
 use yii\db\ActiveRecord;
@@ -103,4 +98,11 @@ class BlockToken extends ActiveRecord
         ];
     }
 
+    public static function isAlreadyBlocked($token)
+    {
+        if (static::find()->where(['token' => $token])->one()) {
+            return true;
+        }
+        return false;
+    }
 }

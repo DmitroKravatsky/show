@@ -1,14 +1,20 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\controllers\actions\authorization\{
-    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction, ResendVerificationCodeAction, SendRecoveryCodeAction, VerificationProfileAction, GenerateNewAccessTokenAction
+namespace rest\modules\api\v1\authorization\controller;
+
+use rest\modules\api\v1\authorization\controller\action\authorization\{
+    LoginAction, LoginGuestAction, LogoutAction, PasswordRecoveryAction, RegisterAction,
+    ResendVerificationCodeAction, SendRecoveryCodeAction, VerificationProfileAction,
+    GenerateNewAccessTokenAction
 };
+use rest\modules\api\v1\authorization\service\authorization\AuthUserServiceInterface;
 use yii\filters\auth\HttpBearerAuth;
 use yii\rest\Controller;
 use yii\filters\VerbFilter;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
+use yii\base\Module;
 
 /**
  * Class AuthorizationController
@@ -17,8 +23,15 @@ use rest\modules\api\v1\authorization\models\RestUserEntity;
  */
 class AuthorizationController extends Controller
 {
-    /** @var RestUserEntity */
-    public $modelClass = RestUserEntity::class;
+    public $modelClass = AuthUserEntity::class;
+    public $service;
+
+    public function __construct($id, Module $module, AuthUserServiceInterface $service, array $config = [])
+    {
+        $this->service = $service;
+
+        parent::__construct($id, $module, $config);
+    }
 
     /**
      * @return array

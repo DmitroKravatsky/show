@@ -1,5 +1,10 @@
 <?php
 
+use rest\modules\api\v1\authorization\repository\{ AuthUserRepositoryInterface, AuthUserRepository };
+use rest\modules\api\v1\authorization\service\authorization\{ AuthUserServiceInterface, AuthUserService };
+use rest\modules\api\v1\authorization\service\social\{ SocialUserServiceInterface, SocialUserService };
+use rest\modules\api\v1\authorization\factory\{ AuthUserFactoryInterface, AuthUserFactory };
+
 $params = array_merge(
     require(__DIR__ . '/../../common/config/params.php'),
     require(__DIR__ . '/../../common/config/params-local.php'),
@@ -78,8 +83,21 @@ return [
             'rules'               => $routeRules
         ],
         'user' => [
-            'identityClass' => 'rest\modules\api\v1\authorization\models\RestUserEntity'
+            'identityClass' => 'rest\modules\api\v1\authorization\entity\AuthUserEntity'
         ],
+    ],
+    'container' => [
+        'singletons' => [
+            // Repositories
+            AuthUserRepositoryInterface::class => AuthUserRepository::class,
+
+            // Services
+            AuthUserServiceInterface::class => AuthUserService::class,
+            SocialUserServiceInterface::class => SocialUserService::class,
+
+            // Factories
+            AuthUserFactoryInterface::class => AuthUserFactory::class,
+        ]
     ],
     'params' => $params,
 ];

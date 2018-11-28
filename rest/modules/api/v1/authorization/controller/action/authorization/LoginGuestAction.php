@@ -1,23 +1,21 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use rest\modules\api\v1\authorization\controllers\AuthorizationController;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
+use Yii;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use yii\rest\Action;
-use yii\web\ServerErrorHttpException;
-use yii\web\UnauthorizedHttpException;
+use yii\web\{ ServerErrorHttpException, ErrorHandler };
 
-/**
- * Class LoginGuestAction
- * @package rest\modules\api\v1\authorization\controllers\actions\authorization
- */
 class LoginGuestAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
     
-    /** @var  RestUserEntity $modelClass */
+    /** @var  AuthUserEntity $modelClass */
     public $modelClass;
 
     /**
@@ -53,26 +51,19 @@ class LoginGuestAction extends Action
      * )
      * @return array
      *
-     * @throws UnauthorizedHttpException
      * @throws ServerErrorHttpException
      */
     public function run(): array
     {
         try {
-            $this->modelClass = new RestUserEntity();
-            if ($user = $this->modelClass->loginGuest()) {
-                \Yii::$app->getResponse()->setStatusCode(200, 'Authorization was successfully ended');
-                return [
-                    'status'  => \Yii::$app->response->statusCode,
-                    'message' => "Authorization was successfully ended",
-                    'data'    => [
-                        'access_token' => $accessToken = $user->getJWT(['user_id' => $user->id]),
-                        'exp'          => RestUserEntity::getPayload($accessToken, 'exp'),
-                    ]
-                ];
-            }
-        } catch (ServerErrorHttpException $e) {
-            throw new ServerErrorHttpException('Что-то пошло не так, повторите попытку позже.');
+            return [
+                'status'  => Yii::$app->getResponse()->getStatusCode(),
+                'message' => 'Authorization was successfully ended.',
+                'data'    => $this->controller->service->loginGuest()
+            ];
+        } catch (\Exception $e) {
+            Yii::error(ErrorHandler::convertExceptionToString($e));
+            throw new ServerErrorHttpException('Something is wrong, please try again later.');
         }
     }
 }

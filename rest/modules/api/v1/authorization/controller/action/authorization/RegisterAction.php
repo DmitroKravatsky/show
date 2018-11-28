@@ -1,52 +1,19 @@
 <?php
 
-namespace rest\modules\api\v1\authorization\controllers\actions\authorization;
+declare(strict_types=1);
 
-use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\{ controllers\AuthorizationController, models\RestUserEntity };
-use yii\rest\Action;
-use yii\web\{ ErrorHandler, ServerErrorHttpException, UnprocessableEntityHttpException };
+namespace rest\modules\api\v1\authorization\controller\action\authorization;
+
 use Yii;
+use rest\modules\api\v1\authorization\model\authorization\RegisterRequestModel;
+use rest\modules\api\v1\authorization\controller\AuthorizationController;
+use yii\rest\Action;
+use yii\web\{ ServerErrorHttpException, UnprocessableEntityHttpException };
 
-/**
- * Class RegisterAction
- * @package rest\modules\api\v1\authorization\controllers\actions\authorization
- * @mixin ValidatePostParameters
- */
 class RegisterAction extends Action
 {
     /** @var  AuthorizationController */
     public $controller;
-
-    /**
-     * @var array
-     */
-    public $params = [];
-
-    /**
-     * @inheritdoc
-     */
-    public function behaviors()
-    {
-        return [
-            'reportParams' => [
-                'class'       => ValidatePostParameters::class,
-                'inputParams' => ['phone_number', 'password', 'terms_condition', 'confirm_password',]
-            ]
-        ];
-    }
-
-    /**
-     * @return bool
-     * @throws \yii\base\InvalidConfigException
-     * @throws \yii\web\BadRequestHttpException
-     */
-    protected function beforeRun(): bool
-    {
-        $this->validationParams();
-
-        return parent::beforeRun();
-    }
 
     /**
      * Register action
@@ -100,17 +67,13 @@ class RegisterAction extends Action
      *         ),
      *         examples = {
      *              "status": 201,
-     *              "message": "Регистрация прошла успешно.",
+     *              "message": "Registration completed successfully.",
      *              "data": {
      *                  "id" : 21,
      *                  "phone_number": "+380939353498",
      *                   "status": "UNVERIFIED"
      *              }
      *         }
-     *     ),
-     *     @SWG\Response (
-     *         response = 400,
-     *         description = "Bad request"
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -125,32 +88,27 @@ class RegisterAction extends Action
      * Register User action
      * 
      * @return array
-     * @throws \yii\web\ServerErrorHttpException
-     * @throws \yii\web\UnprocessableEntityHttpException
+     *
+     * @throws UnprocessableEntityHttpException
+     * @throws ServerErrorHttpException
      */
     public function run()
     {
-        /** @var RestUserEntity $model */
-        $model = new $this->modelClass;
-        try {
-            /** @var RestUserEntity $user */
-            $user = $model->register(Yii::$app->request->bodyParams);
-        } catch (UnprocessableEntityHttpException $e) {
-            throw new UnprocessableEntityHttpException($e->getMessage());
-        } catch (\Exception $e) {
-            Yii::error(ErrorHandler::convertExceptionToString($e));
-            throw new ServerErrorHttpException('Something is wrong, please try again later');
+
+        $model = new RegisterRequestModel();
+        if (!$model->load(Yii::$app->request->bodyParams, '') || !$model->validate()) {
+            $model->throwModelException($model->errors);
         }
 
-        $response = Yii::$app->getResponse()->setStatusCode(201);
-        return [
-            'status'  => $response->statusCode,
-            'message' => 'Регистрация прошла успешно.',
-            'data'    => [
-                'id'            => $user->id,
-                'phone_number'  => $user->phone_number,
-                'status'        => $user->status,
-            ],
-        ];
+        try {
+            $response = Yii::$app->getResponse()->setStatusCode(201);
+            return [
+                'status'  => $response->statusCode,
+                'message' => 'Registration completed successfully.',
+                'data'    => $this->controller->service->register($model)
+            ];
+        } catch (\Exception $e) {
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
+        }
     }
 }
