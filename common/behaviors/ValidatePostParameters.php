@@ -27,7 +27,7 @@ class ValidatePostParameters extends AttributeBehavior
         foreach ($this->inputParams as $nameParam) {
             $param = Yii::$app->request->getBodyParam($nameParam);
             if (!isset(Yii::$app->request->getBodyParams()[$nameParam])) {
-                throw new BadRequestHttpException("Параметр {$nameParam} является обязательным.");
+                throw new BadRequestHttpException("Parameter {$nameParam} is required");
             }
             $this->owner->params[$nameParam] = (int) $param;
         }

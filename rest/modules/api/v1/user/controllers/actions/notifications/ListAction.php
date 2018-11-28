@@ -15,7 +15,7 @@ class ListAction extends Action
     /**
      * Returns list of user notifications
      * 
-     * @SWG\Get(path="/user/notifications/list",
+     * @SWG\Get(path="/user/notifications",
      *      tags={"User module"},
      *      summary="Get user profile",
      *      description="Get user profile",
@@ -51,7 +51,7 @@ class ListAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items",type="object",
@@ -137,7 +137,7 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 401,
-     *         description = "Invalid credentials or Expired token"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response (
      *         response = 403,
@@ -145,9 +145,8 @@ class ListAction extends Action
      *     ),
      *     @SWG\Response(
      *        response = 500,
-     *        description = "Server Error"
+     *        description = "Internal Server Error"
      *     )
-
      * )
      *
      * @return \yii\data\ArrayDataProvider

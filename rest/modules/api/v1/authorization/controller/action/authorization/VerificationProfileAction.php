@@ -42,7 +42,7 @@ class VerificationProfileAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 201,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -67,15 +67,15 @@ class VerificationProfileAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Sever Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

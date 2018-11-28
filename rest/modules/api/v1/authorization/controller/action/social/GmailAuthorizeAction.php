@@ -64,19 +64,19 @@ class GmailAuthorizeAction extends Action
      *     ),
      *      @SWG\Response (
      *         response = 401,
-     *         description = "Wrong credentials"
+     *         description = "Unauthorized"
      *     ),
      *      @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
-     * @return array|bool
+     * @return array
      *
      * @throws \yii\web\ServerErrorHttpException
      * @throws \yii\web\UnprocessableEntityHttpException

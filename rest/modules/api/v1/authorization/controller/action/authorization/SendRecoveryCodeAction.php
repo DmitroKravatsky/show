@@ -54,7 +54,7 @@ class SendRecoveryCodeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
@@ -62,7 +62,7 @@ class SendRecoveryCodeAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

@@ -98,7 +98,7 @@ class VerifyNewPhoneAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 400,
-     *         description = "Bad request"
+     *         description = "Bad Request"
      *     ),
      *     @SWG\Response (
      *         response = 401,
@@ -106,19 +106,15 @@ class VerifyNewPhoneAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
-     *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Sever Error"
+     *         description = "Internal Sever Error"
      *     )
      * )
      *

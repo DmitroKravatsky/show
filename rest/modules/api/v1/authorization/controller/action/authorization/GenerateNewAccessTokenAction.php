@@ -72,19 +72,19 @@ class GenerateNewAccessTokenAction extends Action
      *     ),
      *     @SWG\Response(
      *         response = 401,
-     *         description = "Refresh token was expired"
+     *         description = "Unauthorized"
      *     ),
      *     @SWG\Response(
      *         response = 404,
-     *         description = "User is not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

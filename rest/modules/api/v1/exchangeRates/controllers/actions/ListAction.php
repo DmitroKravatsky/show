@@ -19,12 +19,12 @@ class ListAction extends Action
      *      produces={"application/json"},
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *     ),
      *     @SWG\Response (
      *        response = 404,
-     *        description = "File is not found"
-     *     )
+     *        description = "Not Found"
+     *     ),
      * )
      *
      * @throws NotFoundHttpException

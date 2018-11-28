@@ -42,7 +42,7 @@ class LoginAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="status", type="integer", description="Status code"),
@@ -66,19 +66,19 @@ class LoginAction extends Action
      *     ),
      *      @SWG\Response (
      *         response = 401,
-     *         description = "Wrong credentials"
+     *         description = "Unauthorized"
      *     ),
      *      @SWG\Response(
      *         response = 404,
-     *         description = "User not found"
+     *         description = "Not Found"
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Internal Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *

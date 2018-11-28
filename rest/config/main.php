@@ -15,7 +15,7 @@ $routeRules = require(__DIR__ . '/routes.php');
 
 return [
     'id'        => 'app-rest',
-    'language'  => 'ru',
+    'language'  => 'en',
     'basePath'  => dirname(__DIR__),
     'bootstrap' => ['log'],
     'modules'   => [

@@ -39,7 +39,7 @@ class CalculateAmountAction extends Action
      *      ),
      *      @SWG\Response(
      *         response = 200,
-     *         description = "success",
+     *         description = "OK",
      *         @SWG\Schema(
      *              type="object",
      *              @SWG\Property(property="items", type="object",
@@ -56,11 +56,11 @@ class CalculateAmountAction extends Action
      *     ),
      *     @SWG\Response (
      *        response = 404,
-     *        description = "Payment system is not found"
+     *        description = "Not Found"
      *     ),
      *     @SWG\Response (
      *        response = 500,
-     *        description = "Server Error"
+     *        description = "Internal Server Error"
      *     )
      * )
      *

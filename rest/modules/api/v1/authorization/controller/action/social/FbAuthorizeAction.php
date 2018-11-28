@@ -64,11 +64,11 @@ class FbAuthorizeAction extends Action
      *     ),
      *     @SWG\Response (
      *         response = 422,
-     *         description = "Validation Error"
+     *         description = "Unprocessable Entity"
      *     ),
      *     @SWG\Response(
      *         response = 500,
-     *         description = "Server Error"
+     *         description = "Internal Server Error"
      *     )
      * )
      *
@@ -91,7 +91,7 @@ class FbAuthorizeAction extends Action
                 'message' => 'Authorization was successfully ended.',
                 'data' => $this->controller->service->fbAuthorization($model)
             ];
-        } catch (\Exception $e) { var_dump($e->getMessage()); exit;
+        } catch (\Exception $e) {
             throw new ServerErrorHttpException('Something is wrong, please try again later.');
         }
     }

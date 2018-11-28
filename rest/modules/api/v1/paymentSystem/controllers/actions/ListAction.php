@@ -60,13 +60,9 @@ class ListAction extends Action
      *             }
      *         }
      *     ),
-     *      @SWG\Response(
-     *         response = 405,
-     *         description = "Method Not Allowed"
-     *     ),
      *     @SWG\Response (
      *         response = 500,
-     *         description = "Server Error "
+     *         description = "Internal Server Error"
      *     )
      * )
      *
