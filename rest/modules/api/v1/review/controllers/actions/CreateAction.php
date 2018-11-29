@@ -119,13 +119,13 @@ class CreateAction extends Action
         try {
             /** @var ReviewEntity $reviewModel */
             $reviewModel = new $this->modelClass;
-            $reviewModel = $reviewModel->create(Yii::$app->request->bodyParams);
+            $review = $reviewModel->create(Yii::$app->request->bodyParams);
 
             $response = Yii::$app->getResponse()->setStatusCode(201);
             $response->data = [
                 'status'  => $response->statusCode,
                 'message' => 'Review was successfully created',
-                'data'    => $reviewModel->getAttributes(['id', 'text'])
+                'data'    => $review
             ];
         } catch (UnprocessableEntityHttpException $e) {
             throw new UnprocessableEntityHttpException($e->getMessage());
