@@ -1,5 +1,4 @@
 <?php
-
 declare(strict_types=1);
 
 namespace rest\modules\api\v1\authorization\controller\action\social;
