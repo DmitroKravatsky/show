@@ -250,6 +250,12 @@ class BidEntity extends ActiveRecord
                 return $bid->processed;
             }],
             [['phone_number'], PhoneInputValidator::class],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                    $this->addError($attribute, 'The phone number must not contain letters');
+                }
+            }
+            ],
             [
                 ['from_payment_system_id'],
                 'exist',

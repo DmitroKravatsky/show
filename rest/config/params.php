@@ -11,4 +11,5 @@ return [
     'rates-xml-file' => Yii::getAlias('@frontend/web/xml/rates.xml'),
     'emailVerificationCodeLifeTime' => 3600,
     'phoneVerificationCodeLifeTime' => 3600,
+    'recoveryCodeDurationInSeconds' => 3600,
 ];
