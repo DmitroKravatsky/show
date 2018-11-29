@@ -23,6 +23,8 @@ use yii\db\ActiveRecord;
  * @property integer $created_by
  * @property string  $text
  * @property string  $avatar
+ * @property string  $name
+ * @property string  $last_name
  * @property integer $terms_condition
  * @property integer $visible
  * @property integer $created_at
