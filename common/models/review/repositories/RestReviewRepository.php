@@ -20,12 +20,12 @@ trait RestReviewRepository
      *
      * @param $params array of the POST data
      *
-     * @return ReviewEntity
+     * @return array
      *
      * @throws \yii\web\UnprocessableEntityHttpException
      * @throws \yii\web\ForbiddenHttpException
      */
-    public function create(array $params): ReviewEntity
+    public function create(array $params): array
     {
         $user = RestUserEntity::findIdentity(Yii::$app->user->id);
         if (!$user->hasBids()) {
@@ -37,8 +37,12 @@ trait RestReviewRepository
         if (!$reviewModel->save()) {
             $this->throwModelException($reviewModel->errors);
         }
-
-        return $reviewModel;
+        $response = [
+            'id'   => $reviewModel->id,
+            'text' => $reviewModel->text,
+            'name' => $reviewModel->createdBy->profile->name,
+        ];
+        return $response;
 
     }
 
@@ -64,13 +68,17 @@ trait RestReviewRepository
     public function listReviews(array $params): ArrayDataProvider
     {
         $reviews = ReviewEntity::find()
-            ->select([ReviewEntity::tableName() . '.name', 'text', 'review.created_at'])
+            ->select([ReviewEntity::tableName() . '.name', 'text', 'review.created_at', 'review.created_by'])
             ->where(['visible' => ReviewEntity::VISIBLE_YES])
             ->leftJoin('user_profile', 'review.created_by = user_profile.user_id')
             ->orderBy(['review.created_at' => SORT_DESC])
-            ->asArray()
             ->all();
 
+        foreach ($reviews as $review) {
+            if ($review->name == null) {
+                $review->name = $review->createdBy->profile->name;
+            }
+        }
         $dataProvider = new ArrayDataProvider([
             'allModels' => $reviews,
             'pagination' => [

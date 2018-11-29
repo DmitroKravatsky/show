@@ -75,8 +75,8 @@ class SiteController extends Controller
                 'scanDir' => [
                     Yii::getAlias('@docs'),
                     // Authorization module
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/authorization'),
-                    Yii::getAlias('@rest/modules/api/v1/authorization/controllers/actions/social'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controller/action/authorization'),
+                    Yii::getAlias('@rest/modules/api/v1/authorization/controller/action/social'),
                     // Bid module
                     Yii::getAlias('@rest/modules/api/v1/bid/controllers/actions'),
                     // Reserve module
