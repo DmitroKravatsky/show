@@ -26,6 +26,12 @@ class VerificationProfileRequestModel extends Model
             [['phone_number', 'verification_code'], 'required'],
             [['phone_number'], 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                    $this->addError($attribute, 'The phone number must not contain letters');
+                }
+            }
+            ],
             [['verification_code'], 'string', 'min' => 4, 'max' => 4]
         ];
     }

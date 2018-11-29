@@ -23,6 +23,12 @@ class SendRecoveryCodeRequestModel extends Model
             [['phone_number'], 'trim'],
             [['phone_number'], 'required'],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                    $this->addError($attribute, 'The phone number must not contain letters');
+                }
+            }
+            ],
         ];
     }
 

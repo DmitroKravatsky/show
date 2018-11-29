@@ -29,6 +29,12 @@ class PasswordRecoveryRequestModel extends Model
             [['phone_number', 'password', 'confirm_password', 'recovery_code'], 'trim'],
             [['phone_number', 'password', 'confirm_password', 'recovery_code'], 'required'],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                    $this->addError($attribute, 'The phone number must not contain letters');
+                }
+            }
+            ],
             [['password'], 'string', 'min' => 6],
             [['confirm_password'], 'compare', 'compareAttribute' => 'password'],
             [['recovery_code'], 'string', 'min' => 4, 'max' => 4]

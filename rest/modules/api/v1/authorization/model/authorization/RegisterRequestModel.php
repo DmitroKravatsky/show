@@ -32,6 +32,12 @@ class RegisterRequestModel extends Model
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
             [['phone_number'], 'checkPhoneNumberExist'],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                    $this->addError($attribute, 'The phone number must not contain letters');
+                }
+            }
+            ],
             [
                 'terms_condition',
                 'required',
