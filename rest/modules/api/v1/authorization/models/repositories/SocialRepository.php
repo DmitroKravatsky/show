@@ -323,6 +323,12 @@ trait SocialRepository
      */
     public function fbAuthorization(array $params): RestUserEntity
     {
+        $this->setScenario(self::SCENARIO_SOCIAL_REGISTER);
+        $this->setAttributes($params);
+        if (!$this->validate('terms_condition')) {
+            $this->throwModelException($this->errors);
+        }
+
         $transaction = \Yii::$app->db->beginTransaction();
         try {
             $client = new Client(['headers' => ['Content-Type' => 'application/json']]);
@@ -358,7 +364,7 @@ trait SocialRepository
                     $transaction->commit();
                     return $newUser;
                 }
-                throw new ServerErrorHttpException('Server Error');
+                throw new ServerErrorHttpException('Something is wrong, please try again later');
 
             } else {
                 throw new BadRequestHttpException('Bad Request');
@@ -372,7 +378,7 @@ trait SocialRepository
         } catch (\Exception $e) {
             \Yii::error($e->getMessage());
             $transaction->rollBack();
-            throw new ServerErrorHttpException($e->getMessage());
+            throw new ServerErrorHttpException('Something is wrong, please try again later');
         }
     }
 
