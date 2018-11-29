@@ -8,7 +8,7 @@ namespace rest\modules\api\v1\authorization;
  */
 class Module extends \yii\base\Module
 {
-    public $controllerNamespace = 'rest\modules\api\v1\authorization\controllers';
+    public $controllerNamespace = 'rest\modules\api\v1\authorization\controller';
 
     /**
      * @var string
