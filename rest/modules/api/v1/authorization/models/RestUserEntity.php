@@ -244,6 +244,14 @@ class RestUserEntity extends User
             ['source', 'in', 'range' => [self::SOCIAL, self::NATIVE]],
             ['phone_number', 'string', 'max' => 20],
             [['phone_number'], PhoneInputValidator::class, 'region' => ['RU', 'UA', 'BY']],
+            [['phone_number'], function ($attribute, $params, $validator) {
+                    if (!preg_match('/^[+]\d+$/', $this->$attribute)) {
+                        $this->addError($attribute, 'The phone number must not contain letters');
+                        return false;
+                    }
+                    return true;
+                }
+            ],
             [['created_at', 'updated_at', 'refresh_token', 'status'], 'safe'],
             ['verification_code', 'required', 'on' => [self::SCENARIO_VERIFY_PROFILE]],
             [['recovery_code'], 'string', 'max' => 4],
