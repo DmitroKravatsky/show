@@ -3,6 +3,7 @@
 namespace rest\modules\api\v1\authorization\models\repositories;
 
 
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\authorization\entity\BlockToken;
 use yii\web\{
     NotFoundHttpException, UnprocessableEntityHttpException
@@ -26,7 +27,7 @@ trait AuthorizationRepository
      */
     public function updatePassword(array $params)
     {
-        $userModel = RestUserEntity::findOne(\Yii::$app->user->id);
+        $userModel = AuthUserEntity::findOne(\Yii::$app->user->id);
         $userModel->setScenario(RestUserEntity::SCENARIO_UPDATE_PASSWORD);
         $userModel->setAttributes($params);
 

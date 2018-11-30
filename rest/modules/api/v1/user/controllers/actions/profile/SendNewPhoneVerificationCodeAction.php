@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use Yii;
 use yii\rest\Action;
@@ -121,7 +121,7 @@ class SendNewPhoneVerificationCodeAction extends Action
     public function run()
     {
         try {
-            /** @var RestUserEntity $user */
+            /** @var AuthUserEntity $user */
             $user = new $this->modelClass;
             $user->sendPhoneVerificationCode(\Yii::$app->request->getBodyParam('phone_number'));
             $response = \Yii::$app->getResponse()->setStatusCode(200);

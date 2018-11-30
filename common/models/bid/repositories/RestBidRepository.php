@@ -6,7 +6,7 @@ use common\components\SendSms;
 use common\models\bid\BidEntity;
 use common\models\paymentSystem\PaymentSystem;
 use common\models\userProfile\UserProfileEntity;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use yii\data\ArrayDataProvider;
 use yii\web\BadRequestHttpException;
 use yii\web\ErrorHandler;
@@ -182,8 +182,8 @@ trait RestBidRepository
             $bid->setAttributes($postData);
 
             if (
-                Yii::$app->user->can(RestUserEntity::ROLE_GUEST)
-                && (RestUserEntity::findByEmail($bid->email) || RestUserEntity::findByPhoneNumber($bid->phone_number))
+                Yii::$app->user->can(AuthUserEntity::ROLE_GUEST)
+                && (AuthUserEntity::findByEmail($bid->email) || AuthUserEntity::findByPhoneNumber($bid->phone_number))
             ) {
                 throw new BadRequestHttpException('User with the same "E-mail" or "Phone number" already exist.');
             }
@@ -193,7 +193,7 @@ trait RestBidRepository
                 $this->throwModelException($bid->errors);
             }
 
-            if (Yii::$app->user->can(RestUserEntity::ROLE_GUEST)) {
+            if (Yii::$app->user->can(AuthUserEntity::ROLE_GUEST)) {
                 $bid->created_by = $this->registerUserByBid($bid);
             } else {
                 $this->updateUserByBid($bid);
@@ -239,8 +239,7 @@ trait RestBidRepository
      */
     protected function updateUserByBid(BidEntity $bid)
     {
-        $user = RestUserEntity::findOne(Yii::$app->user->id);
-        $user->setScenario(RestUserEntity::SCENARIO_UPDATE_BY_BID);
+        $user = AuthUserEntity::findOne(Yii::$app->user->id);
 
         if (!$user->email) {
             $user->email = $bid->email;
@@ -278,10 +277,10 @@ trait RestBidRepository
     {
         $userAttributes = ['email' => $bid->email, 'phone_number' => $bid->phone_number];
         $password = Yii::$app->security->generateRandomString(12);
-        $user = new RestUserEntity(['scenario' => RestUserEntity::SCENARIO_REGISTER_BY_BID]);
+        $user = new AuthUserEntity();
         $userAttributes = array_merge($userAttributes, [
             'password' => $password,
-            'register_by_bid' => RestUserEntity::REGISTER_BY_BID_YES,
+            'register_by_bid' => AuthUserEntity::REGISTER_BY_BID_YES,
         ]);
         $user->setAttributes($userAttributes);
         if (!$user->validate()) {
@@ -313,7 +312,7 @@ trait RestBidRepository
      * @param string $password
      * @return string
      */
-    protected function getMessageForRegistrationByPhoneNumber(RestUserEntity $user, $password): string
+    protected function getMessageForRegistrationByPhoneNumber(AuthUserEntity $user, $password): string
     {
         $message = <<<MES
 Уважаемы клиент, {$user->getFullName()}, была произведена регистрация.

@@ -4,7 +4,7 @@ namespace rest\modules\api\v1\user\controllers;
 
 use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\user\controllers\actions\profile\{
     BindFbAction, GetProfileAction, SendNewEmailValidationCodeAction, SendNewPhoneVerificationCodeAction, UnbindSocialNetworkAction, UpdateAction, UpdatePasswordAction, BindGmailAction, VerifyNewEmailAction, VerifyNewPhoneAction
 };
@@ -97,7 +97,7 @@ class UserProfileController extends Controller
 
         $actions['update-password'] = [
             'class'      => UpdatePasswordAction::class,
-            'modelClass' => RestUserEntity::class
+            'modelClass' => AuthUserEntity::class
         ];
 
         $actions['bind-gmail'] = [
@@ -117,22 +117,22 @@ class UserProfileController extends Controller
 
         $actions['send-new-email-validation-code'] = [
             'class'      => SendNewEmailValidationCodeAction::class,
-            'modelClass' => RestUserEntity::class,
+            'modelClass' => AuthUserEntity::class,
         ];
 
         $actions['verify-new-email'] = [
             'class'      => VerifyNewEmailAction::class,
-            'modelClass' => RestUserEntity::class,
+            'modelClass' => AuthUserEntity::class,
         ];
 
         $actions['send-new-phone-verification-code'] = [
             'class'      => SendNewPhoneVerificationCodeAction::class,
-            'modelClass' => RestUserEntity::class,
+            'modelClass' => AuthUserEntity::class,
         ];
 
         $actions['verify-new-phone'] = [
             'class'      => VerifyNewPhoneAction::class,
-            'modelClass' => RestUserEntity::class,
+            'modelClass' => AuthUserEntity::class,
         ];
 
         return $actions;

@@ -8,6 +8,7 @@ use common\models\bid\BidEntity;
 use common\models\userProfile\UserProfileEntity;
 use common\behaviors\ValidationExceptionFirstMessage;
 use common\models\user\User;
+use rest\modules\api\v1\authorization\models\repositories\AuthorizationRepository;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
 use yii\web\UnprocessableEntityHttpException;
@@ -40,7 +41,16 @@ use yii\web\UnprocessableEntityHttpException;
 
 class AuthUserEntity extends User
 {
-    use AuthorizationJwt;
+    use AuthorizationJwt, AuthorizationRepository;
+
+    const SCENARIO_REGISTER_BY_BID               = 'register-by-bid';
+    const SCENARIO_UPDATE_BY_BID                 = 'update-by-bid';
+    const SCENARIO_SOCIAL_REGISTER               = 'social_register';
+    const SCENARIO_UPDATE_PASSWORD               = 'update-password';
+    const SCENARIO_SEND_EMAIL_VERIFICATION_CODE  = 'send-email-verification-code';
+    const SCENARIO_VERIFY_NEW_EMAIL              = 'verify-email';
+    const SCENARIO_SEND_PHONE_VERIFICATION_CODE  = 'send-phone-verification-code';
+    const SCENARIO_VERIFY_NEW_PHONE              = 'verify-phone';
 
     const REGISTER_BY_BID_NO = 0;
     const REGISTER_BY_BID_YES = 1;
@@ -50,10 +60,33 @@ class AuthUserEntity extends User
     public $new_password;
     public $role;
     public $terms_condition;
-    
-    /**
-     * @return string
-     */
+
+    public function scenarios(): array
+    {
+        $scenarios = parent::scenarios();
+
+        $scenarios[self::SCENARIO_REGISTER_BY_BID] = ['email', 'password', 'phone_number', 'source', 'register_by_bid',];
+
+        $scenarios[self::SCENARIO_UPDATE_BY_BID] = ['email', 'phone_number',];
+
+        $scenarios[self::SCENARIO_SOCIAL_REGISTER] = [
+            'email', 'password', 'phone_number', 'terms_condition', 'source', 'role',
+            'refresh_token', 'created_refresh_token', 'verification_code'
+        ];
+
+        $scenarios[self::SCENARIO_UPDATE_PASSWORD] = ['current_password', 'password', 'confirm_password', 'new_password'];
+
+        $scenarios[self::SCENARIO_SEND_EMAIL_VERIFICATION_CODE]  = ['email'];
+
+        $scenarios[self::SCENARIO_VERIFY_NEW_EMAIL]  = ['email', 'email_verification_code'];
+
+        $scenarios[self::SCENARIO_SEND_PHONE_VERIFICATION_CODE]  = ['phone_number'];
+
+        $scenarios[self::SCENARIO_VERIFY_NEW_PHONE]  = ['phone_number', 'phone_verification_code'];
+
+        return $scenarios;
+    }
+
     public static function tableName(): string 
     {
         return '{{%user}}';

@@ -3,6 +3,7 @@
 namespace common\models\review\repositories;
 
 use common\models\review\ReviewEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\authorization\models\RestUserEntity;
 use yii\data\ArrayDataProvider;
 use yii\db\BaseActiveRecord;
@@ -27,7 +28,7 @@ trait RestReviewRepository
      */
     public function create(array $params): array
     {
-        $user = RestUserEntity::findIdentity(Yii::$app->user->id);
+        $user = AuthUserEntity::findIdentity(Yii::$app->user->id);
         if (!$user->hasBids()) {
             throw new ForbiddenHttpException(\Yii::t('app', 'You must have at least one bid to write a review'));
         }

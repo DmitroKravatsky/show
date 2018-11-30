@@ -6,10 +6,10 @@ use common\models\user\User;
 use common\models\userProfile\UserProfileEntity;
 use common\models\userSocial\UserSocial;
 use GuzzleHttp\Client;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use yii\web\BadRequestHttpException;
 use yii\web\NotFoundHttpException;
 use yii\web\ServerErrorHttpException;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
 use Yii;
 use yii\web\UnprocessableEntityHttpException;
 
@@ -61,11 +61,11 @@ trait RestUserSocialRepository
                     throw new ServerErrorHttpException();
                 }
 
-                $user = RestUserEntity::findOne(Yii::$app->user->id);
+                $user = AuthUserEntity::findOne(Yii::$app->user->id);
                 if (isset($userData->email) && empty($user->email)) {
                     $user->email = $userData->email;
                 }
-                $user->status = RestUserEntity::STATUS_VERIFIED;
+                $user->status = AuthUserEntity::STATUS_VERIFIED;
                 if (!$user->save()) {
                     $this->throwModelException($user->errors);
                 }
@@ -134,11 +134,11 @@ trait RestUserSocialRepository
                     throw new ServerErrorHttpException();
                 }
 
-                $user = RestUserEntity::findOne(Yii::$app->user->id);
+                $user = AuthUserEntity::findOne(Yii::$app->user->id);
                 if (isset($userData->email) && empty($user->email)) {
                     $user->email = $userData->email;
                 }
-                $user->status = RestUserEntity::STATUS_VERIFIED;
+                $user->status = AuthUserEntity::STATUS_VERIFIED;
                 if (!$user->save()) {
                     $this->throwModelException($user->errors);
                 }
@@ -173,9 +173,9 @@ trait RestUserSocialRepository
        }
        try {
            $userSocial->delete();
-           $user = RestUserEntity::findOne(Yii::$app->user->id);
-           if ($user->source == RestUserEntity::SOCIAL && !static::isExistBindNetworksToCurrentUser()) {
-               $user->status = RestUserEntity::STATUS_DELETED;
+           $user = AuthUserEntity::findOne(Yii::$app->user->id);
+           if ($user->source == AuthUserEntity::SOCIAL && !static::isExistBindNetworksToCurrentUser()) {
+               $user->status = AuthUserEntity::STATUS_DELETED;
                $user->save(false, ['status']);
            }
            return array_merge($user->profile->getProfile(), ['is_deleted' => User::isUserDeleted($user->id)]);

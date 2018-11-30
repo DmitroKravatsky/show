@@ -2,7 +2,7 @@
 
 namespace rest\modules\api\v1\user\controllers\actions\profile;
 
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
 
@@ -82,7 +82,7 @@ class UpdatePasswordAction extends Action
      */
     public function run(): array
     {
-        $userModel = new RestUserEntity();
+        $userModel = new AuthUserEntity();
         $userModel->updatePassword(\Yii::$app->request->bodyParams);
 
         \Yii::$app->response->setStatusCode(200, 'Password was successfully changed');

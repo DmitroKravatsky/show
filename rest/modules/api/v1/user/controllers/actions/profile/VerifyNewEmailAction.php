@@ -3,7 +3,7 @@
 namespace rest\modules\api\v1\user\controllers\actions\profile;
 
 use common\behaviors\ValidatePostParameters;
-use rest\modules\api\v1\authorization\models\RestUserEntity;
+use rest\modules\api\v1\authorization\entity\AuthUserEntity;
 use rest\modules\api\v1\user\controllers\UserProfileController;
 use yii\rest\Action;
 use yii\web\BadRequestHttpException;
@@ -114,7 +114,7 @@ class VerifyNewEmailAction extends Action
     public function run()
     {
         try {
-            /** @var RestUserEntity $user */
+            /** @var AuthUserEntity $user */
             $user = new $this->modelClass;
             $user->verifyNewEmail(\Yii::$app->request->getBodyParams());
             $response = \Yii::$app->getResponse()->setStatusCode(200);
