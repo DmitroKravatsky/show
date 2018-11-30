@@ -78,7 +78,8 @@ class CreateAction extends Action
      *              @SWG\Property(property="message", type="string", description="Status message"),
      *              @SWG\Property(property="data", type="object",
      *                  @SWG\Property(property="id", type="integer", description="Review id"),
-     *                  @SWG\Property(property="text", type="string", description="Review text")
+     *                  @SWG\Property(property="text", type="string", description="Review text"),
+     *                  @SWG\Property(property="name", type="string", description="Review creator name")
      *              ),
      *         ),
      *         examples = {
@@ -86,7 +87,8 @@ class CreateAction extends Action
      *              "message": "Review was successfully created",
      *              "data": {
      *                  "id": 6,
-     *                  "text": "Деньги пришли быстро и без проблем"
+     *                  "text": "Деньги пришли быстро и без проблем",
+     *                  "name": "Petr"
      *              }
      *         }
      *     ),

@@ -28,6 +28,7 @@ class ListAction extends Action
      *              type="object",
      *              @SWG\Property(property="items", type="object",
      *                   @SWG\Property(property="id", type="integer", description="Review id"),
+     *                   @SWG\Property(property="name", type="string", description="Review creator name"),
      *                   @SWG\Property(property="text", type="string", description="Review text"),
      *                   @SWG\Property(property="created_at", type="date", description="Review creation date"),
      *              ),
